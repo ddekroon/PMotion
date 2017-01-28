@@ -1,0 +1,121 @@
+h1, h2, h3, h4, h5, h6 {
+	text-align:center;
+}
+
+h2 {
+	text-decoration:underline;
+	font-size:18px;
+	margin:0;
+}
+
+h3 {
+	font-weight:100;
+	font-size:14px;
+	margin-top:0;
+}
+
+.Table
+{
+	display: table;
+	width:600px;
+	text-align:center;
+	margin:0px auto;
+	border: solid;
+	border-width: medium;
+}
+
+.Heading
+{
+	display: table-row;
+	font-weight: bold;
+	text-align: center;
+	width:900px;
+	margin:0px auto;
+}
+.Row
+{
+	display: table-row;
+	width:500px;
+	margin:0px auto;
+	padding:5px;
+}
+.Column
+{
+	width:auto;
+	display: table-cell;
+	margin:0px auto;
+	padding:5px;
+
+}
+.Cell
+{
+	width:500px;
+	height:25px;
+	display: table-cell;
+	text-align:center;
+	border: solid;
+	border-width: medium;
+	margin:0px auto;
+}
+.noBorderCell
+{
+	width:500px;
+	display: table-cell;
+	margin:0px auto;
+}
+
+img {
+	height:432px;
+	width:576px;
+}
+
+.centerImg {
+	width:576px;
+	margin-left:auto;
+	margin-right:auto;
+}
+
+matchInfo {    
+	border-collapse:collapse;
+	border:#000 2px solid;
+	margin-left:auto;
+	margin-right:auto;
+}
+
+matchInfo th {
+    padding: 2px 1px;
+}
+
+matchInfo td {
+	border-collapse:collapse;  
+	padding: 2px 1px;
+	text-align:center;
+}
+
+matchInfo #gameNum {
+	width:20px;
+}
+
+matchInfo #datePlayed {
+	min-width:90px;
+}
+
+matchInfo #opponent {
+	min-width:300px;
+}
+
+matchInfo #result {
+	min-width:80px;
+}
+
+matchInfo #fieldName {
+	min-width:200px;
+}
+
+matchInfo #gameTime {
+	width:80px;
+}
+
+matchInfo #shirtColour {
+	width:50px;
+}

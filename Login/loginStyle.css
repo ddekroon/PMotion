@@ -1,0 +1,126 @@
+body {
+	font-size:14px;
+	font-family:Verdana, Geneva, sans-serif;
+}
+
+h3 {
+	padding:0px;
+	margin:0px;
+	font-size:22px;
+}
+
+table.master {
+	text-align:center;
+	vertical-align:middle;
+	padding:0px;
+	border-collapse:collapse;
+}
+
+table.master td {
+	text-align:center;
+	padding:0px;
+	border-collapse:collapse;
+}
+
+table.master td #bottomButton {
+	background:#999;
+}
+
+table.dataInput {
+	width:100%;
+	padding:0px;
+	border-collapse:collapse;
+}
+
+table.dataInput th, table.dataInput td{
+	text-align:left;
+	padding:0px;
+	margin:0px;
+	border-collapse:collapse;
+	font-weight:100;
+}
+
+table.dataInput th {
+	padding:10px 0px;
+}
+
+#textBoxes {
+	outline:#999 1px solid;
+	outline-offset:inherit;
+	border-collapse:collapse;
+}
+
+input[type="text"], input[type="password"] {
+	background-color:#fff;
+	border:#999 1px solid;
+	height:30px;
+	font-size:16px;
+	padding:0px 5px;
+}
+
+input[type="checkbox"] {
+	margin-left:2px;
+	background-color:#fff;
+	border:#999 1px solid;
+	color:#FE1329;
+	padding:0px;
+	vertical-align:middle;
+}
+
+#userName:hover, #userName:active, #password:hover, #password:active, #showBox:active, #showBox:hover {
+	background-color:#fff;
+	border:#FE1329 1px solid;
+}
+
+#userName {
+	width:350px;	
+}
+
+#password {
+	width:100%;
+}
+
+#forgot {
+	min-width:50px;
+	text-align:right;
+}
+
+#show {
+	background-color:#eee;
+	padding:3px;
+	text-align:center;
+}
+
+#bottomButton {
+	padding:5px;
+	text-align:center;
+}
+
+#rememeberMeSpan {
+	float:left;
+	text-align:left;
+	font-size:14px;
+	margin-left:0;
+	vertical-align:middle;
+}
+
+#loginSpan {
+	float:right;
+	margin-right:0;
+	text-align:right;
+	top:0;
+}
+
+#submitButton {
+	font-size:24px;
+	background-color:#494b4f;
+	color:#FFF;
+	border:none;
+	padding:4px;
+	vertical-align:top;
+	top:0;
+}
+
+#submitButton:hover, #submitButton:active {
+	background-color:#FE1329;
+}

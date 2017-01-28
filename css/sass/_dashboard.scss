@@ -1,0 +1,51 @@
+header.mainHeader {
+	background:$c-light-gray;
+	padding:10px 40px;
+	
+	.logoContainer {
+		padding:5px;
+		background:white;
+		border:1px solid $c-gray;
+	}
+	
+	.userAdmin {
+		@include flexbox();
+		align-items:center;
+		-webkit-align-items:center;
+		
+		.username {
+			font-size:1.3em;
+			font-weight:bold;
+		}
+		
+		.links {
+			font-size:0.75em;
+		}
+		
+		.divider {
+			margin:0 5px;
+		}
+	}
+	
+	.avatarContainer {
+		float:left;
+		width:60px;
+		height:60px;
+		border:1px solid $c-gray;
+		border-radius:50%;
+		overflow:hidden;
+		font-size:3em;
+		position:relative;
+		margin-right:20px;
+		background:white;
+		
+		> span {
+			position:absolute;
+			bottom:0;
+			left:0;
+			right:0;
+			text-align:center;
+			top:auto;
+		}
+	}
+}

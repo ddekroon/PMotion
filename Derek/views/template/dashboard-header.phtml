@@ -1,0 +1,41 @@
+<?php
+	$userId = !is_null($user) ? $user->getId() : '';
+	$username = !is_null($user) ? $user->getUsername() : '';
+	$firstName = !is_null($user) ? $user->getFirstName() : '';
+	$lastName = !is_null($user) ? $user->getLastName() : '';
+?>
+
+<!DOCTYPE HTML>
+<html>
+    <head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    	<title>Dashboard - Perpetual Motion</title>
+		
+		<link href="/css/stylesheets/styles.css" rel="stylesheet" type="text/css" />
+		
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    </head>
+    <body id="Dashboard">
+		<header class="mainHeader clearfix">
+			<div class="logoContainer pull-left">
+				<a href="<?= $router->pathFor('dashboard') ?>">
+					<img alt="Perpetual Motion Sports & Entertainment" src="/Logos/Perpetualmotionlogo2.jpg" width="200" />
+				</a>
+			</div>
+			<div class="pull-right userAdmin clearfix">
+				<div class="avatarContainer">
+					<span class="glyphicon glyphicon-user"></span>
+				</div>
+				<div class="pull-right">
+					<div class="username">
+						<?= $firstName ?> <?= $lastName ?>
+					</div>
+					<div class="links">
+						<a class="profile" href="<?= $router->pathFor('edit-profile') ?>"><span class="glyphicon glyphicon-edit"></span> Edit profile</a>
+						<span class="divider">|</span> 
+						<a href="<?= $router->pathFor('logout') ?>"><span class="glyphicon glyphicon-lock"></span> Logout</a>
+					</div>
+				</div>
+			</div>
+		</header>
+		<main>

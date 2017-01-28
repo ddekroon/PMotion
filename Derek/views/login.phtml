@@ -1,0 +1,86 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    	<title>Login - Perpetual Motion</title>
+		
+		<link href="/css/stylesheets/styles.css" rel="stylesheet" type="text/css" />
+		
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+		<script src="/js/jquery.validate.min.js"></script>
+		<script src="/js/jquery.form.js"></script>
+    </head>
+    <body id="LoginPage">
+		<div class="login-container">
+			<div class="logoContainer">
+				<img src="/Logos/Perpetualmotionlogo2.jpg" width="300" />
+			</div>
+			<form id="LoginForm">
+				<div class='row form-group'>
+					<div class='col-sm-3 col-xs-4'>
+						<label for='Username'>Username</label>
+					</div>
+					<div class='col-sm-9 col-xs-8'>
+						<div class="input-group">
+							<span class="input-group-addon" id="UsernameAddon"><span class="glyphicon glyphicon-user" aria-hidden="true"></span></span>
+							<input type='text' id='Username' name='username' value='' 
+								   class='form-control' aria-describedby='UsernameAddon' required="true" minlength="3" />
+						</div>
+					</div>
+				</div>
+				<div class='row form-group'>
+					<div class='col-sm-3 col-xs-4'>
+						<label for='Password'>Password</label>
+					</div>
+					<div class='col-sm-9 col-xs-8'>
+						<div class="input-group">
+							<span class="input-group-addon" id="PasswordAddon"><span class='glyphicon glyphicon glyphicon-lock'></span></span>
+							<input type='password' id='Password' name='password' value='' 
+								   class='form-control' aria-describedby="PasswordAddon" required="true" minlength="3" />
+						</div>
+					</div>
+				</div>		
+				<div class="row">
+					<div class="col-xs-6">
+						<div>
+							<a href='<?php print $router->pathFor('create-account') ?>'>Create an Account</a>
+						</div><div>
+							<a href='<?php print $router->pathFor('reset-password') ?>'>Forgot your password?</a>
+						</div>
+					</div>
+					<div class="col-xs-6 text-right">
+						<button id='Login' type="submit" name="login" value="true" class="btn btn-secondary">Log In</button>
+					</div>
+				</div>
+			</form>
+		</div>
+		<script>
+			$(function() {
+				$("#LoginForm").validate({
+					errorPlacement: function(error, element) {
+						if($(element).parent().hasClass("input-group")) {
+							error.insertAfter($(element).parent());
+						}
+					},
+					errorElement: "span"
+				});
+				
+				$("#LoginForm").ajaxForm({
+					dataType: "json",
+					type: "post",
+					action: "<?php print $router->pathFor('login') ?>",
+					success: function(resp) {
+						if(resp.status === 1) {
+							location.href = "<?php print $router->pathFor('dashboard') ?>";
+						} else {
+							alert(resp.errorMessage);
+						}
+					},
+					error: function() {
+						alert("Error connecting to server.");
+					}
+				});
+			});
+		</script>
+    </body>
+</html>

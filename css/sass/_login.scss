@@ -1,0 +1,33 @@
+#LoginPage {
+	background:$c-light-gray;
+	padding:0 10px;
+}
+
+.login-container {
+	max-width:600px;
+	padding:40px;
+	background:white;
+	margin:auto;
+	position:absolute;
+	top:40%;
+	left:10px;
+	right:10px;
+	@include translate(0, -50%);
+	border-radius:10px;
+	box-shadow:0 5px 5px 0 rgba($c-gray, 0.4);
+	
+	.logoContainer {
+		text-align:center;
+		margin-bottom:20px;
+	}
+	
+	label {
+		margin:5px 0 0;
+	}
+	
+	@include bp("max-width", "767px") {
+		position:static;
+		@include transform(none);
+		margin:20px 0;
+	}
+}

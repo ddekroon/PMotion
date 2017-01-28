@@ -1,0 +1,148 @@
+// Import Bootstrap Compass integration
+@import "bootstrap-compass";
+
+// Import custom Bootstrap variables
+@import "bootstrap-variables";
+
+// Import Bootstrap for Sass
+@import "bootstrap";
+
+@import "_base";
+@import "_scoreReporter";
+@import "_login";
+@import "_dashboard";
+
+html {
+	color:$c-primary;
+	font-size:16px;
+	
+	body {
+		font-size:16px;
+	}
+}
+
+.container-fluid {
+	max-width:1000px;
+	margin:auto;
+	padding:15px;
+}
+
+h1, h2, h3, h4, h5 {
+	font-weight:bold;
+	color:$c-primary;
+}
+
+img {
+	max-width:100%;
+	height:auto;
+}
+
+a {
+	color:$c-secondary;
+	@include transition();
+	
+	&:hover, &:focus {
+		color:darken($c-secondary, 5);
+	}
+}
+
+input[type="button"], input[type="submit"], button, .button, .btn, a {
+	@include transitionManual(background-color 0.3s ease);
+}
+
+span.required {
+	color:$c-red;
+}
+
+form .error {
+	color:$c-red;
+}
+
+.btn.btn-secondary {
+	background:$c-secondary;
+	color:white;
+	
+	&:hover, &:focus {
+		background:darken($c-secondary, 5);
+	}
+}
+
+.form-control:focus {
+	border-color: $c-secondary;
+	outline: 0;
+	-webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,0.075),0 0 8px rgba($c-secondary,0.6);
+	box-shadow: inset 0 1px 1px rgba(0,0,0,0.075),0 0 8px rgba($c-secondary,0.6);
+}
+
+.ui-spinner {
+	overflow:visible;
+	
+	input {
+		width:100%;
+		margin:0;
+		padding:5px;
+	}
+	
+	.ui-spinner-button {
+		&, &:hover, &:focus, &:active, .ui-button-icon {
+			background-image:none;	
+		}
+	}
+	
+	span.ui-icon {
+		font-family:$f-glyph;
+		font-size:10px;
+		background:none;
+		
+		&:before {
+			@include positionCenter;
+			text-indent:0;
+		}
+	}
+	
+	.ui-spinner-down .ui-icon:before {
+		content:"\e252";
+	}
+	
+	.ui-spinner-up .ui-icon:before {
+		content:"\e253";
+	}
+}
+
+.slider.slider-horizontal {
+	margin:0 10px;
+	width:calc(100% - 20px);
+	width:-webkit-calc(100% - 20px);
+	
+	~ .sliderValue {
+		width:40px;
+		display:inline-block;
+		font-size:2em;
+		font-weight:bold;
+		text-align:center;
+		margin-left:-0.3em;
+	}
+}
+
+.scoreReporter {
+	
+	&.scoreReporter-1 { /* ultimate */
+		@include score-reporter(#AD0909);
+	}
+	
+	&.scoreReporter-2 { /* beach */
+		@include score-reporter(#1488DB);
+	}
+	
+	&.scoreReporter-3 { /* football */
+		@include score-reporter(#14B33D);
+	}
+	
+	&.scoreReporter-4 { /* soccer */
+		@include score-reporter(#424242);
+	}
+	
+	.spirit-row {
+		margin-top:30px;
+	}
+}

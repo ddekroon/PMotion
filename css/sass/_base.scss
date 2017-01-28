@@ -1,0 +1,99 @@
+
+@import "_breakpoint";
+
+$c-gray:#494e52;
+$c-light-gray:#e3e3e3;
+$c-red:#ed1c24;
+
+$c-primary:$c-gray;
+$c-secondary:$c-red;
+
+$f-glyph:'Glyphicons Halflings';
+
+// generic transform
+@mixin transform($transforms) {
+	   -moz-transform: $transforms;
+	     -o-transform: $transforms;
+	    -ms-transform: $transforms;
+	-webkit-transform: $transforms;
+          transform: $transforms;
+}
+// rotate
+@mixin rotate ($deg) {
+  @include transform(rotate(#{$deg}deg));
+}
+ 
+// scale
+@mixin scale($scale) {
+	 @include transform(scale($scale));
+} 
+
+// translate
+@mixin translate ($x, $y) {
+   @include transform(translate($x, $y));
+}
+// skew
+@mixin skew ($x, $y) {
+   @include transform(skew(#{$x}deg, #{$y}deg));
+}
+//transform origin
+@mixin transform-origin ($origin) {
+    moz-transform-origin: $origin;
+	     -o-transform-origin: $origin;
+	    -ms-transform-origin: $origin;
+	-webkit-transform-origin: $origin;
+          transform-origin: $origin;
+}
+
+@mixin flexbox() {
+  display: -webkit-box;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+}
+
+@mixin flex($values) {
+  -webkit-box-flex: $values;
+  -moz-box-flex:  $values;
+  -webkit-flex:  $values;
+  -ms-flex:  $values;
+  flex:  $values;
+}
+
+@mixin order($val) {
+  -webkit-box-ordinal-group: $val;  
+  -moz-box-ordinal-group: $val;     
+  -ms-flex-order: $val;     
+  -webkit-order: $val;  
+  order: $val;
+}
+
+@mixin transition() {
+	-webkit-transition: 0.3s ease;
+	-moz-transition: 0.3s ease;
+	-o-transition: 0.3s ease;
+	transition: 0.3s ease;
+}
+
+@mixin transitionManual($val) {
+	-webkit-transition: $val;
+	-moz-transition: $val;
+	-o-transition: $val;
+	transition: $val;
+}
+
+@mixin positionCenter() {
+	@include translate(-50%,-50%);
+	position:absolute;
+	left:50%;
+	top:50%;
+}
+
+@mixin clearFix() {
+	&:after {
+		display:table;
+		clear:both;
+		content:"";
+	}
+}

@@ -1,0 +1,77 @@
+body {
+    font-size:12px;
+    font-family: Verdana, Tahoma, Helvetica, Arial; 
+}
+
+table.master{
+    padding:1px;
+    text-align: center;
+}
+
+table.master th {
+	font-size:14px;
+	font-weight:700;
+}
+
+#greyBar {
+	background-color:#CCC;
+	border:1px #000;
+	border:solid #000 1px 0px;
+	font-size:14px;
+	font-weight:700;
+}
+
+table.master td {
+	vertical-align:top;
+	margin-left:auto;
+	margin-right:auto;
+}
+
+table.leagues{
+    padding: 2px;
+    text-align: center;
+    font-size: small;
+	border:#7F7F7F solid 1px;
+}
+
+table.leagues tr{
+    text-align: center;
+}
+
+table.leagues th {
+	padding:4px;
+	height:20px;
+	font-size:12px;
+	font-weight:600;
+	text-align:center;
+	border:none;
+}
+
+table.leagues td {
+	padding: 5px;
+	height:20px;
+	font-size:12px;
+	border:none;
+}
+
+table.players{
+    width:100%;
+    text-align:center;
+	font-size:12px;
+}
+
+table.players th {
+	font-size:14px;
+	font-weight:700;
+	padding:10px;
+}
+
+table.players td {
+	padding:10px 0px;
+}
+
+/* This is the .css for mobile */ 
+@media screen and (max-width: 600px) 
+{
+	
+}

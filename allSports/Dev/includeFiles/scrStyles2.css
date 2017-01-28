@@ -1,0 +1,211 @@
+.master{                           
+    background:#FFF;
+    padding:0.2em 0.4em;      
+    text-align: left;
+    font-size: 12;
+    font-family: Verdana, Tahoma, Helvetica, Arial; 
+}
+
+.Table
+{
+	display: table;
+	text-align:center;
+	margin:0px auto;
+}
+
+.Row
+{
+	display: table-row;
+	width:500px;
+}
+
+.Cell
+{
+	width:800px;
+	height:25px;
+	display: table-cell;
+	text-align:center;
+	border-width: 1px 1px 1px 1px;
+    border-spacing: 2px;
+    border-style: outset outset outset outset;
+    border-collapse: separate;
+	margin:0px auto;
+}
+
+.left_column {
+    width:800px;
+	height:25px;
+	display: table-cell;
+	text-align:center;
+	border-width: 1px 1px 1px 1px;
+    border-spacing: 2px;
+    border-style: outset outset outset outset;
+    border-collapse: separate;
+	margin:0px auto;
+  }
+
+@media screen and (max-width: 600px) {
+  .left_column {
+	visibility: hidden;
+    width:0px;
+	height:0px;
+	display: none !important;
+	text-align:center;
+	border-width: 1px 1px 1px 1px;
+    border-spacing: 2px;
+    border-style: outset outset outset outset;
+    border-collapse: separate;
+	margin:0px auto;
+  }
+  
+  #spiritMobile {
+	  display:table-row !important;
+  }
+  #spiritStandard {
+	  display:none !important;
+  }
+  
+  .Column{
+	  padding-left:0px !important;
+  }
+  .Table {
+	  font-size:14px !important;
+  }
+  
+  select {
+  	width:96% !important;
+	font-size: 16px;
+  }
+}
+
+.Column
+{
+	width:auto;
+	display: table-cell;
+	margin:0px auto;
+	padding:5px;
+}
+
+.noBorderCell
+{
+	display: table-cell;
+	margin:0px auto;
+	text-align:center;
+}
+
+.infoBox {
+	border-radius:15px;
+    border-width: 1px 1px 1px 1px;
+    border-spacing: 2px;
+    border-style: outset outset outset outset;
+    border-collapse: separate;
+	background: #1488DB;
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#44A7FC', endColorstr='#1488DB',GradientType=1 );
+	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #44A7FC), color-stop(1, #1488DB));
+	background-image: -webkit-linear-gradient(top, #44A7FC, #1488DB);
+	background-image: -moz-linear-gradient(top, #44A7FC, #1488DB);
+	background-image: -ms-linear-gradient(top, #44A7FC, #1488DB);
+	background-image: -o-linear-gradient(top, #44A7FC, #1488DB);
+	background-image: linear-gradient(#44A7FC, #1488DB);
+    font-family: Verdana, Tahoma, Helvetica, Arial;
+    font-size:12; 
+	color:#FFF;
+	font-weight:700; 
+}
+
+.infoBox th {
+	border-radius:100px;
+    border-width: 0px 0px 0px 0px;
+    padding: 1px 1px 1px 1px;
+    border-style: inset inset inset inset;
+    border-color:#FFF;
+    -moz-border-radius: 0px 0px 0px 0px;
+	color:#FFF;
+	font-weight:700; 
+}
+.infoBox td {
+	border-radius:30px;
+    border-width: 1px 1px 1px 1px;
+    padding: 2px 2px 2px 2px;
+    border-style: inset inset inset inset;
+    border-color: #FFF;
+    -moz-border-radius: 0px 0px 0px 0px;
+	color:#FFF;
+	font-weight:700; 
+}
+
+.game {
+	border-radius:15px;
+    font-size: 12;
+    font-family: Verdana, Tahoma, Helvetica, Arial;
+    text-align: left;
+    border-width: 1px 1px 1px 1px;
+    border-spacing: 2px;
+    border-style: outset outset outset outset;
+    border-color:#44A7FC;
+    border-collapse: separate;
+	background: #1488DB;
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#44A7FC', endColorstr='#1488DB',GradientType=1 );
+	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #44A7FC), color-stop(1, #1488DB));
+	background-image: -webkit-linear-gradient(top, #44A7FC, #1488DB);
+	background-image: -moz-linear-gradient(top, #44A7FC, #1488DB);
+	background-image: -ms-linear-gradient(top, #44A7FC, #1488DB);
+	background-image: -o-linear-gradient(top, #44A7FC, #1488DB);
+	background-image: linear-gradient(#44A7FC, #1488DB);
+	color:#FFF;
+	font-weight:700; 
+}
+.game th {
+	border-radius:20px;
+    border-width: 1px 1px 1px 1px;
+    padding: 2px 2px 2px 2px;
+    border-style: outset outset outset outset;
+    border-color:#44A7FC;
+    -moz-border-radius: 0px 0px 0px 0px;
+	color:#FFF;
+	font-weight:700; 
+}
+.game td {
+	border-radius:20px;
+    border-width: 1px 1px 1px 1px;
+    padding: 2px 2px 2px 2px;
+    border-style: outset outset outset outset;
+    border-color:#44A7FC;
+    -moz-border-radius: 0px 0px 0px 0px;
+	color:#FFF;
+	font-weight:700; 
+}
+
+.score {
+	border-radius:15px;
+    font-size: 12;
+    font-family: Verdana, Tahoma, Helvetica, Arial;
+	color:#FFF;
+	font-weight:700;
+	border:none;
+}
+.score th {
+	border-radius:20px;
+    padding: 1px 1px 1px 1px;
+	color:#FFF;
+	font-weight:700;
+	border:none;
+}
+.score td {
+	border-radius:20px;
+    padding: 1px 1px 1px 1px;
+	color:#FFF;
+	font-weight:700;
+	padding:3px 3px 3px 3px;
+	text-align:right;
+	border:none;
+}
+
+reg{
+    FONT-FAMILY : Arial, Helvetica, sans-serif;
+    FONT-SIZE : 12px;
+}
+long{
+    FONT-FAMILY : Arial, Helvetica, sans-serif;
+    FONT-SIZE : 10px;
+}

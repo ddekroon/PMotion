@@ -1,0 +1,201 @@
+.master{                           
+    background:#FFF;
+    padding:0.2em 0.4em;      
+    text-align: left;
+    font-size: 12;
+    font-family: Verdana, Tahoma, Helvetica, Arial; 
+}
+
+.Table
+{
+	display: table;
+	text-align:center;
+	margin:0px auto;
+}
+
+.Row
+{
+	display: table-row;
+	width:500px;
+}
+
+.Cell
+{
+	width:800px;
+	height:25px;
+	display: table-cell;
+	text-align:center;
+	border-width: 1px 1px 1px 1px;
+    border-spacing: 2px;
+    border-style: outset outset outset outset;
+    border-collapse: separate;
+	margin:0px auto;
+}
+
+@media screen and (max-width: 600px) {
+  .left_column {
+	visibility: hidden;
+    width:0px;
+	height:0px;
+	display: none !important;
+	text-align:center;
+	border-width: 1px 1px 1px 1px;
+    border-spacing: 2px;
+    border-style: outset outset outset outset;
+    border-collapse: separate;
+	margin:0px auto;
+  }
+  
+  #spiritMobile {
+	  display:block !important;
+  }
+  #spiritStandard {
+	  display:none !important;
+  }
+  
+  select {
+  	width:96% !important;
+  }
+}
+
+.left_column {
+    width:800px;
+	height:25px;
+	display: table-cell;
+	text-align:center;
+	border-width: 1px 1px 1px 1px;
+    border-spacing: 2px;
+    border-style: outset outset outset outset;
+    border-collapse: separate;
+	margin:0px auto;
+  }
+
+.Column
+{
+	width:auto;
+	display: table-cell;
+	margin:0px auto;
+	padding:5px;
+}
+
+.noBorderCell
+{
+	width:800px;
+	display: table-cell;
+	margin:0px auto;
+	text-align:center;
+}
+
+.infoBox {
+    border-width: 1px 1px 1px 1px;
+    border-spacing: 2px;
+    border-style: outset outset outset outset;
+    border-collapse: separate;
+	background: #14B33D;
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#14B33D', endColorstr='#087324',GradientType=1 );
+	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #14B33D), color-stop(1, #087324));
+	background-image: -webkit-linear-gradient(top, #14B33D, #087324);
+	background-image: -moz-linear-gradient(top, #14B33D, #087324);
+	background-image: -ms-linear-gradient(top, #14B33D, #087324);
+	background-image: -o-linear-gradient(top, #14B33D, #087324);
+	background-image: linear-gradient(#14B33D, #087324);
+    font-family: Verdana, Tahoma, Helvetica, Arial;
+    font-size:12; 
+	color:#FFF;
+	font-weight:700; 
+}
+
+.infoBox th {
+    border-width: 1px 1px 1px 1px;
+    padding: 2px 2px 2px 2px;
+    border-style: inset inset inset inset;
+    border-color:#14B33D;
+    -moz-border-radius: 0px 0px 0px 0px;
+	color:#FFF;
+	font-weight:700; 
+}
+
+.infoBox td {
+    border-width: 1px 1px 1px 1px;
+    padding: 2px 2px 2px 2px;
+    border-style: inset inset inset inset;
+    border-color: #14B33D;
+    -moz-border-radius: 0px 0px 0px 0px;
+	color:#FFF;
+	font-weight:700; 
+}
+
+.game {
+    font-size: 12;
+    font-family: Verdana, Tahoma, Helvetica, Arial;
+    text-align: left;
+    border-width: 1px 1px 1px 1px;
+    border-spacing: 2px;
+    border-style: outset outset outset outset;
+    border-color: #14B33D;
+    border-collapse: separate;
+	background: #14B33D;
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#14B33D', endColorstr='#087324',GradientType=1 );
+	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #14B33D), color-stop(1, #087324));
+	background-image: -webkit-linear-gradient(top, #14B33D, #087324);
+	background-image: -moz-linear-gradient(top, #14B33D, #087324);
+	background-image: -ms-linear-gradient(top, #14B33D, #087324);
+	background-image: -o-linear-gradient(top, #14B33D, #087324);
+	background-image: linear-gradient(#14B33D, #087324);
+	color:#FFF;
+	font-weight:700; 
+}
+
+.game th {
+    border-width: 1px 1px 1px 1px;
+    padding: 2px 2px 2px 2px;
+    border-style: outset outset outset outset;
+    border-color: #14B33D;
+    -moz-border-radius: 0px 0px 0px 0px;
+	color:#FFF;
+	font-weight:700; 
+}
+
+.game td {
+    border-width: 1px 1px 1px 1px;
+    padding: 2px 2px 2px 2px;
+    border-style: outset outset outset outset;
+    border-color: #14B33D;
+    -moz-border-radius: 0px 0px 0px 0px;
+	color:#FFF;
+	font-weight:700; 
+}
+
+.score {
+    font-size: 12;
+    font-family: Verdana, Tahoma, Helvetica, Arial;
+	color:#FFF;
+	font-weight:700;
+	border:none;
+}
+
+.score th {
+    padding: 1px 1px 1px 1px;
+	color:#FFF;
+	font-weight:700;
+	border:none;
+}
+
+.score td {
+    padding: 1px 1px 1px 1px;
+	color:#FFF;
+	font-weight:700;
+	padding:3px 3px 3px 3px;
+	text-align:right;
+	border:none;
+}
+
+reg{
+    FONT-FAMILY : Arial, Helvetica, sans-serif;
+    FONT-SIZE : 12px;
+}
+long{
+    FONT-FAMILY : Arial, Helvetica, sans-serif;
+    FONT-SIZE : 10px;
+}
+

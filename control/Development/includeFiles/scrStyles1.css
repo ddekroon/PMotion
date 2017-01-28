@@ -1,0 +1,115 @@
+table.master{                           
+    background:#FFF;
+    padding:0.2em 0.4em;      
+    text-align: left;
+    font-size: 12;
+    font-family: Verdana, Tahoma, Helvetica, Arial; 
+}
+
+table.infoBox {
+    border-width: 1px 1px 1px 1px;
+    border-spacing: 2px;
+    border-style: outset outset outset outset;
+    border-collapse: separate;
+	background: #AD0909;
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#E82C2C', endColorstr='#AD0909',GradientType=1 );
+	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #E82C2C), color-stop(1, #AD0909));
+	background-image: -webkit-linear-gradient(top, #E82C2C, #AD0909);
+	background-image: -moz-linear-gradient(top, #E82C2C, #AD0909);
+	background-image: -ms-linear-gradient(top, #E82C2C, #AD0909);
+	background-image: -o-linear-gradient(top, #E82C2C, #AD0909);
+	background-image: linear-gradient(#E82C2C, #AD0909);
+    font-family: Verdana, Tahoma, Helvetica, Arial;
+    font-size:12; 
+	color:#FFF;
+	font-weight:700; 
+}
+
+table.infoBox th {
+    border-width: 1px 1px 1px 1px;
+    padding: 2px 2px 2px 2px;
+    border-style: inset inset inset inset;
+    border-color:#990000;
+    -moz-border-radius:0px 0px 0px 0px;
+	color:#FFF;
+	font-weight:700; 
+}
+table.infoBox td {
+    border-width: 1px 1px 1px 1px;
+    padding: 2px 2px 2px 2px;
+    border-style: inset inset inset inset;
+    border-color: #E82C2C;
+    -moz-border-radius: 0px 0px 0px 0px;
+	color:#FFF;
+	font-weight:700; 
+}
+
+table.game {
+    font-size: 12;
+    font-family: Verdana, Tahoma, Helvetica, Arial;
+    text-align: left;
+    border-width: 1px 1px 1px 1px;
+    border-spacing: 2px;
+    border-style: outset outset outset outset;
+    border-color: #990000;
+    border-collapse: separate;
+	background: #AD0909;
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#E82C2C', endColorstr='#AD0909',GradientType=1 );
+	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #E82C2C), color-stop(1, #AD0909));
+	background-image: -webkit-linear-gradient(top, #E82C2C, #AD0909);
+	background-image: -moz-linear-gradient(top, #E82C2C, #AD0909);
+	background-image: -ms-linear-gradient(top, #E82C2C, #AD0909);
+	background-image: -o-linear-gradient(top, #E82C2C, #AD0909);
+	background-image: linear-gradient(#E82C2C, #AD0909);
+	color:#FFF;
+	font-weight:700; 
+}
+table.game th {
+    border-width: 1px 1px 1px 1px;
+    padding: 2px 2px 2px 2px;
+    border-style: outset outset outset outset;
+    border-color: #E82C2C;
+    -moz-border-radius: 0px 0px 0px 0px;
+	color:#FFF;
+	font-weight:700; 
+}
+table.game td {
+    border-width: 1px 1px 1px 1px;
+    padding: 2px 2px 2px 2px;
+    border-style: outset outset outset outset;
+    border-color:#E82C2C;
+    -moz-border-radius: 0px 0px 0px 0px;
+	color:#FFF;
+	font-weight:700; 
+}
+
+table.score {
+    font-size: 12;
+    font-family: Verdana, Tahoma, Helvetica, Arial;
+	color:#FFF;
+	font-weight:700;
+	border:none;
+}
+table.score th {
+    padding: 1px 1px 1px 1px;
+	color:#FFF;
+	font-weight:700;
+	border:none;
+}
+table.score td {
+    padding: 1px 1px 1px 1px;
+	color:#FFF;
+	font-weight:700;
+	padding:3px 3px 3px 3px;
+	text-align:right;
+	border:none;
+}
+
+reg{
+    FONT-FAMILY : Arial, Helvetica, sans-serif;
+    FONT-SIZE : 12px;
+}
+long{
+    FONT-FAMILY : Arial, Helvetica, sans-serif;
+    FONT-SIZE : 10px;
+}

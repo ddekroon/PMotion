@@ -1,0 +1,301 @@
+@charset "utf-8";
+/* CSS Document */
+
+body {
+	font-size:12px;
+	font-style:normal;
+	font-family:Arial, sans-serif;
+}
+
+a.gameLink:link {
+	text-decoration:none;
+	color:#000;
+}
+a.gameLink:visited {
+	color:#000;
+	text-decoration:none;
+}
+a.gameLink:hover {
+	color:#00F;
+	text-decoration:underline;
+}
+a.gameLink:active {
+	color:#000;
+	text-decoration:none;
+}
+
+table.master {
+	padding:5px;
+	border-collapse:collapse;
+	border: 1px solid #087324;
+	text-align:center;
+}
+
+table.master td {
+	border-collapse:collapse;
+	font-size:12px;
+}
+
+table.titleBox{ 
+	width:100%;                          
+    font-size:20px;
+    font-weight:bold; 
+    text-align:center;      
+    font-family: Verdana, Tahoma, Helvetica, Arial;
+	background: #14B33D;
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#14B33D', endColorstr='#087324',GradientType=1 );
+	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #14B33D), color-stop(1, #087324));
+	background-image: -webkit-linear-gradient(top, #14B33D, #087324);
+	background-image: -moz-linear-gradient(top, #14B33D, #087324);
+	background-image: -ms-linear-gradient(top, #14B33D, #087324);
+	background-image: -o-linear-gradient(top, #14B33D, #087324);
+	background-image: linear-gradient(#14B33D, #087324);
+	border: 1px solid #087324;
+}
+
+table.titleBox th{   
+    font-size:20px;
+    font-weight:700; 
+    text-align:center;
+	padding:7px;
+    font-family: Verdana, Tahoma, Helvetica, Arial;
+	color:#FFF;
+	vertical-align:central;
+}
+
+table.getIDs {
+	width:100%;
+    font-family: Verdana, Tahoma, Helvetica, Arial;
+    font-size:12px;
+	color:#666633;
+	border: 1px solid #087324;
+}
+
+table.getIDs td, table.getIDs th {
+    padding:5px;
+	color:#000;
+	text-align:center;
+	font-size:12px;
+	border:none;
+}
+
+#idDropDown, #numWeeks, #numTimesMaster, #timesSame, #numVenuesMaster, #venuesSame {
+	width:200px;
+}
+
+#subTitleBox {
+	font-size:18px;
+	font-weight:bold;
+	text-align:center;
+	width:100%;
+	padding:10px;
+}
+
+table.subTable {
+	width:100%;
+}
+
+table.subTable td, table.subTable th {
+	text-align:left;
+	padding:5px;
+}
+
+#timesAndVenues {
+	border-bottom:thin #000 solid;
+	border-collapse:collapse;
+}
+
+#weekRow {
+	width:100%;
+	border-bottom:thin #000 dashed;
+	border-collapse:collapse;
+}
+
+#bottomButton {
+	text-align:center;
+	font-size:18px;
+}
+
+table.schedule {
+	min-width:500px;
+	text-align:center;
+}
+
+table.schedule #weekCell {
+	padding:10px 5px;
+	text-align:center;
+}
+
+table.schedule #title{
+	font-size:20px;
+	font-weight:bold;
+	text-align:center;
+	padding:5px;
+}
+
+table.schedule #teamsCell {
+	text-align:center;
+	alignment-adjust:central;
+	alignment-baseline:central;
+	padding:10px;
+	width:100%;
+}
+
+table.teamlist{
+	padding:0px 10px;
+	text-align:center;
+	font-size:12px;
+}
+
+table.teamlist #team_name_left{
+	padding-right:40px;
+	text-align:left;
+	font-size:12px;
+}
+
+table.teamlist #team_name_right{
+	text-align:left;
+	font-size:12px;
+}
+
+table.teamlist #team_num_cell{
+	padding: 0 20px;
+	text-align:center;
+	font-size:12px;
+}
+
+table.notesTable, table.notesTable td {
+	font-size:12px;
+}
+
+table.schedWeek #game_column_header
+{
+	text-align:center;
+	font-size:12px;
+}
+
+table.schedWeek #game_header
+{
+	font-size:12px;
+	font-weight:bold;
+	text-align:left;
+	border-bottom: #000 thin solid;
+}
+
+table.schedWeek #space_between_games
+{
+	mso-width-source:userset;
+	mso-width-alt:1243;
+	width:26pt;
+}
+
+table.schedWeek #field_name
+{
+	font-size:12px;
+	mso-width-source:userset;
+	mso-width-alt:5193;
+	width:120pt;
+	text-align:center;
+	padding:4px 0px;
+}
+
+table.schedWeek #team_left
+{
+	width:48pt;
+	font-size:12px; 
+	padding-right:2px;
+	text-align:center;
+}
+
+table.schedWeek #versus
+{
+	mso-width-source:userset;
+	mso-width-alt:1426;
+	width:29pt;
+	text-align:center;
+	font-size:12px;
+}
+
+table.schedWeek #team_right
+{
+	width:48pt;
+	font-size:12px; 
+	padding-left:2px;
+	text-align:center;
+}
+
+table.schedWeek #week_header
+{
+	font-size:12px;
+	width:130px; 
+	padding:3px;
+	color:#000;
+	font-weight:700;
+	text-decoration:none;
+	mso-font-charset:0;
+	text-align:left;vertical-align:bottom;
+	mso-background-source:auto;
+	mso-pattern:auto;
+	white-space:nowrap;	
+}
+
+table.schedWeek #week_number {
+	padding:3px 3px 0px 0px;
+	color:#000;
+	font-weight:700;
+	text-decoration:none;
+	mso-font-charset:0;
+	vertical-align:bottom;
+	mso-background-source:auto;
+	mso-pattern:auto;
+	white-space:nowrap;
+	text-align:right;
+	font-size:12px;
+}
+
+table.schedWeek  {
+	border:1.5pt #000 solid;
+	padding:10px;
+	border-collapse:collapse;
+	background-color:#FFF;
+	min-width:500px;
+}
+
+table.holiday_week td{
+	padding:10px;
+	width:100%;
+	font-weight:bold;
+	border:none;
+	font-size:14px;
+}
+
+#gameTeam {
+	width:20px;
+}
+
+#userInput {
+	width:250px;
+	vertical-align:middle;
+	text-align:center;
+}
+
+table.bottomButton {
+	width:100%;
+	background: #14B33D;
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#14B33D', endColorstr='#087324',GradientType=1 );
+	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #14B33D), color-stop(1, #087324));
+	background-image: -webkit-linear-gradient(top, #14B33D, #087324);
+	background-image: -moz-linear-gradient(top, #14B33D, #087324);
+	background-image: -ms-linear-gradient(top, #14B33D, #087324);
+	background-image: -o-linear-gradient(top, #14B33D, #087324);
+	background-image: linear-gradient(#14B33D, #087324);
+	border: 1px solid #087324;
+	text-align:center;
+}
+
+table.bottomButton td {
+	width:100%;
+	padding:5px;
+	text-align:center;
+	font-size:15px;
+}
