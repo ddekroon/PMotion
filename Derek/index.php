@@ -100,6 +100,7 @@ $dashboard =  function ($request, $response, $next) {
 	return $response;
 };
 
+include('routes/api/sports.php');
 include('routes/default.php');
 include('routes/score-reporter.php');
 include('routes/registration.php');

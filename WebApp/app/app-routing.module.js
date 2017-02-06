@@ -13,19 +13,38 @@ var router_1 = require('@angular/router');
 var dashboard_component_1 = require('./dashboard.component');
 var heroes_component_1 = require('./heroes.component');
 var hero_detail_component_1 = require('./hero-detail.component');
-var routes = [
-    { path: '', redirectTo: '/dashboard', pathMatch: 'full' },
+var not_found_component_1 = require('./not-found.component');
+var can_deactivate_guard_service_1 = require('./can-deactivate-guard.service');
+var selective_preloading_strategy_1 = require('./selective-preloading-strategy');
+var appRoutes = [
     { path: 'dashboard', component: dashboard_component_1.DashboardComponent },
     { path: 'detail/:id', component: hero_detail_component_1.HeroDetailComponent },
-    { path: 'heroes', component: heroes_component_1.HeroesComponent }
+    {
+        path: 'heroes',
+        component: heroes_component_1.HeroesComponent,
+        data: { title: 'Heroes List' }
+    },
+    {
+        path: 'score-reporter',
+        loadChildren: 'app/score-reporter/score-reporter.module#ScoreReporterModule',
+        data: { preload: true }
+    },
+    { path: '', redirectTo: '/dashboard', pathMatch: 'full' },
+    { path: '**', component: not_found_component_1.PageNotFoundComponent } //Good for a 404 later on
 ];
 var AppRoutingModule = (function () {
     function AppRoutingModule() {
     }
     AppRoutingModule = __decorate([
         core_1.NgModule({
-            imports: [router_1.RouterModule.forRoot(routes)],
-            exports: [router_1.RouterModule]
+            imports: [
+                router_1.RouterModule.forRoot(appRoutes, { preloadingStrategy: selective_preloading_strategy_1.SelectivePreloadingStrategy })
+            ],
+            exports: [router_1.RouterModule],
+            providers: [
+                can_deactivate_guard_service_1.CanDeactivateGuard,
+                selective_preloading_strategy_1.SelectivePreloadingStrategy
+            ]
         }), 
         __metadata('design:paramtypes', [])
     ], AppRoutingModule);
