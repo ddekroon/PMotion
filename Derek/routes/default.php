@@ -102,13 +102,13 @@
 	})->setName('dashboard')->add($dashboard)->add($authenticate);
 	
 	//Generic get league teams
-	$app->get('/get-league-teams/{leagueID}', function (Request $request, Response $response) {
+	$app->get('/get-league-teams/{leagueID}', function(Request $request, Response $response) {
 		$leagueID = (int)$request->getAttribute('leagueID');
 
 		if($leagueID > 0) {
-			$scoreReporter = new Controllers_ScoreReporterController($this->db, $this->logger);
+			$teamsController = new Controllers_TeamsController($this->db, $this->logger);
 
-			$teams = $scoreReporter->getTeams($leagueID);
+			$teams = $teamsController->getTeams($leagueID);
 			$dataObj = array();
 			$dataObj["teams"] = array();
 

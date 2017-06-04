@@ -2,16 +2,6 @@
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-        <group>
-            <file>file:/C:/Bin/web/PMotion/Derek/routes/default.php</file>
-            <file>file:/C:/Bin/web/PMotion/Derek/controllers/sportscontroller.php</file>
-            <file>file:/C:/Bin/web/PMotion/Derek/models/generic.php</file>
-            <file>file:/C:/Bin/web/PMotion/GlobalFiles/dbConnect.php</file>
-            <file>file:/C:/Bin/web/PMotion/Derek/routes/api/sports.php</file>
-            <file>file:/C:/Bin/web/PMotion/Derek/models/sport.php</file>
-            <file>file:/C:/Bin/web/PMotion/Derek/includeFiles/scrSqlFunctions.php</file>
-            <file>file:/C:/Bin/web/PMotion/logs/app.log</file>
-            <file>file:/C:/Bin/web/PMotion/Derek/controllers/authcontroller.php</file>
-        </group>
+        <group/>
     </open-files>
 </project-private>

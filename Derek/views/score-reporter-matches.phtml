@@ -4,7 +4,7 @@
 			$match = $matches[$i];
 			
 			$matchClasses = count($matches) > 1 ? 'col-md-6 col-xs-12' : 'col-xs-12';
-			$scoreClasses = $league->getAskForScores() ? 'col-sm-6 col-xs-12' : 'col-xs-12';
+			$scoreClasses = $team->getLeague()->getIsAskForScores() ? 'col-sm-6 col-xs-12' : 'col-xs-12';
 
 		?>
 
@@ -26,14 +26,14 @@
 			
 			<?php if ($match->getOppTeamId() == 1) { // It's a practise game ?>
 
-				<?php for($j = 0; $j < $league->getNumGamesPerMatch(); $j++){ ?>
+				<?php for($j = 0; $j < $team->getLeague()->getNumGamesPerMatch(); $j++){ ?>
 					<input type='hidden' name='result' value='5' />
 					<input type='hidden' name='scoreUs' value='0' />
 					<input type='hidden' name='scoreThem' value='0' />
 				<?php } ?>
 
 			<?php } else { ?>
-				<?php for($j = 0; $j < $league->getNumGamesPerMatch(); $j++){ ?>
+				<?php for($j = 0; $j < $team->getLeague()->getNumGamesPerMatch(); $j++){ ?>
 					<div class='score form-group'>
 						<div class='row'>
 							<div class='col-md-2 col-sm-3 col-xs-4'>
@@ -51,19 +51,19 @@
 											<input type='radio' name='result' value='2' id='GameResult_<?php print $i ?>_<?php print $j ?>_Lost' />
 											<label for='GameResult_<?php print $i ?>_<?php print $j ?>_Lost'>We Lost</label>
 
-											<?php if($league->getHasTies()) { ?>
+											<?php if($team->getLeague()->getIsTies()) { ?>
 												<input type='radio' name='result' value='3' id='GameResult_<?php print $i ?>_<?php print $j ?>_Tied' />
 												<label for='GameResult_<?php print $i ?>_<?php print $j ?>_Tied'>We Tied</label>
 											<?php } ?>
 
-											<?php if($league->getShowCancelOption()) { ?>
+											<?php if($team->getLeague()->getIsShowCancelOption()) { ?>
 												<input type='radio' name='result' value='4' id='GameResult_<?php print $i ?>_<?php print $j ?>_Cancelled' />
 												<label for='GameResult_<?php print $i ?>_<?php print $j ?>_Cancelled'>*Cancelled*</label>
 											<?php } ?>
 										</fieldset>
 									</div>
 									
-									<?php if($league->getAskForScores()) { ?>
+									<?php if($team->getLeague()->getIsAskForScores()) { ?>
 										<div class='col-sm-6 col-xs-12'>
 											<div class='row'>
 												<div class='col-xs-6'>
@@ -72,7 +72,7 @@
 															<label for='ScoreUs_<?php print $i ?>_<?php print $j ?>'>We Got</label>
 														</div>
 														<div class='col-xs-6'>
-															<input type='number' value='0' min='0' max='<?php print $league->getMaxPointsPerGame() ?>' name='scoreUs' id='ScoreUs_<?php print $i ?>_<?php print $j ?>' />
+															<input type='number' value='0' min='0' max='<?php print $team->getLeague()->getMaxPointsPerGame() ?>' name='scoreUs' id='ScoreUs_<?php print $i ?>_<?php print $j ?>' />
 														</div>
 													</div>
 												</div>
@@ -82,7 +82,7 @@
 															<label for='ScoreThem_<?php print $i ?>_<?php print $j ?>'>They Got</label>
 														</div>
 														<div class='col-xs-6'>
-															<input type='number' value='0' min='0' max='<?php print $league->getMaxPointsPerGame() ?>' name='scoreThem' id='ScoreThem_<?php print $i ?>_<?php print $j ?>'>
+															<input type='number' value='0' min='0' max='<?php print $team->getLeague()->getMaxPointsPerGame() ?>' name='scoreThem' id='ScoreThem_<?php print $i ?>_<?php print $j ?>'>
 														</div>
 													</div>
 												</div>

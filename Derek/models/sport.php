@@ -1,24 +1,66 @@
 <?php
 
-class Models_Sport extends Models_Generic implements JsonSerializable {
+class Models_Sport extends Models_Generic implements Models_Interface, JsonSerializable {
     protected $name;
+	protected $isDefaultAskForScores;
+	protected $defaultNumOfMatches;
+	protected $defaultNumGamesPerMatch;
+	protected $defaultMaxPointsPerGame;
+	protected $isDefaultHasTies;
+	protected $isDefaultSortByPct;
+	protected $defaultHideSpiritHour;
+	protected $defaultShowSpiritHour;
+	protected $defaultSpiritHiddenForDays;
+	
     protected $registrationDueDate;
 	protected $defaultPicLink;
 	protected $logoLink;
 	
-	/**
-     * Accept an array of data matching properties of this class
-     * and create the class
-     *
-     * @param array $data The data to use to create
-     */
-    public function __construct(array $data) {
+	public static function withID($db, $id) {
+		$instance = new self();
+        $instance->loadByID($db, $id);
+        return $instance;
+	}
+	
+	public function loadByID($db, $id) {
+		$this->setDb($db);
+		
+		if($id == null || $id < 0) return;
+		
+		$sql = "SELECT * FROM " . Includes_DBTableNames::sportsTable . " WHERE sport_id = $id";
+
+		$stmt = $db->query($sql);
+
+		if(($row = $stmt->fetch()) != false) {
+			$this->fill($row);
+		}
+	}
+
+	public static function withRow($db, array $row) {
+		$instance = new self();
+		$instance->setDb($db);
+        $instance->fill( $row );
+        return $instance;
+	}
+	
+	public function fill(array $data) {
         // no id if we're creating
         if(isset($data['sport_id'])) {
             $this->id = $data['sport_id'];
         }
 		
         $this->name = $data['sport_name'];
+		
+		$this->isDefaultAskForScores = $data['sport_default_ask_for_scores'];
+		$this->defaultNumOfMatches = $data['sport_default_num_of_matches'];
+		$this->defaultNumGamesPerMatch = $data['sport_default_num_games_per_match'];
+		$this->defaultMaxPointsPerGame = $data['sport_default_max_points_per_game'];
+		$this->isDefaultHasTies = $data['sport_default_has_ties'];
+		$this->isDefaultSortByPct = $data['sport_default_sort_by_pct'];
+		$this->defaultHideSpiritHour = $data['sport_default_hide_spirit_hour'];
+		$this->defaultShowSpiritHour = $data['sport_default_show_spirit_hour'];
+		$this->defaultSpiritHiddenForDays = $data['sport_default_spirit_hidden_for_days'];
+		
         $this->registrationDueDate = $data['sport_registration_due_date'];
 		$this->defaultPicLink = $data['sport_default_pic_link'];
 		$this->logoLink = $data['sport_logo_link'];
@@ -65,8 +107,95 @@ class Models_Sport extends Models_Generic implements JsonSerializable {
 				. "id:" . $this->getId() . ","
 				. "registrationDueDate:" . $this->getRegistrationDueDate() . ","
 				. "defaultPicLink:" . $this->getDefaultPicLink() . ","
-				. "logoLink:" . $this->getLogoLink() . ","
+				. "logoLink:" . $this->getLogoLink()
 			. "}";
+	}
+	
+	function getIsDefaultAskForScores() {
+		return $this->isDefaultAskForScores;
+	}
+
+	function getDefaultNumOfMatches() {
+		return $this->defaultNumOfMatches;
+	}
+
+	function getDefaultNumGamesPerMatch() {
+		return $this->defaultNumGamesPerMatch;
+	}
+
+	function getDefaultMaxPointsPerGame() {
+		return $this->defaultMaxPointsPerGame;
+	}
+
+	function getIsDefaultHasTies() {
+		return $this->isDefaultHasTies;
+	}
+
+	function getIsDefaultSortByPct() {
+		return $this->isDefaultSortByPct;
+	}
+
+	function getDefaultHideSpiritHour() {
+		return $this->defaultHideSpiritHour;
+	}
+
+	function getDefaultShowSpiritHour() {
+		return $this->defaultShowSpiritHour;
+	}
+
+	function getDefaultSpiritHiddenForDays() {
+		return $this->defaultSpiritHiddenForDays;
+	}
+
+	function setIsDefaultAskForScores($isDefaultAskForScores) {
+		$this->isDefaultAskForScores = $isDefaultAskForScores;
+	}
+
+	function setDefaultNumOfMatches($defaultNumOfMatches) {
+		$this->defaultNumOfMatches = $defaultNumOfMatches;
+	}
+
+	function setDefaultNumGamesPerMatch($defaultNumGamesPerMatch) {
+		$this->defaultNumGamesPerMatch = $defaultNumGamesPerMatch;
+	}
+
+	function setDefaultMaxPointsPerGame($defaultMaxPointsPerGame) {
+		$this->defaultMaxPointsPerGame = $defaultMaxPointsPerGame;
+	}
+
+	function setIsDefaultHasTies($isDefaultHasTies) {
+		$this->isDefaultHasTies = $isDefaultHasTies;
+	}
+
+	function setIsDefaultSortByPct($isDefaultSortByPct) {
+		$this->isDefaultSortByPct = $isDefaultSortByPct;
+	}
+
+	function setDefaultHideSpiritHour($defaultHideSpiritHour) {
+		$this->defaultHideSpiritHour = $defaultHideSpiritHour;
+	}
+
+	function setDefaultShowSpiritHour($defaultShowSpiritHour) {
+		$this->defaultShowSpiritHour = $defaultShowSpiritHour;
+	}
+
+	function setDefaultSpiritHiddenForDays($defaultSpiritHiddenForDays) {
+		$this->defaultSpiritHiddenForDays = $defaultSpiritHiddenForDays;
+	}
+	
+	function saveOrUpdate() {
+		if($this->getId() == null) {
+			save();
+		} else {
+			update();
+		}
+	}
+	
+	function save() {
+		
+	}
+	
+	function update() {
 		
 	}
 }

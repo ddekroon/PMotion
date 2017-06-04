@@ -3,6 +3,96 @@
 <link href="/css/stylesheets/bootstrap-slider.min.css" rel="stylesheet" type="text/css" />
 <link href="/css/stylesheets/styles.css" rel="stylesheet" type="text/css" />
 
+<form class='scoreReporter scoreReporter-<?php print $sport->getId() ?> container-fluid' method="post" action="/Derek/score-reporter/report-score">
+	<input type="hidden" name="sportID" value='<?php print $sport->getId() ?>' />
+	<div class='clearfix form-group'>
+		<div class="logoContainer pull-right" style="text-align:center;">
+			<img src="<?php print $logo; ?>" alt="" />
+		</div>
+		<h1>Score Reporter</h1>
+	</div>
+	
+	<fieldset class='form-group'>
+		<legend>Game Information</legend>
+		<div class='form-group row'>
+			<div class='col-md-2 col-sm-3 col-xs-4'>
+				<label for='SelectLeague'>Select League</label>
+			</div>
+			<div class='col-md-10 col-sm-9 col-xs-8'>
+				<select id='SelectLeague' name='leagueID' class='form-control'>
+					<option value='-1'></option>
+					<?php if(count($leagues) > 0) { ?>
+						<optgroup label='<?php echo $leagues[0]->getSeason()->getName() ?>'>
+							<?php 
+								$lastSeasonId = 0;
+								foreach($leagues as $curLeague) {
+
+									if($curLeague->getSeasonId() != $lastSeasonId && $lastSeasonId != 0) {
+										print '</optgroup><optgroup label="' . $league->getSeason()->getName() . '">';
+									}
+
+									print "<option value='" . $curLeague->getId() . "' " 
+											. ($curLeague->getId() == $league->getId() ? "selected='selected'" : '') . ">"
+											. $curLeague->getName() . " - " . $curLeague->getDayString()
+											. "</option>";
+
+									$lastSeasonId = $curLeague->getSeasonId();
+								}
+							?>
+						</optgroup>
+					<?php } ?>
+				</select>
+			</div>
+		</div>
+		<div class='form-group row'>
+			<div class='col-md-2 col-sm-3 col-xs-4'>
+				<label for='SelectTeam'>Select Team</label>
+			</div>
+			<div class='col-md-10 col-sm-9 col-xs-8'>
+				<select id='SelectTeam' name='teamID' class='form-control'>
+					<option value='-1'></option>
+				</select>
+			</div>
+		</div>
+
+		<div class="weekDate"></div>
+	</fieldset>
+	<fieldset id='MatchesFieldset' style='display:none;' class='form-group'>
+		<legend>Matches</legend>
+		<div id="Matches">
+
+		</div>
+	</fieldset>
+	<fieldset id='ContactFieldset' class='form-group'>
+		<legend>Contact Information</legend>
+		<div class='row form-group'>
+			<div class='col-md-2 col-sm-3 col-xs-4'>
+				<label for='SubmitterName'>Name <span class="required">*</span></label>
+			</div>
+			<div class='col-md-10 col-sm-9 col-xs-8'>
+				<div class="input-group">
+					<span class="input-group-addon" id="SubmitUsernameAddon"><span class="glyphicon glyphicon-user" aria-hidden="true"></span></span>
+					<input type='text' id='SubmitterName' name='submitterName' value='' class='form-control' aria-describedby='SubmitUsernameAddon' />
+				</div>
+			</div>
+		</div>
+		<div class='row form-group'>
+			<div class='col-md-2 col-sm-3 col-xs-4'>
+				<label for='SubmitterEmail'>Email</label>
+			</div>
+			<div class='col-md-10 col-sm-9 col-xs-8'>
+				<div class="input-group">
+					<span class="input-group-addon" id="SubmitEmailAddon">@</span>
+					<input type='email' id='SubmitterEmail' name='submitterEmail' value='' class='form-control' aria-describedby="SubmitEmailAddon" />
+				</div>
+			</div>
+		</div>
+		<div class="form-group">
+			<button type='submit' value='submitScore' name='action' class='btn btn-primary'>Submit</button>
+		</div>
+	</fieldset>
+</form>
+
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 <script src='/js/bootstrap-form-buttonset.js'></script>
 <script src='/js/bootstrap-slider.min.js'></script>
@@ -20,8 +110,13 @@
 			loadMatches($(this).val());
 		});
 		
-		getLeagueTeams($("#SelectTeam"), <?php print $leagueID ?>, <?php print $teamID ?>);
-		loadMatches(<?php print $teamID ?>);
+		<?php if($league != null && $league->getId() != null) { ?> 
+			getLeagueTeams($("#SelectTeam"), <?php print $league->getId() ?>, <?php print $team != null && $team->getId() != null ? $team->getId() : 0 ?>); 
+		<?php } ?>
+		<?php if($team != null && $team->getId() != null) { ?> 
+			loadMatches(<?php print $team->getId() ?>);
+		<?php } ?>
+		
 	});
 	
 	function getLeagueTeams(select, leagueId, selectedTeamId) {
@@ -108,88 +203,3 @@
 		}
 	}
 </script>
-
-<div class='scoreReporter scoreReporter-<?php print $sportID ?> container-fluid'>
-	<div class='clearfix form-group'>
-		<div class="logoContainer pull-right" style="text-align:center;">
-			<img src="<?php print $logo; ?>" alt="" />
-		</div>
-		<h1>Score Reporter</h1>
-	</div>
-	
-	<fieldset class='form-group'>
-		<legend>Game Information</legend>
-		<div class='form-group row'>
-			<div class='col-md-2 col-sm-3 col-xs-4'>
-				<label for='SelectLeague'>Select League</label>
-			</div>
-			<div class='col-md-10 col-sm-9 col-xs-8'>
-				<select id='SelectLeague' name='leagueID' class='form-control'>
-					<option value='-1'></option>
-					<?php 
-						$lastSeasonId = 0;
-						foreach($leagues as $league) {
-
-							if($league->getSeasonId() != $lastSeasonId && $lastSeasonId != 0) {
-								print '<option value="0">-------- ' . $league->getSeasonName() . ' ------</option>';
-							}
-
-							print "<option value='" . $league->getId() . "' " 
-									. ($league->getId() == $leagueID ? "selected='selected'" : '') . ">"
-									. $league->getName() . " - " . $league->getDayString()
-									. "</option>";
-
-							$lastSeasonId = $league->getSeasonId();
-						}
-					?>
-				</select>
-			</div>
-		</div>
-		<div class='form-group row'>
-			<div class='col-md-2 col-sm-3 col-xs-4'>
-				<label for='SelectTeam'>Select Team</label>
-			</div>
-			<div class='col-md-10 col-sm-9 col-xs-8'>
-				<select id='SelectTeam' name='teamID' class='form-control'>
-					<option value='-1'></option>
-				</select>
-			</div>
-		</div>
-
-		<div class="weekDate"></div>
-	</fieldset>
-	<fieldset id='MatchesFieldset' style='display:none;' class='form-group'>
-		<legend>Matches</legend>
-		<div id="Matches">
-
-		</div>
-	</fieldset>
-	<fieldset id='ContactFieldset' class='form-group'>
-		<legend>Contact Information</legend>
-		<div class='row form-group'>
-			<div class='col-md-2 col-sm-3 col-xs-4'>
-				<label for='SubmitterName'>Name <span class="required">*</span></label>
-			</div>
-			<div class='col-md-10 col-sm-9 col-xs-8'>
-				<div class="input-group">
-					<span class="input-group-addon" id="SubmitUsernameAddon"><span class="glyphicon glyphicon-user" aria-hidden="true"></span></span>
-					<input type='text' id='SubmitterName' name='submitterName' value='' class='form-control' aria-describedby='SubmitUsernameAddon' />
-				</div>
-			</div>
-		</div>
-		<div class='row form-group'>
-			<div class='col-md-2 col-sm-3 col-xs-4'>
-				<label for='SubmitterEmail'>Email</label>
-			</div>
-			<div class='col-md-10 col-sm-9 col-xs-8'>
-				<div class="input-group">
-					<span class="input-group-addon" id="SubmitEmailAddon">@</span>
-					<input type='email' id='SubmitterEmail' name='submitemail' value='' class='form-control' aria-describedby="SubmitEmailAddon" />
-				</div>
-			</div>
-		</div>
-		<div class="form-group">
-			<button type='submit' value='submitScore' name='action' class='btn btn-primary'>Submit</button>
-		</div>
-	</fieldset>
-</div>

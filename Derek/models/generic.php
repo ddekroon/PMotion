@@ -2,6 +2,7 @@
 
 class Models_Generic implements JsonSerializable {
     protected $id;
+	protected $db;
 	
 	/**
      * Accept an array of data matching properties of this class
@@ -9,16 +10,21 @@ class Models_Generic implements JsonSerializable {
      *
      * @param array $data The data to use to create
      */
-    public function __construct(array $data) {
-        // no id if we're creating
-        if(isset($data['id'])) {
-            $this->id = $data['id'];
-        }
-    }
+    public function __construct() {
+		
+	}
 
     public function getId() {
         return $this->id;
     }
+	
+	function getDb() {
+		return $this->db;
+	}
+
+	function setDb($db) {
+		$this->db = $db;
+	}
 	
 	public function toString() {
 		return "Generic Model [$this->id]";
@@ -27,4 +33,21 @@ class Models_Generic implements JsonSerializable {
 	public function jsonSerialize() {
 		return "{ id: $this->id }";
 	}
+	
+	function saveOrUpdate() {
+		if($this->getId() == null) {
+			save();
+		} else {
+			update();
+		}
+	}
+	
+	function save() {
+		
+	}
+	
+	function update() {
+		
+	}
+
 }

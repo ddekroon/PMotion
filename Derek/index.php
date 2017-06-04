@@ -25,10 +25,7 @@ spl_autoload_register(function($classname) {
 $config['displayErrorDetails'] = true;
 $config['addContentLengthHeader'] = false;
 
-$config['db']['host']   = "localhost"; //mysql.giantgoat.dreamhosters.com
-$config['db']['user']   = "pmotiondata";
-$config['db']['pass']   = "rememberHeavysalmon4";
-$config['db']['dbname'] = "data_perpetualmotion";
+require_once('secrets.php');
 
 $app = new \Slim\App(["settings" => $config]);
 
