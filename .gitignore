@@ -48,3 +48,4 @@ Temporary Items
 GlobalFiles/connect.php
 GlobalFiles/dbConnect.php
 GlobalFiles/dbConnectBackup.php
+Derek/secrets.php
