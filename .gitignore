@@ -45,6 +45,7 @@ $RECYCLE.BIN/
 Network Trash Folder
 Temporary Items
 .apdisk
+WebApp/
 GlobalFiles/connect.php
 GlobalFiles/dbConnect.php
 GlobalFiles/dbConnectBackup.php
