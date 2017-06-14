@@ -63,7 +63,18 @@ class Models_Sport extends Models_Generic implements Models_Interface, JsonSeria
 		
         $this->registrationDueDate = $data['sport_registration_due_date'];
 		$this->defaultPicLink = $data['sport_default_pic_link'];
-		$this->logoLink = $data['sport_logo_link'];
+                
+		if($this->getId() == 1) {
+			$this->logoLink = '/Logos/ultimate_0.png';
+		} elseif($this->getId() == 2) {
+			$this->logoLink = '/Logos/volleyball_0.png';
+		} elseif($this->getId() == 3) {
+			$this->logoLink = '/Logos/football_0.png';
+		} elseif($this->getId() == 4) {
+			$this->logoLink = '/Logos/soccer_0.png';
+		} else  {
+			$this->logoLink  = '/Logos/Perpetualmotionlogo.jpg';
+		}
     }
 
     public function getDayNumber() {
