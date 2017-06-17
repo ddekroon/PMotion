@@ -15,15 +15,17 @@ class Models_Sport extends Models_Generic implements Models_Interface, JsonSeria
     protected $registrationDueDate;
 	protected $defaultPicLink;
 	protected $logoLink;
+	protected $numPlayerInputsForRegistration;
 	
-	public static function withID($db, $id) {
+	public static function withID($db, $logger, $id) {
 		$instance = new self();
-        $instance->loadByID($db, $id);
+        $instance->loadByID($db, $logger, $id);
         return $instance;
 	}
 	
-	public function loadByID($db, $id) {
+	public function loadByID($db, $logger, $id) {
 		$this->setDb($db);
+		$this->setLogger($logger);
 		
 		if($id == null || $id < 0) return;
 		
@@ -36,9 +38,10 @@ class Models_Sport extends Models_Generic implements Models_Interface, JsonSeria
 		}
 	}
 
-	public static function withRow($db, array $row) {
+	public static function withRow($db, $logger, array $row) {
 		$instance = new self();
 		$instance->setDb($db);
+		$instance->setLogger($logger);
         $instance->fill( $row );
         return $instance;
 	}
@@ -61,19 +64,24 @@ class Models_Sport extends Models_Generic implements Models_Interface, JsonSeria
 		$this->defaultShowSpiritHour = $data['sport_default_show_spirit_hour'];
 		$this->defaultSpiritHiddenForDays = $data['sport_default_spirit_hidden_for_days'];
 		
-        $this->registrationDueDate = $data['sport_registration_due_date'];
+        $this->registrationDueDate = strtotime($data['sport_registration_due_date']);
 		$this->defaultPicLink = $data['sport_default_pic_link'];
                 
 		if($this->getId() == 1) {
 			$this->logoLink = '/Logos/ultimate_0.png';
+			$this->numPlayerInputsForRegistration = 15;
 		} elseif($this->getId() == 2) {
 			$this->logoLink = '/Logos/volleyball_0.png';
+			$this->numPlayerInputsForRegistration = 14;
 		} elseif($this->getId() == 3) {
 			$this->logoLink = '/Logos/football_0.png';
+			$this->numPlayerInputsForRegistration = 12;
 		} elseif($this->getId() == 4) {
 			$this->logoLink = '/Logos/soccer_0.png';
+			$this->numPlayerInputsForRegistration = 15;
 		} else  {
 			$this->logoLink  = '/Logos/Perpetualmotionlogo.jpg';
+			$this->numPlayerInputsForRegistration = 15;
 		}
     }
 
@@ -194,6 +202,15 @@ class Models_Sport extends Models_Generic implements Models_Interface, JsonSeria
 		$this->defaultSpiritHiddenForDays = $defaultSpiritHiddenForDays;
 	}
 	
+	function getNumPlayerInputsForRegistration() {
+		return $this->numPlayerInputsForRegistration;
+	}
+
+	function setNumPlayerInputsForRegistration($numPlayerInputsForRegistration) {
+		$this->numPlayerInputsForRegistration = $numPlayerInputsForRegistration;
+	}
+
+		
 	function saveOrUpdate() {
 		if($this->getId() == null) {
 			save();

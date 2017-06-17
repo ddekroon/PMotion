@@ -3,6 +3,7 @@
 class Models_Generic implements JsonSerializable {
     protected $id;
 	protected $db;
+	protected $logger;
 	
 	/**
      * Accept an array of data matching properties of this class
@@ -26,8 +27,16 @@ class Models_Generic implements JsonSerializable {
 		$this->db = $db;
 	}
 	
-	public function toString() {
-		return "Generic Model [$this->id]";
+	function getLogger() {
+		return $this->logger;
+	}
+
+	function setLogger($logger) {
+		$this->logger = $logger;
+	}
+	
+	public function __toString() {
+		return get_class($this) . " [ " . $this->getId() . " ] ";
 	}
 	
 	public function jsonSerialize() {
@@ -49,5 +58,4 @@ class Models_Generic implements JsonSerializable {
 	function update() {
 		
 	}
-
 }

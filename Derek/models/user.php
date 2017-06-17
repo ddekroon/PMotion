@@ -1,6 +1,6 @@
 <?php
 
-class Models_User {
+class Models_User extends Models_Generic implements Models_Interface, JsonSerializable {
     protected $id;
     protected $username;
     protected $hashedPassword;
@@ -11,15 +11,42 @@ class Models_User {
 	protected $gender;
 	protected $verifyCode;
 	protected $access;
+	protected $createdDate;
+	
+	protected $teams;
+	
+	
+	public static function withID($db, $logger, $id) {
+		$instance = new self();
+        $instance->loadByID($db, $logger, $id);
+        return $instance;
+	}
+	
+	public function loadByID($db, $logger, $id) {
+		$this->setDb($db);
+		$this->setLogger($logger);
+		
+		if($id == null || $id < 0) return;
+		
+		$sql = "SELECT * FROM " . Includes_DBTableNames::userTable . " WHERE user_id = $id";
 
-	/**
-     * Accept an array of data matching properties of this class
-     * and create the class
-     *
-     * @param array $data The data to use to create
-     */
-    public function __construct(array $data) {
-        // no id if we're creating
+		$stmt = $db->query($sql);
+
+		if(($row = $stmt->fetch()) != false) {
+			$this->fill($row);
+		}
+	}
+
+	public static function withRow($db, $logger, array $row) {
+		$instance = new self();
+		$instance->setDb($db);
+		$instance->setLogger($logger);
+        $instance->fill( $row );
+        return $instance;
+	}
+	
+	public function fill(array $data) {
+		// no id if we're creating
         if(isset($data['user_id'])) {
             $this->id = $data['user_id'];
         }
@@ -33,7 +60,25 @@ class Models_User {
 		$this->gender = $data['user_sex'];
 		$this->verifyCode = $data['user_verify_code'];
 		$this->access = $data['user_all_access'];
-    }
+	}
+	
+	function getTeams() {
+				
+		if($this->teams == null && $this->db != null && $this->getId() != null) {
+						
+			$this->teams = [];
+			
+			$sql = "SELECT * FROM " . Includes_DBTableNames::teamsTable . " WHERE team_managed_by_user_id = " . $this->getId() . " AND team_deleted = 0";
+			
+			$stmt = $this->db->query($sql);
+
+			while(($row = $stmt->fetch()) != false) {
+				$this->teams[] = Models_Team::withRow($this->db, $this->logger, $row);
+			}
+		}
+		
+		return $this->teams;
+	}
 
     function getId() {
 		return $this->id;
@@ -113,9 +158,5 @@ class Models_User {
 
 	function setAccess($access) {
 		$this->access = $access;
-	}
-	
-	function toString() {
-		return "User Object [ " . $this->getId() . " ]\n";
 	}
 }

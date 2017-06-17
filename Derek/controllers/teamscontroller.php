@@ -14,7 +14,7 @@ class Controllers_TeamsController extends Controllers_Controller {
 	}
 	
 	function getTeams($leagueID) {
-		$league = Models_League::withID($this->db, $leagueID);
+		$league = Models_League::withID($this->db, $this->logger, $leagueID);
 		
 		if(isset($league) && $league->getId() != null) {
 			
@@ -33,7 +33,7 @@ class Controllers_TeamsController extends Controllers_Controller {
 			$results = [];
 
 			while($row = $stmt->fetch()) {
-				$results[] = Models_Team::withRow($this->db, $row);
+				$results[] = Models_Team::withRow($this->db, $this->logger, $row);
 			}
 
 			return $results;

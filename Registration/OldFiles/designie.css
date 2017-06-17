@@ -1,0 +1,50 @@
+table.master{
+    padding: 2;
+    text-align: center;
+    font-size: x-small;
+    font-family: Verdana, Tahoma, Helvetica, Arial;
+}
+
+table.master tr{
+    text-align: center;
+}
+
+
+table.previousTeams {
+    border-width: 3px 3px 3px 3px;
+    border-spacing: 3px;
+    border-style: outset outset outset outset;
+    border-color: gray gray gray gray;
+    border-collapse: separate;
+    background-color: white;
+    font-family: Verdana, Tahoma, Helvetica, Arial;
+    font-size: x-small;
+    width: 700;
+
+}
+table.previousTeams th {
+    border-width: 3px 3px 3px 3px;
+    padding: 3px 3px 3px 3px;
+    border-style: inset inset inset inset;
+    border-color: white white white white;
+    background-color: white;
+    -moz-border-radius: 0px 0px 0px 0px;
+}
+table.previousTeams td {
+    border-width: 3px 3px 3px 3px;
+    padding: 3px 3px 3px 3px;
+    border-style: none none none none;
+    border-color: white white white white;
+    background-color: white;
+    -moz-border-radius: 0px 0px 0px 0px;
+}
+
+table.leagueTeamName{
+    font-size: x-small;
+    font-family: Verdana, Tahoma, Helvetica, Arial;
+}
+
+table.playerTable{
+    font-size: x-small;
+    font-family: Verdana, Tahoma, Helvetica, Arial;
+}

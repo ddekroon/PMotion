@@ -11,14 +11,15 @@ class Models_SpiritScore extends Models_Generic implements Models_Interface, Jso
 	
 	private $scoreSubmission;
 
-    public static function withID($db, $id) {
+    public static function withID($db, $logger, $id) {
 		$instance = new self();
-        $instance->loadByID($db, $id);
+        $instance->loadByID($db, $logger, $id);
         return $instance;
 	}
 	
-	public function loadByID($db, $id) {
+	public function loadByID($db, $logger, $id) {
 		$this->setDb($db);
+		$this->setLogger($logger);
 		
 		if($id == null || $id < 0) return;
 		
@@ -31,9 +32,10 @@ class Models_SpiritScore extends Models_Generic implements Models_Interface, Jso
 		}
 	}
 
-	public static function withRow($db, array $row) {
+	public static function withRow($db, $logger, array $row) {
 		$instance = new self();
 		$instance->setDb($db);
+		$instance->setLogger($logger);
         $instance->fill( $row );
         return $instance;
 	}
@@ -54,7 +56,7 @@ class Models_SpiritScore extends Models_Generic implements Models_Interface, Jso
 	
 	function getScoreSubmission() {
 		if($this->scoreSubmission == null && $this->db != null) {
-			$this->scoreSubmission = Models_ScoreSubmission::withID($this->db, $this->getScoreSubmissionId());
+			$this->scoreSubmission = Models_ScoreSubmission::withID($this->db, $this->logger, $this->getScoreSubmissionId());
 		}
 		
 		return $this->scoreSubmission;

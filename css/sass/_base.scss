@@ -10,6 +10,8 @@ $c-secondary:$c-red;
 
 $f-glyph:'Glyphicons Halflings';
 
+$f-small:12px;
+
 // generic transform
 @mixin transform($transforms) {
 	   -moz-transform: $transforms;

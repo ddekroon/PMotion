@@ -23,17 +23,20 @@ class Models_Team extends Models_Generic implements Models_Interface, JsonSerial
 	protected $isLateEmailAllowed;
 	
 	private $league;
-	private $captain;
 	private $manager;
+	private $captain;
+	private $players;
+	private $registrationComment;
 
-	public static function withID($db, $id) {
+	public static function withID($db, $logger, $id) {
 		$instance = new self();
-        $instance->loadByID($db, $id);
+        $instance->loadByID($db, $logger, $id);
         return $instance;
 	}
 	
-	public function loadByID($db, $id) {
+	public function loadByID($db, $logger, $id) {
 		$this->setDb($db);
+		$this->setLogger($logger);
 		
 		if($id == null || $id < 0) return;
 		
@@ -46,9 +49,10 @@ class Models_Team extends Models_Generic implements Models_Interface, JsonSerial
 		}
 	}
 
-	public static function withRow($db, array $row) {
+	public static function withRow($db, $logger, array $row) {
 		$instance = new self();
 		$instance->setDb($db);
+		$instance->setLogger($logger);
         $instance->fill( $row );
         return $instance;
 	}
@@ -91,20 +95,64 @@ class Models_Team extends Models_Generic implements Models_Interface, JsonSerial
 	
 	function getLeague() {
 		if($this->league == null && $this->db != null) {
-			$this->league = Models_League::withID($this->db, $this->leagueId);
+			$this->league = Models_League::withID($this->db, $this->logger, $this->leagueId);
 		}
 		
 		return $this->league;
 	}
 
+	function getManager() {
+		if($this->manager == null && $this->db != null) {
+			$this->manager = Models_User::withID($this->db, $this->logger, $this->getManagedByUserId());
+		}
+		
+		return $this->manager;
+	}
+	
 	function getCaptain() {
+		if($this->captain == null && $this->db != null && $this->getId() != null) {
+			
+			$sql = "SELECT * FROM " . Includes_DBTableNames::playersTable . " WHERE player_team_id = " . $this->getId() . " AND player_is_captain = 1";
+			$stmt = $this->db->query($sql);
+
+			if(($row = $stmt->fetch()) != false) {
+				$this->captain = Models_Player::withRow($this->db, $this->logger, $row);
+			}
+		}
+		
 		return $this->captain;
 	}
 
-	function getManager() {
-		return $this->manager;
+	function getPlayers() {
+		if($this->players == null && $this->db != null && $this->getId() != null) {
+			$this->players = [];
+			
+			$sql = "SELECT * FROM " . Includes_DBTableNames::playersTable . " WHERE player_team_id = " . $this->getId() . " AND player_is_captain = 0";
+			$stmt = $this->db->query($sql);
+
+			while(($row = $stmt->fetch()) != false) {
+				$this->players[] = Models_Player::withRow($this->db, $this->logger, $row);
+			}
+		}
+		
+		return $this->players;
+	}
+	
+	function getRegistrationComment() {
+		
+		if($this->registrationComment == null && $this->db != null && $this->getId() != null) {
+			$sql = "SELECT * FROM " . Includes_DBTableNames::registrationCommentsTable . " WHERE registration_comment_team_id = " . $this->getId();
+			$stmt = $this->db->query($sql);
+
+			if(($row = $stmt->fetch()) != false) {
+				$this->registrationComment = Models_RegistrationComment::withRow($this->db, $this->logger, $row);
+			}
+		}
+		
+		return $this->registrationComment;
 	}
 
+	
 	function getId() {
 		return $this->id;
 	}

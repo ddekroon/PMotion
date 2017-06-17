@@ -88,7 +88,7 @@ $authenticate = function ($request, $response, $next) {
 $dashboard =  function ($request, $response, $next) {
 	
     $response = $this->view->render($response, 'template/dashboard-header.phtml', [
-		"user" => $_SESSION[Controllers_AuthController::SESSION_USER],
+		"user" => Models_User::withID($this->db, $this->logger, $_SESSION[Controllers_AuthController::SESSION_USER_ID]),
 		"router" => $this->router
 	]);
     $response = $next($request, $response);
@@ -100,6 +100,7 @@ $dashboard =  function ($request, $response, $next) {
 include('routes/api/sports.php');
 include('routes/default.php');
 include('routes/score-reporter.php');
+include('routes/dashboard.php');
 include('routes/registration.php');
 
 $app->run();

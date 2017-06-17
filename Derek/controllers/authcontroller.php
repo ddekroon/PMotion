@@ -7,7 +7,7 @@ class Controllers_AuthController extends Controllers_Controller {
 
 	const SELECTOR = 'pMotionSelector';
 	const TOKEN = 'pMotionToken';
-	const SESSION_USER = 'pMotionUser';
+	const SESSION_USER_ID = 'pMotionUser';
 
 	function logUserIn(Request $request) {
 		
@@ -46,24 +46,12 @@ class Controllers_AuthController extends Controllers_Controller {
 	}
 	
 	function getUserFromDatabase($username) {
-		$sql = "SELECT * FROM " . $this->userTable . " WHERE user_username = '$username'";
+		$sql = "SELECT * FROM " . Includes_DBTableNames::userTable . " WHERE user_username = '$username'";
 						
 		$stmt = $this->db->query($sql);
 		
         if(($row = $stmt->fetch()) != false) {		
-            return new Models_User($row);
-        }
-
-		return null;
-	}
-	
-	function getUserById($userId) {
-		$sql = "SELECT * FROM " . $this->userTable . " WHERE user_id = $userId";
-						
-		$stmt = $this->db->query($sql);
-		
-        if(($row = $stmt->fetch()) != false) {		
-            return new Models_User($row);
+            return Models_User::withRow($this->db, $this->logger, $row);
         }
 
 		return null;
@@ -71,7 +59,7 @@ class Controllers_AuthController extends Controllers_Controller {
 	
 	function shouldAuthenticate($request) {
 
-		if(isset($_SESSION[$this::SESSION_USER]) && !is_null($_SESSION[$this::SESSION_USER])) {
+		if(isset($_SESSION[$this::SESSION_USER_ID]) && !is_null($_SESSION[$this::SESSION_USER_ID])) {
 			return true;
 		} else {
 			
@@ -117,7 +105,7 @@ class Controllers_AuthController extends Controllers_Controller {
 
 			if($hashedToken == $authToken->getToken()) {
 				
-				$this->setSavedLogin($selector, $token, $this->getUserById($authToken->getUserId()));
+				$this->setSavedLogin($selector, $token, Models_User::withID($this->db, $this->logger, $authToken->getUserId()));
 				
 				return true;	
 			} else {
@@ -130,8 +118,7 @@ class Controllers_AuthController extends Controllers_Controller {
 	
 	function getAuthTokenBySelector($selector) {
 		
-		$sql = "SELECT * FROM $this->authTable "
-				. "WHERE selector = '$selector'";
+		$sql = "SELECT * FROM " . Includes_DBTableNames::authTable . " WHERE selector = '$selector'";
 								
 		$stmt = $this->db->query($sql);
 		
@@ -148,7 +135,7 @@ class Controllers_AuthController extends Controllers_Controller {
 		
 		$authToken = $this->createNewAuthToken($user, $unhashedToken);
 		
-		$this->logger->debug("Created new auth token: " . $user->toString());
+		//$this->logger->debug("Created new auth token: " . $user);
 		
 		if($authToken != null) {
 			$this->setSavedLogin($authToken->getSelector(), $unhashedToken, $user);
@@ -179,16 +166,16 @@ class Controllers_AuthController extends Controllers_Controller {
 		setcookie($this::SELECTOR, "", time() - 3600, '/');
 		setcookie($this::TOKEN, "", time() - 3600, '/');
 		
-		$_SESSION[$this::SESSION_USER] = null;
+		$_SESSION[$this::SESSION_USER_ID] = null;
 	}
 	
 	function setSavedLogin($selector, $token, $user) {
 		setcookie($this::SELECTOR, "$selector", time() + (3600 * 24 * 365 * 2), '/'); //2 years
 		setcookie($this::TOKEN, "$token", time() + (3600 * 24 * 365 * 2), '/'); //2 years
 		
-		$this->logger->debug("Saving Login: " . $user->toString());
+		//$this->logger->debug("Saving Login: " . $user);
 		
-		$_SESSION[$this::SESSION_USER] = $user;
+		$_SESSION[$this::SESSION_USER_ID] = $user->getId();
 	}
 	
 	function createNewAuthToken($user, $unhashedToken) {
@@ -197,7 +184,7 @@ class Controllers_AuthController extends Controllers_Controller {
 		$hashedToken = $this->generateUserTokenHash($unhashedToken);
 		
 		try {      
-			$stmt = $this->db->prepare("INSERT INTO ".$this->authTable." VALUES (NULL, :selector, :hashedToken, :userId)");
+			$stmt = $this->db->prepare("INSERT INTO " . Includes_DBTableNames::authTable . " VALUES (NULL, :selector, :hashedToken, :userId)");
 			$stmt->bindParam(':selector', $selector, PDO::PARAM_STR);
 			$stmt->bindParam(':hashedToken', $hashedToken, PDO::PARAM_STR);
 			$stmt->bindParam(':userId', $user->getId(), PDO::PARAM_INT);
@@ -212,15 +199,15 @@ class Controllers_AuthController extends Controllers_Controller {
 	function deleteAuthToken($selector) {
 		
 		if(!is_null($selector) && !empty($selector)) {
-			$sql = "DELETE FROM ".$this->authTable." WHERE selector = '$selector'";
+			$sql = "DELETE FROM " . Includes_DBTableNames::authTable . " WHERE selector = '$selector'";
 
 			if ($this->db->query($sql) === TRUE) {
 				return true;
 			} else {
-				$this->logger->debug("Error deleting Auth token: " . implode(":", $this->db->errorInfo()));
+				$this->logger->debug("Error deleting Auth token " . $selector . " : " . implode(":", $this->db->errorInfo()));
 			}
 		}
 
-		return null;
+		return false;
 	}
 }

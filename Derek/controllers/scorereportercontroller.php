@@ -36,7 +36,7 @@
 						//break;
 						$match = new Models_Match();
 					} else {
-						$match = Models_Match::withRow($this->db, $matchNode);
+						$match = Models_Match::withRow($this->db, $this->logger, $matchNode);
 					}
 
 					if ($matchNode['scheduled_match_team_id_1'] == $team->getId()) {
@@ -66,7 +66,7 @@
 			
 			$activeDate = null;
 			if($allPostVars['dateID'] != null) {
-				$activeDate = Models_Date::withID($this->db, $allPostVars['dateID']);
+				$activeDate = Models_Date::withID($this->db, $this->logger, $allPostVars['dateID']);
 			} else {
 				$activeDate = $leaguesController->getActiveDate($league);
 			}

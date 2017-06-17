@@ -1,16 +1,65 @@
 
 <div class='dashboard container-fluid'>
 	<div class='clearfix form-group'>
-		
 		<h1>Dashboard</h1>
 	</div>
-	
 	<fieldset class='form-group'>
 		<legend>Active Teams</legend>
-		<div class='form-group row'></div>
+		<table id="PastTeamsTable" class="table table-condensed table-striped table-hover table-responsive">
+			<thead>
+				<tr>
+					<th>Name</th>
+					<th>League</th>
+					<th>Season</th>
+					<th>Year</th>
+				</tr>
+			</thead>
+			<tbody>
+				<?php foreach($user->getTeams() as $curTeam) { ?>
+					<?php if($curTeam->getLeague() != null && $curTeam->getLeague()->getSeason() != null &&
+							($curTeam->getLeague()->getSeason()->getIsAvailableRegistration() || $curTeam->getLeague()->getSeason()->getIsAvailableScoreReporter())) { ?>
+						<tr>
+							<td><a href="<?php echo $router->pathFor('edit-team', ['teamID' => $curTeam->getId()] ); ?>"><?php echo $curTeam->getName() ?></a></td>
+							<td><?php echo $curTeam->getLeague()->getName() ?></td>
+							<td><?php echo $curTeam->getLeague()->getSeason()->getName() ?></td>
+							<td><?php echo $curTeam->getLeague()->getSeason()->getYear() ?></td>
+						</tr>
+					<?php } ?>
+				<?php } ?>
+			</tbody>
+		</table>
 	</fieldset>
 	<fieldset id='MatchesFieldset' class='form-group'>
 		<legend>Past Teams</legend>
-		
+		<table id="PastTeamsTable" class="table table-condensed table-striped table-hover table-responsive">
+			<thead>
+				<tr>
+					<th>Name</th>
+					<th>League</th>
+					<th>Season</th>
+					<th>Year</th>
+				</tr>
+			</thead>
+			<tbody>
+				<?php foreach($user->getTeams() as $curTeam) { ?>
+					<?php if($curTeam->getLeague() != null && $curTeam->getLeague()->getSeason() != null &&
+							(!$curTeam->getLeague()->getSeason()->getIsAvailableRegistration() && !$curTeam->getLeague()->getSeason()->getIsAvailableScoreReporter())) { ?>
+						<tr>
+							<td><a href="<?php echo $router->pathFor('edit-team', ['teamID' => $curTeam->getId()] ); ?>"><?php echo $curTeam->getName() ?></a></td>
+							<td><?php echo $curTeam->getLeague()->getName() ?></td>
+							<td><?php echo $curTeam->getLeague()->getSeason()->getName() ?></td>
+							<td><?php echo $curTeam->getLeague()->getSeason()->getYear() ?></td>
+						</tr>
+					<?php } ?>
+				<?php } ?>
+			</tbody>
+		</table>
 	</fieldset>
+	<script>
+		$(function() {
+			$("#CurrentTeamsTable, #PastTeamsTable").DataTable({
+				"order": [[ 3, "desc" ]]
+			});
+		});
+	</script>
 </div>

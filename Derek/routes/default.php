@@ -8,6 +8,14 @@
 		return $response->withRedirect($this->router->pathFor('dashboard'), 303);
 	})->setName('home')->add($authenticate);
 	
+	$app->get('/forbidden', function (Request $request, Response $response) {
+		return $this->view->render($response, "forbidden.phtml", [
+				"request" => $request,
+				"router" => $this->router
+			]
+		);
+	})->setName('forbidden');
+	
 	//Login
 	$app->get('/login', function (Request $request, Response $response) {
 		return $this->view->render($response, "login.phtml", [
@@ -93,10 +101,11 @@
 	
 	//Dashboard
 	$app->get('/dashboard', function (Request $request, Response $response) {
-				
+		$user = Models_User::withID($this->db, $this->logger, $_SESSION[Controllers_AuthController::SESSION_USER_ID]); //Load user from db, that way we refresh all user info.
+		
 		return $this->view->render($response, "dashboard.phtml", [
-			"user" => $_SESSION[Controllers_AuthController::SESSION_USER],
-			"router" => $this->view
+			"user" => $user,
+			"router" => $this->router
 		]);
 		
 	})->setName('dashboard')->add($dashboard)->add($authenticate);

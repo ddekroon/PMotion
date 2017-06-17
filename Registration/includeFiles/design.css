@@ -1,0 +1,94 @@
+table.master{
+    padding: 2;
+    text-align: center;
+    font-size: small;
+    font-family: Verdana, Tahoma, Helvetica, Arial; 
+}
+
+table.master tr{
+    text-align: center;
+}
+
+
+table.previousTeams {
+    border-width: 3px 3px 3px 3px;
+    border-style: outset outset outset outset;
+    border-color: gray gray gray gray;
+    background-color: white;
+    font-family: Verdana, Tahoma, Helvetica, Arial;
+    font-size: small;
+    width: 700;
+    
+}
+table.previousTeams th {
+    padding: 3px 3px 3px 3px;
+    background-color: white;
+	border-color:#FFFFFF;
+}
+table.previousTeams td {
+    padding: 3px 3px 3px 3px;
+	background-color:#FFFFFF;
+	border-color:#FFFFFF;
+}
+
+table.leagueTeamName{
+    font-size: small;
+    font-family: Verdana, Tahoma, Helvetica, Arial; 
+	text-align:center;
+}
+
+table.leagueTeamName td {
+	text-align:center;
+}
+
+table.playerTable{
+    font-size: small;
+    font-family: Verdana, Tahoma, Helvetica, Arial; 
+}
+
+.userInput {
+	width:300px;
+}
+
+table.availability {
+	padding: 10;
+	width:700;
+    text-align: center;
+    font-size: small;
+	font-family:"Arial Black", Gadget, sans-serif;
+	border-style: grove;
+	border-width: 2px;
+	border: 2px solid black;
+	border-color: #000000;
+	border-collapse: collapse;	
+}
+
+table.availability th {
+	padding: 3px 3px 3px 3px;
+	font-family:"Arial Black", Gadget, sans-serif;
+	font-size:16px;
+    background-color:#CCC;
+	border: 2px solid black;
+	border-color: #000000;
+	border-collapse: collapse;
+}
+
+table.availability td {
+	padding: 3px 3px 3px 3px;
+	background-color:#FFF;
+	border-color:#000;
+	border: 2px solid black;
+	opacity:.90;
+	
+}
+
+table.availability tr:nth-child(even){background-color:#828282;}
+
+@font-face {
+	font-family: Sonsie;
+	src:url(SonsieOne-Regular.otf);
+}
+@font-face {
+	font-family: Jockey;
+	src:url(JockeyOne-Regular.otf);
+}

@@ -19,14 +19,15 @@ class Models_Match extends Models_Generic implements Models_Interface, JsonSeria
 	private $date;
 	
 
-    public static function withID($db, $id) {
+    public static function withID($db, $logger, $id) {
 		$instance = new self();
-        $instance->loadByID($db, $id);
+        $instance->loadByID($db, $logger, $id);
         return $instance;
 	}
 	
-	public function loadByID($db, $id) {
+	public function loadByID($db, $logger, $id) {
 		$this->setDb($db);
+		$this->setLogger($logger);
 		
 		if($id == null || $id < 0) return;
 		
@@ -39,9 +40,10 @@ class Models_Match extends Models_Generic implements Models_Interface, JsonSeria
 		}
 	}
 
-	public static function withRow($db, array $row) {
+	public static function withRow($db, $logger, array $row) {
 		$instance = new self();
 		$instance->setDb($db);
+		$instance->setLogger($logger);
         $instance->fill( $row );
         return $instance;
 	}
@@ -64,7 +66,7 @@ class Models_Match extends Models_Generic implements Models_Interface, JsonSeria
 	
 	function getLeague() {
 		if($this->league == null && $this->db != null) {
-			$this->league = Models_League::withID($db, $this->getLeagueId());
+			$this->league = Models_League::withID($this->db, $this->logger, $this->getLeagueId());
 		}
 		
 		return $this->league;
@@ -72,7 +74,7 @@ class Models_Match extends Models_Generic implements Models_Interface, JsonSeria
 
 	function getTeam() {
 		if($this->team == null && $this->db != null) {
-			$this->team = Models_League::withID($db, $this->getTeamId());
+			$this->team = Models_League::withID($this->db, $this->logger, $this->getTeamId());
 		}
 		
 		return $this->team;
@@ -80,7 +82,7 @@ class Models_Match extends Models_Generic implements Models_Interface, JsonSeria
 
 	function getOppTeam() {
 		if($this->oppTeam == null && $this->db != null) {
-			$this->oppTeam = Models_Team::withID($db, $this->getOppTeamId());
+			$this->oppTeam = Models_Team::withID($this->db, $this->logger, $this->getOppTeamId());
 		}
 		
 		return $this->oppTeam;

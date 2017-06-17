@@ -54,7 +54,7 @@ span.required {
 	color:$c-red;
 }
 
-form .error {
+form .error, .red {
 	color:$c-red;
 }
 
@@ -144,5 +144,13 @@ form .error {
 	
 	.spirit-row {
 		margin-top:30px;
+	}
+}
+
+legend {
+	small {
+		display:block;
+		font-size:$f-small;
+		color:lighten($c-primary, 20%);
 	}
 }

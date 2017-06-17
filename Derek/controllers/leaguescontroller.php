@@ -4,7 +4,7 @@
 
 		public function getLeaguesInScoreReporter($sportID) {
 
-			$sql = "SELECT league.*,season.* FROM " . Includes_DBTableNames::leaguesTable . " as league "
+			$sql = "SELECT league.* FROM " . Includes_DBTableNames::leaguesTable . " as league "
 					. "INNER JOIN " . Includes_DBTableNames::seasonsTable . " season ON season.season_id = league.league_season_id "
 					. "WHERE season.season_available_score_reporter = 1 AND league.league_sport_id = $sportID "
 					. "ORDER BY league.league_season_id ASC, league.league_day_number ASC, league.league_name ASC";
@@ -14,7 +14,25 @@
 			$results = [];
 
 			while($row = $stmt->fetch()) {
-				$results[] = Models_League::withRow($this->db, $row);
+				$results[] = Models_League::withRow($this->db, $this->logger, $row);
+			}
+
+			return $results;
+		}
+		
+		public function getLeaguesForRegistration($sportID) {
+
+			$sql = "SELECT league.* FROM " . Includes_DBTableNames::leaguesTable . " as league "
+					. "INNER JOIN " . Includes_DBTableNames::seasonsTable . " season ON season.season_id = league.league_season_id "
+					. "WHERE season.season_available_registration = 1 AND league.league_sport_id = $sportID "
+					. "ORDER BY league.league_season_id ASC, league.league_day_number ASC, league.league_name ASC";
+
+			$stmt = $this->db->query($sql);
+
+			$results = [];
+
+			while($row = $stmt->fetch()) {
+				$results[] = Models_League::withRow($this->db, $this->logger, $row);
 			}
 
 			return $results;
@@ -31,7 +49,7 @@
 			$stmt = $this->db->query($sql);
 			
 			if(($row = $stmt->fetch()) != false) {
-				return Models_Date::withRow($this->db, $row);
+				return Models_Date::withRow($this->db, $this->logger, $row);
 			}
 			
 			return null;

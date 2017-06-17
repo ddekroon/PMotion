@@ -5,9 +5,9 @@
 
 	$app->get('/score-reporter[/{sportID}[/{leagueID}[/{teamID}]]]', function(Request $request, Response $response) {
 
-		$sport = Models_Sport::withID($this->db, $request->getAttribute('sportID'));
-		$league = Models_League::withID($this->db, $request->getAttribute('leagueID'));
-		$team = Models_Team::withID($this->db, $request->getAttribute('teamID'));
+		$sport = Models_Sport::withID($this->db, $this->logger, $request->getAttribute('sportID'));
+		$league = Models_League::withID($this->db, $this->logger, $request->getAttribute('leagueID'));
+		$team = Models_Team::withID($this->db, $this->logger, $request->getAttribute('teamID'));
 
 		if($sport->getId() == 1) {
 			$logo='/Logos/ultimate_0.png';
@@ -46,7 +46,7 @@
 		if($teamID > 0) {
 			$scoreReporter = new Controllers_ScoreReporterController($this->db, $this->logger);
 
-			$team = Models_Team::withID($this->db, $teamID);
+			$team = Models_Team::withID($this->db, $this->logger, $teamID);
 
 			if(isset($team) && $team->getId() != null) {
 

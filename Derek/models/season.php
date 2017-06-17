@@ -13,14 +13,15 @@ class Models_Season extends Models_Generic implements Models_Interface, JsonSeri
 	protected $registrationOpenUntil;
 	protected $registrationBySport;
     		
-	public static function withID($db, $id) {
+	public static function withID($db, $logger, $id) {
 		$instance = new self();
-        $instance->loadByID($db, $id);
+        $instance->loadByID($db, $logger, $id);
         return $instance;
 	}
 	
-	public function loadByID($db, $id) {
+	public function loadByID($db, $logger, $id) {
 		$this->setDb($db);
+		$this->setLogger($logger);
 		
 		if($id == null || $id < 0) return;
 		
@@ -33,9 +34,10 @@ class Models_Season extends Models_Generic implements Models_Interface, JsonSeri
 		}
 	}
 
-	public static function withRow($db, array $row) {
+	public static function withRow($db, $logger, array $row) {
 		$instance = new self();
 		$instance->setDb($db);
+		$instance->setLogger($logger);
         $instance->fill( $row );
         return $instance;
 	}
@@ -51,11 +53,11 @@ class Models_Season extends Models_Generic implements Models_Interface, JsonSeri
 		$this->isAvailableRegistration = $data['season_available_registration'] > 0;
 		$this->isAvailableScoreReporter = $data['season_available_score_reporter'] > 0;
 		$this->numWeeks = $data['season_num_weeks'];
-		$this->registrationOpensDate = $data['season_registration_opens_date'];
-		$this->confirmationDueBy = $data['season_confirmation_due_by'];
-		$this->registrationDueBy = $data['season_registration_due_by'];
-		$this->registrationOpenUntil = $data['season_registration_up_until'];
-		$this->registrationBySport = $data['season_registration_by_sport'];
+		$this->registrationOpensDate = strtotime($data['season_registration_opens_date']);
+		$this->confirmationDueBy = strtotime($data['season_confirmation_due_by']);
+		$this->registrationDueBy = strtotime($data['season_registration_due_by']);
+		$this->registrationOpenUntil = strtotime($data['season_registration_up_until']);
+		$this->registrationBySport = $data['season_registration_by_sport'] > 0;
 	}
 	
 	function getId() {

@@ -12,14 +12,15 @@ class Models_Date extends Models_Generic implements Models_Interface, JsonSerial
 	private $sport;
 	private $season;
     		
-	public static function withID($db, $id) {
+	public static function withID($db, $logger, $id) {
 		$instance = new self();
-        $instance->loadByID($db, $id);
+        $instance->loadByID($db, $logger, $id);
         return $instance;
 	}
 	
-	public function loadByID($db, $id) {
+	public function loadByID($db, $logger, $id) {
 		$this->setDb($db);
+		$this->setLogger($logger);
 		
 		if($id == null || $id < 0) return;
 		
@@ -32,10 +33,11 @@ class Models_Date extends Models_Generic implements Models_Interface, JsonSerial
 		}
 	}
 
-	public static function withRow($db, array $row) {
+	public static function withRow($db, $logger, array $row) {
 		$instance = new self();
 		$instance->setDb($db);
-        $instance->fill( $row );
+		$instance->setLogger($logger);
+        $instance->fill($row);
         return $instance;
 	}
 	
@@ -55,7 +57,7 @@ class Models_Date extends Models_Generic implements Models_Interface, JsonSerial
 	
 	function getSeasonId() {
 		if($this->season == null && $this->db != null) {
-			$this->season = Models_Season::withID($this->db, $this->getSeasonId());
+			$this->season = Models_Season::withID($this->db, $this->logger, $this->getSeasonId());
 		}
 		
 		return $this->seasonId;
@@ -63,7 +65,7 @@ class Models_Date extends Models_Generic implements Models_Interface, JsonSerial
 
 	function getSport() {
 		if($this->sport == null && $this->db != null) {
-			$this->sport = Models_Sport::withID($this->db, $this->getSportId());
+			$this->sport = Models_Sport::withID($this->db, $this->logger, $this->getSportId());
 		}
 		
 		return $this->sport;
