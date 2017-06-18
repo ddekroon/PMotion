@@ -2,6 +2,17 @@
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-        <group/>
+        <group>
+            <file>file:/C:/Bin/web/PMotion/Derek/routes/default.php</file>
+            <file>file:/C:/Bin/web/PMotion/Registration/includeFiles/teamFormFunctions.php</file>
+            <file>file:/C:/Bin/web/PMotion/Registration/signupTeam.php</file>
+            <file>file:/C:/Bin/web/PMotion/Derek/routes/dashboard.php</file>
+            <file>file:/C:/Bin/web/PMotion/Derek/controllers/seasonscontroller.php</file>
+            <file>file:/C:/Bin/web/PMotion/Derek/models/sport.php</file>
+            <file>file:/C:/Bin/web/PMotion/Derek/views/dashboard/edit-team.phtml</file>
+            <file>file:/C:/Bin/web/PMotion/Derek/index.php</file>
+            <file>file:/C:/Bin/web/PMotion/Derek/models/season.php</file>
+            <file>file:/C:/Bin/web/PMotion/css/sass/styles.scss</file>
+        </group>
     </open-files>
 </project-private>

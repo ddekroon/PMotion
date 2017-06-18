@@ -7,7 +7,7 @@
 	<input type="hidden" name="sportID" value='<?php print $sport->getId() ?>' />
 	<div class='clearfix form-group'>
 		<div class="logoContainer pull-right" style="text-align:center;">
-			<img src="<?php print $logo; ?>" alt="" />
+			<img src="<?php print $sport->getLogoLink(); ?>" alt="" />
 		</div>
 		<h1>Score Reporter</h1>
 	</div>
@@ -72,7 +72,7 @@
 			<div class='col-md-10 col-sm-9 col-xs-8'>
 				<div class="input-group">
 					<span class="input-group-addon" id="SubmitUsernameAddon"><span class="glyphicon glyphicon-user" aria-hidden="true"></span></span>
-					<input type='text' id='SubmitterName' name='submitterName' value='' class='form-control' aria-describedby='SubmitUsernameAddon' />
+					<input type='text' id='SubmitterName' name='submitterName' value='<?php echo $user != null ? $user->getFirstName() . " " . $user->getLastName() : "" ?>' class='form-control' aria-describedby='SubmitUsernameAddon' />
 				</div>
 			</div>
 		</div>
@@ -83,7 +83,7 @@
 			<div class='col-md-10 col-sm-9 col-xs-8'>
 				<div class="input-group">
 					<span class="input-group-addon" id="SubmitEmailAddon">@</span>
-					<input type='email' id='SubmitterEmail' name='submitterEmail' value='' class='form-control' aria-describedby="SubmitEmailAddon" />
+					<input type='email' id='SubmitterEmail' name='submitterEmail' value='<?php echo $user != null ? $user->getEmail() : "" ?>' class='form-control' aria-describedby="SubmitEmailAddon" />
 				</div>
 			</div>
 		</div>

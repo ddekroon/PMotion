@@ -12,6 +12,7 @@
 					<th>League</th>
 					<th>Season</th>
 					<th>Year</th>
+					<th></th>
 				</tr>
 			</thead>
 			<tbody>
@@ -19,10 +20,22 @@
 					<?php if($curTeam->getLeague() != null && $curTeam->getLeague()->getSeason() != null &&
 							($curTeam->getLeague()->getSeason()->getIsAvailableRegistration() || $curTeam->getLeague()->getSeason()->getIsAvailableScoreReporter())) { ?>
 						<tr>
-							<td><a href="<?php echo $router->pathFor('edit-team', ['teamID' => $curTeam->getId()] ); ?>"><?php echo $curTeam->getName() ?></a></td>
+							<td>
+								<a href="<?php echo $router->pathFor('edit-team', ['teamID' => $curTeam->getId()] ); ?>"><?php echo $curTeam->getName() ?></a>
+							</td>
 							<td><?php echo $curTeam->getLeague()->getName() ?></td>
 							<td><?php echo $curTeam->getLeague()->getSeason()->getName() ?></td>
 							<td><?php echo $curTeam->getLeague()->getSeason()->getYear() ?></td>
+							<td>
+								<div class='btn-group btn-group-sm float-right'>
+									<a class='btn btn-primary' href="<?php echo $router->pathFor('dashboard-score-reporter', ['sportID' => $curTeam->getLeague()->getSportId(), 'leagueID' => $curTeam->getLeagueId(), 'teamID' => $curTeam->getId()] ); ?>">
+										<span class='glyphicon glyphicon-check'></span> Report Score
+									</a>
+									<a class='btn btn-primary' href="<?php echo $router->pathFor('dashboard-standings', ['leagueID' => $curTeam->getLeagueId()] ); ?>">
+										<span class='glyphicon glyphicon-stats'></span> Standings
+									</a>
+								</div>
+							</td>
 						</tr>
 					<?php } ?>
 				<?php } ?>
@@ -38,6 +51,7 @@
 					<th>League</th>
 					<th>Season</th>
 					<th>Year</th>
+					<th></th>
 				</tr>
 			</thead>
 			<tbody>
@@ -49,6 +63,16 @@
 							<td><?php echo $curTeam->getLeague()->getName() ?></td>
 							<td><?php echo $curTeam->getLeague()->getSeason()->getName() ?></td>
 							<td><?php echo $curTeam->getLeague()->getSeason()->getYear() ?></td>
+							<td>
+								<div class='btn-group btn-group-sm float-right'>
+									<a class='btn btn-primary' href="<?php echo $router->pathFor('dashboard-score-reporter', ['sportID' => $curTeam->getLeague()->getSportId(), 'leagueID' => $curTeam->getLeagueId(), 'teamID' => $curTeam->getId()] ); ?>">
+										<span class='glyphicon glyphicon-check'></span> Report Score
+									</a>
+									<a class='btn btn-primary' href="<?php echo $router->pathFor('dashboard-standings', ['leagueID' => $curTeam->getLeagueId()] ); ?>">
+										<span class='glyphicon glyphicon-stats'></span> Standings
+									</a>
+								</div>
+							</td>
 						</tr>
 					<?php } ?>
 				<?php } ?>

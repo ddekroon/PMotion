@@ -8,15 +8,15 @@
 
 		?>
 
-		<div class='game <?php print $matchClasses ?>' data-opp-team-id='<?php print $match->getOppTeamId() ?>'>
+		<div class='game f-small <?php print $matchClasses ?>' data-opp-team-id='<?php print $match->getOppTeamId() ?>'>
 			<p><span class="label label-default">Match <?php print $i+1?></span></p>
 			
 			<div class='form-group'>
 				<div class='row'>
-					<div class='col-md-2 col-sm-3 col-xs-4'>
+					<div class='col-sm-3 col-xs-4'>
 						<label for='MatchOpponent_<?php print $i+1?>'>Opponent</label>
 					</div>
-					<div class='col-md-10 col-sm-9 col-xs-8'>
+					<div class='col-sm-9 col-xs-8'>
 						<select name='oppTeamID' class='teamSelect form-control' id='MatchOpponent_<?php print $i+1?>'>
 							<option value='-1'></option>
 						</select>
@@ -36,14 +36,14 @@
 				<?php for($j = 0; $j < $team->getLeague()->getNumGamesPerMatch(); $j++){ ?>
 					<div class='score form-group'>
 						<div class='row'>
-							<div class='col-md-2 col-sm-3 col-xs-4'>
-								<label>Results</label>
+							<div class='col-sm-3 col-xs-4'>
+								<label>Result <?php echo $j + 1 ?></label>
 							</div>
-							<div class='col-md-10 col-sm-9 col-xs-8'>
+							<div class='col-sm-9 col-xs-8'>
 								<div class='row'>
 									<div class='<?php print $scoreClasses ?>'>
-										<fieldset class='radioButtons'>
-											<legend>Result:</legend>
+										<fieldset class='radioButtons text-right'>
+											<legend>Result</legend>
 
 											<input type='radio' name='result' value='1' id='GameResult_<?php print $i ?>_<?php print $j ?>_Won' />
 											<label for='GameResult_<?php print $i ?>_<?php print $j ?>_Won'>We Won</label>
@@ -97,10 +97,10 @@
 				<?php } ?>
 					
 				<div class='form-group row spirit-row'>
-					<div class='col-md-2 col-sm-3 col-xs-4'>
+					<div class='col-sm-3 col-xs-4'>
 						<label for='SpiritScore_<?php print $i ?>'>Spirit Score</label>
 					</div>
-					<div class='col-md-10 col-sm-9 col-xs-8'>
+					<div class='col-sm-9 col-xs-8'>
 						<?php /* <fieldset class='radioButtons'>
 							<legend>Spirit Score</legend>
 							<?php for($k = 1; $k <= 5; $k+=.5) { ?>
@@ -117,10 +117,10 @@
 			<?php } ?>
 				
 			<div class='form-group row'>
-				<div class='col-md-2 col-sm-3 col-xs-4'>
+				<div class='col-sm-3 col-xs-4'>
 					<label for='Comments_<?php print $i ?>'>Comments</label>
 				</div>
-				<div class='col-md-10 col-sm-9 col-xs-8'>
+				<div class='col-sm-9 col-xs-8'>
 					<textarea name='matchComments' id='Comments_<?php print $i ?>' class='form-control'></textarea>
 				</div>
 			</div>

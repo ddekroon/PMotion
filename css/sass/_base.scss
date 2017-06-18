@@ -10,7 +10,8 @@ $c-secondary:$c-red;
 
 $f-glyph:'Glyphicons Halflings';
 
-$f-small:12px;
+$f-small:14px;
+$f-smaller:12px;
 
 // generic transform
 @mixin transform($transforms) {

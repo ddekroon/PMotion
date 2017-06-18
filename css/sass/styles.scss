@@ -46,6 +46,23 @@ a {
 	}
 }
 
+.row {
+	@include flexbox();
+	align-items:center;
+}
+
+.float-right {
+	float:right;
+}
+
+.float-left {
+	float:left;
+}
+
+.table > tbody > tr > td {
+	vertical-align: middle;
+}
+
 input[type="button"], input[type="submit"], button, .button, .btn, a {
 	@include transitionManual(background-color 0.3s ease);
 }
@@ -150,7 +167,15 @@ form .error, .red {
 legend {
 	small {
 		display:block;
-		font-size:$f-small;
+		font-size:$f-smaller;
 		color:lighten($c-primary, 20%);
 	}
+}
+
+.f-small {
+	font-size:$f-small;
+}
+
+.f-smaller {
+	font-size:$f-smaller;
 }

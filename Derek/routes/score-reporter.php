@@ -2,24 +2,12 @@
 
 	use \Psr\Http\Message\ServerRequestInterface as Request;
 	use \Psr\Http\Message\ResponseInterface as Response;
-
+	
 	$app->get('/score-reporter[/{sportID}[/{leagueID}[/{teamID}]]]', function(Request $request, Response $response) {
 
 		$sport = Models_Sport::withID($this->db, $this->logger, $request->getAttribute('sportID'));
 		$league = Models_League::withID($this->db, $this->logger, $request->getAttribute('leagueID'));
 		$team = Models_Team::withID($this->db, $this->logger, $request->getAttribute('teamID'));
-
-		if($sport->getId() == 1) {
-			$logo='/Logos/ultimate_0.png';
-		} elseif($sport->getId() == 2) {
-			$logo='/Logos/volleyball_0.png';
-		} elseif($sport->getId() == 3) {
-			$logo='/Logos/football_0.png';
-		} elseif($sport->getId() == 4) {
-			$logo= '/Logos/soccer_0.png';
-		} else  {
-			$logo = '/Logos/Perpetualmotionlogo.jpg';
-		}
 
 		$leaguesController = new Controllers_LeaguesController($this->db, $this->logger);
 		
@@ -32,12 +20,9 @@
 				"sport" => $sport,
 				"league" => $league,
 				"team" => $team,
-				"logo" => $logo,
 				"leagues" => $leaguesController->getLeaguesInScoreReporter($sport->getId())
 			]
 		);
-
-		//return $response;
 	});
 
 	$app->get('/score-reporter-matches/{teamID}', function(Request $request, Response $response) {

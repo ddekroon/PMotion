@@ -1,0 +1,104 @@
+
+<div class='dashboard container-fluid'>
+	<div class='clearfix form-group'>
+		<h1>Edit Profile - <?php echo $user->getFirstName() . " " . $user->getLastName() ?></h1>
+	</div>
+	<form id='EditProfileForm' action='edit-profile' method='post'>
+		<fieldset class='form-group'>
+			<legend>User Information</legend>
+			<div class='row form-group'>
+				<div class='col-xs-4'>
+					<label for='UserFirstName'>First Name</label>
+				</div>
+				<div class='col-xs-8'>
+					<input type='text' id='UserFirstName' name='userFirstName' value="<?php echo htmlentities($user->getFirstName(), ENT_QUOTES) ?>" class='form-control' />
+				</div>
+			</div>
+			<div class='row form-group'>
+				<div class='col-xs-4'>
+					<label for='UserLastName'>Last Name</label>
+				</div>
+				<div class='col-xs-8'>
+					<input type='text' id='UserLastName' name='userLastName' value="<?php echo htmlentities($user->getLastName(), ENT_QUOTES) ?>" class='form-control' />
+				</div>
+			</div>
+			<div class='row form-group'>
+				<div class='col-xs-4'>
+					<label for='UserEmail'>Email</label>
+				</div>
+				<div class='col-xs-8'>
+					<input type='text' id='UserEmail' name='userEmail' value="<?php echo htmlentities($user->getEmail(), ENT_QUOTES) ?>" class='form-control' />
+				</div>
+			</div>
+			<div class='row form-group'>
+				<div class='col-xs-4'>
+					<label for='UserPhoneNumber'>Phone Number</label>
+				</div>
+				<div class='col-xs-8'>
+					<input type='text' id='UserPhoneNumber' name='userPhoneNumber' value="<?php echo htmlentities($user->getPhone(), ENT_QUOTES) ?>" class='form-control' />
+				</div>
+			</div>
+			<div class='row form-group'>
+				<div class='col-xs-4'>
+					<label for='UserGender'>Gender</label>
+				</div>
+				<div class='col-xs-8'>
+					<select id='UserGender' name='userGender' class='form-control'>
+						<option value=''>Select One</option>
+						<option value='M' <?php echo $user->getGender() == 'M' ? 'selected="selected"' : '' ?>>Male</option>
+						<option value='F' <?php echo $user->getGender() == 'F' ? 'selected="selected"' : '' ?>>Female</option>
+					</select>
+				</div>
+			</div>
+
+		</fieldset>
+		<?php if(is_null($user)) { ?>
+			<fieldset>
+				<legend>Login Information<small>Username and password must be between 6 and 16 characters. Please do not use spaces, quotes, or apostrophes.</small></legend>
+
+				<div class='row form-group'>
+					<div class='col-xs-4'>
+						<label for='UserUsername'>Username</label>
+					</div>
+					<div class='col-xs-8'>
+						<input type='text' id='UserUsername' name='username' class='form-control' value='' />
+					</div>
+				</div>
+				<div class='row form-group'>
+					<div class='col-xs-4'>
+						<label for='UserPassword'>Gender</label>
+					</div>
+					<div class='col-xs-8'>
+						<input type='password' id='UserPassword' name='password' class='form-control' value='' />
+					</div>
+				</div>
+				<div class='row form-group'>
+					<div class='col-xs-4'>
+						<label for='UserConfirmPassword'>Gender</label>
+					</div>
+					<div class='col-xs-8'>
+						<input type='password' id='UserConfirmPassword' name='userConfirmPassword' class='form-control' value='' />
+					</div>
+				</div>
+			</fieldset>
+		<?php } ?>
+		<div class='text-right'>
+			<button class='btn btn-primary' type='submit' name='action' value='save'>Save</button>
+		</div>
+	</form>
+	<script>
+		$(function() {
+			$("#EditProfileForm").ajaxForm({
+				method:"post",
+				success:function(resp) {
+					console.log(resp);
+				},
+				error:function(resp) {
+					alert("Error connecting to server.");
+				}
+			});
+		});
+		
+
+	</script>
+</div>

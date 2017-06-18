@@ -94,11 +94,6 @@
 		return $this->view->render($response, "coming-soon.phtml", []);
 	})->setName('reset-password');
 	
-	//Edit Profile
-	$app->get('/edit-profile', function (Request $request, Response $response) {
-		return $this->view->render($response, "coming-soon.phtml", []);
-	})->setName('edit-profile')->add($dashboard)->add($authenticate);
-	
 	//Dashboard
 	$app->get('/dashboard', function (Request $request, Response $response) {
 		$user = Models_User::withID($this->db, $this->logger, $_SESSION[Controllers_AuthController::SESSION_USER_ID]); //Load user from db, that way we refresh all user info.
