@@ -1,5 +1,4 @@
 
-<div class='dashboard container-fluid'>
 	<div class='clearfix form-group'>
 		<h1>Dashboard</h1>
 	</div>
@@ -68,6 +67,9 @@
 									<a class='btn btn-primary' href="<?php echo $router->pathFor('dashboard-score-reporter', ['sportID' => $curTeam->getLeague()->getSportId(), 'leagueID' => $curTeam->getLeagueId(), 'teamID' => $curTeam->getId()] ); ?>">
 										<span class='glyphicon glyphicon-check'></span> Report Score
 									</a>
+									<a class='btn btn-primary' href="<?php echo $router->pathFor('dashboard-team-page', ['teamID' => $curTeam->getId()] ); ?>">
+										<span class='glyphicon glyphicon-picture'></span> Team Page
+									</a>
 									<a class='btn btn-primary' href="<?php echo $router->pathFor('dashboard-standings', ['leagueID' => $curTeam->getLeagueId()] ); ?>">
 										<span class='glyphicon glyphicon-stats'></span> Standings
 									</a>
@@ -86,4 +88,3 @@
 			});
 		});
 	</script>
-</div>

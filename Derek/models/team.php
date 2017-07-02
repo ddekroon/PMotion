@@ -27,6 +27,8 @@ class Models_Team extends Models_Generic implements Models_Interface, JsonSerial
 	private $captain;
 	private $players;
 	private $registrationComment;
+	private $spiritAverage;
+	private $scheduledMatches;
 
 	public static function withID($db, $logger, $id) {
 		$instance = new self();
@@ -151,7 +153,140 @@ class Models_Team extends Models_Generic implements Models_Interface, JsonSerial
 		
 		return $this->registrationComment;
 	}
+	
+	function getSpiritAverage() {
+		
+		if($this->spiritAverage == null && $this->db != null && $this->getId() != null) {
+			$sql = "SELECT SUM(spiritScores.spirit_score_edited_value) / COUNT(spiritScores.spirit_score_edited_value) as team_spirit_average "
+					. "FROM " . Includes_DBTableNames::teamsTable . " AS team "
+					. "INNER JOIN " . Includes_DBTableNames::leaguesTable . " league ON league.league_id = team.team_league_id "
+					. "INNER JOIN " . Includes_DBTableNames::scoreSubmissionsTable . " scoreSubmissions ON "
+						. "(scoreSubmissions.score_submission_opp_team_id = team.team_id AND (scoreSubmissions.score_submission_ignored = 0 OR scoreSubmissions.score_submission_is_phantom = 1)) "
+					. "INNER JOIN " . Includes_DBTableNames::spiritScoresTable . " spiritScores ON ("
+						. "spiritScores.spirit_score_score_submission_id = scoreSubmissions.score_submission_id "
+						. "AND (spiritScores.spirit_score_edited_value > 3.5 OR spiritScores.spirit_score_dont_show = 1 OR spiritScores.spirit_score_is_admin_addition = 1) "
+						. "AND spiritScores.spirit_score_edited_value > 0 AND spiritScores.spirit_score_ignored = 0"
+					. ") "
+					. "INNER JOIN " . Includes_DBTableNames::datesTable . " dates ON (dates.date_id = scoreSubmissions.score_submission_date_id AND dates.date_week_number < league.league_playoff_week) "
+					. "WHERE team.team_id = " . $this->getId();
+			
+			$stmt = $this->db->query($sql);
 
+			if(($row = $stmt->fetch()) != false) {
+				$this->spiritAverage = $row['team_spirit_average'];
+			}
+		}
+		
+		return $this->spiritAverage;
+	}
+	
+	function getPoints() {
+		return ($this->getWins() * 2) + $this->getTies();	  
+  	}
+	
+	function getWinPercent() {
+		$pointsAvailable = ($this->getWins() + $this->getTies() + $this->getLosses()) * 2;
+		if ($pointsAvailable != 0) {
+			return round(($this->getPoints() / $pointsAvailable), 3);
+		} else {
+			return 0;
+		}
+	}
+  
+	function getTitleSize() {
+		if(strlen($this->getTeamName()) >= 20) {
+			return '9px';
+		} else {
+			return '12px'; 
+		}
+	}
+	
+	function getFormattedStandings() {
+		
+		$leaguesController = new Controllers_LeaguesController($this->db, $this->logger);
+		
+		if($this->getLeague()->getSport()->getId() != 2) {
+			$standings = '(' . $this->getWins() . '-' . $this->getLosses() . '-' . $this->getTies() . ')';
+		} else {
+			$standings = '(' . $this->getWins() . '-' . $this->getLosses() . ')';
+		}
+		
+		$standings .= $leaguesController->checkHideSpirit($this->getLeague()) == false ? ' (' . number_format($this->getSpiritAverage(), 2, '.', '') . ')' : '';
+		
+		return $standings;
+	}
+	
+	public function getFinalPositionWithSuffix() {
+		if (!in_array(($this->getFinalPosition() % 100), array(11,12,13))) {
+			switch ($this->getFinalPosition() % 10) {
+				case 1:
+					return $this->getFinalPosition().'st';
+				case 2:
+					return $this->getFinalPosition().'nd';
+				case 3:
+					return $this->getFinalPosition().'rd';
+			}
+		}
+		return $this->getFinalPosition().'th';
+	}
+	
+	public function getFinalSpiritPositionWithSuffix() {
+		if (!in_array(($this->getFinalSpiritPosition() % 100), array(11,12,13))) {
+			switch ($this->getFinalSpiritPosition() % 10) {
+				case 1:
+					return $this->getFinalSpiritPosition().'st';
+				case 2:
+					return $this->getFinalSpiritPosition().'nd';
+				case 3:
+					return $this->getFinalSpiritPosition().'rd';
+			}
+		}
+		return $this->getFinalSpiritPosition().'th';
+	}
+	
+	public function getScheduledMatches() {
+		
+		if($this->scheduledMatches == null && $this->db != null && $this->getId() != null) {
+			
+			$this->scheduledMatches = [];
+			
+			$sql = "SELECT matches.* FROM " . Includes_DBTableNames::scheduledMatchesTable . " as matches "
+					. "INNER JOIN " . Includes_DBTableNames::datesTable . " dates ON dates.date_id = matches.scheduled_match_date_id "
+					. "WHERE (matches.scheduled_match_team_id_2 = " . $this->getId() . " OR matches.scheduled_match_team_id_1 = " . $this->getId() . ") "
+					. "ORDER BY dates.date_week_number ASC, matches.scheduled_match_time ASC";
+
+			$stmt = $this->db->query($sql);
+
+			while(($row = $stmt->fetch()) != false) {
+				$this->scheduledMatches[] = Models_ScheduledMatch::withRow($this->db, $this->logger, $row);
+			}
+		}
+		
+		return $this->scheduledMatches;
+	}
+	
+	function getIsPic() {
+		$ds = DIRECTORY_SEPARATOR;
+		
+		if(file_exists(realpath($_SERVER['DOCUMENT_ROOT']) . $ds . $this->getLeague()->getPicLink() . $ds . $this->getPicName() . '.JPG')) {
+			return true;
+		} else if(file_exists(realpath($_SERVER['DOCUMENT_ROOT']) . $ds . $this->getLeague()->getPicLink() . $ds . $this->getPicName() . '.jpg')) {
+			return true;
+		}
+		return false;
+	}
+	
+	function getPic() {
+		$ds = DIRECTORY_SEPARATOR;
+		
+		if(file_exists(realpath($_SERVER['DOCUMENT_ROOT']) . $ds . $this->getLeague()->getPicLink() . $ds . $this->getPicName() . '.JPG')) {
+			return $ds . $this->getLeague()->getPicLink() . $ds . $this->getPicName() . '.JPG';
+		} else if(file_exists(realpath($_SERVER['DOCUMENT_ROOT']) . $ds . $this->getLeague()->getPicLink() . $ds . $this->getPicName() . '.jpg')) {
+			return '/' . $this->getLeague()->getPicLink() . $ds . $this->getPicName() . '.jpg';
+		} 
+		
+		return "";
+	}
 	
 	function getId() {
 		return $this->id;

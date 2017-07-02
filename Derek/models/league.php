@@ -38,6 +38,9 @@ class Models_League extends Models_Generic implements Models_Interface, JsonSeri
 	
 	private $season;
 	private $sport;
+	private $teams;
+	private $dateInStandings;
+	private $dateInScoreReporter;
 	
 	public static function withID($db, $logger, $id) {
 		$instance = new self();
@@ -126,6 +129,26 @@ class Models_League extends Models_Generic implements Models_Interface, JsonSeri
 		return $this->sport;
 	}
 	
+	public function getTeams() {
+		
+		if($this->teams == null) {
+			$this->teams = [];
+		}
+		
+		if($this->teams == null && $this->getId() != null && $this->db != null) {
+			$sql = "SELECT * FROM " . Includes_DBTableNames::teamsTable . " WHERE team_league_id = " . $this->getId()
+					. " AND team_deleted = 0 AND team_num_in_league > 0 AND team_dropped_out = 0";
+
+			$stmt = $this->db->query($sql);
+
+			while(($row = $stmt->fetch()) != false) {
+				$this->teams[] = Models_Team::withRow($this->db, $this->logger, $row);
+			}
+		}
+		
+		return $this->teams;
+	}
+	
 	public function getDayString() {
 
 		switch($this->getDayNumber()) {
@@ -146,6 +169,99 @@ class Models_League extends Models_Generic implements Models_Interface, JsonSeri
 		}
 	}
 	
+	public function getShowSpiritDayString() {
+		switch(($this->getDayNumber() + 2) % 7) {
+			case 1:
+				return 'Monday';
+			case 2: 
+				return 'Tuesday';
+			case 3:
+				return 'Wednesday';
+			case 4:
+				return 'Thursday';
+			case 5:
+				return 'Friday';
+			case 6:
+				return 'Saturday';
+			default:
+				return 'Sunday';
+		}
+	}
+	
+	function checkHideSpirit() {
+		
+		if(!$this->getLeagueAvailableScoreReporter()) { //if not in score reporter show spirits, at that point who cares
+			return false;
+		}
+
+		$dayOfWeekNum = date('N'); //Number representing day of week... Mon=1, Tues=2..Sun=7
+		$timeOfDay = date('G');   //24 Hour representation of time: 0-23
+
+		$dateHide = $this->getDayNumber();
+		$dateShow = $dateHide + $this->getNumDaysSpiritHidden();
+		
+		if($dateShow > 7) {
+			$dateShow = $dateShow % 7; //if games are sunday show date is gonna be greater than 7.
+		}
+
+		if($dayOfWeekNum == $dateHide) { //If it's the day of the game, hide spirit
+			return $timeOfDay >= $this->getHideSpiritHour();
+		}
+
+		if(($dayOfWeekNum == $dateShow)){ //If it's 2 days after the game, show spirit
+			return $timeOfDay < $this->getShowSpiritHour();
+		}
+
+		//If it's anytime inbetween, hide spirit
+		//also included for sunday... if it's supposed to be hidden on sunday and it's monday, hide spirit
+		return ($dayOfWeekNum > $dateHide && $dayOfWeekNum < $dateShow) || ($dayOfWeekNum == 1 && $dateHide == 7);
+	}
+	
+	function checkUpdateWeekInStandings() {
+		
+		$maxWeeksInStandings = 0;
+		foreach($this->getTeams() as $team) {
+			if($team->getMostRecentWeekSubmitted() > $maxWeeksInStandings) $maxWeeksInStandings = $team->getMostRecentWeekSubmitted();
+		}
+		
+		if ($maxWeeksInStandings > $this->weekInStandings()) {
+			$this->setWeekInStandings($maxWeekInStandings);
+			$this->saveOrUpdate();
+		}
+	}
+	
+	function getDateInStandings() {
+		if($this->dateInStandings == null && $this->db != null) {
+			$sql = "SELECT dates.* FROM " . Includes_DBTableNames::datesTable . " as dates "
+					. "WHERE dates.date_day_number = " . $this->getDayNumber() . ' AND dates.date_week_number = ' . $this->getWeekInStandings() . ' '
+					. 'AND dates.date_season_id = ' . $this->getSeasonId() . ' AND dates.date_sport_id = ' . $this->getSportId();
+
+			$stmt = $this->db->query($sql);
+
+			if(($row = $stmt->fetch()) != false) {
+				$this->dateInStandings =  Models_Date::withRow($this->db, $this->logger, $row);
+			}
+		}
+		
+		return $this->dateInStandings;
+	}
+	
+	function getDateInScoreReporter() {
+		if($this->dateInScoreReporter == null && $this->db != null) {
+			$sql = "SELECT dates.* FROM " . Includes_DBTableNames::datesTable . " as dates "
+					. "WHERE dates.date_day_number = " . $this->getDayNumber() . ' AND dates.date_week_number = ' . $this->getWeekInScoreReporter() . ' '
+					. 'AND dates.date_season_id = ' . $this->getSeasonId() . ' AND dates.date_sport_id = ' . $this->getSportId();
+
+			$stmt = $this->db->query($sql);
+
+			if(($row = $stmt->fetch()) != false) {
+				$this->dateInScoreReporter =  Models_Date::withRow($this->db, $this->logger, $row);
+			}
+		}
+		
+		return $this->dateInScoreReporter;
+	}
+	
 	function getShortName() {
 		return substr($this->name, 0, 20);
 	}
@@ -158,7 +274,7 @@ class Models_League extends Models_Generic implements Models_Interface, JsonSeri
 	public function toString() {
 		return "Modules_League[id=$this->id]";
 	}
-	
+		
 	function getId() {
 		return $this->id;
 	}

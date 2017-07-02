@@ -17,6 +17,8 @@ class Models_ScoreSubmission extends Models_Generic implements Models_Interface,
 	
 	private $spiritScore;
 	private $scoreSubmissionComment;
+	private $team;
+	private $oppTeam;
 
 	public static function withID($db, $logger, $id) {
 		$instance = new self();
@@ -67,7 +69,7 @@ class Models_ScoreSubmission extends Models_Generic implements Models_Interface,
         $this->isPhantom = $data['score_submission_is_phantom'];
     }
 	
-	function getSpiritScore() {
+	public function getSpiritScore() {
 		if($this->spiritScore == null && $this->db != null) {
 		
 			$sql = "SELECT * FROM " . Includes_DBTableNames::spiritScoresTable . " WHERE spirit_score_score_submission_id = " . $this->getId() . " LIMIT 1";
@@ -85,11 +87,11 @@ class Models_ScoreSubmission extends Models_Generic implements Models_Interface,
 		return $this->spiritScore;
 	}
 	
-	function setSpiritScore($spiritScore) {
+	public function setSpiritScore($spiritScore) {
 		$this->spiritScore = $spiritScore;
 	}
 
-	function getScoreSubmissionComment() {
+	public function getScoreSubmissionComment() {
 		
 		if($this->scoreSubmissionComment == null && $this->db != null) {
 		
@@ -108,10 +110,44 @@ class Models_ScoreSubmission extends Models_Generic implements Models_Interface,
 		return $this->scoreSubmissionComment;
 	}
 
-	function setScoreSubmissionComment($scoreSubmissionComment) {
+	public function setScoreSubmissionComment($scoreSubmissionComment) {
 		$this->scoreSubmissionComment = $scoreSubmissionComment;
 	}
 
+	function getTeam() {
+		if($this->team == null && $this->db != null && $this->getTeamId() != null) {
+			$this->team = Models_League::withID($this->db, $this->logger, $this->getTeamId());
+		}
+		
+		return $this->team;
+	}
+	
+	function getOppTeam() {
+		if($this->oppTeam == null && $this->db != null && $this->getOppTeamId() != null) {
+			$this->oppTeam = Models_Team::withID($this->db, $this->logger, $this->getOppTeamId());
+		}
+		
+		return $this->oppTeam;
+	}
+	
+	public function getResultsString() {
+		switch($this->getResult()) {
+			case Includes_GameResults::WIN:
+				return "Won";
+			case Includes_GameResults::LOSS:
+				return "Lost";
+			case Includes_GameResults::TIED:
+				return "Tied";
+			case Includes_GameResults::CANCELLED:
+				return "Cancelled";
+			case Includes_GameResults::PRACTICE:
+				return "Practiced";
+			case Includes_GameResults::ERROR:
+				return "*";
+			default:
+				return "Error";
+		}
+	}
 	
     public function getId() {
         return $this->id;

@@ -209,10 +209,10 @@
 		<legend>Register or Save<small>Submit your team registration to the convenor or save details to your profile for another time.</small></legend>
 		<p class='text-center'>
 			<?php if($team->getId() != null) { ?>
-				<button type='submit' name='submit' value='update' onclick="return checkUpdate()">Update</button>
+				<button type='submit' class='btn btn-primary' name='submit' value='update' onclick="return checkUpdate()">Update</button>
 			<?php } else { ?>
-				<button type='submit' name='submit' value='register' onclick="return showPayment()">Register</button>
-				<button type='submit' name='submit' value='save' onclick="return errorCheck()">Save Details</button>
+				<button type='submit' class='btn btn-primary' name='submit' value='register' onclick="return showPayment()">Register</button>
+				<button type='submit' class='btn btn-primary' name='submit' value='save' onclick="return errorCheck()">Save Details</button>
 			<?php } ?>
 			<button type='button' onclick='javascript:window.print();'>Print Form</button>
 		</p>

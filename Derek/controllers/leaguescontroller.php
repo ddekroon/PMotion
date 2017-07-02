@@ -94,6 +94,100 @@
 			 * 
 			 */
 		}
+		
+		/* function getTeamsForStandings($league) {
+			if ($league->getWeekInStandings() > 1) {
+				$queryString = "SELECT
+					team_id, team_name, team_wins, team_losses, team_ties, team_most_recent_week_submitted,
+					team_wins * 2 + team_ties as team_points,
+					SUM(spirit_score_edited_value) / COUNT(spirit_score_edited_value) as team_spirit_average
+					FROM (SELECT * FROM $teamsTable where team_league_id = $leagueID AND team_num_in_league > 0 AND team_dropped_out = 0) as teamTable
+					INNER JOIN $leaguesTable ON $leaguesTable.league_id = teamTable.team_league_id
+					INNER JOIN $scoreSubmissionsTable ON ($scoreSubmissionsTable.score_submission_opp_team_id = teamTable.team_id 
+					AND (score_submission_ignored = 0 OR score_submission_is_phantom = 1))
+					INNER JOIN $spiritScoresTable ON ($spiritScoresTable.spirit_score_score_submission_id = $scoreSubmissionsTable.score_submission_id AND 
+					(spirit_score_edited_value > 3.5 OR spirit_score_dont_show = 1 OR spirit_score_is_admin_addition = 1) AND spirit_score_edited_value > 0
+					AND spirit_score_ignored = 0)
+					INNER JOIN $datesTable ON (date_id = score_submission_date_id AND date_week_number < league_playoff_week)
+					GROUP BY team_id";
+				if(!($teamsQuery = $dbConnection->query($queryString))) { 
+					print 'ERROR getting team objects - '.$dbConnection->error;
+					exit(0);
+				} else if($teamsQuery->num_rows == 0) {
+					print 'Error, no teams';
+					exit(0);
+				}
+
+				$teamMaxWeek = 0;
+				while($teamObj = $teamsQuery->fetch_object()){ 
+					$teams[] = new Team($teamObj);
+					if ($teamObj->team_most_recent_week_submitted > $teamMaxWeek ) {
+						$teamMaxWeek = $teamObj->team_most_recent_week_submitted;
+					}
+				}
+				$teamsQuery->close();
+				return $teams;	
+			} else {
+				$queryString = "SELECT
+					team_id, team_name, team_wins, team_losses, team_ties, team_most_recent_week_submitted,
+					team_wins * 2 + team_ties as team_points,
+					SUM(spirit_score_edited_value) / COUNT(spirit_score_edited_value) as team_spirit_average
+					FROM (SELECT * FROM $teamsTable where team_league_id = $leagueID AND team_num_in_league > 0 AND team_dropped_out = 0) as teamTable
+					INNER JOIN $leaguesTable ON $leaguesTable.league_id = teamTable.team_league_id
+					LEFT JOIN $scoreSubmissionsTable ON ($scoreSubmissionsTable.score_submission_opp_team_id = teamTable.team_id 
+					AND (score_submission_ignored = 0 OR score_submission_is_phantom = 1))
+					LEFT JOIN $spiritScoresTable ON ($spiritScoresTable.spirit_score_score_submission_id = $scoreSubmissionsTable.score_submission_id AND 
+					(spirit_score_edited_value > 3.5 OR spirit_score_dont_show = 1 OR spirit_score_is_admin_addition = 1) AND spirit_score_edited_value > 0
+					AND spirit_score_ignored = 0)
+					LEFT JOIN $datesTable ON (date_id = score_submission_date_id AND date_week_number < league_playoff_week)
+					GROUP BY team_id";
+				if(!($teamsQuery = $dbConnection->query($queryString))) { 
+					print 'ERROR getting team objects - '.$dbConnection->error;
+					exit(0);
+				} else if($teamsQuery->num_rows == 0) {
+					print 'Error, no teams';
+					exit(0);
+				}
+
+				$teamMaxWeek = 0;
+				while($teamObj = $teamsQuery->fetch_object()){ 
+					$teams[] = new Team($teamObj);
+					if ($teamObj->team_most_recent_week_submitted > $teamMaxWeek ) {
+						$teamMaxWeek = $teamObj->team_most_recent_week_submitted;
+					}
+				}
+				$teamsQuery->close();
+				return $teams;	
+			}
+		} */
+		
+		function checkHideSpirit($league){
+	
+			if(!$league->getSeason()->getIsAvailableScoreReporter()) {
+				return false;
+			}
+
+			$dayOfWeekNum = date('N'); //Number representing day of week... Mon=1, Tues=2..Sun=7
+			$timeOfDay = date('G');   //24 Hour representation of time: 0-23
+
+			$dateHide = $league->getLeagueDayNumber();
+			$dateShow = $dateHide + $league->getLeagueNumDaysSpiritHidden();
+			
+			if($dateShow > 7) {
+				$dateShow = $dateShow % 7; //if games are sunday show date is gonna be greater than 7.
+			}
+
+			if($dayOfWeekNum == $dateHide) { //If it's the day of the game, hide spirit
+				return $timeOfDay >= $league->getLeagueHideSpiritHour();
+			}
+
+			if(($dayOfWeekNum == $dateShow)) { //If it's 2 days after the game, show spirit
+				return !($timeOfDay >= $league->getLeagueShowSpiritHour());
+			}
+
+			return ($dayOfWeekNum > $dateHide && $dayOfWeekNum < $dateShow) || ($dayOfWeekNum == 1 && $dateHide == 7);
+
+		}
 
 	}
 

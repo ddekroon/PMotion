@@ -71,7 +71,7 @@ function printEditTeamForm($leaguesDropDown, $teamWeek, $teamPicLink, $teamDropp
 
 function printTeamTopInfo() { ?>
     <tr>
-        <th colspan=5>
+        <th colspan=6>
             Teams Players
         </th>
     </tr>
@@ -86,7 +86,7 @@ function printAgentsTopInfo(){ ?>
 <?php }
 
 
-function printPlayersHeader($isAgent){ ?>
+function printPlayersHeader(){ ?>
 	<tr>
    		<td>
         	<br />
@@ -98,11 +98,9 @@ function printPlayersHeader($isAgent){ ?>
         </td><td>
         	Note
         </td>
-        <?php if ($isAgent == 1) { ?>
-            <td>
-                G
-            </td>
-        <?php } ?>
+		<td>
+			G
+		</td>
 		<td>
         	Sel
         </td>
@@ -133,12 +131,10 @@ function printPlayerNode($i, $player, $groupID, $isAgent){
 		</td><td>
         	<textarea style='width:200px' rows="3" name='noteField'><?php print 'Player skill: ' . $player[$i]->playerSkill . "\r\n"; print htmlentities($player[$i]->playerNote);?></textarea>
 		</td>
-        <?php if ($isAgent == 1) { ?>
-            <td>
-                <?php print $player[$i]->playerGroupID; ?>
-                <input type='hidden' name='groupID[]' value='<?php print $player[$i]->playerGroupID?>' />
-            </td>
-        <?php } ?>
+		<td>
+			<?php print $player[$i]->playerGroupID; ?>
+			<input type='hidden' name='groupID[]' value='<?php print $player[$i]->playerGroupID?>' />
+		</td>
         <td>
         	<?php if ($isAgent == 0) { ?>
              	<input type='checkbox' name='player[]' value=<?php print $i ?>><br />

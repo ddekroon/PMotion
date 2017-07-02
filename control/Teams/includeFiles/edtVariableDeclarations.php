@@ -41,7 +41,9 @@ function getTeamPlayerData($teamID) {
 		return;
 	}
 	
-	$playersQuery = mysql_query("SELECT * FROM $playersTable WHERE player_team_id = $teamID ORDER BY player_id ASC") or die('ERROR getting team players '.mysql_error());
+	$playersQuery = mysql_query("SELECT * FROM $playersTable LEFT JOIN $individualsTable ON $playersTable.player_id = $individualsTable.individual_player_id"
+			. " WHERE player_team_id = $teamID ORDER BY player_id ASC") or die('ERROR getting team players '.mysql_error());
+	
 	while($playerArray = mysql_fetch_array($playersQuery)) {
 		$player[$numPlayers] = new Player();
 		$player[$numPlayers]->playerID = $playerArray['player_id'];
@@ -51,6 +53,7 @@ function getTeamPlayerData($teamID) {
 		$player[$numPlayers]->playerNote = $playerArray['player_note'];
 		$player[$numPlayers]->playerIsCaptain = $playerArray['player_is_captain'];
 		$player[$numPlayers]->playerIsIndividual = $playerArray['player_is_individual'];
+		$player[$numPlayers]->playerGroupID = isset($playerArray['individual_small_group_id']) ? $playerArray['individual_small_group_id'] : "-";
 		$numPlayers++;
 	}
 	

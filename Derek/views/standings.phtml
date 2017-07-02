@@ -1,0 +1,153 @@
+<?php if(!isset($includedInTeamPage) || !$includedInTeamPage) { ?>
+	<link href="/css/stylesheets/jquery-ui.min.css" rel="stylesheet" type="text/css" />
+	<link href="/css/stylesheets/styles.css" rel="stylesheet" type="text/css" />
+<?php } ?>
+
+<?php $teams = $league->getTeams(); ?>
+
+<?php if($league->getWeekInStandings() < 50) { ?>
+	<?php if(!isset($includedInTeamPage) || !$includedInTeamPage) { ?>
+		<h1><?php print $league->getSport()->getName().' - '.$league->getName().' - '.$league->getDayString(); ?></h1>
+	<?php } else { ?>
+		<h3>Standings</h3>
+	<?php } ?>
+	<p><?php print 'Week ' . $league->getDateInStandings()->getWeekNumber() . ' - ' . $league->getDateInStandings()->getDescription() ?></p>
+	
+	<?php if(count($teams) > 0) { ?>
+		<table class='activeStandings table table-condensed table-striped table-responsive f-small'>
+			<thead>
+				<tr>
+					<th></th>
+					<th>Team</th>
+					<th>Win</th>
+					<th>Loss</th>
+
+					<?php if($league->getIsTies()) { ?>
+						<th>Tie</th>
+					<?php } ?>
+
+					<th>Points</th>   
+
+					<?php if($league->getIsSortByWinPct()) { ?>
+						<th>Win Pct</th>
+					<?php } ?>
+
+					<?php if(!$leagueController->checkHideSpirit($league)) { ?>
+						<th>Spirit Avg.</th>
+					<?php } ?>
+				</tr>
+			</thead>
+			
+			<?php if (!$league->getIsSortByWinPct()) { ?>
+				<?php usort($teams, array("Controllers_TeamsController", "comparePoints")); ?>
+			<?php } else { ?>
+				<?php usort($teams, array("Controllers_TeamsController", "comparePercent")); ?>
+			<?php } ?>
+		
+			<?php $teamCount = 0; ?>
+			<tbody>
+				<?php foreach($teams as $curTeam) { ?>
+					<tr>
+						<td><?php print ++$teamCount; ?></td>
+						<td class='text-left'>
+							<a href="<?php echo $router->pathFor('dashboard-team-page', ['teamID' => $curTeam->getId()] ); ?>"><?php echo $curTeam->getName() ?></a>
+							<?php if($curTeam->getMostRecentWeekSubmitted() < $league->getWeekInStandings()) { ?>
+								 **
+							<?php } ?>
+						</td>
+						<td><?php print $curTeam->getWins(); ?></td>
+						<td><?php print $curTeam->getLosses(); ?></td>
+
+						<?php if($league->getIsTies()) { ?>
+							<td><?php echo $curTeam->getTies() ?></td>
+						<?php } ?>
+
+						<td><?php print $curTeam->getPoints()?></td>
+
+						<?php if($league->getIsSortByWinPct()) { ?>
+							<td><?php echo number_format($curTeam->getWinPercent(), 3, '.', '') ?></td>
+						<?php } ?>
+
+						<?php if(!$leagueController->checkHideSpirit($league)) { ?>
+							<td><?php print $curTeam->getSpiritAverage() > 0 ? number_format($curTeam->getSpiritAverage(), 2, '.', '') : 'N/A'; ?></td>
+						<?php } ?>
+					</tr>
+				<?php } ?>
+			</tbody>
+		</table>
+		
+		<p class='bottomLine'>** - Waiting on Results</p>
+		<?php if(!$leagueController->checkHideSpirit($league)) { ?>
+			<p class='bottomLine'>
+				<?php print 'Spirit averages will be hidden on ' . $league->getDayString() . ' at ' 
+						. date('g A', mktime($league->getHideSpiritHour())) . ' and reposted on ' . $league->getShowSpiritDayString()
+						. ' at ' . date('g A', mktime($league->getShowSpiritHour())) . '.'; 
+				?>
+			</p>
+		<?php } ?>
+			
+		<script>
+			$(function() {
+				$("table.activeStandings").DataTable({
+					"paging": false,
+					"info": false,
+					"searching": false
+				});
+			})
+		</script>
+			
+	<?php } else { ?>
+		<span class='noTeams'><?php print 'No teams to display'; ?></span>
+	<?php } ?>
+		
+<?php } else { ?>
+	<?php if(!isset($includedInTeamPage) || !$includedInTeamPage) { ?>
+		<h1>
+			<?php print $league->getDayString() . ' ' . $league->getSport()->getName() . ' - ' . $league->getName() . ' - ' . $league->getSeason()->getName() . ' ' . $league->getSeason()->getYear();  ?>
+		</h1>
+		<h2 class='leagueWinners'>Final Standings</h2>
+	<?php } else { ?>
+		<h3>Final Standings</h3>
+	<?php } ?>
+	
+	<table class="table table-condensed table-striped table-responsive f-small">
+		<?php usort($teams, array("Controllers_TeamsController", "comparePosition")); ?>
+
+		<?php for($i = 0 ; $i < count($teams) ; $i++) { ?>
+			<?php $isTied = $teamController->checkTied($teams, $i, count($teams), 'finalPosition'); ?>
+			<tr>
+				<td style='width:50px;'>
+					<?php print ($isTied ? 'T' : '') . $teams[$i]->getFinalPositionWithSuffix(); ?>
+				</td><td>
+					<a href='/allSports/TeamPictures/archivePicturePage.php?teamID=<?php print  $teams[$i]->getId() ?>'><?php print $teams[$i]->getName() ?></a>
+				</td>
+			</tr>
+		<?php } ?>
+	</table>
+		
+	<?php if(!isset($includedInTeamPage) || !$includedInTeamPage) { ?>
+		<h2 class='spiritWinners'>Spirit Winners</h2>
+	<?php } else { ?>
+		<h3 class='spiritWinners'>Spirit Winners</h3>
+	<?php } ?>
+	
+	
+	<table class="table table-condensed table-striped table-responsive f-small">
+		<?php usort($teams, array("Controllers_TeamsController", "compareSpirit")); ?>
+
+		<?php for($i = 0 ; $i < count($teams) ; $i++) { ?>
+			<?php $isTied = $teamController->checkTied($teams, $i, count($teams), 'finalSpiritPosition'); ?>
+			<?php if($teams[$i]->getFinalSpiritPosition() > 3) { ?>
+				<?php break; ?>
+			<?php } ?>
+		
+			<tr>
+				<td style='width:50px;'>
+					<?php print ($isTied ? 'T' : '') . $teams[$i]->getFinalSpiritPositionWithSuffix(); ?>
+				</td><td>
+					<a href='/allSports/TeamPictures/archivePicturePage.php?teamID=<?php print $teams[$i]->getId() ?>'><?php print $teams[$i]->getName() ?></a>
+				</td>
+			</tr>
+		<?php } ?>
+	</table>
+<?php } ?>

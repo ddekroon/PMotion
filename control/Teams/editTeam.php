@@ -85,7 +85,7 @@ $numAgents = getAgentsData($leagueID);?>
 	<div class='tableData'>
 			<table>
 				<?php printTeamTopInfo();
-				printPlayersHeader(0); ?>
+				printPlayersHeader(); ?>
 				<?php for($i=0;$i<$numPlayers;$i++) {
 					printPlayerNode($i, $player, $playerGroupID, 0);
 				} ?>
@@ -93,7 +93,7 @@ $numAgents = getAgentsData($leagueID);?>
 				<input type="hidden" name='playerCount' value=<?php print $numPlayers ?>>
 			</table><table>
 				<?php printAgentsTopInfo();
-				printPlayersHeader(1); ?>
+				printPlayersHeader(); ?>
 				<?php for($i=0;$i<$numAgents;$i++) {
 					printPlayerNode($i, $agent, $agentGroupID, 1);
 				} ?>

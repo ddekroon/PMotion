@@ -74,7 +74,7 @@
 		}
 
 		return $this->view->render($response, "score-reporter.phtml", [
-				"request", $request,
+				"request" => $request,
 				"user" => $user,
 				"sport" => $sport,
 				"league" => $league,
@@ -85,9 +85,40 @@
 	})->setName('dashboard-score-reporter')->add($dashboard)->add($authenticate);
 	
 	$app->get('/dashboard/standings/{leagueID}', function(Request $request, Response $response) {
+		
+		$user = Models_User::withID($this->db, $this->logger, $_SESSION[Controllers_AuthController::SESSION_USER_ID]);
 		$league = Models_League::withID($this->db, $this->logger, $request->getAttribute('leagueID'));
 		
-		return $this->view->render($response, "coming-soon.phtml", [
-			"league" => $league
-		]);
+		$league->checkUpdateWeekInStandings();
+		
+		return $this->view->render($response, "standings.phtml", [
+				"request" => $request,
+				"user" => $user,
+				"league" => $league,
+				"router" => $this->router,
+				"leagueController" => new Controllers_LeaguesController($this->db, $this->logger),
+				"teamController" => new Controllers_TeamsController($this->db, $this->logger)
+			]
+		);
 	})->setName('dashboard-standings')->add($dashboard)->add($authenticate);
+	
+	//Edit Team
+	$app->get('/dashboard/team/{teamID}', function (Request $request, Response $response) {
+		$user = Models_User::withID($this->db, $this->logger, $_SESSION[Controllers_AuthController::SESSION_USER_ID]);
+		
+		if(is_null($user) || $user->getId() == null) {
+			return $response->withRedirect($this->router->pathFor('dashboard-forbidden'), 403);
+		}
+		
+		$team = Models_Team::withID($this->db, $this->logger, $request->getAttribute('teamID'));
+		
+		return $this->view->render($response, "team-page.phtml", [
+				"request" => $request,
+				"user" => $user,
+				"team" => $team,
+				"router" => $this->router,
+				"isDashboard" => true,
+				"leagueController" => new Controllers_LeaguesController($this->db, $this->logger),
+				"teamController" => new Controllers_TeamsController($this->db, $this->logger)
+		]); 
+	})->setName('dashboard-team-page')->add($dashboard)->add($authenticate);
