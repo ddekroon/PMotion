@@ -85,7 +85,7 @@
 	</div>
 
 	<p>&nbsp;</p>
-	<p><?php print $team->getPic() ?></p>
+	
 	<?php if($team->getIsPic()) { ?>
 	
 		<div class='centerImg' align="center" style="width:90%; max-width:550px;height:auto;">
@@ -94,14 +94,6 @@
 		<p>&nbsp;</p>
 		
 	<?php } ?>
-	
-	<?php /* <?php $teams = $team->getLeague()->getTeams(); ?>
-		
-	<?php if (!$team->getLeague()->getIsSortByWinPct()) { ?>
-		<?php usort($teams, array("Controllers_TeamsController", "comparePoints")); ?>
-	<?php } else { ?>
-		<?php usort($teamObjs, array("Controllers_TeamsController", "comparePercent")); ?>
-	<?php } ?> */ ?>
 		
 	<?php print $this->fetch('standings.phtml', [
 		"router" => $router,

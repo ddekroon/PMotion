@@ -3,7 +3,7 @@
 	use \Psr\Http\Message\ServerRequestInterface as Request;
 	use \Psr\Http\Message\ResponseInterface as Response;
 
-	$app->get('/api/sports/{id}', function (Request $request, Response $response) {
+	$app->get('/api/sport/{id}', function (Request $request, Response $response) {
 
 		$sportID = (int)$request->getAttribute('id');
 
