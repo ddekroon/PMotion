@@ -224,7 +224,7 @@ class Models_League extends Models_Generic implements Models_Interface, JsonSeri
 			if($team->getMostRecentWeekSubmitted() > $maxWeeksInStandings) $maxWeeksInStandings = $team->getMostRecentWeekSubmitted();
 		}
 		
-		if ($maxWeeksInStandings > $this->weekInStandings()) {
+		if ($maxWeeksInStandings > $this->getWeekInStandings()) {
 			$this->setWeekInStandings($maxWeekInStandings);
 			$this->saveOrUpdate();
 		}

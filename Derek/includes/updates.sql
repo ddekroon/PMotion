@@ -40,6 +40,10 @@ ADD CONSTRAINT `FK_ScheduledMatch_TeamTwo`
   ON DELETE CASCADE
   ON UPDATE NO ACTION;
 
+--delete sm FROM data_perpetualmotion.scheduled_matches_dbtable sm 
+--left JOIN dates_dbtable on date_id = scheduled_match_date_id 
+--where date_id is null;
+
 ALTER TABLE `data_perpetualmotion`.`scheduled_matches_dbtable` 
 ADD INDEX `FK_ScheduledMatch_Date_idx` (`scheduled_match_date_id` ASC);
 ALTER TABLE `data_perpetualmotion`.`scheduled_matches_dbtable` 
