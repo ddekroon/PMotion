@@ -3,7 +3,6 @@
 class Models_Team extends Models_Generic implements Models_Interface, JsonSerializable {
 	protected $leagueId;
     protected $name;
-	protected $captainId;
     protected $numInLeague;
     protected $managedByUserId;
     protected $wins;
@@ -66,7 +65,6 @@ class Models_Team extends Models_Generic implements Models_Interface, JsonSerial
 		
 		$this->leagueId = $data['team_league_id'];
 		$this->name = $data['team_name'];
-		$this->captainId = $data['team_captain_id'];
 		$this->numInLeague = $data['team_num_in_league'];
 		$this->managedByUserId = $data['team_managed_by_user_id'];
 		$this->wins = $data['team_wins'];
@@ -300,10 +298,6 @@ class Models_Team extends Models_Generic implements Models_Interface, JsonSerial
 		return $this->name;
 	}
 
-	function getCaptainId() {
-		return $this->captainId;
-	}
-
 	function getNumInLeague() {
 		return $this->numInLeague;
 	}
@@ -382,10 +376,6 @@ class Models_Team extends Models_Generic implements Models_Interface, JsonSerial
 
 	function setName($name) {
 		$this->name = $name;
-	}
-
-	function setCaptainId($captainId) {
-		$this->captainId = $captainId;
 	}
 
 	function setNumInLeague($numInLeague) {

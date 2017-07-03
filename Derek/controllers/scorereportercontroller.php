@@ -53,26 +53,56 @@
 
 			return [];
 		}
+		
+		public function getScoreSubmissions(Models_Team $team, Models_Team $oppTeam, Models_Date $date): array {
+			
+			$scoreSubmissions = [];
+			
+			if($team == null || $date == null) {
+				return $scoreSubmissions;
+			}
+			
+			$sql = "SELECT * FROM " . Includes_DBTableNames::scoreSubmissionsTable . " as scoreSubs "
+					. "WHERE score_submission_date_id = " . $date->getId() . " "
+						. "AND score_submission_team_id = " . $team->getId() . " ";
+			
+			if($oppTeam != null) {
+				$sql .= "AND score_submission_opp_team_id = " . $oppTeam->getId() . " ";
+			}
+			
+			$sql .= "AND score_submission_ignored = 0";
+			
+			$stmt = $this->db->query($sql);
 
-		public function saveFromRequest(Request $request) {
+			//goes through the results and figures out which opponents team teamID had
+			while(($row = $stmt->fetch()) != false) {
+				$scoreSubmissions[] = Models_ScoreSubmission::withRow($this->db, $this->logger, $row);
+			}
+
+			return $scoreSubmissions;
+		}
+
+		public function saveFromRequest(Slim\Http\Request $request) {
 			$leaguesController = new Controllers_LeaguesController($this->db, $this->logger);
 			
 			$allPostVars = $request->getParsedBody();
 			$leagueID = $allPostVars['leagueID'];
 			$teamID = $allPostVars['teamID'];
 
-			$league = getLeagueById($leagueID);
-			$team = getTeamById($teamID);
+			$league = Models_League::withID($this->db, $this->logger, $leagueID);
+			$team = Models_Team::withID($this->db, $this->logger, $teamID);
 			
 			$activeDate = null;
-			if($allPostVars['dateID'] != null) {
+			
+			if(isset($allPostVars['dateID']) && $allPostVars['dateID'] > 0) {
 				$activeDate = Models_Date::withID($this->db, $this->logger, $allPostVars['dateID']);
 			} else {
 				$activeDate = $leaguesController->getActiveDate($league);
 			}
-			$ignoreSubmission = checkSubmissionExists($team, $activeDate);
 			
-			$submissions = createSubmissionsFromRequest($request, $league, $team, $ignoreSubmission);
+			$ignoreSubmission = $this->checkSubmissionExists($team, $activeDate);
+						
+			$submissions = $this->createSubmissionsFromRequest($request, $league, $team, $ignoreSubmission);
 
 			if(!is_array($submissions) || count($submissions) == 0) {
 				throw new Error("Internal error. Couldn't create submissions from the data given. Please contact the site admin if this issue persists.");
@@ -83,7 +113,7 @@
 			}
 
 			//If we get here we have valid submissions, send emails and save.
-			sendScoreEmails($team); //TODO: sends score reporter emails to admins, leave this before submitting scores
+			$this->sendScoreEmails($league, $team, $submissions); //TODO: sends score reporter emails to admins, leave this before submitting scores
 			
 			foreach($submissions as $submission) {
 				$submission->saveOrUpdate();
@@ -94,7 +124,7 @@
 			} 
 		}
 
-		public function createSubmissionsFromRequest(Request $request, League $league, Team $team, boolean $ignoreSubmission) {
+		public function createSubmissionsFromRequest(Slim\Http\Request $request, Models_League $league, Models_Team $team, $ignoreSubmission) {
 			
 			$submissions = array();
 			$allPostVars = $request->getParsedBody();
@@ -104,8 +134,8 @@
 			$oppTeamIds = $allPostVars['oppTeamID'];
 			
 			$resultValues = $allPostVars['result'];
-			$scoreUsValues = $allPostVars['scoreUs'];
-			$scoreThemValues = $allPostVars['scoreThem'];
+			$scoreUsValues = isset($allPostVars['scoreUs']) ? $allPostVars['scoreUs'] : [];
+			$scoreThemValues = isset($allPostVars['scoreThem']) ? $allPostVars['scoreThem'] : [];
 			
 			for ($i=0; $i < $league->getNumMatches(); $i++) {
 								
@@ -163,75 +193,45 @@
 
 			$stmt = $this->db->query($sql);
 
-			return $stmt->fetchColumn() > 0;
+			return $stmt->fetchColumn() > 0; //this is so stupid but needed to not break when sending the boolean through to another typed method.
 		}
 
 
 		//Checks if a team submitted against the right team compared to whats in the database scheduled_matches. If that's wrong, sends that, the scores they sent, 
 		//the scores the team they said they played against submitted, and the scores the team they were supposed to play submitted.
 		//Next it checks if what they submitted was different than what their opponent did. SPAMS ZACH! :D
-		function sendScoreEmails($leagueID, $teamID) {
-			global $scoreSubmissionsTable, $leaguesTable, $teamsTable, $scoreCommentsTable, $scheduledMatchesTable, $spiritScoresTable, $datesTable;
-			global $dateID, $actualWeekDate, $dayOfYear, $teamName, $leagueName, $sportID, $dayNumber, $weekNum, $isPlayoffs;
-			global $oppTeamID, $scoreUs, $scoreThem, $gameResults, $spiritScores, $matchComments, $submitName, $submitEmail, $matches, $games;
-			$mailBody = '';
+		function sendScoreEmails(Models_League $league, Models_Team $team, array $submissions) {
+			
+			if($league == null || $team == null || $submissions == null || count($submissions) == 0) {
+				return;
+			}
+			
 			$teamsNotEqual = 0;
 			$oppName = array();
 			$dbOppName = array();
 			$currDate = date('r');
+			$firstSubmission = array_values($submissions)[0];
  
 			$mailBody = '<table>'
 				. "<tr><td>=======================================</td></tr>"
 				. "<tr><td>Results mailed on $currDate</td></tr>"
-				. "<tr><td>Team Name:      $teamName</td></tr>"
-				. "<tr><td>Submitted by:   $submitName ($submitEmail)</td></tr>"
-				. "<tr><td>League:         ".dayOfWeek($dayNumber)." $leagueName</td></tr>"
-				. "<tr><td>Date Played:    Week $weekNum - $actualWeekDate</td></tr>"
+				. "<tr><td>Team Name:      " . $team->getName() . "</td></tr>"
+				. '<tr><td>Submitted by:   ' .  $firstSubmission->getSubmitterName() . ' (' . $firstSubmission->getSubmitterEmail() . ')</td></tr>'
+				. "<tr><td>League:         " . $league->getDayString() . " " .$league->getName() . "</td></tr>"
+				. "<tr><td>Date Played:    Week " . $firstSubmission->getDate()->getWeekNumber() . " - " . $firstSubmission->getDescription() . "</td></tr>"
 				. "<tr><td>======================================</td></tr></table>";
 			
 			$mailBody.='<table align=left>';
-
-			if($isPlayoffs == 0) {
-				$matchesArray = mysql_query("SELECT * FROM $scheduledMatchesTable 
-					Inner Join $datesTable ON $scheduledMatchesTable.scheduled_match_date_id = $datesTable.date_id
-					Inner Join $leaguesTable ON $leaguesTable.league_id = $scheduledMatchesTable.scheduled_match_league_id
-					WHERE ($scheduledMatchesTable.scheduled_match_team_id_2 = $teamID 
-					OR $scheduledMatchesTable.scheduled_match_team_id_1 = $teamID)
-					AND $datesTable.date_week_number = $leaguesTable.league_week_in_score_reporter
-					AND $leaguesTable.league_week_in_score_reporter = $datesTable.date_week_number
-					ORDER BY scheduled_match_league_id ASC, scheduled_match_date_id ASC, scheduled_match_time ASC") 
-					or die ("Error: ".mysql_error());		
-				//goes through the results and figures out which opponents team teamID had
-				for($i=0;$i<$matches;$i++) {
-					$matchNode=mysql_fetch_array($matchesArray);
-					if($matchNode['scheduled_match_team_id_1'] != '' && $matchNode['scheduled_match_team_id_2'] != '') { //this is a defence for if the playoff week is set wrong
-						if($matchNode['scheduled_match_team_id_1'] == $dbOppTeamID[$i-1] || $matchNode['scheduled_match_team_id_2'] == $dbOppTeamID[$i-1]) {
-							$i--;
-						} else {
-							if ($matchNode['scheduled_match_team_id_1'] == $teamID) {
-								if(($dbOppTeamID[$i] = $matchNode['scheduled_match_team_id_2']) == '') {
-									$dbOppTeamID[$i] = 0;
-								}
-							} else {
-								if(($dbOppTeamID[$i] = $matchNode['scheduled_match_team_id_1']) == '') {
-									$dbOppTeamID[$i] = 0;
-								}
-							}
-						}
-					} else {
-						$dbOppTeamID[$i] = 0;
-					}
-				}
-			}
-
-			for ($i=0;$i<$matches;$i++) {
-				if($isPlayoffs == 0 && $dbOppTeamID[0] != 0) {
-					$oppSpiritQuery = mysql_query("SELECT * FROM $spiritScoresTable INNER JOIN $scoreSubmissionsTable ON spirit_score_score_submission_id = score_submission_id
-						INNER JOIN $datesTable ON $datesTable.date_id = $scoreSubmissionsTable.score_submission_date_id 
-						INNER JOIN $leaguesTable ON $leaguesTable.league_day_number = $datesTable.date_day_number
-						INNER JOIN $teamsTable ON $teamsTable.team_league_id = $leaguesTable.league_id
-						WHERE date_week_number = league_week_in_score_reporter AND (team_id = $dbOppTeamID[$i] OR team_id = $teamID) AND score_submission_team_id = $dbOppTeamID[$i] 
-						AND score_submission_opp_team_id = $teamID AND score_submission_ignored = 0") or die('ERROR gettings spirit score - '.mysql_error());
+			
+			$scheduledMatches = $this->getMatches($team);
+			$gameNum = 0;
+			
+			for ($i = 0; $i < $league->getNumMatches(); $i++) {
+				$curSubmission = $submissions[$gameNum];
+				
+				if($isPlayoffs == 0 && $scheduledMatches[0]->getOppTeamId() > 1) {
+					$oppSubmissions = $this->getScoreSubmissions($this->getOppTeamId(), $this-> $firstSubmission->getDate())
+					
 					$oppSpiritArray = mysql_fetch_array($oppSpiritQuery);
 					$oppSpiritScore = $oppSpiritArray['spirit_score_value'];
 
@@ -355,7 +355,7 @@
 		}
 
 		//Checks if the results the person submitted match up with what their opponent submitted
-		function checkResultsEqual($games, $gameResults, $oppTeamResult, $curMatch) {
+		public function checkResultsEqual($games, $gameResults, $oppTeamResult, $curMatch) {
 			for ($j = 0;$j < $games; $j++) {
 				if ($gameResults[$curMatch*$games + $j] ==1 && $oppTeamResult[$j] != 2) {
 					return false;
@@ -368,7 +368,7 @@
 			return true;
 		}
 
-		function checkGameEqual($gameResults, $oppTeamResult) {
+		public function checkGameEqual($gameResults, $oppTeamResult) {
 			if ($gameResults ==1 && $oppTeamResult != 2) {
 				return false;
 			} elseif ($gameResults ==2 && $oppTeamResult != 1) {
@@ -380,7 +380,7 @@
 		}
 
 		//Formats a teams submission for an email and returns the text
-		function formatResults($sportID, $teamOppID, $teamResult, $teamScoreUs, $teamScoreThem, $games, $curMatch, $spiritScore) {
+		public function formatResults($sportID, $teamOppID, $teamResult, $teamScoreUs, $teamScoreThem, $games, $curMatch, $spiritScore) {
 			global $teamsTable, $isPlayoffs;
 			$teamArray = query("SELECT * FROM $teamsTable WHERE team_id = $teamOppID");
 			$teamName = $teamArray['team_name'];
@@ -420,7 +420,7 @@
 		}
 
 		//emails helper, figures out the actual week day
-		function dayOfWeek($dayNumber) {
+		public function dayOfWeek($dayNumber) {
 			if ($dayNumber == 1) {
 				return 'Monday';
 			} else if ($dayNumber == 2) {

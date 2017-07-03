@@ -37,7 +37,7 @@
 
 				if($team->getLeague() !== null) {
 
-					$matches = $scoreReporter->getMatches($team, $team->getLeague());
+					$matches = $scoreReporter->getMatches($team);
 
 					return $this->view->render($response, "score-reporter-matches.phtml", [
 							"request", $request,

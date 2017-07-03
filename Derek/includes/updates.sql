@@ -49,8 +49,13 @@ ADD CONSTRAINT `FK_League_Sport`
 
 -- TEAMS
 
-delete team.* FROM data_perpetualmotion.teams_dbtable team
+
+ALTER TABLE `data_perpetualmotion`.`teams_dbtable` 
+CHANGE COLUMN `team_league_id` `team_league_id` INT(11) NULL DEFAULT NULL ;
+
+update data_perpetualmotion.teams_dbtable team 
 left JOIN leagues_dbtable on team.team_league_id = league_id 
+set team_league_id = null 
 where league_id is null;
 
 ALTER TABLE `data_perpetualmotion`.`teams_dbtable` 

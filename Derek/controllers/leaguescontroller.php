@@ -170,19 +170,19 @@
 			$dayOfWeekNum = date('N'); //Number representing day of week... Mon=1, Tues=2..Sun=7
 			$timeOfDay = date('G');   //24 Hour representation of time: 0-23
 
-			$dateHide = $league->getLeagueDayNumber();
-			$dateShow = $dateHide + $league->getLeagueNumDaysSpiritHidden();
+			$dateHide = $league->getDayNumber();
+			$dateShow = $dateHide + $league->getNumDaysSpiritHidden();
 			
 			if($dateShow > 7) {
 				$dateShow = $dateShow % 7; //if games are sunday show date is gonna be greater than 7.
 			}
 
 			if($dayOfWeekNum == $dateHide) { //If it's the day of the game, hide spirit
-				return $timeOfDay >= $league->getLeagueHideSpiritHour();
+				return $timeOfDay >= $league->getHideSpiritHour();
 			}
 
 			if(($dayOfWeekNum == $dateShow)) { //If it's 2 days after the game, show spirit
-				return !($timeOfDay >= $league->getLeagueShowSpiritHour());
+				return !($timeOfDay >= $league->getShowSpiritHour());
 			}
 
 			return ($dayOfWeekNum > $dateHide && $dayOfWeekNum < $dateShow) || ($dayOfWeekNum == 1 && $dateHide == 7);

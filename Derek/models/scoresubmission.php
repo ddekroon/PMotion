@@ -19,6 +19,7 @@ class Models_ScoreSubmission extends Models_Generic implements Models_Interface,
 	private $scoreSubmissionComment;
 	private $team;
 	private $oppTeam;
+	private $date;
 
 	public static function withID($db, $logger, $id) {
 		$instance = new self();
@@ -69,7 +70,7 @@ class Models_ScoreSubmission extends Models_Generic implements Models_Interface,
         $this->isPhantom = $data['score_submission_is_phantom'];
     }
 	
-	public function getSpiritScore() {
+	public function getSpiritScore(): Models_SpiritScore {
 		if($this->spiritScore == null && $this->db != null) {
 		
 			$sql = "SELECT * FROM " . Includes_DBTableNames::spiritScoresTable . " WHERE spirit_score_score_submission_id = " . $this->getId() . " LIMIT 1";
@@ -91,7 +92,7 @@ class Models_ScoreSubmission extends Models_Generic implements Models_Interface,
 		$this->spiritScore = $spiritScore;
 	}
 
-	public function getScoreSubmissionComment() {
+	public function getScoreSubmissionComment(): Models_ScoreSubmissionComment {
 		
 		if($this->scoreSubmissionComment == null && $this->db != null) {
 		
@@ -128,6 +129,14 @@ class Models_ScoreSubmission extends Models_Generic implements Models_Interface,
 		}
 		
 		return $this->oppTeam;
+	}
+	
+	function getDate() {
+		if($this->date == null && $this->db != null && $this->getDateId() != null) {
+			$this->date = Models_Date::withID($this->db, $this->logger, $this->getDateId());
+		}
+		
+		return $this->date;
 	}
 	
 	public function getResultsString() {
@@ -245,58 +254,47 @@ class Models_ScoreSubmission extends Models_Generic implements Models_Interface,
 		$this->isPhantom = $isPhantom;
 	}
 	
-	function validate(League $league) {
+	function validate(Models_League $league, int $matchNum) {
 		
-		$gameNum = 0; 
-		$matchNum = 0;
+		$error = '';
 		
 		if ($league == null) {
 			throw new Exception('No League Given');
 		}
 		
-		if ($this->teamId == null || $this->teamId <= 1) { //Team 1 is practice. Can't submit a score for them.
-			throw new Exception('Invalid Team');
+		if ($this->getTeamId() == null || $this->getTeamId() <= 1) { //Team 1 is practice. Can't submit a score for them.
+			$error .= 'Invalid Team Given for match ' .$matchNum;
 		}
 
 		if($league->getIsPlayoffs() == 0) {
-
-			for ($i=0;$i<$matches;$i++) {
-				$matchNum++;
-				if ($oppTeamID[$i] == 0) {
-					$error.='* Please enter a team for match '.$matchNum.'<br />';
-				}
-				if ($spiritScores[$i] && $spiritScores[$i] < 3.5 && strlen($matchComments[$i]) < 2 && $oppTeamID[$i] != 1) {
-					$error.='* Please enter the reason for spirit being so low in match '.$matchNum.'<br />';
-				}
-				if ($oppTeamID[$i] == $teamID) {
-					$error.='* Please select a different opposing team for game '.$matchNum.'<br />';
-				}
-				if ($oppTeamID[$i] > 2) {
-					for ($j=0;$j<$games;$j++) {
-						if (!$gameResults[$gameNum]) {
-							$error.='* Please enter a result for game '.$gameNum.'<br />';
-						}
-						$gameNum++;
-					}
-				}
+			
+			$spirit = $this->getSpiritScore() != null ? $this->getSpiritScore()->getValue() : -1;
+			$comment = $this->getScoreSubmissionComment() != null ? $this->getScoreSubmissionComment()->getComment() : "";
+			
+			if ($this->getOppTeamId() == null || $this->getOppTeamId() <= 0) {
+				$error .= '* Please enter a team for match ' . $matchNum . '<br />';
 			}
 
-			if ($matches == 2) {
-				if ($oppTeamID[0] == $oppTeamID[1]) {
-					$error.='* Please select two different opposing teams<br />';
-				}
+			if ($this->getSpiritScore() != null && $spirit < 3.5 && ($this->getScoreSubmissionComment() == null || strlen($comment) < 2) && $this->getOppTeamId() != 1) {
+				$error .= '* Please enter the reason for spirit being so low in match ' . $matchNum . '<br />';
+			}
+			
+			if ($this->getOppTeamId() == $this->getTeamId()) {
+				$error .= '* Please select a different opposing team for game ' . $matchNum . '<br />';
+			}
+			
+			if ($this->getOppTeamId() != 1 && $this->getResult() == null) { //Not practice
+				$error .= '* Please enter a result for game ' . $matchNum . '<br />';
 			}
 		}
 
-		if (strlen($submitName) < 2) {
-			$error.='* Please enter your name<br />';
-		} else {
-			if (!isValid($submitName)) {
-				$error.='* Please enter a valid name<br />';
-			}
+		if (strlen($this->getSubmitterName()) < 2 || preg_match("/[^A-Za-z0-9\'\- @\.]/", $this->getSubmitterName())) { //Too short or invalid characters
+			$error .= '* Please enter your name<br />';
 		}
-
-		return $error;
+		
+		if(strlen($error) > 0) {
+			throw new Exception($error);
+		}
 	}
 	
 	function saveOrUpdate() {
