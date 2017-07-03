@@ -219,12 +219,12 @@ class Models_League extends Models_Generic implements Models_Interface, JsonSeri
 	
 	function checkUpdateWeekInStandings() {
 		
-		$maxWeeksInStandings = 0;
+		$maxWeekInStandings = 0;
 		foreach($this->getTeams() as $team) {
-			if($team->getMostRecentWeekSubmitted() > $maxWeeksInStandings) $maxWeeksInStandings = $team->getMostRecentWeekSubmitted();
+			if($team->getMostRecentWeekSubmitted() > $maxWeekInStandings) $maxWeekInStandings = $team->getMostRecentWeekSubmitted();
 		}
 		
-		if ($maxWeeksInStandings > $this->getWeekInStandings()) {
+		if ($maxWeekInStandings > $this->getWeekInStandings()) {
 			$this->setWeekInStandings($maxWeekInStandings);
 			$this->saveOrUpdate();
 		}
