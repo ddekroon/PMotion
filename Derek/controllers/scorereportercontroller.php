@@ -230,14 +230,12 @@
 				$curSubmission = $submissions[$gameNum];
 				
 				if($isPlayoffs == 0 && $scheduledMatches[0]->getOppTeamId() > 1) {
-					$oppSubmissions = $this->getScoreSubmissions($this->getOppTeamId(), $this-> $firstSubmission->getDate())
-					
-					$oppSpiritArray = mysql_fetch_array($oppSpiritQuery);
-					$oppSpiritScore = $oppSpiritArray['spirit_score_value'];
+					$oppSubmissions = $this->getScoreSubmissions($this->getOppTeamId(), $this-> $firstSubmission->getDate());
 
 					$teamsNotEqual = 0;
 					$dbOppSubmittedScore = 1; //by default, assumes the opponent has submitted their score
 					$oppSubmittedScore = 1;
+					
 					if($dbOppTeamID[$i] > 0) {
 						if ($dbOppTeamID[$i] != $oppTeamID[$i]) {
 							$teamsNotEqual = 1;
