@@ -115,7 +115,7 @@ class Models_ScoreSubmission extends Models_Generic implements Models_Interface,
 		$this->scoreSubmissionComment = $scoreSubmissionComment;
 	}
 
-	function getTeam() {
+	public function getTeam() : Models_Team {
 		if($this->team == null && $this->db != null && $this->getTeamId() != null) {
 			$this->team = Models_League::withID($this->db, $this->logger, $this->getTeamId());
 		}
@@ -123,7 +123,7 @@ class Models_ScoreSubmission extends Models_Generic implements Models_Interface,
 		return $this->team;
 	}
 	
-	function getOppTeam() {
+	public function getOppTeam() : Models_Team {
 		if($this->oppTeam == null && $this->db != null && $this->getOppTeamId() != null) {
 			$this->oppTeam = Models_Team::withID($this->db, $this->logger, $this->getOppTeamId());
 		}
@@ -131,7 +131,7 @@ class Models_ScoreSubmission extends Models_Generic implements Models_Interface,
 		return $this->oppTeam;
 	}
 	
-	function getDate() {
+	public function getDate() : Models_Date {
 		if($this->date == null && $this->db != null && $this->getDateId() != null) {
 			$this->date = Models_Date::withID($this->db, $this->logger, $this->getDateId());
 		}
@@ -139,7 +139,7 @@ class Models_ScoreSubmission extends Models_Generic implements Models_Interface,
 		return $this->date;
 	}
 	
-	public function getResultsString() {
+	public function getResultsString() : String {
 		switch($this->getResult()) {
 			case Includes_GameResults::WIN:
 				return "Won";

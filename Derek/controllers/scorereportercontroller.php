@@ -2,7 +2,7 @@
 
 	class Controllers_ScoreReporterController extends Controllers_Controller {
 
-		public function getMatches($team) {
+		public function getMatchesInScoreReporter($team) : array {
 
 			if(isset($team) && $team->getId() != null && $team->getLeague() !== null && $team->getLeague()->getId() != null) {
 				$sql = "SELECT " . Includes_DBTableNames::scheduledMatchesTable . ".* FROM " . Includes_DBTableNames::scheduledMatchesTable . " "
@@ -24,7 +24,7 @@
 					
 					//This if statements checks if both scheduled matches are against the same team, this can happen if you double submit a leagues matches for a week.
 					if($i != 0) {
-						if(($matchNode['scheduled_match_team_id_1'] == $matches[$i-1]->getOppTeamId() || $matchNode['scheduled_match_team_id_2'] == $matches[$i-1]->getOppTeamId()) 
+						if(($matchNode['scheduled_match_team_id_1'] == $matches[$i-1]->getOppTeamId($team) || $matchNode['scheduled_match_team_id_2'] == $matches[$i-1]->getOppTeamId($team)) 
 								&& $matchNode['scheduled_match_team_id_1'] != '') {
 							$i--;
 							continue;
@@ -34,16 +34,16 @@
 					if($matchNode == false) {
 						//echo "No matches scheduled this week";
 						//break;
-						$match = new Models_Match();
+						$match = new Models_ScheduledMatch();
 					} else {
-						$match = Models_Match::withRow($this->db, $this->logger, $matchNode);
+						$match = Models_ScheduledMatch::withRow($this->db, $this->logger, $matchNode);
 					}
 
-					if ($matchNode['scheduled_match_team_id_1'] == $team->getId()) {
+					/* if ($matchNode['scheduled_match_team_id_1'] == $team->getId()) {
 						$match->setOppTeamId($matchNode['scheduled_match_team_id_2']);
 					} else {
 						$match->setOppTeamId($matchNode['scheduled_match_team_id_1']);
-					}
+					} */
 
 					$matches[] = $match;
 				}
@@ -64,7 +64,7 @@
 			
 			$sql = "SELECT * FROM " . Includes_DBTableNames::scoreSubmissionsTable . " as scoreSubs "
 					. "WHERE score_submission_date_id = " . $date->getId() . " "
-						. "AND score_submission_team_id = " . $team->getId() . " ";
+					. "AND score_submission_team_id = " . $team->getId() . " ";
 			
 			if($oppTeam != null) {
 				$sql .= "AND score_submission_opp_team_id = " . $oppTeam->getId() . " ";
@@ -113,7 +113,7 @@
 			}
 
 			//If we get here we have valid submissions, send emails and save.
-			$this->sendScoreEmails($league, $team, $submissions); //TODO: sends score reporter emails to admins, leave this before submitting scores
+			$this->sendScoreEmails($league, $team, $submissions); //Sends score reporter emails to admins, leave this before submitting scores
 			
 			foreach($submissions as $submission) {
 				$submission->saveOrUpdate();
@@ -206,9 +206,7 @@
 				return;
 			}
 			
-			$teamsNotEqual = 0;
-			$oppName = array();
-			$dbOppName = array();
+			$commentAdded = false;
 			$currDate = date('r');
 			$firstSubmission = array_values($submissions)[0];
  
@@ -223,217 +221,176 @@
 			
 			$mailBody.='<table align=left>';
 			
-			$scheduledMatches = $this->getMatches($team);
+			$scheduledMatches = $this->getMatchesInScoreReporter($team);
 			$gameNum = 0;
 			
 			for ($i = 0; $i < $league->getNumMatches(); $i++) {
 				$curSubmission = $submissions[$gameNum];
 				
-				if($isPlayoffs == 0 && $scheduledMatches[0]->getOppTeamId() > 1) {
-					$oppSubmissions = $this->getScoreSubmissions($this->getOppTeamId(), $this-> $firstSubmission->getDate());
-
-					$teamsNotEqual = 0;
-					$dbOppSubmittedScore = 1; //by default, assumes the opponent has submitted their score
-					$oppSubmittedScore = 1;
+				for($j = 0; $j < $league->getNumGamesPerMatch(); $j++) {
+					$gameNum++;
+				}
+				
+				$teamsNotEqual = false; //By default assume they submitted for the correct team.
+				$oppSubmissions = [];
+				
+				//Not playoffs, not against practice team, there is a scheduled match opp team
+				if(!$league->getIsInPlayoffs() && $curSubmission->getOppTeamId() > 1 
+						&& sizeof($scheduledMatches) > $i && $scheduledMatches[$i]->getOppTeamId($team) > 0) {
 					
-					if($dbOppTeamID[$i] > 0) {
-						if ($dbOppTeamID[$i] != $oppTeamID[$i]) {
-							$teamsNotEqual = 1;
-						}
-						$dbOppSubmissionQuery = mysql_query("SELECT * FROM $scoreSubmissionsTable 
-							Inner Join $datesTable ON $scoreSubmissionsTable.score_submission_date_id = $datesTable.date_id
-							Inner Join $leaguesTable ON $datesTable.date_day_number = $leaguesTable.league_day_number 
-							WHERE score_submission_team_id = $dbOppTeamID[$i] 
-							AND $datesTable.date_week_number = $leaguesTable.league_week_in_score_reporter 
-							AND $leaguesTable.league_id = $leagueID AND score_submission_ignored = 0") 
-							or die('ERROR - Getting score submissions data for database team '. mysql_error());
-						if (mysql_num_rows($dbOppSubmissionQuery) >0) {
-							$numDBOppScores = 0;
-							while($dbOppSubmission = mysql_fetch_array($dbOppSubmissionQuery)) {
-								$dbOppTeamOppID[$numDBOppScores] = $dbOppSubmission['score_submission_opp_team_id'];
-								$dbOppTeamResult[$numDBOppScores] = $dbOppSubmission['score_submission_result'];
-								$dbOppTeamScoreUs[$numDBOppScores] = $dbOppSubmission['score_submission_score_us'];
-								$dbOppTeamScoreThem[$numDBOppScores] = $dbOppSubmission['score_submission_score_them'];
-								$numDBOppScores++;			
-							}
-							if ($numDBOppScores > $games*$matches) {
-								$mailBody.='<font color="#FF0000"><b>Opponent has more than 4 unignored scores in the score_submissions database</b></font>';
-							}
-						} else {
-							$numDBOppScores = 0;
-							$dbOppSubmittedScore = 0;
-						}
-					} else { //Either in the playoffs or first team was never obtained, opponent never submitted their score
-						$numDBOppScores = 0;
-						$dbOppSubmittedScore = 0;
+					if ($curSubmission->getOppTeamId() != $scheduledMatches[$i]->getOppTeamId($team)) {
+						$teamsNotEqual = true;
+					} else {
+						$oppSubmissions = $this->getScoreSubmissions($curSubmission->getOppTeamId(), null, $curSubmission->getDate());
 					}
 				}
 
-				$mailBody.='<tr align="center"><td colspan=10><font color="#FF0000"><b>';
-				//At this point there's one or two arrays storing all the opponents submittion data... hopefully, this of course gets repeated for each match
-				$matchQuery = mysql_query("SELECT * FROM $scoreSubmissionsTable 
-					Inner Join $datesTable ON $scoreSubmissionsTable.score_submission_date_id = $datesTable.date_id
-					Inner Join $leaguesTable ON $datesTable.date_day_number = $leaguesTable.league_day_number 
-					WHERE score_submission_team_id = $teamID AND $datesTable.date_week_number = $leaguesTable.league_week_in_score_reporter 
-					AND $leaguesTable.league_id = $leagueID AND score_submission_ignored = 0") or die(mysql_error());
-				if (mysql_num_rows($matchQuery) > 0) {
-					$mailBody.="Results have already been submitted, these will be ignored<br />";
+				$mailBody .= '<tr align="center"><td colspan=10><font color="#FF0000"><b>';
+				
+				$teamDBSubmissions = $this->getScoreSubmissions($team, null, $curSubmission->getDate());
+				
+				if (sizeof($teamDBSubmissions) > 0) {
+					$mailBody .= "Results have already been submitted, these will be ignored<br />";
 				}
-				if($isPlayoffs == 0 && $dpOppTeamID[0] != 0) {
-					if ($teamsNotEqual == 1) {
-						$mailBody.= "Opponent submitted against is different than in the database<br />";
+				
+				if(!$league->getIsInPlayoffs() && $curSubmission->getOppTeamId() > 0) {
+					
+					if ($teamsNotEqual) {
+						$mailBody .= "Opponent submitted against is different than in the database<br />";
 					} else {
-						$oppSubmissionsCorrect = 0;
-						$scoresChecker = 1; //1 signifies are the same
-						for($k=0;$k<$numDBOppScores;$k++) {
-							if($dbOppTeamOppID[$k] == $teamID) {
-								$oppSubmissionsCorrect = 1;
-								for($m=0;$m<$games;$m++) {
-									if (checkGameEqual($gameResults[$i*$games+$m], $dbOppTeamResult[$k+$m]) == false) {
-										$scoresChecker = 0;
+						
+						$oppSubmissionsCorrect = false;
+						$curSubmissionAndOppSubmissionMatch = true; //1 signifies are the same
+						
+						for($k = 0; $k < sizeof($oppSubmissions); $k++) {
+							if($oppSubmissions[$k]->getOppTeamId() == $team->getId()) {
+								
+								$oppSubmissionsCorrect = true;
+								
+								for($m = 0; $m < $games; $m++) {
+									if (!checkSubmissionsMatch($submissions[($i * $games) + $m], $oppSubmissions[$k + $m])) {
+										$curSubmissionAndOppSubmissionMatch = false;
 									}
 								}
-								$k=1000;
+								
+								//$k = 1000000; //Could i not just use break; here?
 							}
 						}
-						if ($scoresChecker == 0 && $oppSubmissionsCorrect == 1 && $numDBOppScores > 0) {
+						if (!$curSubmissionAndOppSubmissionMatch) {
 							$mailBody.= "Submitted results don't match their opponenets<br />";
 						} 
-						if($oppSubmissionsCorrect == 0 && $numDBOppScores > 0) {
+						if(!$oppSubmissionsCorrect && sizeof($oppSubmissions) > 0) {
 							$mailBody.= "Opponents submitted against different teams<br />";
 						}
 					}
 				}
-				$mailBody.='<br /></b></font>';
-				$mailBody.='</td></tr><tr><td align=center>';
-				$mailBody.= "Submitted Results<br />";
-				$mailBody.="------------------------------------------<br />";
-				$mailBody.= formatResults($sportID, $oppTeamID[$i], $gameResults, $scoreUs, $scoreThem, $games, $i*$games, $spiritScores[$i]);
-				$mailBody.="------------------------------------------";
+				
+				$mailBody .= '<br /></b></font>';
+				$mailBody .= '</td></tr><tr><td align=center>';
+				$mailBody .= "Submitted Results<br />";
+				$mailBody .= "------------------------------------------<br />";
+				$mailBody .= $this->printGameResults($submissions, $i * $league->getNumGamesPerMatch());
+				$mailBody .= "------------------------------------------";
 
-				$mailBody.= "<td width='10px'><br /></td><td align=center>Opponent Results<br />";
-				$mailBody.="------------------------------------------<br />";
-				if ($dbOppSubmittedScore == 1) {
+				$mailBody .= "</td><td width='10px'></td><td align=center>Opponent Results<br />";
+				$mailBody .= "------------------------------------------<br />";
+				
+				if (sizeof($oppSubmissions) > 0) {
 					for($k=0;$k<$matches*$games ; $k = $k+$games) {
 						if($dbOppTeamOppID[$k] == $teamID) {
-							$mailBody.= formatResults($sportID, $dbOppTeamOppID[$k], $dbOppTeamResult, $dbOppTeamScoreUs, $dbOppTeamScoreThem, $games, $k, $oppSpiritScore);
+							$mailBody.= $this->printGameResults($sportID, $dbOppTeamOppID[$k], $dbOppTeamResult, $dbOppTeamScoreUs, $dbOppTeamScoreThem, $games, $k, $oppSpiritScore);
 						}
 					}			
 				} else {
-					$isPlayoffs == 0?$mailBody.= "Haven't submitted their scores yet<br />":$mailBody.= "Playoffs<br />";
+					$mailBody .= (!$league->getIsInPlayoffs() ? "Haven't submitted their scores yet<br />" : "Playoffs<br />");
 				}
-				$mailBody.="------------------------------------------";
+				$mailBody .= "------------------------------------------";
 
-				$mailBody.= "</tr><tr><td colspan=3+$teamsNotEqual*2>comments: $matchComments[$i]<br /><br /></td></tr>";
+				$mailBody .= "</tr><tr><td colspan='3'>Comments: " 
+						. ($curSubmission->getScoreSubmissionComment() != null ? $curSubmission->getScoreSubmissionComment()->getComment() : '')
+						. "</td></tr>";
 
-				if (strlen($matchComments[$i]) > 2) {
-					$commentAdded = 1;
+				if ($curSubmission->getScoreSubmissionComment() != null && strlen($curSubmission->getScoreSubmissionComment()) > 2) {
+					$commentAdded = true;
 				}
 			}
+			
 			$mailBody.='</table>';
 
-			if ($commentAdded == 1) {
-				$subject = "COMMENT - $leagueName - ".dayOfWeek($dayNumber)." - $teamName";
+			if ($commentAdded) {
+				$subject = "COMMENT - " . $league->getName() . " - " . $league->getDayString() . " - " . $team->getName();
 			} else {
-				$subject = "$leagueName - ".dayOfWeek($dayNumber)." - $teamName";
+				$subject = $league->getName() . " - " . $league->getDayString() . " - " . $team->getName();
 			}
 
-			$mailBody=stripslashes($mailBody);
+			$mailBody = stripslashes($mailBody);
+			
 			$from_header  = 'MIME-Version: 1.0' . "\r\n";
 			$from_header .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
 			$from_header .= 'Content-Transfer-Encoding: base64' . "\r\n";
 			$from_header .= 'From: mail_form@perpetualmotion.org';
-
-			$toMailArray = scoreSubmission();
-			foreach($toMailArray as $adminEmail) {
+			
+			foreach(Includes_WhoGetsEmailed::scoreSubmission() as $adminEmail) {
 				mail($adminEmail, $subject, rtrim(chunk_split(base64_encode($mailBody))), $from_header);
 			}
 
 			return 1;
 		}
 
-		//Checks if the results the person submitted match up with what their opponent submitted
-		public function checkResultsEqual($games, $gameResults, $oppTeamResult, $curMatch) {
-			for ($j = 0;$j < $games; $j++) {
-				if ($gameResults[$curMatch*$games + $j] ==1 && $oppTeamResult[$j] != 2) {
-					return false;
-				} elseif ($gameResults[$curMatch*$games + $j] ==2 && $oppTeamResult[$j] != 1) {
-					return false;
-				} elseif ($gameResults[$curMatch*$games + $j] ==3 && $oppTeamResult[$j] != 3) {
-					return false;
-				}
-			}
-			return true;
-		}
-
-		public function checkGameEqual($gameResults, $oppTeamResult) {
-			if ($gameResults ==1 && $oppTeamResult != 2) {
-				return false;
-			} elseif ($gameResults ==2 && $oppTeamResult != 1) {
-				return false;
-			} elseif ($gameResults ==3 && $oppTeamResult != 3) {
+		public function checkSubmissionsMatch(Integer $resultOne, Integer $resultTwo) {
+			if ($resultOne == Includes_GameResults::WIN && $resultTwo != Includes_GameResults::LOSS
+					|| $resultOne == Includes_GameResults::LOSS && $resultTwo != Includes_GameResults::WIN
+					|| $resultOne == Includes_GameResults::TIE && $resultTwo != Includes_GameResults::TIE) {
 				return false;
 			}
 			return true;
 		}
 
 		//Formats a teams submission for an email and returns the text
-		public function formatResults($sportID, $teamOppID, $teamResult, $teamScoreUs, $teamScoreThem, $games, $curMatch, $spiritScore) {
-			global $teamsTable, $isPlayoffs;
-			$teamArray = query("SELECT * FROM $teamsTable WHERE team_id = $teamOppID");
-			$teamName = $teamArray['team_name'];
-			$contents = '';
-
-			$contents .= "Opposition:    $teamName<br />";
-			for($i = 0;$i < $games; $i++){
-				if ($teamResult[$curMatch + $i] == 1) {
-					$winLossTie = 'We Won';
-				} else if ($teamResult[$curMatch + $i] == 2) {
-					$winLossTie = 'We Lost';
-				} else if ($teamResult[$curMatch + $i] == 3) {
-					$winLossTie = 'We Tied';
-				} else if ($teamResult[$curMatch + $i] == 4) {
-					$winLossTie = 'Cancelled';
-				} else if ($teamResult[$curMatch + $i] == 5) {
-					$winLossTie = 'Practise';
-				} else if ($teamResult[$curMatch + $i] == 0) {
-					$winLostTie = 'No Game';
-				} else {
-					$winLossTie = 'Error -'.$teamResult[$curMatch + $i].'-';
+		public function printGameResults(array $submissions, Integer $matchNum) : String {
+			
+			if($submissions == null || sizeof($submissions) <= $matchNum) {
+				return "";
+			}
+			
+			$league = $submissions[0]->getTeam()->getLeague();
+			
+			$contents = "Opposition:    " + $submission->getOppTeam()->getName() + "<br />";
+			
+			for($i = 0; $i < $league->getNumGamesPerMatch(); $i++) {
+				if(sizeof($submissions) <= $mathNum + $i) {
+					continue; //No submission for this game. Not sure how this is possible but hey, good to error check.
 				}
+				
+				$curSubmission = $submissions[$matchNum + $i];
+								
 				$contents .= 'Game ';
-				$contents .= $i+1 .':      '.$winLossTie;
-				if($sportID != 2 || $isPlayoffs == 1) {
-					$contents .= ' (Us:' . $teamScoreUs[$curMatch + $i] .' Them:' .$teamScoreThem[$curMatch + $i] . ")";
+				$contents .= $i + 1 . ':      We ' + $curSubmission->getResultsString();
+				
+				if($league->getIsAskForScores() || $league->getIsInPlayoffs()) {
+					$contents .= ' (Us:' . $curSubmission->getScoreUs() . ' Them: ' . $curSubmission->getScoreThem() . ')';
 				}
+				
 				$contents.='<br />';
 			}
-			$spiritScoreString = number_format((float)$spiritScore, 1, '.', '');
-			if($spiritScoreString == 0) {
+			
+			$spiritScoreVal = 0;
+			$spiritScore = $submissions[$matchNum]->getSpiritScore();
+			
+			if($spiritScore != null) {
+				$spiritScoreVal = $spiritScore->getValue();
+			}
+			
+			if($spiritScoreVal == 0) {
 				$spiritScoreString = 'N/A';
+			} else {
+				$spiritScoreString = number_format((float)$spiritScoreVal, 1, '.', '');
 			}
-			$contents.='<br />Spirit Score '.$spiritScoreString;
+			
+			$contents .= '<br />Spirit Score ' . $spiritScoreString;
 			$contents .= "<br /><br />";
+			
 			return $contents;	
-		}
-
-		//emails helper, figures out the actual week day
-		public function dayOfWeek($dayNumber) {
-			if ($dayNumber == 1) {
-				return 'Monday';
-			} else if ($dayNumber == 2) {
-				return 'Tuesday';
-			} else if ($dayNumber == 3) {
-				return 'Wednesday';
-			} else if ($dayNumber == 4) {
-				return 'Thursday';
-			} else if ($dayNumber == 5) {
-				return 'Friday';
-			} else if ($dayNumber == 6) {
-				return 'Saturday';
-			} else if ($dayNumber == 7) {
-				return 'Sunday';
-			}
 		}
 	}
 
