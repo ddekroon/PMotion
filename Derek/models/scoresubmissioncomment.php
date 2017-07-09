@@ -62,6 +62,10 @@ class Models_ScoreSubmissionComment extends Models_Generic implements Models_Int
 	function getScoreSubmissionId() {
 		return $this->scoreSubmissionId;
 	}
+	
+	function setScoreSubmissionId($scoreSubmissionId) {
+		$this->scoreSubmissionId = $scoreSubmissionId;
+	}
 
 	function getComment() {
 		return $this->comment;
@@ -71,19 +75,64 @@ class Models_ScoreSubmissionComment extends Models_Generic implements Models_Int
 		$this->comment = $value;
 	}
 	
-	function saveOrUpdate() {
+	public function saveOrUpdate() {
 		if($this->getId() == null) {
-			save();
+			$this->save();
 		} else {
-			update();
+			$this->update();
 		}
 	}
 	
-	function save() {
+	public function save() {
 		
+		try {
+			$stmt = $this->db->prepare("INSERT INTO " . Includes_DBTableNames::scoreCommentsTable . " "
+					. "(
+						comment_score_submission_id,
+						comment_value
+					) "
+					. "VALUES "
+					. "(?, ?)"
+			);
+			
+			$this->db->beginTransaction(); 
+			$stmt->execute(
+				array(
+					$this->getScoreSubmissionId(), 
+					$this->getComment()
+				)
+			);
+			
+			$this->setId($this->db->lastInsertId());
+			$this->db->commit();
+			
+		} catch (Exception $ex) {
+			$this->db->rollback();
+			$this->logger->log($ex->getMessage()); 
+		}
 	}
 	
-	function update() {
-		
+	public function update() {
+		try {
+			$stmt = $this->db->prepare("UPDATE " . Includes_DBTableNames::scoreCommentsTable . " SET "
+					. "
+						comment_score_submission_id = ?,
+						comment_value = ?
+					"
+			);
+			
+			$this->db->beginTransaction(); 
+			$stmt->execute(
+				array(
+					$this->getScoreSubmissionId(), 
+					$this->getComment()
+				)
+			); 
+			$this->db->commit(); 
+			
+		} catch (Exception $ex) {
+			$this->db->rollback();
+			$this->logger->log($ex->getMessage()); 
+		}
 	}
 }

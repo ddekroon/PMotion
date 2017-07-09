@@ -3,7 +3,7 @@
 <link href="/css/stylesheets/bootstrap-slider.min.css" rel="stylesheet" type="text/css" />
 <link href="/css/stylesheets/styles.css" rel="stylesheet" type="text/css" />
 
-<form class='scoreReporter scoreReporter-<?php print $sport->getId() ?> container-fluid' method="post" action="/Derek/score-reporter/report-score">
+<form class='scoreReporter scoreReporter-<?php print $sport->getId() ?> container-fluid' id="ScoreReporterForm">
 	<input type="hidden" name="sportID" value='<?php print $sport->getId() ?>' />
 	<div class='clearfix form-group'>
 		<div class="logoContainer pull-right" style="text-align:center;">
@@ -94,9 +94,11 @@
 </form>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+
 <script src='/js/bootstrap-form-buttonset.js'></script>
 <script src='/js/bootstrap-slider.min.js'></script>
 
+<script src='/js/jquery.form.js'></script>
 <script src="/js/jquery-ui.min.js"></script>
 
 <script>	
@@ -117,6 +119,23 @@
 			loadMatches(<?php print $team->getId() ?>);
 		<?php } ?>
 		
+		$("#ScoreReporterForm").ajaxForm({
+			method:"post",
+			type:"post",
+			url:"<?php echo (isset($isDashboard) && $isDashboard ? $router->pathFor('dashboard-report-score') : $router->pathFor('report-score')); ?>",
+			dataType:"json",
+			success:function(resp) {
+				if(resp.status == 1) {
+					var cont = $("<div />").html(resp.html);
+					$("#ScoreReporterForm").replaceWith(cont);
+				} else {
+					alert(resp.errorMessage);
+				}
+			},
+			error:function() {
+				alert("Error connecting to the server. Please try again.");
+			}
+		});
 	});
 	
 	function getLeagueTeams(select, leagueId, selectedTeamId) {

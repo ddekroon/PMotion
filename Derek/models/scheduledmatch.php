@@ -112,7 +112,7 @@ class Models_ScheduledMatch extends Models_Generic implements Models_Interface, 
 		return $this->teamTwo;
 	}
 	
-	public function getOppTeam(Models_Team $team) : Models_Team {
+	public function getOppTeam(Models_Team $team) {
 		if(($this->oppTeam == null || $this->curTeam == null || $this->curTeam->getId() != $team->getId()) && $this->db != null) {
 			if($this->getTeamOneId() == $team->getId()) {
 				$this->oppTeam = Models_Team::withID($this->db, $this->logger, $this->getTeamTwoId());
@@ -125,7 +125,7 @@ class Models_ScheduledMatch extends Models_Generic implements Models_Interface, 
 		return $this->oppTeam;
 	}
 	
-	public function getOppTeamId(Models_Team $team) : Integer {
+	public function getOppTeamId(Models_Team $team) {
 		$oppTeam = $this->getOppTeam($team);
 		
 		if($oppTeam != null) {

@@ -294,6 +294,12 @@ ADD CONSTRAINT `FK_ScoreSubmission_Date`
   ON DELETE CASCADE
   ON UPDATE NO ACTION;
 
+ALTER TABLE `data_perpetualmotion`.`score_submissions_dbtable` 
+CHANGE COLUMN `score_submission_ignored` `score_submission_ignored` TINYINT(1) NOT NULL ,
+CHANGE COLUMN `score_submission_dont_show` `score_submission_dont_show` TINYINT(1) NOT NULL DEFAULT '0' ,
+CHANGE COLUMN `score_submission_is_phantom` `score_submission_is_phantom` TINYINT(1) NOT NULL ;
+
+
 -- Score Submission Comments
 
 delete ssc FROM data_perpetualmotion.score_comments_dbtable ssc 
@@ -323,6 +329,12 @@ ADD CONSTRAINT `FK_SpirtScore_ScoreSubmission`
   REFERENCES `data_perpetualmotion`.`score_submissions_dbtable` (`score_submission_id`)
   ON DELETE CASCADE
   ON UPDATE NO ACTION;
+
+ALTER TABLE `data_perpetualmotion`.`spirit_scores_dbtable` 
+CHANGE COLUMN `spirit_score_ignored` `spirit_score_ignored` TINYINT(1) NOT NULL DEFAULT '0' ,
+CHANGE COLUMN `spirit_score_dont_show` `spirit_score_dont_show` TINYINT(1) NOT NULL DEFAULT '0' ,
+CHANGE COLUMN `spirit_score_is_admin_addition` `spirit_score_is_admin_addition` TINYINT(1) NOT NULL DEFAULT '0' ;
+
 
 -- DATES
 

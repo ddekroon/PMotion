@@ -64,14 +64,14 @@ class Models_ScoreSubmission extends Models_Generic implements Models_Interface,
         $this->result = $data['score_submission_result'];
         $this->scoreUs = $data['score_submission_score_us'];
         $this->scoreThem = $data['score_submission_score_them'];
-        $this->ignored = $data['score_submission_ignored'];
+        $this->ignored = $data['score_submission_ignored'] == 1;
         $this->dateStamp = $data['score_submission_datestamp'];
-        $this->dontShow = $data['score_submission_dont_show'];
-        $this->isPhantom = $data['score_submission_is_phantom'];
+        $this->dontShow = $data['score_submission_dont_show'] == 1;
+        $this->isPhantom = $data['score_submission_is_phantom'] == 1;
     }
 	
-	public function getSpiritScore(): Models_SpiritScore {
-		if($this->spiritScore == null && $this->db != null) {
+	public function getSpiritScore() {
+		if($this->spiritScore == null && $this->db != null && $this->getId() > 0) {
 		
 			$sql = "SELECT * FROM " . Includes_DBTableNames::spiritScoresTable . " WHERE spirit_score_score_submission_id = " . $this->getId() . " LIMIT 1";
 
@@ -92,9 +92,9 @@ class Models_ScoreSubmission extends Models_Generic implements Models_Interface,
 		$this->spiritScore = $spiritScore;
 	}
 
-	public function getScoreSubmissionComment(): Models_ScoreSubmissionComment {
+	public function getScoreSubmissionComment() {
 		
-		if($this->scoreSubmissionComment == null && $this->db != null) {
+		if($this->scoreSubmissionComment == null && $this->db != null && $this->getId() > 0) {
 		
 			$sql = "SELECT * FROM " . Includes_DBTableNames::scoreCommentsTable . " WHERE comment_score_submission_id = " . $this->getId() . " LIMIT 1";
 
@@ -115,15 +115,15 @@ class Models_ScoreSubmission extends Models_Generic implements Models_Interface,
 		$this->scoreSubmissionComment = $scoreSubmissionComment;
 	}
 
-	public function getTeam() : Models_Team {
+	public function getTeam() {
 		if($this->team == null && $this->db != null && $this->getTeamId() != null) {
-			$this->team = Models_League::withID($this->db, $this->logger, $this->getTeamId());
+			$this->team = Models_Team::withID($this->db, $this->logger, $this->getTeamId());
 		}
 		
 		return $this->team;
 	}
 	
-	public function getOppTeam() : Models_Team {
+	public function getOppTeam() {
 		if($this->oppTeam == null && $this->db != null && $this->getOppTeamId() != null) {
 			$this->oppTeam = Models_Team::withID($this->db, $this->logger, $this->getOppTeamId());
 		}
@@ -131,7 +131,7 @@ class Models_ScoreSubmission extends Models_Generic implements Models_Interface,
 		return $this->oppTeam;
 	}
 	
-	public function getDate() : Models_Date {
+	public function getDate() {
 		if($this->date == null && $this->db != null && $this->getDateId() != null) {
 			$this->date = Models_Date::withID($this->db, $this->logger, $this->getDateId());
 		}
@@ -139,7 +139,15 @@ class Models_ScoreSubmission extends Models_Generic implements Models_Interface,
 		return $this->date;
 	}
 	
-	public function getResultsString() : String {
+	public function setDate(Models_Date $date) {
+		$this->date = $date;
+		
+		if($date != null) {
+			$this->setDateId($date->getId());
+		}
+	}
+	
+	public function getResultsString() {
 		switch($this->getResult()) {
 			case Includes_GameResults::WIN:
 				return "Won";
@@ -198,7 +206,7 @@ class Models_ScoreSubmission extends Models_Generic implements Models_Interface,
 		return $this->scoreThem;
 	}
 
-	function getIgnored() {
+	function getIsIgnored() {
 		return $this->ignored;
 	}
 
@@ -206,7 +214,7 @@ class Models_ScoreSubmission extends Models_Generic implements Models_Interface,
 		return $this->dateStamp;
 	}
 
-	function getDontShow() {
+	function getIsDontShow() {
 		return $this->dontShow;
 	}
 
@@ -238,7 +246,7 @@ class Models_ScoreSubmission extends Models_Generic implements Models_Interface,
 		$this->scoreThem = $scoreThem;
 	}
 
-	function setIgnored($ignored) {
+	function setIsIgnored($ignored) {
 		$this->ignored = $ignored;
 	}
 
@@ -246,7 +254,7 @@ class Models_ScoreSubmission extends Models_Generic implements Models_Interface,
 		$this->dateStamp = $dateStamp;
 	}
 
-	function setDontShow($dontShow) {
+	function setIsDontShow($dontShow) {
 		$this->dontShow = $dontShow;
 	}
 
@@ -254,7 +262,16 @@ class Models_ScoreSubmission extends Models_Generic implements Models_Interface,
 		$this->isPhantom = $isPhantom;
 	}
 	
-	function validate(Models_League $league, int $matchNum) {
+	function setId($id) {
+		$this->id = $id;
+	}
+
+	function setDateId($dateId) {
+		$this->dateId = $dateId;
+	}
+
+		
+	function validate(Models_League $league, $matchNum) {
 		
 		$error = '';
 		
@@ -266,30 +283,30 @@ class Models_ScoreSubmission extends Models_Generic implements Models_Interface,
 			$error .= 'Invalid Team Given for match ' .$matchNum;
 		}
 
-		if($league->getIsPlayoffs() == 0) {
+		if(!$league->getIsInPlayoffs()) {
 			
 			$spirit = $this->getSpiritScore() != null ? $this->getSpiritScore()->getValue() : -1;
 			$comment = $this->getScoreSubmissionComment() != null ? $this->getScoreSubmissionComment()->getComment() : "";
 			
 			if ($this->getOppTeamId() == null || $this->getOppTeamId() <= 0) {
-				$error .= '* Please enter a team for match ' . $matchNum . '<br />';
+				$error .= '* Please enter a team for match ' . $matchNum . "\n";
 			}
 
 			if ($this->getSpiritScore() != null && $spirit < 3.5 && ($this->getScoreSubmissionComment() == null || strlen($comment) < 2) && $this->getOppTeamId() != 1) {
-				$error .= '* Please enter the reason for spirit being so low in match ' . $matchNum . '<br />';
+				$error .= '* Please enter the reason for spirit being so low in match ' . $matchNum . "\n";
 			}
 			
 			if ($this->getOppTeamId() == $this->getTeamId()) {
-				$error .= '* Please select a different opposing team for game ' . $matchNum . '<br />';
+				$error .= '* Please select a different opposing team for game ' . $matchNum . "\n";
 			}
 			
 			if ($this->getOppTeamId() != 1 && $this->getResult() == null) { //Not practice
-				$error .= '* Please enter a result for game ' . $matchNum . '<br />';
+				$error .= '* Please enter a result for game ' . $matchNum . "\n";
 			}
 		}
 
 		if (strlen($this->getSubmitterName()) < 2 || preg_match("/[^A-Za-z0-9\'\- @\.]/", $this->getSubmitterName())) { //Too short or invalid characters
-			$error .= '* Please enter your name<br />';
+			$error .= '* Please enter your name'. "\n";
 		}
 		
 		if(strlen($error) > 0) {
@@ -297,68 +314,112 @@ class Models_ScoreSubmission extends Models_Generic implements Models_Interface,
 		}
 	}
 	
-	function saveOrUpdate() {
+	public function saveOrUpdate() {
 		if($this->getId() == null) {
-			save();
+			$this->save();
 		} else {
-			update();
+			$this->update();
 		}
 	}
 	
-	function save() {
-		global $scoreSubmissionsTable, $leaguesTable, $teamsTable, $scoreCommentsTable, $seasonsTable, $spiritScoresTable;
-		global $teamID, $leagueID, $dateID, $actualWeekDate, $dayOfYear, $isPlayoffs;
-		global $oppTeamID, $scoreUs, $scoreThem, $gameResults, $spiritScores, $matchComments, $submitName, $submitEmail, $matches, $games;
-
-		$ignored = checkSubmitWeek($teamID, $dateID); //0 for hasnt, 1 for has
-		updateCaptain($teamID, $submitName, $submitEmail);
-		$gameNum = 0;
-
-		$submissionArray = query("SELECT MAX(score_submission_id) as maxnum FROM $scoreSubmissionsTable");
-		$newSubmissionNum = $submissionArray['maxnum'];
-
-		$escapedName = mysql_real_escape_string($submitName);
-		$escapedEmail = mysql_real_escape_string($submitEmail);
-
-		//submits teamsTable update first in case teams refresh half way through. Emails get sent to admins first so we know 
-		//scores that were attempted to be submitted
-		$submissionEntered=mysql_query("UPDATE $teamsTable INNER JOIN $leaguesTable ON $teamsTable.team_league_id = 
-			$leaguesTable.league_id SET team_most_recent_week_submitted = league_week_in_score_reporter WHERE team_id = $teamID") 
-			or die('ERROR updating teamsTable - '.mysql_error()); //sets the week submitted for the team to current
-
-		//Inserts data into scores comments, score submissions, and spirit scores database. SS and comments are connected to 
-		//second game of beach volleyball score submissions. New score submission made for each game.
-		for($i=0;$i<$matches;$i++) {
-			$escapedComments[$i] = mysql_real_escape_string($matchComments[$i]);
-			for($j=0;$j<$games;$j++) {
-				if ($oppTeamID[$i] == 1) {
-					$gameResults[$gameNum] = 5;
-				}
-				$newSubmissionNum++;
-				mysql_query("INSERT INTO $scoreSubmissionsTable (score_submission_id, score_submission_team_id, 
-					score_submission_opp_team_id, score_submission_date_id, score_submission_submitter_name, 
-					score_submission_submitter_email, score_submission_result, score_submission_score_us, score_submission_score_them,
-					score_submission_ignored, score_submission_datestamp) VALUES ($newSubmissionNum, $teamID, $oppTeamID[$i], $dateID,
-					'$escapedName', '$escapedEmail', $gameResults[$gameNum], $scoreUs[$gameNum], $scoreThem[$gameNum], $ignored, 
-					NOW())") or die ('Error with inserting into score submission db - '.mysql_error());
-				if ($j == 0) { //connects spirit submission and comments with the first score submission
-					if($spiritScores[$i] != 0 && $gameResults[$gameNum]!=4) {
-						mysql_query("INSERT INTO $spiritScoresTable (spirit_score_score_submission_id, spirit_score_value, 
-							spirit_score_ignored, spirit_score_edited_value) VALUES ($newSubmissionNum, $spiritScores[$i], $ignored, 
-							$spiritScores[$i])") or die('spirit score insert - '.mysql_error());
-					}
-					if (strlen($matchComments[$i]) > 2) {
-						mysql_query("INSERT INTO $scoreCommentsTable (comment_score_submission_id, comment_value) VALUES
-							($newSubmissionNum, '$escapedComments[$i]')") or die('comments insert - '.mysql_error());
-					}	
-				}
-				$gameNum++;
+	public function save() {
+		try {
+			$stmt = $this->db->prepare("INSERT INTO " . Includes_DBTableNames::scoreSubmissionsTable . " "
+					. "(
+						score_submission_team_id,
+						score_submission_opp_team_id, 
+						score_submission_date_id, 
+						score_submission_submitter_name, 
+						score_submission_submitter_email, 
+						score_submission_result, 
+						score_submission_score_us, 
+						score_submission_score_them, 
+						score_submission_ignored, 
+						score_submission_datestamp, 
+						score_submission_dont_show, 
+						score_submission_is_phantom
+					) "
+					. "VALUES "
+					. "(?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), ?, ?)"
+			);
+						
+			$this->db->beginTransaction(); 
+						
+			$stmt->execute(
+				array(
+					$this->getTeamId(), 
+					$this->getOppTeamId(), 
+					$this->getDateId(), 
+					$this->getSubmitterName(), 
+					$this->getSubmitterEmail(), 
+					$this->getResult(), 
+					$this->getScoreUs(), 
+					$this->getScoreThem(), 
+					$this->getIsIgnored() ? 1 : 0, 
+					$this->getIsDontShow() ? 1 : 0, 
+					$this->getIsPhantom() ? 1 : 0
+				)
+			);
+			
+			$this->setId($this->db->lastInsertId());
+			$this->db->commit();
+			
+			if($this->scoreSubmissionComment != null) {
+				$this->scoreSubmissionComment->setScoreSubmissionId($this->getId());
+				$this->scoreSubmissionComment->saveOrUpdate();
 			}
+			
+			if($this->spiritScore != null) {
+				$this->spiritScore->setScoreSubmissionId($this->getId());
+				$this->spiritScore->saveOrUpdate();
+			}
+			
+		} catch (Exception $ex) {
+			$this->db->rollback();
+			$this->logger->debug($ex->getMessage()); 
 		}
-		return $ignored;
 	}
 	
-	function update() {
-		
+	public function update() {
+		try {
+			$stmt = $this->db->prepare("UPDATE " . Includes_DBTableNames::scoreSubmissionsTable . " SET "
+					. "
+						score_submission_team_id = ?,
+						score_submission_opp_team_id = ?, 
+						score_submission_date_id = ?,
+						score_submission_submitter_name = ?,
+						score_submission_submitter_email = ?,
+						score_submission_result = ?,
+						score_submission_score_us = ?,
+						score_submission_score_them = ?,
+						score_submission_ignored = ?,
+						score_submission_datestamp = NOW(),
+						score_submission_dont_show = ?,
+						score_submission_is_phantom = ?
+					"
+			);
+			
+			$this->db->beginTransaction(); 
+			$stmt->execute(
+				array(
+					$this->getTeamId(), 
+					$this->getOppTeamId(), 
+					$this->getDateId(), 
+					$this->getSubmitterName(), 
+					$this->getSubmitterEmail(), 
+					$this->getResult(), 
+					$this->getScoreUs(), 
+					$this->getScoreThem(), 
+					$this->getIsIgnored() ? 1 : 0, 
+					$this->getIsDontShow() ? 1 : 0, 
+					$this->getIsPhantom() ? 1 : 0
+				)
+			); 
+			$this->db->commit(); 
+			
+		} catch (Exception $ex) {
+			$this->db->rollback();
+			$this->logger->log($ex->getMessage()); 
+		}
 	}
 }

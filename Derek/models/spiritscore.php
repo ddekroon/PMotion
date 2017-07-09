@@ -114,19 +114,79 @@ class Models_SpiritScore extends Models_Generic implements Models_Interface, Jso
 		$this->isAdminAddition = $isAdminAddition;
 	}
 	
-	function saveOrUpdate() {
+	public function saveOrUpdate() {
 		if($this->getId() == null) {
-			save();
+			$this->save();
 		} else {
-			update();
+			$this->update();
 		}
 	}
 	
-	function save() {
-		
+	public function save() {
+		try {
+			$stmt = $this->db->prepare("INSERT INTO " . Includes_DBTableNames::spiritScoresTable . " "
+					. "(
+						spirit_score_score_submission_id,
+						spirit_score_value,
+						spirit_score_ignored,
+						spirit_score_dont_show,
+						spirit_score_edited_value,
+						spirit_score_is_admin_addition
+					) "
+					. "VALUES "
+					. "(?, ?, ?, ?, ?, ?)"
+			);
+			
+			$this->db->beginTransaction(); 
+			$stmt->execute(
+				array(
+					$this->getScoreSubmissionId(), 
+					$this->getValue(),
+					$this->getIsIgnored() ? 1 : 0,
+					$this->getIsDontShow() ? 1 : 0,
+					$this->getEditedValue(),
+					$this->getIsAdminAddition() ? 1 : 0
+				)
+			);
+			
+			$this->setId($this->db->lastInsertId());
+			$this->db->commit();
+			
+		} catch (Exception $ex) {
+			$this->db->rollback();
+			$this->logger->log($ex->getMessage()); 
+		}
 	}
 	
-	function update() {
-		
+	public function update() {
+		try {
+			$stmt = $this->db->prepare("UPDATE " . Includes_DBTableNames::spiritScoresTable . " SET "
+					. "
+						spirit_score_score_submission_id = ?,
+						spirit_score_value = ?,
+						spirit_score_ignored = ?,
+						spirit_score_dont_show = ?,
+						spirit_score_edited_value = ?,
+						spirit_score_is_admin_addition = ?
+					"
+			);
+			
+			$this->db->beginTransaction(); 
+			$stmt->execute(
+				array(
+					$this->getScoreSubmissionId(), 
+					$this->getValue(),
+					$this->getIsIgnored() ? 1 : 0,
+					$this->getIsDontShow() ? 1 : 0,
+					$this->getEditedValue(),
+					$this->getIsAdminAddition() ? 1 : 0
+				)
+			); 
+			$this->db->commit(); 
+			
+		} catch (Exception $ex) {
+			$this->db->rollback();
+			$this->logger->log($ex->getMessage()); 
+		}
 	}
 }

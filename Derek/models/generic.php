@@ -19,6 +19,10 @@ class Models_Generic implements JsonSerializable {
         return $this->id;
     }
 	
+	public function setId($id) {
+        return $this->id = $id;
+    }
+	
 	function getDb() {
 		return $this->db;
 	}

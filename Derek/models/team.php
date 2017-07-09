@@ -1,6 +1,7 @@
 <?php
 
 class Models_Team extends Models_Generic implements Models_Interface, JsonSerializable {
+	
 	protected $leagueId;
     protected $name;
     protected $numInLeague;
@@ -84,7 +85,7 @@ class Models_Team extends Models_Generic implements Models_Interface, JsonSerial
 		$this->isLateEmailAllowed = $data['team_late_email_allowed'];
 	}
 	
-	public function getShortName() {
+	function getShortName() {
 		return substr($this->name, 0, 20);
 	}
 	
@@ -446,19 +447,113 @@ class Models_Team extends Models_Generic implements Models_Interface, JsonSerial
 		$this->isLateEmailAllowed = $isLateEmailAllowed;
 	}
 	
-	function saveOrUpdate() {
+	public function saveOrUpdate() {
 		if($this->getId() == null) {
-			save();
+			$this->save();
 		} else {
-			update();
+			$this->update();
 		}
 	}
 	
-	function save() {
-		
+	public function save() {
+		try {
+			$stmt = $this->db->prepare= "INSERT INTO " . Includes_DBTableNames::teamsTable . " "
+					. "(
+						team_league_id, team_name, team_num_in_league, team_managed_by_user_id, team_wins, team_losses, team_ties, 
+						team_most_recent_week_submitted, team_created, team_finalized, team_paid, team_deleted, team_payment_method, 
+						team_final_position, team_final_spirit_position, team_pic_name, 
+						team_is_convenor, team_dropped_out, team_late_email_allowed
+					) "
+					. "VALUES "
+					. "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+			
+			$this->db->beginTransaction(); 
+			$stmt->execute(
+				array(
+					$this->getLeagueId(), 
+					$this->getName(), 
+					$this->getNumInLeague(), 
+					$this->getManagedByUserId(), 
+					$this->getWins(), 
+					$this->getLosses(), 
+					$this->getTies(), 
+					$this->getMostRecentWeekSubmitted(), 
+					$this->getDateCreated(), 
+					$this->getIsFinalized(), 
+					$this->getIsPaid(), 
+					$this->getIsDeleted(), 
+					$this->getPaymentMethod(), 
+					$this->getFinalPosition(), 
+					$this->getFinalSpiritPosition(), 
+					$this->getPicName(), 
+					$this->getIsConventor(), 
+					$this->getIsDroppedOut(), 
+					$this->getIsLateEmailAllowed()
+				)
+			); 
+			setId($this->db->lastInsertId());
+			$this->db->commit(); 
+			
+		} catch (Exception $ex) {
+			$this->db->rollback();
+			$this->logger->log($ex->getMessage()); 
+		}
 	}
 	
-	function update() {
-		
+	public function update() {
+		try {
+			$stmt = $this->db->prepare= "UPDATE " . Includes_DBTableNames::teamsTable . " SET "
+					. "
+						team_league_id = ?, 
+						team_name = ?, 
+						team_num_in_league = ?, 
+						team_managed_by_user_id = ?, 
+						team_wins = ?, 
+						team_losses = ?, 
+						team_ties = ?, 
+						team_most_recent_week_submitted = ?, 
+						team_created = ?, 
+						team_finalized = ?, 
+						team_paid = ?, 
+						team_deleted = ?, 
+						team_payment_method = ?, 
+						team_final_position = ?, 
+						team_final_spirit_position = ?, 
+						team_pic_name = ?, 
+						team_is_convenor = ?, 
+						team_dropped_out = ?, 
+						team_late_email_allowed = ?
+					";
+			
+			$this->db->beginTransaction(); 
+			$stmt->execute(
+				array(
+					$this->getLeagueId(), 
+					$this->getName(), 
+					$this->getNumInLeague(), 
+					$this->getManagedByUserId(), 
+					$this->getWins(), 
+					$this->getLosses(), 
+					$this->getTies(), 
+					$this->getMostRecentWeekSubmitted(), 
+					$this->getDateCreated(), 
+					$this->getIsFinalized(), 
+					$this->getIsPaid(), 
+					$this->getIsDeleted(), 
+					$this->getPaymentMethod(), 
+					$this->getFinalPosition(), 
+					$this->getFinalSpiritPosition(), 
+					$this->getPicName(), 
+					$this->getIsConventor(), 
+					$this->getIsDroppedOut(), 
+					$this->getIsLateEmailAllowed()
+				)
+			); 
+			$this->db->commit(); 
+			
+		} catch (Exception $ex) {
+			$this->db->rollback();
+			$this->logger->log($ex->getMessage()); 
+		}
 	}
 }

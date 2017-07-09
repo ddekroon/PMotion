@@ -73,12 +73,13 @@
 			$leaguesController->setLeagueWeek($league);
 		}
 
-		return $this->view->render($response, "score-reporter.phtml", [
+		return $this->view->render($response, "score-reporter/score-reporter.phtml", [
 				"request" => $request,
 				"user" => $user,
 				"sport" => $sport,
 				"league" => $league,
 				"team" => $team,
+				"router" => $this->router,
 				"leagues" => $leaguesController->getLeaguesInScoreReporter($sport->getId())
 			]
 		);

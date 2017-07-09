@@ -8,7 +8,7 @@
 
 		?>
 
-		<div class='game f-small <?php print $matchClasses ?>' data-opp-team-id='<?php print $match->getOppTeamId() ?>'>
+		<div class='game f-small <?php print $matchClasses ?>' data-opp-team-id='<?php print $match->getOppTeamId($team) ?>'>
 			<p><span class="label label-default">Match <?php print $i+1?></span></p>
 			
 			<div class='form-group'>
@@ -24,12 +24,12 @@
 				</div>
 			</div>
 			
-			<?php if ($match->getOppTeamId() == 1) { // It's a practise game ?>
+			<?php if ($match->getOppTeamId($team) == 1) { // It's a practise game ?>
 
 				<?php for($j = 0; $j < $team->getLeague()->getNumGamesPerMatch(); $j++){ ?>
-					<input type='hidden' name='result' value='5' />
-					<input type='hidden' name='scoreUs' value='0' />
-					<input type='hidden' name='scoreThem' value='0' />
+					<input type='hidden' name='result_<?php echo $i ?>_<?php echo $j ?>' value='5' />
+					<input type='hidden' name='scoreUs_<?php echo $i ?>_<?php echo $j ?>' value='0' />
+					<input type='hidden' name='scoreThem_<?php echo $i ?>_<?php echo $j ?>' value='0' />
 				<?php } ?>
 
 			<?php } else { ?>
@@ -45,19 +45,19 @@
 										<fieldset class='radioButtons text-right'>
 											<legend>Result</legend>
 
-											<input type='radio' name='result' value='1' id='GameResult_<?php print $i ?>_<?php print $j ?>_Won' />
+											<input type='radio' name='result_<?php echo $i ?>_<?php echo $j ?>' value='1' id='GameResult_<?php print $i ?>_<?php print $j ?>_Won' />
 											<label for='GameResult_<?php print $i ?>_<?php print $j ?>_Won'>We Won</label>
 
-											<input type='radio' name='result' value='2' id='GameResult_<?php print $i ?>_<?php print $j ?>_Lost' />
+											<input type='radio' name='result_<?php echo $i ?>_<?php echo $j ?>' value='2' id='GameResult_<?php print $i ?>_<?php print $j ?>_Lost' />
 											<label for='GameResult_<?php print $i ?>_<?php print $j ?>_Lost'>We Lost</label>
 
 											<?php if($team->getLeague()->getIsTies()) { ?>
-												<input type='radio' name='result' value='3' id='GameResult_<?php print $i ?>_<?php print $j ?>_Tied' />
+												<input type='radio' name='result_<?php echo $i ?>_<?php echo $j ?>' value='3' id='GameResult_<?php print $i ?>_<?php print $j ?>_Tied' />
 												<label for='GameResult_<?php print $i ?>_<?php print $j ?>_Tied'>We Tied</label>
 											<?php } ?>
 
 											<?php if($team->getLeague()->getIsShowCancelOption()) { ?>
-												<input type='radio' name='result' value='4' id='GameResult_<?php print $i ?>_<?php print $j ?>_Cancelled' />
+												<input type='radio' name='result_<?php echo $i ?>_<?php echo $j ?>' value='4' id='GameResult_<?php print $i ?>_<?php print $j ?>_Cancelled' />
 												<label for='GameResult_<?php print $i ?>_<?php print $j ?>_Cancelled'>*Cancelled*</label>
 											<?php } ?>
 										</fieldset>
@@ -72,7 +72,7 @@
 															<label for='ScoreUs_<?php print $i ?>_<?php print $j ?>'>We Got</label>
 														</div>
 														<div class='col-xs-6'>
-															<input type='number' value='0' min='0' max='<?php print $team->getLeague()->getMaxPointsPerGame() ?>' name='scoreUs' id='ScoreUs_<?php print $i ?>_<?php print $j ?>' />
+															<input type='number' value='0' min='0' max='<?php print $team->getLeague()->getMaxPointsPerGame() ?>' name='scoreUs_<?php echo $i ?>_<?php echo $j ?>' id='ScoreUs_<?php print $i ?>_<?php print $j ?>' />
 														</div>
 													</div>
 												</div>
@@ -82,7 +82,7 @@
 															<label for='ScoreThem_<?php print $i ?>_<?php print $j ?>'>They Got</label>
 														</div>
 														<div class='col-xs-6'>
-															<input type='number' value='0' min='0' max='<?php print $team->getLeague()->getMaxPointsPerGame() ?>' name='scoreThem' id='ScoreThem_<?php print $i ?>_<?php print $j ?>'>
+															<input type='number' value='0' min='0' max='<?php print $team->getLeague()->getMaxPointsPerGame() ?>' name='scoreThem_<?php echo $i ?>_<?php echo $j ?>' id='ScoreThem_<?php print $i ?>_<?php print $j ?>'>
 														</div>
 													</div>
 												</div>

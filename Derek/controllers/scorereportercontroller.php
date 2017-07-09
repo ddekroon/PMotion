@@ -2,7 +2,7 @@
 
 	class Controllers_ScoreReporterController extends Controllers_Controller {
 
-		public function getMatchesInScoreReporter($team) : array {
+		public function getMatchesInScoreReporter($team) {
 
 			if(isset($team) && $team->getId() != null && $team->getLeague() !== null && $team->getLeague()->getId() != null) {
 				$sql = "SELECT " . Includes_DBTableNames::scheduledMatchesTable . ".* FROM " . Includes_DBTableNames::scheduledMatchesTable . " "
@@ -54,7 +54,7 @@
 			return [];
 		}
 		
-		public function getScoreSubmissions(Models_Team $team, Models_Team $oppTeam, Models_Date $date): array {
+		public function getScoreSubmissions(Models_Team $team, Models_Team $oppTeam = null, Models_Date $date) {
 			
 			$scoreSubmissions = [];
 			
@@ -63,15 +63,15 @@
 			}
 			
 			$sql = "SELECT * FROM " . Includes_DBTableNames::scoreSubmissionsTable . " as scoreSubs "
-					. "WHERE score_submission_date_id = " . $date->getId() . " "
-					. "AND score_submission_team_id = " . $team->getId() . " ";
+					. "WHERE scoreSubs.score_submission_date_id = " . $date->getId() . " "
+					. "AND scoreSubs.score_submission_team_id = " . $team->getId() . " ";
 			
 			if($oppTeam != null) {
-				$sql .= "AND score_submission_opp_team_id = " . $oppTeam->getId() . " ";
+				$sql .= "AND scoreSubs.score_submission_opp_team_id = " . $oppTeam->getId() . " ";
 			}
 			
-			$sql .= "AND score_submission_ignored = 0";
-			
+			$sql .= "AND scoreSubs.score_submission_ignored = 0";
+						
 			$stmt = $this->db->query($sql);
 
 			//goes through the results and figures out which opponents team teamID had
@@ -88,7 +88,7 @@
 			$allPostVars = $request->getParsedBody();
 			$leagueID = $allPostVars['leagueID'];
 			$teamID = $allPostVars['teamID'];
-
+			
 			$league = Models_League::withID($this->db, $this->logger, $leagueID);
 			$team = Models_Team::withID($this->db, $this->logger, $teamID);
 			
@@ -108,8 +108,9 @@
 				throw new Error("Internal error. Couldn't create submissions from the data given. Please contact the site admin if this issue persists.");
 			}
 			
+			$matchNum = 1;
 			foreach($submissions as $submission) {
-				$submission->validate();
+				$submission->validate($league, $matchNum++);
 			}
 
 			//If we get here we have valid submissions, send emails and save.
@@ -120,7 +121,7 @@
 			}
 
 			if (!$ignoreSubmission && !$league->getIsPlayoffs()) {
-				//updateStandings($team, $submissions); //TODO
+				$this->updateStandingsFromSubmissions($team, $submissions);
 			} 
 		}
 
@@ -133,40 +134,54 @@
 			
 			$oppTeamIds = $allPostVars['oppTeamID'];
 			
-			$resultValues = $allPostVars['result'];
-			$scoreUsValues = isset($allPostVars['scoreUs']) ? $allPostVars['scoreUs'] : [];
-			$scoreThemValues = isset($allPostVars['scoreThem']) ? $allPostVars['scoreThem'] : [];
-			
 			for ($i=0; $i < $league->getNumMatches(); $i++) {
 								
 				$spiritScore = new Models_SpiritScore();
-				$spiritScore->setEditedValue(0);
+				$spiritScore->setDb($this->db);
+				$spiritScore->setLogger($this->logger);
+				$spiritScore->setEditedValue($allPostVars['spiritScore_' . $i]);
 				$spiritScore->setIsAdminAddition(false);
 				$spiritScore->setIsDontShow(false);
 				$spiritScore->setIsIgnored($ignoreSubmission);
 				$spiritScore->setValue($allPostVars['spiritScore_' . $i]);
 				
 				$comment = new Models_ScoreSubmissionComment();
+				$comment->setDb($this->db);
+				$comment->setLogger($this->logger);
 				$comment->setComment($allPostVars['matchComments_' . $i]);
 				
 				for ($j = 0; $j < $league->getNumGamesPerMatch(); $j++) {
 					
 					$gameSubmission = new Models_ScoreSubmission();
+					$gameSubmission->setDb($this->db);
+					$gameSubmission->setLogger($this->logger);
 				
+					$gameSubmission->setDate($league->getDateInScoreReporter());
 					$gameSubmission->setTeamId($team->getId());
 					$gameSubmission->setOppTeamId($oppTeamIds[$i]);
 					
-					$gameSubmission->setSpiritScore($spiritScore);
-					$gameSubmission->setScoreSubmissionComment($comment);
+					if($j == 0) { //Only attach spirit, comment to the first score submission. Stupid system but legacy and I don't want to change it.
+						$gameSubmission->setSpiritScore($spiritScore);
+						
+						if(strlen($comment->getComment()) > 2) {
+							$gameSubmission->setScoreSubmissionComment($comment);
+						}
+					}
 					
 					$gameSubmission->setDateStamp(new DateTime());
-					$gameSubmission->setIgnored($ignoreSubmission);
+					$gameSubmission->setIsIgnored($ignoreSubmission);
 					$gameSubmission->setIsPhantom(false);
-					$gameSubmission->setDontShow(false);
+					$gameSubmission->setIsDontShow(false);
+										
+					$gameSubmission->setResult(isset($allPostVars['result_' . $i . '_' . $j]) ? $allPostVars['result_' . $i . '_' . $j] : Includes_GameResults::ERROR);
 					
-					$gameSubmission->setResult(is_array($resultValues) && count($resultValues) > $i ? $resultValues[$i] : 0);
-					$gameSubmission->setScoreUs(is_array($scoreUsValues) && count($scoreUsValues) > $i ? $scoreUsValues[$i] : 0);
-					$gameSubmission->setScoreThem(is_array($scoreThemValues) && count($scoreThemValues) > $i ? $scoreThemValues[$i] : 0);
+					if($league->getIsAskForScores()) {
+						$gameSubmission->setScoreUs(isset($allPostVars['scoreUs_' . $i . '_' . $j]) ? $allPostVars['scoreUs_' . $i . '_' . $j] : 0);
+						$gameSubmission->setScoreThem(isset($allPostVars['scoreThem_' . $i . '_' . $j]) ? $allPostVars['scoreThem_' . $i . '_' . $j] : 0);
+					} else {
+						$gameSubmission->setScoreUs(0);
+						$gameSubmission->setScoreThem(0);
+					}
 					
 					$gameSubmission->setSubmitterName($allPostVars['submitterName']);
 					$gameSubmission->setSubmitterEmail($allPostVars['submitterEmail']);					
@@ -216,7 +231,7 @@
 				. "<tr><td>Team Name:      " . $team->getName() . "</td></tr>"
 				. '<tr><td>Submitted by:   ' .  $firstSubmission->getSubmitterName() . ' (' . $firstSubmission->getSubmitterEmail() . ')</td></tr>'
 				. "<tr><td>League:         " . $league->getDayString() . " " .$league->getName() . "</td></tr>"
-				. "<tr><td>Date Played:    Week " . $firstSubmission->getDate()->getWeekNumber() . " - " . $firstSubmission->getDescription() . "</td></tr>"
+				. "<tr><td>Date Played:    Week " . $firstSubmission->getDate()->getWeekNumber() . " - " . $firstSubmission->getDate()->getDescription() . "</td></tr>"
 				. "<tr><td>======================================</td></tr></table>";
 			
 			$mailBody.='<table align=left>';
@@ -330,14 +345,17 @@
 			$from_header .= 'Content-Transfer-Encoding: base64' . "\r\n";
 			$from_header .= 'From: mail_form@perpetualmotion.org';
 			
+			
 			foreach(Includes_WhoGetsEmailed::scoreSubmission() as $adminEmail) {
-				mail($adminEmail, $subject, rtrim(chunk_split(base64_encode($mailBody))), $from_header);
+				if($_SERVER['SERVER_NAME'] != 'local.perpetualmotion.org') {
+					mail($adminEmail, $subject, rtrim(chunk_split(base64_encode($mailBody))), $from_header);
+				}
 			}
 
 			return 1;
 		}
 
-		public function checkSubmissionsMatch(Integer $resultOne, Integer $resultTwo) {
+		public function checkSubmissionsMatch($resultOne, $resultTwo) {
 			if ($resultOne == Includes_GameResults::WIN && $resultTwo != Includes_GameResults::LOSS
 					|| $resultOne == Includes_GameResults::LOSS && $resultTwo != Includes_GameResults::WIN
 					|| $resultOne == Includes_GameResults::TIE && $resultTwo != Includes_GameResults::TIE) {
@@ -347,7 +365,7 @@
 		}
 
 		//Formats a teams submission for an email and returns the text
-		public function printGameResults(array $submissions, Integer $matchNum) : String {
+		public function printGameResults(array $submissions, $matchNum) {
 			
 			if($submissions == null || sizeof($submissions) <= $matchNum) {
 				return "";
@@ -355,10 +373,11 @@
 			
 			$league = $submissions[0]->getTeam()->getLeague();
 			
-			$contents = "Opposition:    " + $submission->getOppTeam()->getName() + "<br />";
+			
+			$contents = "Opposition:    " + $submissions[$matchNum]->getOppTeam()->getName() + "<br />";
 			
 			for($i = 0; $i < $league->getNumGamesPerMatch(); $i++) {
-				if(sizeof($submissions) <= $mathNum + $i) {
+				if(sizeof($submissions) <= $matchNum + $i) {
 					continue; //No submission for this game. Not sure how this is possible but hey, good to error check.
 				}
 				
@@ -391,6 +410,20 @@
 			$contents .= "<br /><br />";
 			
 			return $contents;	
+		}
+		
+		public function updateStandingsFromSubmissions(Models_Team $team, array $scoreSubmissions) {
+			foreach($scoreSubmissions as $submission) {
+				if ($submission->getResult() == Includes_GameResults::WIN) {
+					$team->setWins($team->getWins() + 1);
+				} else if ($submission->getResult() == Includes_GameResults::LOSS) {
+					$team->setLosses($team->getLosses() + 1);
+				} else if ($submission->getResult() == Includes_GameResults::TIE) {
+					$team->setTies($team->getTies() + 1);
+				}
+			}
+			
+			$team->update();
 		}
 	}
 

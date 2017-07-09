@@ -15,15 +15,17 @@
 			$leaguesController->setLeagueWeek($league);
 		}
 
-		return $this->view->render($response, "score-reporter.phtml", [
+		return $this->view->render($response, "score-reporter/score-reporter.phtml", [
 				"request", $request,
 				"sport" => $sport,
 				"league" => $league,
 				"team" => $team,
-				"leagues" => $leaguesController->getLeaguesInScoreReporter($sport->getId())
+				"leagues" => $leaguesController->getLeaguesInScoreReporter($sport->getId()),
+				"router" => $this->router,
+				"isDashboard" => false
 			]
 		);
-	});
+	})->setName('score-reporter');
 
 	$app->get('/score-reporter-matches/{teamID}', function(Request $request, Response $response) {
 		$teamID = (int)$request->getAttribute('teamID');
@@ -37,13 +39,16 @@
 
 				if($team->getLeague() !== null) {
 
-					$matches = $scoreReporter->getMatches($team);
+					$matches = $scoreReporter->getMatchesInScoreReporter($team);
+					
 
-					return $this->view->render($response, "score-reporter-matches.phtml", [
+					return $this->view->render($response, "score-reporter/score-reporter-matches.phtml", [
 							"request", $request,
 							"teamID" => $teamID,
 							"team" => $team,
-							"matches" => $matches
+							"matches" => $matches,
+							"router" => $this->router,
+							"isDashboard" => false
 						]
 					);	
 				}
@@ -53,7 +58,7 @@
 		$response->getBody()->write("<div class='error'>Error: invalid Team ID.</div>");
 
 		return $response;
-	});
+	})->setName('score-reporter-matches');
 
 	$app->post('/score-reporter/report-score', function(Request $request, Response $response) {
 
@@ -62,18 +67,25 @@
 		$returnObj = array();
 		
 		$allPostPutVars = $request->getParsedBody();
+		
 		$sportID = $allPostPutVars['sportID'];
 		$leagueID = $allPostPutVars['leagueID'];
 		$teamID = $allPostPutVars['teamID'];
 		
 		try {
+			$sport = Models_Sport::withID($this->db, $this->logger, $sportID);
+			$league = Models_League::withID($this->db, $this->logger, $leagueID);
+			$team = Models_Team::withID($this->db, $this->logger, $teamID);
+			
 			$scoreReporter->saveFromRequest($request);
 			$returnObj["status"] = 1;
-			$returnObj["html"] = $this->view->render($response, "score-reporter-reported-score.phtml", [
+			$returnObj["html"] = $this->view->fetch("score-reporter/score-reporter-reported-score.phtml", [
 					"request", $request,
-					"sportID" => $sportID,
-					"leagueID" => $leagueID,
-					"teamID" => $teamID
+					"sport" => $sport,
+					"league" => $league,
+					"team" => $team,
+					"router" => $this->router,
+					"isDashboard" => false
 				]
 			);
 		} catch(Exception $e) {
@@ -85,6 +97,6 @@
 		$response->getBody()->write(json_encode($returnObj));
 
 		return $response;
-	});
+	})->setName('report-score');
 	
 ?>

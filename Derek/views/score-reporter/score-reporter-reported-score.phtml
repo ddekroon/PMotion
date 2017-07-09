@@ -1,0 +1,28 @@
+<div>
+	<p class="head">
+		Thank you for submitting your team's score
+		<br /><br />
+		Good luck with your games next week!
+	</p>
+	
+	<div class="image"><img border="0" src="/Logos/Perpetualmotionlogo2.jpg" width="95%" style="max-width:400px;"></div>
+	
+	<div class="container">
+		<div class="link">
+			<a target='_top' href='http://perpetualmotion.org/<?php echo $sport->getName() ?>/<?php echo $sport->getName() ?>-schedule?leagueID=<?php echo $league->getId() ?>'>
+				<?php print $league->getName() . ' Schedule' ?>
+			</a>
+		</div>
+		<div class="link">
+			<a target='_top' href='http://perpetualmotion.org/<?php echo $sport->getName() ?>/<?php echo $sport->getName() ?>-standings?leagueID=<?php echo $league->getId() ?>'>
+				<?php print $league->getName() . ' Standings' ?>
+			</a>
+		</div>
+		<div class="link">
+			<a target='_top' href='http://perpetualmotion.org/<?php echo $sport->getName() ?>/teamPage?teamID=<?php echo $team->getId() ?>'>
+				<?php print $team->getName() . ' Team Page' ?>
+			</a>
+		</div>
+	</div>
+	
+</div>

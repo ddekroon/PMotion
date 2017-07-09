@@ -31,10 +31,16 @@ abstract class Includes_WhoGetsEmailed {
 	}
 
 	public static function scoreSubmission() {
+		
+		return [
+			'derek@perpetualmotion.org'
+		];
+		
+		/* 
 		$email[] = 'dave@perpetualmotion.org';
 		$email[] = 'terry@perpetualmotion.org';
 		$email[] = 'nick@perpetualmotion.org';
-		return $email;
+		return $email; */
 	} 
 
 	public static function controlPanelMailer() {

@@ -39,9 +39,12 @@
 		}
 		
 		public function getActiveDate(Models_League $league) {
+			if($league == null) {
+				return null;
+			}
 			
 			$sql = "SELECT * FROM " . Includes_DBTableNames::datesTable 
-					. " Inner Join " . Includes_DBTableNames::leaguesTable . " ON " . Includes_DBTableNames::datesTable . ".date_day_number = " . Includes_DBTableNames::leaguesTable . ".league_day_number"
+					. " INNER JOIN " . Includes_DBTableNames::leaguesTable . " ON " . Includes_DBTableNames::datesTable . ".date_day_number = " . Includes_DBTableNames::leaguesTable . ".league_day_number"
 					. " WHERE " . Includes_DBTableNames::leaguesTable . ".league_id = " . $league->getId()
 					. " AND " . Includes_DBTableNames::datesTable . ".date_week_number = " . Includes_DBTableNames::leaguesTable . ".league_week_in_score_reporter"
 					. " AND date_sport_id = " . $league->getSportId() . " AND date_season_id = league_season_id LIMIT 1";
