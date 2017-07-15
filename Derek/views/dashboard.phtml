@@ -4,7 +4,7 @@
 	</div>
 	<fieldset class='form-group'>
 		<legend>Active Teams</legend>
-		<table id="PastTeamsTable" class="table table-condensed table-striped table-hover table-responsive">
+		<table id="ActiveTeamsTable" class="table table-condensed table-striped table-responsive">
 			<thead>
 				<tr>
 					<th>Name</th>
@@ -80,7 +80,7 @@
 	</fieldset>
 	<script>
 		$(function() {
-			$("#CurrentTeamsTable, #PastTeamsTable").DataTable({
+			$("#PastTeamsTable").DataTable({
 				"order": [[ 3, "desc" ]]
 			});
 		});

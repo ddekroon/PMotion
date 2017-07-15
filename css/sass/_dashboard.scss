@@ -1,17 +1,26 @@
 header.mainHeader {
 	background:$c-light-gray;
-	padding:10px 40px;
 	
-	.logoContainer {
-		padding:5px;
-		background:white;
-		border:1px solid $c-gray;
+	.container-fluid {
+		max-width:none;
+		padding-top:0;
+		padding-bottom:0;
+		
+		@include bp('min-width', $screen-sm) {
+			padding-left:55px;
+			padding-right:40px;
+		}
 	}
 	
 	.userAdmin {
 		@include flexbox();
 		align-items:center;
 		-webkit-align-items:center;
+		margin:10px 0;
+		
+		@include bp('min-width', $screen-md) {
+			float:right;
+		}
 		
 		.username {
 			font-size:1.3em;
@@ -47,5 +56,41 @@ header.mainHeader {
 			text-align:center;
 			top:auto;
 		}
+	}
+	
+	.navbar-brand {
+		padding:5px;
+		background:white;
+		border:1px solid $c-gray;
+		margin:10px 20px 10px 0;
+		height:$navbar-height - 20px;
+		
+		img {
+			width:auto;
+			height:50px;
+		}
+		
+		&:hover, &:focus {
+			background:white;
+		}
+	}
+	
+	.navbar-form {
+		margin-top:0;
+		margin-bottom:0;
+	}
+	
+	@include bp('min-width', $screen-md) {
+		.navbar-form {
+			white-space:nowrap;
+			margin-top: 23px;
+			margin-bottom: 23px;
+		}
+	}
+}
+
+footer.mainFooter {
+	@include bp('min-width', $screen-sm) {
+		min-height:50px;
 	}
 }

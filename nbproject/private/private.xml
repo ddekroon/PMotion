@@ -2,19 +2,6 @@
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-        <group>
-            <file>file:/C:/Bin/web/PMotion/Derek/routes/score-reporter.php</file>
-            <file>file:/C:/Bin/web/PMotion/Derek/controllers/scorereportercontroller.php</file>
-            <file>file:/C:/Bin/web/PMotion/Derek/views/score-reporter-matches.phtml</file>
-            <file>file:/C:/Bin/web/PMotion/Derek/models/scoresubmission.php</file>
-            <file>file:/C:/Bin/web/PMotion/allSports/includeFiles/scrErrorFunctions.php</file>
-            <file>file:/C:/Bin/web/PMotion/Derek/models/team.php</file>
-            <file>file:/C:/Bin/web/PMotion/Derek/models/league.php</file>
-            <file>file:/C:/Bin/web/PMotion/Derek/controllers/leaguescontroller.php</file>
-            <file>file:/C:/Bin/web/PMotion/Derek/models/date.php</file>
-            <file>file:/C:/Bin/web/PMotion/Derek/views/dashboard.phtml</file>
-            <file>file:/C:/Bin/web/PMotion/Derek/index.php</file>
-            <file>file:/C:/Bin/web/PMotion/Derek/includes/updates.sql</file>
-        </group>
+        <group/>
     </open-files>
 </project-private>

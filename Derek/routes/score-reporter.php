@@ -25,7 +25,7 @@
 				"isDashboard" => false
 			]
 		);
-	})->setName('score-reporter');
+	})->setName('score-reporter')->add($defaultTemplate);
 
 	$app->get('/score-reporter-matches/{teamID}', function(Request $request, Response $response) {
 		$teamID = (int)$request->getAttribute('teamID');

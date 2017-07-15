@@ -18,6 +18,6 @@
 				"league" => $league
 			]
 		);
-	});
+	})->add($defaultTemplate);
 	
 ?>

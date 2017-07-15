@@ -24,6 +24,7 @@ spl_autoload_register(function($classname) {
 
 $config['displayErrorDetails'] = true;
 $config['addContentLengthHeader'] = false;
+$config['determineRouteBeforeAppMiddleware'] = true;
 
 require_once('secrets.php');
 
@@ -85,15 +86,43 @@ $authenticate = function ($request, $response, $next) {
 	return $response;
 };
 
-$dashboard =  function ($request, $response, $next) {
+$defaultTemplate = function ($request, $response, $next) {
 	
-    $response = $this->view->render($response, 'template/dashboard-header.phtml', [
-		"user" => Models_User::withID($this->db, $this->logger, $_SESSION[Controllers_AuthController::SESSION_USER_ID]),
+	$response = $this->view->render($response, 'template/default-header.phtml');	
+	$response = $next($request, $response);
+	$response = $this->view->render($response, 'template/default-footer.phtml');
+	return $response;
+};
+
+/* $app->add(function ($request, $response, $next) {
+    
+    $response = $next($request, $response);
+	
+	if ($request->getAttribute('route')->getArgument('isApi', true) == 0) { //It's not an API call, include the default footer includes.
+		$response = $this->view->render($response, 'template/footer-includes.phtml');
+    }
+
+    return $response;
+}); */
+
+$dashboard =  function ($request, $response, $next) {
+
+	$curUser = Models_User::withID($this->db, $this->logger, $_SESSION[Controllers_AuthController::SESSION_USER_ID]);
+
+	$response = $this->view->render($response, 'template/dashboard-header.phtml', [
+		"user" => $curUser,
+		"router" => $this->router,
+		"isHomepage" => $request->getAttribute('route')->getName() == 'dashboard',
+		"isRegistration" => $request->getAttribute('route')->getName() == 'dashboard-registration'
+	]);
+
+	$response = $next($request, $response);
+
+	$response = $this->view->render($response, 'template/dashboard-footer.phtml', [
+		"user" => $curUser,
 		"router" => $this->router
 	]);
-    $response = $next($request, $response);
-    $response = $this->view->render($response, 'template/dashboard-footer.phtml');
-	
+
 	return $response;
 };
 

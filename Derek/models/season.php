@@ -100,7 +100,7 @@ class Models_Season extends Models_Generic implements Models_Interface, JsonSeri
 		return $this->registrationOpenUntil;
 	}
 
-	function getRegistrationBySport() {
+	function getIsRegistrationBySport() {
 		return $this->registrationBySport;
 	}
 

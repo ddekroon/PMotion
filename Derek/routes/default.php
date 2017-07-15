@@ -23,7 +23,7 @@
 				"router" => $this->router
 			]
 		);
-	})->setName('login');
+	})->setName('login')->add($defaultTemplate);
 	
 	$app->post('/login', function (Request $request, Response $response) {
 		
@@ -87,23 +87,12 @@
 	//Create Account
 	$app->get('/create-account', function (Request $request, Response $response) {
 		return $this->view->render($response, "coming-soon.phtml", []);
-	})->setName('create-account');
+	})->setName('create-account')->add($defaultTemplate);
 	
 	//Forgot Password
 	$app->get('/reset-password', function (Request $request, Response $response) {
 		return $this->view->render($response, "coming-soon.phtml", []);
-	})->setName('reset-password');
-	
-	//Dashboard
-	$app->get('/dashboard', function (Request $request, Response $response) {
-		$user = Models_User::withID($this->db, $this->logger, $_SESSION[Controllers_AuthController::SESSION_USER_ID]); //Load user from db, that way we refresh all user info.
-		
-		return $this->view->render($response, "dashboard.phtml", [
-			"user" => $user,
-			"router" => $this->router
-		]);
-		
-	})->setName('dashboard')->add($dashboard)->add($authenticate);
+	})->setName('reset-password')->add($defaultTemplate);
 	
 	//Generic get league teams
 	$app->get('/get-league-teams/{leagueID}', function(Request $request, Response $response) {

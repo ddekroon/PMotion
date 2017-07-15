@@ -4,7 +4,7 @@ class Controllers_SportsController extends Controllers_Controller {
 	
     public function getSports() {
 
-        $sql = "SELECT * FROM " . Includes_DBTableNames::sportsTable . "WHERE sport_id > 0 ORDER BY sport.sport_id ASC";
+        $sql = "SELECT * FROM " . Includes_DBTableNames::sportsTable . " WHERE sport_id > 0 ORDER BY sport_id ASC";
 		
         $stmt = $this->db->query($sql);
         $results = [];
