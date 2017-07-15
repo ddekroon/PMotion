@@ -219,7 +219,7 @@
 			<br />Registration due date:<br />
 			<?php foreach($seasonsAvailableForRegistration as $curSeason) { ?>
 				<span class='season season_<?php echo $curSeason->getId() ?>'>
-					<?php if($curSeason->getRegistrationBySport()) { ?>
+					<?php if($curSeason->getIsRegistrationBySport()) { ?>
 						<?php echo $curSeason->getName() . ' - ' . date("F j, Y", $sport->getRegistrationDueDate()) . '<br />' ?>
 					<?php } else { ?>
 						<?php echo $curSeason->getName() . ' - ' . date("F j, Y", $curSeason->getRegistrationDueBy()) . '<br />' ?>

@@ -10,7 +10,7 @@
 		</legend>
 
 		<?php if($regSeason->getName() == 'Summer') { ?>
-			<div class="alert alert-info" role="alert">Spring teams have first priority for summer, but must confirm registration by: <?php echo $regSeason->getConfirmationDate() ?></div>
+			<div class="alert alert-info" role="alert">Spring teams have first priority for summer, but must confirm registration by: <?php echo date("F d", $regSeason->getConfirmationDueBy()) ?></div>
 		<?php } ?>
 
 		<table id="PastTeamsTable" class="table table-condensed table-striped table-hover table-responsive">
