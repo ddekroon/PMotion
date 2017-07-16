@@ -111,7 +111,8 @@ class Models_Team extends Models_Generic implements Models_Interface, JsonSerial
 	}
 	
 	function getCaptain() {
-		if($this->captain == null && $this->db != null && $this->getId() != null) {
+		
+		if(($this->captain == null || $this->captain->getId() == null) && $this->db != null && $this->getId() != null) {
 			
 			$sql = "SELECT * FROM " . Includes_DBTableNames::playersTable . " WHERE player_team_id = " . $this->getId() . " AND player_is_captain = 1";
 			$stmt = $this->db->query($sql);
@@ -119,6 +120,8 @@ class Models_Team extends Models_Generic implements Models_Interface, JsonSerial
 			if(($row = $stmt->fetch()) != false) {
 				$this->captain = Models_Player::withRow($this->db, $this->logger, $row);
 			}
+		} else if($this->captain == null) {
+			$this->captain = Models_Player::withID($this->db, $this->logger, -1);
 		}
 		
 		return $this->captain;

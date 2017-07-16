@@ -10,6 +10,7 @@ $c-secondary:$c-red;
 
 $f-glyph:'Glyphicons Halflings';
 
+$f-normal:16px;
 $f-small:14px;
 $f-smaller:12px;
 
@@ -98,5 +99,11 @@ $f-smaller:12px;
 		display:table;
 		clear:both;
 		content:"";
+	}
+}
+
+@mixin prefix($property, $parameters...) {
+	@each $prefix in -webkit-, -moz-, -ms-, -o-, "" {
+		#{$prefix}#{$property}: $parameters;
 	}
 }

@@ -1,239 +1,342 @@
 
-	<div class='clearfix form-group'>
-		<h1>Edit Team - <?php echo $team->getName() ?></h1>
-	</div>
-	<fieldset class='form-group'>
-		<legend>Division and Team Name</legend>
-		<div class='row form-group'>
-			<div class='col-md-2 col-sm-3 col-xs-4'>
-				<label for='TeamLeague'>League <span class="required">*</span></label>
-			</div>
-			<div class='col-md-10 col-sm-9 col-xs-8'>
-				<?php if($team->getIsFinalized()) { //Can't change league for a finalized team. ?>
-					<input type='text' id='TeamLeague' name='leagueName' value="<?php echo $team->getLeague()->getName() . ' - ' . $team->getLeague()->getDayString() ?>" readonly="readonly" class='form-control' />
-				<?php } else { ?>
-					<select name="leagueID" id="TeamLeague" class='form-control'>
-						<option value="-1">-- League --</option>
-						<?php if(count($leaguesAvailableForRegistration) > 0) { ?>
-							<optgroup label='<?php echo $leaguesAvailableForRegistration[0]->getSeason()->getName() ?>'>
-								<?php 
-									$lastSeasonId = 0;
-									foreach($$leaguesAvailableForRegistration as $curLeague) {
+<?php 
+	$newTeam = false;
+		
+	if(isset($registerTeam) && $registerTeam) {
+		$newTeam = true;
+	}
+?>
 
-										if($curLeague->getSeasonId() != $lastSeasonId && $lastSeasonId != 0) {
-											print '</optgroup><optgroup label="' . $league->getSeason()->getName() . '">';
-										}
-
-										print "<option value='" . $curLeague->getId() . "' " 
-												. ($curLeague->getId() == $league->getId() ? "selected='selected'" : '') . ">"
-												. $curLeague->getName() . " - " . $curLeague->getDayString()
-												. "</option>";
-
-										$lastSeasonId = $curLeague->getSeasonId();
-									}
-								?>
-							</optgroup>
-						<?php } ?>
-					</select>
-				<?php } ?>
-			</div>
-		</div>
-		<div class='row form-group'>
-			<div class='col-md-2 col-sm-3 col-xs-4'>
-				<label for='TeamName'>Team Name</label>
-			</div>
-			<div class='col-md-10 col-sm-9 col-xs-8'>
-				<input type='text' id='TeamName' name='teamName' value="<?php echo htmlentities($team->getName(), ENT_QUOTES) ?>" class='form-control' />
-			</div>
-		</div>
-	</fieldset>
-	<fieldset class='form-group'>
-		<legend>Captain Information<small>The captain is the first person we'll contact with team inquiries and is responsible for submitting scores.</small></legend>
-		<div class='row form-group'>
-			<div class='col-md-6 col-xs-12'>
-				<div class='row'>
-					<div class='col-xs-4'>
-						<label for='CapFirstName'>First Name</label>
-					</div>
-					<div class='col-xs-8'>
-						<input type='text' id='CapFirstName' name='capFirstName' value="<?php echo htmlentities($team->getCaptain()->getFirstName(), ENT_QUOTES) ?>" class='form-control' />
-					</div>
-				</div>
-			</div>
-			<div class='col-md-6 col-xs-12'>
-				<div class='row'>
-					<div class='col-xs-4'>
-						<label for='CapLastName'>Last Name</label>
-					</div>
-					<div class='col-xs-8'>
-						<input type='text' id='CapLastName' name='capLastName' value="<?php echo htmlentities($team->getCaptain()->getLastName(), ENT_QUOTES) ?>" class='form-control' />
-					</div>
-				</div>
-			</div>
-		</div>
-		<div class='row form-group'>
-			<div class='col-md-2 col-xs-4'>
-				<label for='CapEmail'>Email</label>
-			</div>
-			<div class='col-md-10 col-xs-8'>
-				<input type='text' id='CapEmail' name='capEmail' value="<?php echo htmlentities($team->getCaptain()->getEmail(), ENT_QUOTES) ?>" class='form-control' />
-			</div>
-		</div>
-		<div class='row form-group'>
-			<div class='col-md-6 col-xs-12'>
-				<div class='row'>
-					<div class='col-xs-4'>
-						<label for='CapPhoneNumber'>Phone Number</label>
-					</div>
-					<div class='col-xs-8'>
-						<input type='text' id='CapPhoneNumber' name='capPhoneNumber' value="<?php echo htmlentities($team->getCaptain()->getPhoneNumber(), ENT_QUOTES) ?>" class='form-control' />
-					</div>
-				</div>
-			</div>
-			<div class='col-md-6 col-xs-12'>
-				<div class='row'>
-					<div class='col-xs-4'>
-						<label for='CapGender'>Gender</label>
-					</div>
-					<div class='col-xs-8'>
-						<select id='CapGender' name='capGender' class='form-control'>
-							<option value=''>Select One</option>
-                            <option value='M' <?php echo $team->getCaptain()->getGender() == 'M' ? 'selected="selected"' : '' ?>>Male</option>
-                            <option value='F' <?php echo $team->getCaptain()->getGender() == 'F' ? 'selected="selected"' : '' ?>>Female</option>
-						</select>
-					</div>
-				</div>
-			</div>
-		</div>
-	</fieldset>
-	<fieldset class='form-group'>
-		<legend>Player Information<small>The second player will be listed as an alternate contact if the captain is unavailable.</small></legend>
-		<table id="TeamMembers" class="table table-condensed table-striped table-responsive">
-			<thead>
-				<tr>
-					<th>First Name</th>
-					<th>Last Name</th>
-					<th>Email</th>
-					<th>Gender</th>
-				</tr>
-			</thead>
-			<tbody>
-				<?php for($i = 0; $i < $team->getLeague()->getSport()->getNumPlayerInputsForRegistration(); $i++) { ?>
-					<?php $curPlayer = $i < count($team->getPlayers()) ? $team->getPlayers()[$i] : new Models_Player(); ?>
-					<tr>
-						<td>
-							<label class='sr-only' for='PlayerFirstName_<?php echo $i ?>'>First Name</label>
-							<input type='text' class='form-control' id='PlayerFirstName_<?php echo $i ?>' name='playerFirstName' value='<?php echo htmlentities($curPlayer->getFirstName(), ENT_QUOTES) ?>' />
-							<input type='hidden' name='playerID' value='<?php echo $curPlayer->getId() ?>' />
-						</td>
-						<td>
-							<label class='sr-only' for='PlayerLastName_<?php echo $i ?>'>Last Name</label>
-							<input type='text' class='form-control' id='PlayerLastName_<?php echo $i ?>' name='playerLastName' value='<?php echo htmlentities($curPlayer->getLastName(), ENT_QUOTES) ?>' />
-						</td>
-						<td>
-							<label class='sr-only' for='PlayerEmail<?php echo $i ?>'>Email</label>
-							<input type='text' class='form-control' id='PlayerEmail_<?php echo $i ?>' name='playerEmail' value='<?php echo htmlentities($curPlayer->getEmail(), ENT_QUOTES) ?>' />
-						</td>
-						<td>
-							<label class='sr-only' for='PlayerGender_<?php echo $i ?>'>Email</label>
-							<select id='PlayerGender_<?php echo $i ?>' name="playerGender" class='form-control'>
-								<option value='M' <?php print $curPlayer->getGender() == 'M' ? 'selected="selected"' : '' ?>>Male</option>
-								<option value='F' <?php print $curPlayer->getGender() == 'F' ? 'selected="selected"' : '' ?>>Female</option>
-							</select>
-						</td>
-					</tr>
-				<?php } ?>
-			</tbody>
-		</table>
-	</fieldset>
-	<fieldset class='form-group'>
-		<legend>Comments<small>Comments, notes, player needs, etc. (limit 1000 characters)</small></legend>
+	<form id='EditTeamForm'>
+		<input type='hidden' name='teamID' value='<?php echo $newTeam ? '-1' : $team->getId() ?>' />
+		<input type='hidden' name='action' value='save' />
 		
 		<div class='row form-group'>
-			<div class='col-md-2 col-xs-4'>
-				<label for='TeamComments'>Comments</label>
+			<div class='col-xs-12 col-sm-3 col-sm-push-9 text-right'>
+				<img src='<?php echo $sport->getLogoLink() ?>' />
 			</div>
-			<div class='col-md-10 col-xs-8'>
-				<textarea class='form-control' name="teamComments" id='TeamComments'><?php echo htmlentities($team->getRegistrationComment() != null ? $team->getRegistrationComment()->getComment() : "", ENT_QUOTES) ?></textarea>
-			</div>
-		</div>
-		<div class='row form-group'>
-			<div class='col-md-2 col-xs-4'>
-				<label for='CapHowHeardMethod'>How did you hear about us?</label>
-			</div>
-			<div class='col-md-10 col-xs-8'>
-				<select name="capHowHeardMethod" id='CapHowHeardMethod' class='form-control' onchange="showTextbox(this)">
-					<option value="0" <?php echo $team->getCaptain()->getHowHeardMethod() == 0 ? "selected='selected'" : "" ?>>Choose Method</option>
-					<option value="1" <?php echo $team->getCaptain()->getHowHeardMethod() == 1 ? "selected='selected'" : "" ?>>Google/Internet Search</option>
-					<option value="2" <?php echo $team->getCaptain()->getHowHeardMethod() == 2 ? "selected='selected'" : "" ?>>Facebook Page</option>
-					<option value="3" <?php echo $team->getCaptain()->getHowHeardMethod() == 3 ? "selected='selected'" : "" ?>>Kijiji Ad</option>
-					<option value="4" <?php echo $team->getCaptain()->getHowHeardMethod() == 4 ? "selected='selected'" : "" ?>>Returning Player</option>
-					<option value="5" <?php echo $team->getCaptain()->getHowHeardMethod() == 5 ? "selected='selected'" : "" ?>>From A Friend</option>
-					<option value="6" <?php echo $team->getCaptain()->getHowHeardMethod() == 6 ? "selected='selected'" : "" ?>>Restaurant Advertisement</option>
-					<option value="7" <?php echo $team->getCaptain()->getHowHeardMethod() == 7 ? "selected='selected'" : "" ?>>The Guelph Community Guide</option>
-					<option value="8" <?php echo $team->getCaptain()->getHowHeardMethod() == 8 ? "selected='selected'" : "" ?>>Other</option>            
-				</select>
+			<div class='col-xs-12 col-sm-9 col-sm-pull-3'>
+				<h1><?php echo $newTeam ? 'Register a Team' : 'Edit Team - ' . $team->getName() ?></h1>
 			</div>
 		</div>
-		<div class='row form-group' id='HowHeardOtherMethod' <?php echo $team->getCaptain()->getHowHeardMethod() == 0 ? "style='display:none;'" : "" ?>>
-			<div class='col-md-2 col-xs-4'>
-				<label for='CapHowHeardMethodOther'>Please specify other method</label>
-			</div>
-			<div class='col-md-10 col-xs-8'>
-				<input name="capHowHeardMethodOther" class='form-control' id='CapHowHeardMethodOther' value='<?php echo htmlentities($team->getCaptain()->getHowHeardOtherText(), ENT_QUOTES) ?>' type='text' />
-			</div>
-		</div>
-		
-	</fieldset>
-	<fieldset class='form-group'>
-		<legend>Confirm Fees<small>The registration process is not finalized until fees have been paid</small></legend>
-		<div class='row form-group'>
-			<div class='col-md-2 col-xs-4'>
-				<label for='TeamPayMethod'>Payment Method</label>
-			</div>
-			<div class='col-md-10 col-xs-8'>
-				<select name="teamPaymentMethod" id='TeamPayMethod' class='form-control'>
-					<option value="0" <?php echo $team->getPaymentMethod() == 0 ? "selected='selected'" : "" ?>>Choose Payment Method</option>
-					<option value="1" <?php echo $team->getPaymentMethod() == 1 ? "selected='selected'" : "" ?>>I will send an email money transfer to dave@perpetualmotion.org</option>
-					<option value="2" <?php echo $team->getPaymentMethod() == 2 ? "selected='selected'" : "" ?>>I will mail cheque to Perpetual Motion's home office</option>
-					<option value="3" <?php echo $team->getPaymentMethod() == 3 ? "selected='selected'" : "" ?>>I will bring cash/cheque to Perpetual Motion's home office</option>
-					<option value="4" <?php echo $team->getPaymentMethod() == 4 ? "selected='selected'" : "" ?>>I will bring cash/cheque to registration night</option>            
-				</select>
-			</div>
-		</div>
-		<p class='text-center'><strong>Make Cheques Payable to Perpetual Motion</strong></p>
-        <p class='text-center'><strong>Send This Confirmation Form & Fees to:</strong><br />78 Kathleen St. Guelph, Ontario; N1H 4Y3</p>
-	</fieldset>
-	<fieldset class='form-group'>
-		<legend>Register or Save<small>Submit your team registration to the convenor or save details to your profile for another time.</small></legend>
-		<p class='text-center'>
-			<?php if($team->getId() != null) { ?>
-				<button type='submit' class='btn btn-primary' name='submit' value='update' onclick="return checkUpdate()">Update</button>
-			<?php } else { ?>
-				<button type='submit' class='btn btn-primary' name='submit' value='register' onclick="return showPayment()">Register</button>
-				<button type='submit' class='btn btn-primary' name='submit' value='save' onclick="return errorCheck()">Save Details</button>
-			<?php } ?>
-			<button type='button' onclick='javascript:window.print();'>Print Form</button>
-		</p>
-		<p class='red text-center'>
-			<br />Registration due date:<br />
-			<?php foreach($seasonsAvailableForRegistration as $curSeason) { ?>
-				<span class='season season_<?php echo $curSeason->getId() ?>'>
-					<?php if($curSeason->getIsRegistrationBySport()) { ?>
-						<?php echo $curSeason->getName() . ' - ' . date("F j, Y", $sport->getRegistrationDueDate()) . '<br />' ?>
+		<fieldset class='form-group'>
+			<legend>Division and Team Name</legend>
+			<div class='row form-group'>
+				<div class='col-md-2 col-sm-3 col-xs-4'>
+					<label for='TeamLeague'>League <span class="required">*</span></label>
+				</div>
+				<div class='col-md-10 col-sm-9 col-xs-8'>
+					<?php if(!$newTeam && $team->getIsFinalized()) { //Can't change league for a finalized team. ?>
+						<input type='text' id='TeamLeague' name='leagueName' value="<?php echo $team->getLeague()->getName() . ' - ' . $team->getLeague()->getDayString() ?>" readonly="readonly" class='form-control' />
 					<?php } else { ?>
-						<?php echo $curSeason->getName() . ' - ' . date("F j, Y", $curSeason->getRegistrationDueBy()) . '<br />' ?>
+						<select name="leagueID" id="TeamLeague" class='form-control' required='required'>
+							<option value="-1">-- League --</option>
+							<?php if(count($leaguesAvailableForRegistration) > 0) { ?>
+								<optgroup label='<?php echo $leaguesAvailableForRegistration[0]->getSeason()->getName() ?>'>
+									<?php 
+										$lastSeasonId = 0;
+										foreach($leaguesAvailableForRegistration as $curLeague) {
+
+											if($curLeague->getSeasonId() != $lastSeasonId && $lastSeasonId != 0) {
+												print '</optgroup><optgroup label="' . $league->getSeason()->getName() . '">';
+											}
+
+											print "<option value='" . $curLeague->getId() . "' " 
+													. ($curLeague->getId() == $league->getId() ? "selected='selected'" : '') . ">"
+													. $curLeague->getName() . " - " . $curLeague->getDayString()
+													. "</option>";
+
+											$lastSeasonId = $curLeague->getSeasonId();
+										}
+									?>
+								</optgroup>
+							<?php } ?>
+						</select>
 					<?php } ?>
-				</span>
-			<?php } ?>
-		</p>
-	</fieldset>
+				</div>
+			</div>
+			<div class='row form-group'>
+				<div class='col-md-2 col-sm-3 col-xs-4'>
+					<label for='TeamName'>Team Name <span class="required">*</span></label>
+				</div>
+				<div class='col-md-10 col-sm-9 col-xs-8'>
+					<input type='text' id='TeamName' name='teamName' required='required' value="<?php echo htmlentities($team->getName(), ENT_QUOTES) ?>" class='form-control' />
+				</div>
+			</div>
+		</fieldset>
+		<fieldset class='form-group'>
+			<legend>Captain Information<small>The captain is the first person we'll contact with team inquiries and is responsible for submitting scores.</small></legend>
+			<div class='row form-group'>
+				<div class='col-md-6 col-xs-12'>
+					<div class='row'>
+						<div class='col-xs-4'>
+							<label for='CapFirstName'>First Name <span class="required">*</span></label>
+						</div>
+						<div class='col-xs-8'>
+							<input type='text' id='CapFirstName' name='capFirstName' required='required' value="<?php echo htmlentities(($team->getId() == null ? $user->getFirstName() : $team->getCaptain()->getFirstName()), ENT_QUOTES) ?>" class='form-control' />
+						</div>
+					</div>
+				</div>
+				<div class='col-md-6 col-xs-12'>
+					<div class='row'>
+						<div class='col-xs-4'>
+							<label for='CapLastName'>Last Name <span class="required">*</span></label>
+						</div>
+						<div class='col-xs-8'>
+							<input type='text' id='CapLastName' name='capLastName' required='required' value="<?php echo htmlentities(($team->getId() == null ? $user->getLastName() : $team->getCaptain()->getLastName()), ENT_QUOTES) ?>" class='form-control' />
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class='row form-group'>
+				<div class='col-md-2 col-xs-4'>
+					<label for='CapEmail'>Email <span class="required">*</span></label>
+				</div>
+				<div class='col-md-10 col-xs-8'>
+					<input type='text' id='CapEmail' name='capEmail' required='required' value="<?php echo htmlentities(($team->getId() == null ? $user->getEmail() : $team->getCaptain()->getEmail()), ENT_QUOTES) ?>" class='form-control' />
+				</div>
+			</div>
+			<div class='row form-group'>
+				<div class='col-md-6 col-xs-12'>
+					<div class='row'>
+						<div class='col-xs-4'>
+							<label for='CapPhoneNumber'>Phone Number <span class="required">*</span></label>
+						</div>
+						<div class='col-xs-8'>
+							<input type='text' id='CapPhoneNumber' name='capPhoneNumber' required='required' value="<?php echo htmlentities(($team->getId() == null ? $user->getPhone() : $team->getCaptain()->getPhoneNumber()), ENT_QUOTES) ?>" class='form-control' />
+						</div>
+					</div>
+				</div>
+				<div class='col-md-6 col-xs-12'>
+					<div class='row'>
+						<div class='col-xs-4'>
+							<label for='CapGender'>Gender <span class="required">*</span></label>
+						</div>
+						<div class='col-xs-8'>
+							<select id='CapGender' name='capGender' required='required' class='form-control'>
+								<option value=''>Select One</option>
+								<option value='M' <?php echo ($team->getId() == null ? $user->getGender() : $team->getCaptain()->getGender()) == 'M' ? 'selected="selected"' : '' ?>>Male</option>
+								<option value='F' <?php echo ($team->getId() == null ? $user->getGender() : $team->getCaptain()->getGender()) == 'F' ? 'selected="selected"' : '' ?>>Female</option>
+							</select>
+						</div>
+					</div>
+				</div>
+			</div>
+		</fieldset>
+		<fieldset class='form-group'>
+			<legend>Player Information<small>The first player will be listed as an alternate contact if the captain is unavailable.</small></legend>
+			<div id="RegPlayersContainer" style="height:212px;overflow:hidden;">
+				<div class='table-responsive'>
+					<table id="TeamMembers" class="table table-condensed table-striped">
+						<thead>
+							<tr>
+								<th>First Name</th>
+								<th>Last Name</th>
+								<th>Email</th>
+								<th>Gender</th>
+							</tr>
+						</thead>
+						<tbody>
+							<?php for($i = 0; $i < $sport->getNumPlayerInputsForRegistration(); $i++) { ?>
+								<?php $curPlayer = $i < count($team->getPlayers()) ? $team->getPlayers()[$i] : new Models_Player(); ?>
+								<tr>
+									<td>
+										<label class='sr-only' for='PlayerFirstName_<?php echo $i ?>'>First Name</label>
+										<input type='text' style="min-width:100px;" class='form-control' id='PlayerFirstName_<?php echo $i ?>' name='playerFirstName' value='<?php echo htmlentities($curPlayer->getFirstName(), ENT_QUOTES) ?>' />
+										<input type='hidden' name='playerID' value='<?php echo $curPlayer->getId() ?>' />
+									</td>
+									<td>
+										<label class='sr-only' for='PlayerLastName_<?php echo $i ?>'>Last Name</label>
+										<input type='text' style="min-width:100px;" class='form-control' id='PlayerLastName_<?php echo $i ?>' name='playerLastName' value='<?php echo htmlentities($curPlayer->getLastName(), ENT_QUOTES) ?>' />
+									</td>
+									<td>
+										<label class='sr-only' for='PlayerEmail<?php echo $i ?>'>Email</label>
+										<input type='text' style="min-width:200px;" class='form-control' id='PlayerEmail_<?php echo $i ?>' name='playerEmail' value='<?php echo htmlentities($curPlayer->getEmail(), ENT_QUOTES) ?>' />
+									</td>
+									<td>
+										<label class='sr-only' for='PlayerGender_<?php echo $i ?>'>Email</label>
+										<select id='PlayerGender_<?php echo $i ?>' style="min-width:80px;" name="playerGender" class='form-control'>
+											<option value='M' <?php print $curPlayer->getGender() == 'M' ? 'selected="selected"' : '' ?>>Male</option>
+											<option value='F' <?php print $curPlayer->getGender() == 'F' ? 'selected="selected"' : '' ?>>Female</option>
+										</select>
+									</td>
+								</tr>
+							<?php } ?>
+						</tbody>
+					</table>
+				</div>
+			</div>
+			<div style="border-top:1px solid #e5e5e5" class="text-center panel-body" id="RegPlayersMoreContainer">
+				<button type="button" class="btn btn-primary" onclick="displayAllPlayers();">More Players <span class="glyphicon glyphicon-chevron-down"></span></button>
+			</div>
+		</fieldset>
+		<fieldset class='form-group'>
+			<legend>Comments<small>Comments, notes, player needs, etc. (limit 1000 characters)</small></legend>
+
+			<div class='row form-group'>
+				<div class='col-md-2 col-xs-4'>
+					<label for='TeamComments'>Comments</label>
+				</div>
+				<div class='col-md-10 col-xs-8'>
+					<textarea class='form-control' name="teamComments" id='TeamComments'><?php echo htmlentities($team->getRegistrationComment() != null ? $team->getRegistrationComment()->getComment() : "", ENT_QUOTES) ?></textarea>
+				</div>
+			</div>
+			<div class='row form-group'>
+				<div class='col-md-2 col-xs-4'>
+					<label for='CapHowHeardMethod'>How did you hear about us?</label>
+				</div>
+				<div class='col-md-10 col-xs-8'>
+					<select name="capHowHeardMethod" id='CapHowHeardMethod' class='form-control' onchange="showTextbox(this)">
+						<option value="0" <?php echo $team->getCaptain()->getHowHeardMethod() == 0 ? "selected='selected'" : "" ?>>Choose Method</option>
+						<option value="1" <?php echo $team->getCaptain()->getHowHeardMethod() == 1 ? "selected='selected'" : "" ?>>Google/Internet Search</option>
+						<option value="2" <?php echo $team->getCaptain()->getHowHeardMethod() == 2 ? "selected='selected'" : "" ?>>Facebook Page</option>
+						<option value="3" <?php echo $team->getCaptain()->getHowHeardMethod() == 3 ? "selected='selected'" : "" ?>>Kijiji Ad</option>
+						<option value="4" <?php echo $team->getCaptain()->getHowHeardMethod() == 4 ? "selected='selected'" : "" ?>>Returning Player</option>
+						<option value="5" <?php echo $team->getCaptain()->getHowHeardMethod() == 5 ? "selected='selected'" : "" ?>>From A Friend</option>
+						<option value="6" <?php echo $team->getCaptain()->getHowHeardMethod() == 6 ? "selected='selected'" : "" ?>>Restaurant Advertisement</option>
+						<option value="7" <?php echo $team->getCaptain()->getHowHeardMethod() == 7 ? "selected='selected'" : "" ?>>The Guelph Community Guide</option>
+						<option value="8" <?php echo $team->getCaptain()->getHowHeardMethod() == 8 ? "selected='selected'" : "" ?>>Other</option>            
+					</select>
+				</div>
+			</div>
+			<div class='row form-group' id='HowHeardOtherMethod' <?php echo $team->getCaptain()->getHowHeardMethod() == 0 ? "style='display:none;'" : "" ?>>
+				<div class='col-md-2 col-xs-4'>
+					<label for='CapHowHeardMethodOther'>Please specify other method</label>
+				</div>
+				<div class='col-md-10 col-xs-8'>
+					<input name="capHowHeardMethodOther" class='form-control' id='CapHowHeardMethodOther' value='<?php echo htmlentities($team->getCaptain()->getHowHeardOtherText(), ENT_QUOTES) ?>' type='text' />
+				</div>
+			</div>
+
+		</fieldset>
+		<fieldset id='EditTeamFeesSection' class='form-group' style='display:none;' data-display='false'>
+			<legend>Confirm Fees<small>The registration process is not finalized until fees have been paid</small></legend>
+			<div class='row form-group'>
+				<div class='col-md-2 col-xs-4'>
+					<label for='TeamPayMethod'>Method <span class="required">*</span></label>
+				</div>
+				<div class='col-md-10 col-xs-8'>
+					<select name="teamPaymentMethod" id='TeamPayMethod' class='form-control'>
+						<option value="-1" readonly='readonly' <?php echo $team->getPaymentMethod() == 0 ? "selected='selected'" : "" ?>>Choose Payment Method</option>
+						<option value="1" <?php echo $team->getPaymentMethod() == 1 ? "selected='selected'" : "" ?>>I will send an email money transfer to dave@perpetualmotion.org</option>
+						<option value="2" <?php echo $team->getPaymentMethod() == 2 ? "selected='selected'" : "" ?>>I will mail cheque to Perpetual Motion's home office</option>
+						<option value="3" <?php echo $team->getPaymentMethod() == 3 ? "selected='selected'" : "" ?>>I will bring cash/cheque to Perpetual Motion's home office</option>
+						<option value="4" <?php echo $team->getPaymentMethod() == 4 ? "selected='selected'" : "" ?>>I will bring cash/cheque to registration night</option>            
+					</select>
+				</div>
+			</div>
+			<p class='text-center'><strong>Make Cheques Payable to Perpetual Motion</strong></p>
+			<p class='text-center'><strong>Send This Confirmation Form & Fees to:</strong><br />78 Kathleen St. Guelph, Ontario; N1H 4Y3</p>
+		</fieldset>
+		<fieldset class='registrationDate'>
+			<legend>Registration Due By</legend>
+			<?php foreach($seasonsAvailableForRegistration as $regSeason) { ?>
+				<h4><?php print $regSeason->getName() ?></h4>
+				<?php 
+					if($regSeason->getIsRegistrationBySport()) { 
+						$regSportsByDate = array();
+
+						foreach($sports as $sport) {
+							if(!isset($regSportsByDate[$sport->getRegistrationDueDate()])) {
+								$regSportsByDate[$sport->getRegistrationDueDate()] = array();
+							}	
+
+							$regSportsByDate[$sport->getRegistrationDueDate()][] = $sport->getName();
+						}
+
+						foreach($regSportsByDate as $date => $sports) {
+							print "<p>" . join(", ", $sports) . ": <span class='red'><strong>" . date("F d", $date) . "</strong></span></p>";
+						}
+					} else {
+						echo $regSeason->getRegistrationDueBy();
+					}
+				?>
+			<?php }	?>
+			<p>&nbsp;</p>
+		</fieldset>
+		<fieldset class='form-group'>
+			<legend>Register or Save<small>Submit your team registration to the convenor or save details to your profile for another time.</small></legend>
+			<p>
+				<?php if($team->getId() != null) { ?>
+					<button type='submit' class='btn btn-primary' name='submit' value='update' onclick="return checkUpdate()"><span class='glyphicon glyphicon-floppy-disk'></span> Update</button>
+				<?php } else { ?>
+					<button type='submit' class='btn btn-primary' name='submit' value='register' onclick='$("#EditTeamForm input[name=action]").val("register");'>
+						<span class='glyphicon glyphicon-saved'></span> Register
+					</button>
+					<button type='submit' class='btn btn-primary' name='submit' value='save' onclick='$("#EditTeamForm input[name=action]").val("save");'>
+						<span class='glyphicon glyphicon-floppy-disk'></span> Save Details
+					</button>
+				<?php } ?>
+				<button type='button' class="btn btn-primary pull-right" onclick='javascript:window.print();'><span class='glyphicon glyphicon-print'></span> Print Form</button>
+			</p>
+		</fieldset>
+	</form>
+
 	<script>
 		$(function() {
-			/* $("#TeamMembers").DataTable({
-				"ordering": false,
-				"bPaginate": false
-			}); */
+
+			$.validator.addMethod("registering", function(value, element) {
+					if($("#EditTeamForm input[name=action]").val() === 'save') {
+						return true;
+					}
+					
+					if($("#EditTeamFeesSection").attr('data-display') === 'false') {
+						return true;
+					} else {
+						return $(element).val() > 0;
+					}
+				}, "Please enter your payment method."
+			);
+
+			$("#EditTeamForm").validate({
+				rules: {
+					teamPaymentMethod: {
+						"registering": true
+					},
+					leagueID: {
+						required: true,
+						min: 13
+					}
+				},
+				messages: {
+					leagueID: "League is required",
+					teamName: "Team Name is required"
+				},
+				submitHandler:function(form) {
+					var paymentSection = $("#EditTeamFeesSection");
+					
+					if($("#EditTeamForm input[name=action]").val() === "register" && paymentSection.attr('data-display') === 'false') {
+						paymentSection.attr('data-display', 'true');
+						paymentSection.slideDown(300);
+						return;
+					}
+					
+					$(form).ajaxSubmit({
+						type:"post",
+						url:"<?php echo $router->pathFor('save-team', ['teamID' => $team->getId() != null ? $team->getId() : -1] ); ?>",
+						dataType:"json",
+						success:function(resp) {
+							if(resp === 1) {
+								alert(resp.successMessage);
+							} else {
+								alert(resp.errorMessage);
+							}
+						},
+						error:function() {
+							alert("Error connecting to server");
+						}
+					});
+				},
+				invalidHandler:function(event, validator) {
+					var errors = validator.numberOfInvalids();
+					if (errors) {
+						var message = errors == 1
+							? 'You missed 1 field. It has been highlighted'
+							: 'You missed ' + errors + ' fields. They have been highlighted';
+						alert(message);
+					}
+				}
+			})
 		});
 		
 		function showTextbox(self) {
@@ -243,5 +346,16 @@
 			} else {
 				$('#HowHeardOtherMethod').slideUp();
 			}
+		}
+		
+		function displayAllPlayers() {
+			//var $text = ;
+			//var contentHeight = $text.addClass('heightAuto').height();
+			
+			$("#RegPlayersContainer").animate({ 
+				height: $("#TeamMembers").height()
+			}, 500);
+			
+			$("#RegPlayersMoreContainer").slideUp();
 		}
 	</script>

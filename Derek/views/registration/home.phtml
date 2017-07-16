@@ -13,53 +13,54 @@
 			<div class="alert alert-info" role="alert">Spring teams have first priority for summer, but must confirm registration by: <?php echo date("F d", $regSeason->getConfirmationDueBy()) ?></div>
 		<?php } ?>
 
-		<table id="PastTeamsTable" class="table table-condensed table-striped table-hover table-responsive">
-			<thead>
-				<tr>
-					<th>Team Name</th>
-					<th>League</th>
-					<th>Season</th>
-					<th>Registered</th>
-					<th></th>
-				</tr>
-			</thead>
-			<tbody>
-				<?php foreach($user->getTeams() as $curTeam) { ?>
+		<div class='table-responsive'>
+			<table id="PastTeamsTable" class="table table-condensed table-striped table-hover">
+				<thead>
 					<tr>
-						<td><a href="<?php echo $router->pathFor('dashboard-register-team', ['sportID' => $curTeam->getLeague()->getSportId(), 'pastTeamID' => $curTeam->getId()] ); ?>"><?php echo $curTeam->getName() ?></a></td>
-						<td><?php echo $curTeam->getLeague()->getSport()->getName() . " - " .$curTeam->getLeague()->getName() . " - " . $curTeam->getLeague()->getDayString() ?></td>
-						<td data-sort="<?php echo $curTeam->getDateCreated() ?>">
-							<?php echo $curTeam->getLeague()->getSeason()->getName() . " " . $curTeam->getLeague()->getSeason()->getYear() ?>
-						</td>
-						<td><?php echo $curTeam->getIsFinalized() ? "Yes" : "No" ?></td>
-						<td class="text-right">
-							<div class="btn-group">
-								<button type="button" class="btn btn-default btn-xs dropdown-toggle" style="line-height:1;" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-									<span class="sr-only">Actions </span><span class="glyphicon glyphicon-option-horizontal"></span>
-								</button>
-								<ul class="dropdown-menu">
-									<li>
-										<a href="<?php echo $router->pathFor('edit-team', ['teamID' => $curTeam->getId()] ); ?>">View Past Team</a>
-									</li>
-									<li>
-										<a onclick="return false" title="Remove this team from your list of past and active teams. This cannot be undone.">
-											<span class="glyphicon glyphicon-remove-sign"></span> Remove
-										</a>
-									</li>
-								</ul>
-							</div>
-						</td>
+						<th>Team Name</th>
+						<th>League</th>
+						<th>Season</th>
+						<th class='visible-lg visible-md visible-sm'>Registered</th>
+						<th></th>
 					</tr>
-				<?php } ?>
-			</tbody>
-		</table>
+				</thead>
+				<tbody>
+					<?php foreach($user->getTeams() as $curTeam) { ?>
+						<tr>
+							<td><a href="<?php echo $router->pathFor('dashboard-register-team', ['sportID' => $curTeam->getLeague()->getSportId(), 'pastTeamID' => $curTeam->getId()] ); ?>"><?php echo $curTeam->getName() ?></a></td>
+							<td><?php echo $curTeam->getLeague()->getName() . " - " . $curTeam->getLeague()->getDayString() . ' - ' . $curTeam->getLeague()->getSport()->getName() ?></td>
+							<td data-sort="<?php echo $curTeam->getDateCreated() ?>">
+								<?php echo $curTeam->getLeague()->getSeason()->getName() . " " . $curTeam->getLeague()->getSeason()->getYear() ?>
+							</td>
+							<td class='visible-lg visible-md visible-sm'><?php echo $curTeam->getIsFinalized() ? "Yes" : "No" ?></td>
+							<td class="text-right">
+								<div class="btn-group">
+									<button type="button" class="btn btn-default btn-xs dropdown-toggle" style="line-height:1;" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+										<span class="sr-only">Actions </span><span class="glyphicon glyphicon-option-horizontal"></span>
+									</button>
+									<ul class="dropdown-menu dropdown-menu-right">
+										<li>
+											<a href="<?php echo $router->pathFor('edit-team', ['teamID' => $curTeam->getId()] ); ?>">View Past Team</a>
+										</li>
+										<li>
+											<a onclick="return false" title="Remove this team from your list of past and active teams. This cannot be undone.">
+												<span class="glyphicon glyphicon-remove-sign"></span> Remove
+											</a>
+										</li>
+									</ul>
+								</div>
+							</td>
+						</tr>
+					<?php } ?>
+				</tbody>
+			</table>
+		</div>
 	</fieldset>
 
 	<fieldset class='registrationDate'>
 		<legend>Registration Due By</legend>
 		<?php 
 			if($regSeason->getIsRegistrationBySport()) { 
-				$lastDate = '';
 				$regSportsByDate = array();
 				
 				foreach($sports as $sport) {
@@ -72,7 +73,7 @@
 				}
 				
 				foreach($regSportsByDate as $date => $sports) {
-					print "<p>" . join(", ", $sports) . " - " . date("F d", $date) . "</p>";
+					print "<p>" . join(", ", $sports) . ": <span class='red'><strong>" . date("F d", $date) . "</strong></span></p>";
 				}
 			} else {
 				echo $regSeason->getRegistrationDueBy();
@@ -86,31 +87,39 @@
 			<small>Select a league logo below to start a new registration</small>
 		</legend>
 		<div class="row logosTable">
-			<div class="col-sm-4 col-xs-6">
+			<div class="col-sm-3 col-xs-6">
 				<a href='<?php echo $router->pathFor('dashboard-register-team', ['sportID' => 1] ); ?>'>
-					<div class=" sport-panel sport-panel-1">
-						<img src='/Logos/ultimate_0.png' />
+					<div class="sport-panel sport-panel-1 square square-75">
+						<div class='position-center'>
+							<img src='/Logos/ultimate_0.png' />
+						</div>
 					</div>
 				</a>
 			</div>
-			<div class="col-sm-4 col-xs-6">
+			<div class="col-sm-3 col-xs-6">
 				<a href='<?php echo $router->pathFor('dashboard-register-team', ['sportID' => 2] ); ?>'>
-					<div class=" sport-panel sport-panel-2">
-						<img src='/Logos/volleyball_0.png' />
+					<div class="sport-panel sport-panel-2 square square-75">
+						<div class='position-center'>
+							<img src='/Logos/volleyball_0.png' />
+						</div>
 					</div>
 				</a>
 			</div>
-			<div class="col-sm-4 col-xs-6">
+			<div class="col-sm-3 col-xs-6">
 				<a href='<?php echo $router->pathFor('dashboard-register-team', ['sportID' => 3] ); ?>'>
-					<div class=" sport-panel sport-panel-3">
-						<img src='/Logos/football_0.png' />
+					<div class="sport-panel sport-panel-3 square square-75">
+						<div class='position-center'>
+							<img src='/Logos/football_0.png' />
+						</div>
 					</div>
 				</a>
 			</div>
-			<div class="col-sm-4 col-xs-6">
+			<div class="col-sm-3 col-xs-6">
 				<a href='<?php echo $router->pathFor('dashboard-register-team', ['sportID' => 4] ); ?>'>
-					<div class=" sport-panel sport-panel-4">
-						<img src='/Logos/soccer_0.png'>
+					<div class="sport-panel sport-panel-4 square square-75">
+						<div class='position-center'>
+							<img src='/Logos/soccer_0.png'>
+						</div>
 					</div>
 				</a>
 			</div>

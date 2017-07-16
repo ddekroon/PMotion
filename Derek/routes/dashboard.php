@@ -5,11 +5,16 @@
 	
 	//Dashboard
 	$app->get('/dashboard', function (Request $request, Response $response) {
+		
 		$user = Models_User::withID($this->db, $this->logger, $_SESSION[Controllers_AuthController::SESSION_USER_ID]); //Load user from db, that way we refresh all user info.
+		$seasonsController = new Controllers_SeasonsController($this->db, $this->logger);
 		
 		return $this->view->render($response, "dashboard.phtml", [
 			"user" => $user,
-			"router" => $this->router
+			"router" => $this->router,
+			"seasonsInRegistration" => $seasonsController->getSeasonsAvailableForRegistration(),
+			"seasonsInScoreReporter" => $seasonsController->getSeasonsAvailableForScoreReporter(),
+			"teamsController" => new Controllers_TeamsController($this->db, $this->logger)
 		]);
 		
 	})->setName('dashboard')->add($dashboard)->add($authenticate);

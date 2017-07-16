@@ -7,6 +7,11 @@ header.mainHeader {
 		padding-bottom:0;
 		
 		@include bp('min-width', $screen-sm) {
+			padding-left:25px;
+			padding-right:10px;
+		}
+		
+		@include bp('min-width', $screen-md) {
 			padding-left:55px;
 			padding-right:40px;
 		}
@@ -18,7 +23,7 @@ header.mainHeader {
 		-webkit-align-items:center;
 		margin:10px 0;
 		
-		@include bp('min-width', $screen-md) {
+		@include bp('min-width', $screen-sm) {
 			float:right;
 		}
 		
@@ -58,12 +63,20 @@ header.mainHeader {
 		}
 	}
 	
+	.navbar-default {
+		border:none;
+	}
+	
 	.navbar-brand {
 		padding:5px;
 		background:white;
 		border:1px solid $c-gray;
-		margin:10px 20px 10px 0;
+		margin:10px 20px 10px 15px;
 		height:$navbar-height - 20px;
+		
+		@include bp('min-width', $screen-sm) {
+			margin-left:0;
+		}
 		
 		img {
 			width:auto;
@@ -79,12 +92,19 @@ header.mainHeader {
 		margin-top:0;
 		margin-bottom:0;
 	}
-	
-	@include bp('min-width', $screen-md) {
+
+	@include bp('min-width', $screen-sm) {
 		.navbar-form {
 			white-space:nowrap;
 			margin-top: 23px;
 			margin-bottom: 23px;
+		}
+		
+		@include bp('max-width', $screen-md) {
+			.nav > li > a {
+				padding-left:10px;
+				padding-right:10px;
+			}
 		}
 	}
 }

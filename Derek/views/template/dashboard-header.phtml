@@ -10,7 +10,7 @@
     <head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     	<title>Dashboard - Perpetual Motion</title>
-		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		
 		<?php print $this->fetch('template/header-includes.phtml'); ?>
     </head>
@@ -36,7 +36,7 @@
 						<ul class="nav navbar-nav">
 							<li <?php echo isset($isHomepage) && $isHomepage == true ? "class='active'" : "" ?>><a href="<?php echo $router->pathFor('dashboard' ); ?>">Home <span class="sr-only">(current)</span></a></li>
 							<li <?php echo isset($isRegistration) && $isRegistration == true ? "class='active'" : "" ?>><a href="<?php echo $router->pathFor('dashboard-registration' ); ?>">Registration</a></li>
-							<li class="dropdown visible-md visible-lg">
+							<li class="dropdown visible-sm visible-md visible-lg">
 								<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-search"></span> Search</a>
 								<ul class="dropdown-menu">
 									<li>
@@ -50,7 +50,7 @@
 								</ul>
 							</li>
 						</ul>
-						<form class="navbar-form navbar-left visible-sm visible-xs">
+						<form class="navbar-form navbar-left visible-xs">
 							<div class="form-group">
 								<input type="text" class="form-control" placeholder="Search">
 							</div>

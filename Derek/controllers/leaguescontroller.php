@@ -26,7 +26,7 @@
 					. "INNER JOIN " . Includes_DBTableNames::seasonsTable . " season ON season.season_id = league.league_season_id "
 					. "WHERE season.season_available_registration = 1 AND league.league_sport_id = $sportID "
 					. "ORDER BY league.league_season_id ASC, league.league_day_number ASC, league.league_name ASC";
-
+			
 			$stmt = $this->db->query($sql);
 
 			$results = [];
