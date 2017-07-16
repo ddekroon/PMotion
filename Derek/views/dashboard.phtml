@@ -12,7 +12,7 @@
 						<?php if($day == Includes_DayOfWeek::SATURDAY) continue; ?>
 						<?php $myTeams = $teamsController->getTeamsForUser($user, $regSeason, $day); ?>
 						<div class="col-sm-4 col-xs-6">
-							<div class="panel panel-default" style="padding:0;">
+							<div class="panel <?php echo $day == date('N') % 7 ? 'panel-primary' : 'panel-default' ?>" style="padding:0;">
 								<div class="panel-heading text-center f-small">
 									<?php echo Includes_DayOfWeek::getDayString($day); ?>
 								</div>
