@@ -45,6 +45,8 @@
 			}
 
 			return $this->view->render($response, "dashboard/edit-profile.phtml", [
+				"request" => $request,
+				"router" => $this->router,
 				"user" => $user
 			]);
 		})->setName('edit-profile');

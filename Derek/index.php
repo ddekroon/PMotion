@@ -131,6 +131,7 @@ include('routes/default.php');
 include('routes/score-reporter.php');
 include('routes/dashboard.php');
 include('routes/registration.php');
+include('routes/standings.php');
 
 $app->run();
 

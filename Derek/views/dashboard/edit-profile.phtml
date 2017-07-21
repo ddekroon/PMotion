@@ -1,10 +1,19 @@
+<?php $basePath = $request->getUri()->getScheme() . '://' . $request->getUri()->getHost(); ?>
 
 	<div class='clearfix form-group'>
-		<h1>Edit Profile - <?php echo $user->getFirstName() . " " . $user->getLastName() ?></h1>
+		<h1>My Profile - <?php echo $user->getFirstName() . " " . $user->getLastName() ?></h1>
 	</div>
+	<fieldset class='form-group'>
+		<legend>Calendar Integration</legend>
+		<div class="alert alert-info" role="alert">
+			<span class="glyphicon glyphicon-info-sign"></span>
+			Sync your team's scheduled matches to your personal calendar. Just paste the link below into Gmail, iCal, Outlook, etc and your events should sync.
+		</div>
+		<a href="<?php echo $basePath . $router->pathFor('download-ics', ['userID' => $user->getId()] ); ?>"><?php echo $basePath . $router->pathFor('download-ics', ['userID' => $user->getId()] ); ?></a>
+	</fieldset>
 	<form id='EditProfileForm' action='edit-profile' method='post'>
 		<fieldset class='form-group'>
-			<legend>User Information</legend>
+			<legend>Edit Information</legend>
 			<div class='row form-group'>
 				<div class='col-xs-4'>
 					<label for='UserFirstName'>First Name</label>

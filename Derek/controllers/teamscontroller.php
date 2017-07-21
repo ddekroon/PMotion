@@ -159,7 +159,7 @@ class Controllers_TeamsController extends Controllers_Controller {
 	
 	public function getTeamsForUser($user, $season, $dayNum) {
 		
-		if($user == null) {
+		if(!isset($user) || $user == null) {
 			return [];
 		}
 		
@@ -167,14 +167,14 @@ class Controllers_TeamsController extends Controllers_Controller {
 				. "INNER JOIN " . Includes_DBTableNames::leaguesTable . " league ON league.league_id = team.team_league_id "
 				. "WHERE team.team_managed_by_user_id = " . $user->getId();
 		
-		if($season != null) {
+		if(isset($season)) {
 			$sql .= " AND league.league_season_id = " . $season->getId();
 		}
-		
-		if($dayNum != null) {
+				
+		if(isset($dayNum)) {
 			$sql .= " AND league.league_day_number = $dayNum";
 		}
-						
+								
 		$stmt = $this->db->query($sql);
 		$results = [];
 		

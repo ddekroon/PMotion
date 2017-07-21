@@ -125,4 +125,40 @@
 		);
 	});
 
+	//Home - redirect to login if not logged in, otherwise direct to dashboard
+	$app->get('/download-ics/{userID}', function (Request $request, Response $response) {
+				
+		$curUser = Models_User::withID($this->db, $this->logger, (int)$request->getAttribute('userID'));
+		
+		//$usersController = new Controllers_UsersController($this->db, $this->logger);
+		$teamsController = new Controllers_TeamsController($this->db, $this->logger);
+		$seasonsController = new Controllers_SeasonsController($this->db, $this->logger);
+		
+		$regSeasons = $seasonsController->getSeasonsAvailableForRegistration();
+		$srSeasons = $seasonsController->getSeasonsAvailableForScoreReporter();
+		
+		$regTeams = [];
+		$srTeams = [];
+		
+		if(!empty($regSeasons)) {
+			foreach($regSeasons as $curSeason) {
+				$regTeams = array_unique(array_merge($regTeams, $teamsController->getTeamsForUser($curUser, $curSeason, null)));
+			}
+		}
+		
+		if(!empty($srSeasons)) {
+			foreach($srSeasons as $curSeason) {
+				$srTeams = array_unique(array_merge($srTeams, $teamsController->getTeamsForUser($curUser, $curSeason, null)));
+			}
+		}
+				
+		return $this->view->render($response, "download-ics.phtml", [
+			"user" => $curUser,
+			"router" => $this->router,
+			"request" => $request,
+			"teams" => array_unique(array_merge($regTeams, $srTeams))
+		]);
+		
+	})->setName('download-ics');
+	
 ?>

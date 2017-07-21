@@ -221,6 +221,27 @@ class Models_ScheduledMatch extends Models_Generic implements Models_Interface, 
 	function getMatchTime() {
 		return $this->matchTime;
 	}
+	
+	public function getMatchTimeFormatted() {
+		if(strlen($this->getMatchTime() == 3)){
+			$hr = substr($this->getMatchTime(), 0, 1);
+			$mn = substr($this->getMatchTime(), 1);
+		} elseif($this->getMatchTime() != '') {
+			$hr= substr($this->getMatchTime(), 0, 2);
+			$mn= substr($this->getMatchTime(), 2);
+		} else {
+			return '';
+		}
+		
+		if ($hr >= 13){
+			$hr = $hr - 12;
+			$meridian = "pm";
+		} else {
+			$meridian = "am";
+		}
+		
+		return "$hr:$mn $meridian";
+	}
 
 	function getDateId() {
 		return $this->dateId;

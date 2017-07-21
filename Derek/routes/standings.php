@@ -18,6 +18,22 @@
 				"league" => $league
 			]
 		);
-	})->add($defaultTemplate);
+	})->setName('standings')->add($defaultTemplate);
 	
+	$app->get('/schedule/{leagueID}', function(Request $request, Response $response) {
+
+		$league = Models_League::withID($this->db, $this->logger, $request->getAttribute('leagueID'));
+
+		$leaguesController = new Controllers_LeaguesController($this->db, $this->logger);
+		
+		if($league != null) {
+			$leaguesController->setLeagueWeek($league);
+		}
+
+		return $this->view->render($response, "standings.phtml", [
+				"request", $request,
+				"league" => $league
+			]
+		);
+	})->setName('schedule')->add($defaultTemplate);
 ?>

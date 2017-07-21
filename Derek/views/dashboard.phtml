@@ -9,7 +9,7 @@
 				<h4 style='margin-top:0;'><?php print $regSeason->getName() . ' ' . $regSeason->getYear() ?></h4>
 				<div class="row flex flex-wrap flex-stretch">
 					<?php foreach(Includes_DayOfWeek::getDays() as $day) { ?>
-						<?php if($day == Includes_DayOfWeek::SATURDAY) continue; ?>
+						<?php if($day == Includes_DayOfWeek::SATURDAY || $day == Includes_DayOfWeek::FRIDAY) continue; ?>
 						<?php $myTeams = $teamsController->getTeamsForUser($user, $regSeason, $day); ?>
 						<div class="col-sm-4 col-xs-6">
 							<div class="panel <?php echo $day == date('N') % 7 ? 'panel-primary' : 'panel-default' ?>" style="padding:0;">
@@ -40,10 +40,11 @@
 		<fieldset class='form-group'>
 			<legend>Future Teams</legend>
 			<?php foreach($seasonsInRegistration as $regSeason) { ?>
+				<?php if($regSeason->getIsAvailableScoreReporter()) continue; ?>
 				<h4 style='margin-top:0;'><?php print $regSeason->getName() . ' ' . $regSeason->getYear() ?></h4>
 					<div class="row flex flex-wrap flex-stretch">
 					<?php foreach(Includes_DayOfWeek::getDays() as $day) { ?>
-						<?php if($day == Includes_DayOfWeek::SATURDAY) continue; ?>
+						<?php if($day == Includes_DayOfWeek::SATURDAY || $day == Includes_DayOfWeek::FRIDAY) continue; ?>
 						<?php $myTeams = $teamsController->getTeamsForUser($user, $regSeason, $day); ?>
 						<div class="col-sm-4 col-xs-6">
 							<div class="panel panel-default" style="padding:0;">
