@@ -2,17 +2,17 @@
 
 class Models_Player extends Models_Generic implements Models_Interface, JsonSerializable {
     protected $teamId;
-	protected $isCaptain;
-    protected $firstName;
-    protected $lastName;
-    protected $email;
-    protected $gender;
-    protected $phoneNumber;
-    protected $skillLevel;
-    protected $isIndividual;
-    protected $note;
-    protected $howHeardMethod;
-    protected $howHeardOtherText;
+	protected $isCaptain = false;
+    protected $firstName = '';
+    protected $lastName = '';
+    protected $email = '';
+    protected $gender = '';
+    protected $phoneNumber = '';
+    protected $skillLevel = 0;
+    protected $isIndividual = false;
+    protected $note = '';
+    protected $howHeardMethod = 0;
+    protected $howHeardOtherText = '';
 	
 	private $team;
 
@@ -172,19 +172,98 @@ class Models_Player extends Models_Generic implements Models_Interface, JsonSeri
 		$this->howHeardOtherText = $howHeardOtherText;
 	}
 	
-	function saveOrUpdate() {
+	public function saveOrUpdate() {
 		if($this->getId() == null) {
-			save();
+			$this->save();
 		} else {
-			update();
+			$this->update();
 		}
 	}
 	
-	function save() {
+	public function save() {
 		
+		if(empty($this->getFirstName()) && empty($this->getLastName()) && empty($this->getEmail())) {
+			return;
+		}
+		
+		try {
+			$stmt = $this->db->prepare("INSERT INTO " . Includes_DBTableNames::playersTable . " "
+					. "(
+						player_team_id, player_is_captain, player_firstname, player_lastname, player_email, player_sex, player_phone, player_skill,
+						player_is_individual, player_note, player_hear_method, player_hear_other_text
+					) "
+					. "VALUES "
+					. "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+			);
+			
+			$this->db->beginTransaction(); 
+			$stmt->execute(
+				array(
+					$this->getTeamId(), 
+					$this->getIsCaptain() ? 1 : 0, 
+					$this->getFirstName(), 
+					$this->getLastName(), 
+					$this->getEmail(), 
+					$this->getGender(), 
+					$this->getPhoneNumber(), 
+					$this->getSkillLevel(), 
+					$this->getIsIndividual() ? 1 : 0, 
+					$this->getNote(), 
+					$this->getHowHeardMethod(), 
+					$this->getHowHeardOtherText()
+				)
+			); 
+			$this->setId($this->db->lastInsertId());
+			$this->db->commit(); 
+			
+		} catch (Exception $ex) {
+			$this->db->rollback();
+			$this->logger->log($ex->getMessage()); 
+		}
 	}
 	
-	function update() {
-		
+	public function update() {
+		try {
+			$stmt = $this->db->prepare("UPDATE " . Includes_DBTableNames::playersTable . " SET "
+					. "
+						player_team_id = ?, 
+						player_is_captain = ?, 
+						player_firstname = ?,
+						player_lastname = ?,
+						player_email = ?,
+						player_sex = ?,
+						player_phone = ?,
+						player_skill = ?,
+						player_is_individual = ?, 
+						player_note = ?,
+						player_hear_method = ?,
+						player_hear_other_text = ?
+					WHERE player_id = ?"
+			);
+			
+			$this->db->beginTransaction(); 
+			$stmt->execute(
+				array(
+					$this->getTeamId(), 
+					$this->getIsCaptain() ? 1 : 0, 
+					$this->getFirstName(), 
+					$this->getLastName(), 
+					$this->getEmail(), 
+					$this->getGender(), 
+					$this->getPhoneNumber(), 
+					$this->getSkillLevel(), 
+					$this->getIsIndividual() ? 1 : 0, 
+					$this->getNote(), 
+					$this->getHowHeardMethod(), 
+					$this->getHowHeardOtherText(),
+					$this->getId()
+				)
+			); 
+			$this->db->commit(); 
+			
+		} catch (Exception $ex) {
+			$this->db->rollback();
+			$this->logger->log($ex->getMessage()); 
+		}
 	}
 }

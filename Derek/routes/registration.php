@@ -45,7 +45,6 @@
 			return $this->view->render($response, "dashboard/edit-team.phtml", [
 					"request", $request,
 					"router" => $this->router,
-					"isDashboard" => true,
 					"sport" => $sport,
 					"team" => $pastTeam,
 					"user" => $curUser,
@@ -62,17 +61,17 @@
 		
 	})->add($dashboard)->add($authenticate);
 	
-	$app->post('/save-team/{teamID}', function (Request $request, Response $response) {
+	$app->post('/save-team[/{teamID}]', function (Request $request, Response $response) {
 
-		$teamID = (int)$request->getAttribute('teamID');
-		$team = Models_Team::withID($this->db, $this->logger, $teamID);
+		$curUser = Models_User::withID($this->db, $this->logger, $_SESSION[Controllers_AuthController::SESSION_USER_ID]);
+		$team = Models_Team::withID($this->db, $this->logger, (int)$request->getAttribute('teamID'));
 
 		$teamsController = new Controllers_TeamsController($this->db, $this->logger);
 
 		$returnObj = array();
-
+				
 		try {
-			$successMessage = $teamsController->saveTeam($team, $request);
+			$successMessage = $teamsController->insertOrUpdateTeam($team, $curUser, $request);
 			$returnObj["status"] = 1;
 			$returnObj["successMessage"] = $successMessage;
 		} catch(Exception $e) {
@@ -84,6 +83,6 @@
 
 		return $response;
 
-	})->setName('save-team');
+	})->setName('save-team')->add($authenticate);
 
 ?>

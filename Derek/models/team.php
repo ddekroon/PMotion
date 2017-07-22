@@ -4,23 +4,23 @@ class Models_Team extends Models_Generic implements Models_Interface, JsonSerial
 	
 	protected $leagueId;
     protected $name;
-    protected $numInLeague;
+    protected $numInLeague = 0;
     protected $managedByUserId;
-    protected $wins;
-    protected $losses;
-    protected $ties;
-    protected $mostRecentWeekSubmitted;
+    protected $wins = 0;
+    protected $losses = 0;
+    protected $ties = 0;
+    protected $mostRecentWeekSubmitted = 0;
     protected $dateCreated;
-    protected $isFinalized;
-    protected $isPaid;
-    protected $isDeleted;
-    protected $paymentMethod;
-    protected $finalPosition;
-    protected $finalSpiritPosition;
+    protected $isFinalized = false;
+    protected $isPaid = false;
+    protected $isDeleted = false;
+    protected $paymentMethod = 0;
+    protected $finalPosition = 0;
+    protected $finalSpiritPosition = 0;
     protected $picName;
-    protected $isConvenor;
-    protected $isDroppedOut;
-	protected $isLateEmailAllowed;
+    protected $isConvenor = false;
+    protected $isDroppedOut = false;
+	protected $isLateEmailAllowed = true;
 	
 	private $league;
 	private $manager;
@@ -41,7 +41,7 @@ class Models_Team extends Models_Generic implements Models_Interface, JsonSerial
 		$this->setLogger($logger);
 		
 		if($id == null || $id < 0) return;
-		
+				
 		$sql = "SELECT * FROM " . Includes_DBTableNames::teamsTable . " WHERE team_id = $id";
 
 		$stmt = $db->query($sql);
@@ -120,15 +120,19 @@ class Models_Team extends Models_Generic implements Models_Interface, JsonSerial
 			if(($row = $stmt->fetch()) != false) {
 				$this->captain = Models_Player::withRow($this->db, $this->logger, $row);
 			}
-		} else if($this->captain == null) {
+		}
+		
+		if($this->captain == null) {
 			$this->captain = Models_Player::withID($this->db, $this->logger, -1);
+			$this->captain->setIsCaptain(true);
 		}
 		
 		return $this->captain;
 	}
 
 	function getPlayers() {
-		if($this->players == null && $this->db != null && $this->getId() != null) {
+		
+		if(($this->players == null || empty($this->players)) && $this->db != null && $this->getId() != null) {
 			$this->players = [];
 			
 			$sql = "SELECT * FROM " . Includes_DBTableNames::playersTable . " WHERE player_team_id = " . $this->getId() . " AND player_is_captain = 0";
@@ -139,18 +143,42 @@ class Models_Team extends Models_Generic implements Models_Interface, JsonSerial
 			}
 		}
 		
+		if($this->players == null) {
+			$this->players = [];
+		}
+		
 		return $this->players;
+	}
+	
+	function getPlayerByID($playerID) {
+		
+		foreach($this->getPlayers() as $curPlayer) {
+			if($curPlayer->getId() == $playerID) {
+				return $curPlayer;
+			}
+		}
+		
+		return null;
 	}
 	
 	function getRegistrationComment() {
 		
-		if($this->registrationComment == null && $this->db != null && $this->getId() != null) {
+		if(($this->registrationComment == null || $this->registrationComment->getId() == null) && $this->db != null && $this->getId() != null) {
 			$sql = "SELECT * FROM " . Includes_DBTableNames::registrationCommentsTable . " WHERE registration_comment_team_id = " . $this->getId();
 			$stmt = $this->db->query($sql);
 
 			if(($row = $stmt->fetch()) != false) {
 				$this->registrationComment = Models_RegistrationComment::withRow($this->db, $this->logger, $row);
 			}
+		}
+		
+		if($this->registrationComment == null) {
+			$this->registrationComment = Models_RegistrationComment::withID($this->db, $this->logger, -1);
+			$this->registrationComment->setIsIndividualComment(false);
+			$this->registrationComment->setIsTeamComment(true);
+			$this->registrationComment->setTeamId($this->getId());
+			$this->registrationComment->setTeam($this);
+			$this->registrationComment->setUserId($this->getManagedByUserId());
 		}
 		
 		return $this->registrationComment;
@@ -459,8 +487,8 @@ class Models_Team extends Models_Generic implements Models_Interface, JsonSerial
 	}
 	
 	public function save() {
-		try {
-			$stmt = $this->db->prepare= "INSERT INTO " . Includes_DBTableNames::teamsTable . " "
+		try {			
+			$stmt = $this->db->prepare("INSERT INTO " . Includes_DBTableNames::teamsTable . " "
 					. "(
 						team_league_id, team_name, team_num_in_league, team_managed_by_user_id, team_wins, team_losses, team_ties, 
 						team_most_recent_week_submitted, team_created, team_finalized, team_paid, team_deleted, team_payment_method, 
@@ -468,7 +496,8 @@ class Models_Team extends Models_Generic implements Models_Interface, JsonSerial
 						team_is_convenor, team_dropped_out, team_late_email_allowed
 					) "
 					. "VALUES "
-					. "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+					. "(?, ?, ?, ?, ?, ?, ?, ?, NOW(), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+			);
 			
 			$this->db->beginTransaction(); 
 			$stmt->execute(
@@ -481,20 +510,19 @@ class Models_Team extends Models_Generic implements Models_Interface, JsonSerial
 					$this->getLosses(), 
 					$this->getTies(), 
 					$this->getMostRecentWeekSubmitted(), 
-					$this->getDateCreated(), 
-					$this->getIsFinalized(), 
-					$this->getIsPaid(), 
-					$this->getIsDeleted(), 
+					$this->getIsFinalized() ? 1 : 0, 
+					$this->getIsPaid() ? 1 : 0, 
+					$this->getIsDeleted() ? 1 : 0, 
 					$this->getPaymentMethod(), 
 					$this->getFinalPosition(), 
 					$this->getFinalSpiritPosition(), 
 					$this->getPicName(), 
-					$this->getIsConventor(), 
-					$this->getIsDroppedOut(), 
-					$this->getIsLateEmailAllowed()
+					$this->getIsConvenor() ? 1 : 0, 
+					$this->getIsDroppedOut() ? 1 : 0, 
+					$this->getIsLateEmailAllowed() ? 1 : 0
 				)
 			); 
-			setId($this->db->lastInsertId());
+			$this->setId($this->db->lastInsertId());
 			$this->db->commit(); 
 			
 		} catch (Exception $ex) {
@@ -504,8 +532,8 @@ class Models_Team extends Models_Generic implements Models_Interface, JsonSerial
 	}
 	
 	public function update() {
-		try {
-			$stmt = $this->db->prepare= "UPDATE " . Includes_DBTableNames::teamsTable . " SET "
+		try {			
+			$stmt = $this->db->prepare("UPDATE " . Includes_DBTableNames::teamsTable . " SET "
 					. "
 						team_league_id = ?, 
 						team_name = ?, 
@@ -515,7 +543,6 @@ class Models_Team extends Models_Generic implements Models_Interface, JsonSerial
 						team_losses = ?, 
 						team_ties = ?, 
 						team_most_recent_week_submitted = ?, 
-						team_created = ?, 
 						team_finalized = ?, 
 						team_paid = ?, 
 						team_deleted = ?, 
@@ -526,7 +553,9 @@ class Models_Team extends Models_Generic implements Models_Interface, JsonSerial
 						team_is_convenor = ?, 
 						team_dropped_out = ?, 
 						team_late_email_allowed = ?
-					";
+					WHERE team_id = ?
+					"
+			);
 			
 			$this->db->beginTransaction(); 
 			$stmt->execute(
@@ -539,7 +568,6 @@ class Models_Team extends Models_Generic implements Models_Interface, JsonSerial
 					$this->getLosses(), 
 					$this->getTies(), 
 					$this->getMostRecentWeekSubmitted(), 
-					$this->getDateCreated(), 
 					$this->getIsFinalized(), 
 					$this->getIsPaid(), 
 					$this->getIsDeleted(), 
@@ -547,9 +575,10 @@ class Models_Team extends Models_Generic implements Models_Interface, JsonSerial
 					$this->getFinalPosition(), 
 					$this->getFinalSpiritPosition(), 
 					$this->getPicName(), 
-					$this->getIsConventor(), 
+					$this->getIsConvenor(), 
 					$this->getIsDroppedOut(), 
-					$this->getIsLateEmailAllowed()
+					$this->getIsLateEmailAllowed(),
+					$this->getId()
 				)
 			); 
 			$this->db->commit(); 

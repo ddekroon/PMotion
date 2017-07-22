@@ -396,6 +396,7 @@ class Models_ScoreSubmission extends Models_Generic implements Models_Interface,
 						score_submission_datestamp = NOW(),
 						score_submission_dont_show = ?,
 						score_submission_is_phantom = ?
+					WHERE score_submission_id = ?
 					"
 			);
 			
@@ -412,7 +413,8 @@ class Models_ScoreSubmission extends Models_Generic implements Models_Interface,
 					$this->getScoreThem(), 
 					$this->getIsIgnored() ? 1 : 0, 
 					$this->getIsDontShow() ? 1 : 0, 
-					$this->getIsPhantom() ? 1 : 0
+					$this->getIsPhantom() ? 1 : 0,
+					$this->getId()
 				)
 			); 
 			$this->db->commit(); 

@@ -168,6 +168,7 @@ class Models_SpiritScore extends Models_Generic implements Models_Interface, Jso
 						spirit_score_dont_show = ?,
 						spirit_score_edited_value = ?,
 						spirit_score_is_admin_addition = ?
+					WHERE spirit_score_id = ?
 					"
 			);
 			
@@ -179,7 +180,8 @@ class Models_SpiritScore extends Models_Generic implements Models_Interface, Jso
 					$this->getIsIgnored() ? 1 : 0,
 					$this->getIsDontShow() ? 1 : 0,
 					$this->getEditedValue(),
-					$this->getIsAdminAddition() ? 1 : 0
+					$this->getIsAdminAddition() ? 1 : 0,
+					$this->getId()
 				)
 			); 
 			$this->db->commit(); 

@@ -134,17 +134,76 @@ class Models_RegistrationComment extends Models_Generic implements Models_Interf
 		
 	function saveOrUpdate() {
 		if($this->getId() == null) {
-			save();
+			$this->save();
 		} else {
-			update();
+			$this->update();
 		}
 	}
 	
 	function save() {
-		
+		if ($this->getComment() !== null && !empty($this->getComment())) {
+			try {
+				$stmt = $this->db->prepare("INSERT INTO " . Includes_DBTableNames::registrationCommentsTable . " "
+						. "(
+							registration_comment_user_id, registration_comment_is_team, registration_comment_team_id, 
+							registration_comment_is_individual, registration_comment_individual_id, registration_comment_value
+						) "
+						. "VALUES "
+						. "(?, ?, ?, ?, ?, ?)"
+				);
+
+				$this->db->beginTransaction(); 
+				$stmt->execute(
+					array(
+						$this->getUserId(), 
+						$this->getIsTeamComment() ? 1 : 0,
+						$this->getTeamId(), 
+						$this->getIsIndividualComment() ? 1 : 0, 
+						$this->getPlayerId(), 
+						$this->getComment()
+					)
+				); 
+				$this->setId($this->db->lastInsertId());
+				$this->db->commit(); 
+
+			} catch (Exception $ex) {
+				$this->db->rollback();
+				$this->logger->log($ex->getMessage()); 
+			}
+		}
 	}
 	
 	function update() {
-		
+		try {
+			$stmt = $this->db->prepare("UPDATE " . Includes_DBTableNames::registrationCommentsTable . " SET "
+					. "
+						registration_comment_user_id = ?, 
+						registration_comment_is_team = ?, 
+						registration_comment_team_id = ?, 
+						registration_comment_is_individual = ?, 
+						registration_comment_individual_id = ?, 
+						registration_comment_value = ?
+					WHERE registration_comment_id = ?
+					"
+			);
+			
+			$this->db->beginTransaction(); 
+			$stmt->execute(
+				array(
+					$this->getUserId(), 
+					$this->getIsTeamComment() ? 1 : 0,
+					$this->getTeamId(), 
+					$this->getIsIndividualComment() ? 1 : 0, 
+					$this->getPlayerId(), 
+					$this->getComment(),
+					$this->getId()
+				)
+			); 
+			$this->db->commit(); 
+			
+		} catch (Exception $ex) {
+			$this->db->rollback();
+			$this->logger->log($ex->getMessage()); 
+		}
 	}
 }

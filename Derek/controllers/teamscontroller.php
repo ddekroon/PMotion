@@ -185,7 +185,184 @@ class Controllers_TeamsController extends Controllers_Controller {
 		return $results;
 	}
 	
-	public function saveTeam($team, $request) {
-		throw new Exception('TODO: Saving team.');
+	public function insertOrUpdateTeam($team, $user, $request) {
+		
+		$allPostVars = $request->getParsedBody();
+		$isUpdate = true;
+				
+		if(!isset($team) || $team == null || $team->getId() == null) {
+						
+			$team = Models_Team::withID($this->db, $this->logger, -1);
+			$isUpdate = false;
+			$team->setManagedByUserId($user->getId());
+		}
+		
+		$action = $allPostVars['action'];
+		
+		$sport = Models_Sport::withID($this->db, $this->logger, $allPostVars['sportID']);
+		
+		if(isset($allPostVars['leagueID'])) {
+			$team->setLeagueId($allPostVars['leagueID']);
+		}
+		$team->setName($allPostVars['teamName']);
+		
+		$team->getCaptain()->setFirstName($allPostVars['capFirstName']);
+		$team->getCaptain()->setLastName($allPostVars['capLastName']);
+		$team->getCaptain()->setEmail($allPostVars['capEmail']);
+		$team->getCaptain()->setPhoneNumber($allPostVars['capPhoneNumber']);
+		$team->getCaptain()->setGender($allPostVars['capGender']);
+		
+		if($action == 'register') {
+			$team->getCaptain()->setHowHeardMethod($allPostVars['capHowHeardMethod']);
+			$team->getCaptain()->setHowHeardOtherText($allPostVars['capHowHeardMethodOther']);
+		}
+		
+		for($i = 0; $i < $sport->getNumPlayerInputsForRegistration(); $i++) {
+			$playerID = $allPostVars['playerID_' . $i];
+			$curPlayer = $team->getPlayerByID($playerID);
+			
+			if($curPlayer == null || $curPlayer->getId() == null) {
+				$curPlayer = Models_Player::withID($this->db, $this->logger, -1);
+			}
+			
+			$curPlayer->setFirstName($allPostVars['playerFirstName_' . $i]);
+			$curPlayer->setLastName($allPostVars['playerLastName_' . $i]);
+			$curPlayer->setEmail($allPostVars['playerEmail_' . $i]);
+			$curPlayer->setGender($allPostVars['playerGender_' . $i]);
+			
+			$team->getPlayers()[$i] = $curPlayer;
+		}
+		
+		$team->getRegistrationComment()->setComment($allPostVars['teamComments']);
+		//$team->getPlayers();
+		
+		
+		if($action == 'register') {
+			$stmt = $this->db->query("SELECT MAX(team_num_in_league) as highestTeamNum FROM " . Includes_DBTableNames::teamsTable . " "
+					. "WHERE team_league_id = " . $team->getLeagueId()
+			);
+
+			if(($row = $stmt->fetch()) != false) {
+				$team->setNumInLeague($row['highestTeamNum'] + 1);
+			}
+			
+			$team->setIsFinalized(true);
+			$team->setManagedByUserId($user->getId());
+			$team->setPaymentMethod($allPostVars['teamPaymentMethod']);
+			$team->setPicName($team->getLeagueId() . ($team->getNumInLeague() < 10 ?  '-0' : '-') . $team->getNumInLeague());
+			
+		} else if(!$isUpdate) {
+			$team->setNumInLeague(0);
+			$team->setIsFinalized(false);
+			$team->setManagedByUserId($user->getId());
+			$team->setPicName($team->getLeagueId() . ($team->getNumInLeague() < 10 ?  '-0' : '-') . $team->getNumInLeague());
+		}
+		
+		$team->saveOrUpdate();
+		
+		$team->getCaptain()->setTeamId($team->getId());
+		$team->getCaptain()->saveOrUpdate();
+				
+		foreach($team->getPlayers() as $curPlayer) {
+			$curPlayer->setTeamId($team->getId());
+			$curPlayer->saveOrUpdate();
+			
+			if($action == 'register') {
+				$this->insertPlayerAddressDB($curPlayer);
+			}
+		}
+				
+		$team->getRegistrationComment()->saveOrUpdate();
+		
+		
+		$userHistory = Models_UserHistory::withID($this->db, $this->logger, -1);
+		$userHistory->setUserId($user->getId());
+		$userHistory->setUsername($user->getUsername());
+		$userHistory->setType($action == 'register' ? 'Registered Team' : 'Saved Team');
+		$userHistory->setDescription($team->getId());
+		$userHistory->save();
+		
+		
+		$oldTeam = Models_Team::withID($this->db, $this->logger, $allPostVars['oldTeamID']);
+		if(isset($oldTeam) && $oldTeam != null && $oldTeam->getId() != null && $team->getLeague()->getSeason()->getId() != $oldTeam->getLeague()->getSeason()->getId()) {
+			$oldTeam->setIsDeleted(true); //if you're using an old team for the new one this will make it so the old one doesn't show up on the members page
+			$oldTeam->saveOrUpdate();
+		}
+		
+		if($action == 'register') {
+			return "Your team has been registered.";
+		} else if(!$isUpdate) {
+			return "Your team has been saved.";
+		} else {
+			return "Your team has been updated.";
+		}
+	}
+
+	function insertPlayerAddressDB($player) {
+
+		if(filter_var($player->getEmail(), FILTER_VALIDATE_EMAIL)) {
+			
+			$stmt = $this->db->query("SELECT count(*) as numEmails FROM " . Includes_DBTableNames::addressesTable . " WHERE EmailAddress = '" . $player->getEmail() . "'");
+
+			if(($row = $stmt->fetch()) != false) {
+				if($row['numEmails'] == 0) {
+					$newEmail = Models_EmailAddress::withID($this->db, $this->logger, -1);
+					$newEmail->setFirstName($player->getFirstName());
+					$newEmail->setLastName($player->getLastName());
+					$newEmail->setEmail($player->getEmail());
+					
+					$newEmail->save();
+				}
+			}
+		}
+	}
+
+	//returns 2 if the league is full, 1 if the user will be put on waiting, 0 if they're fine to register
+	function checkLeaguesFull($leagueID) {
+		global $leaguesTable, $teamsTable;
+
+		//gets new team number in league
+		$leagueQuery = mysql_query("SELECT * FROM $leaguesTable WHERE league_id = $leagueID");
+		$leagueArray = mysql_fetch_array($leagueQuery);
+		$numUntilWaiting = $leagueArray['league_num_teams_before_waiting'];
+		$leagueFull = $leagueArray['league_maximum_teams'];
+
+		//gets new team number in league
+		$teamsQuery = mysql_query("SELECT * FROM $teamsTable WHERE team_league_id = $leagueID AND team_finalized = 1");
+		$numTeamsRegistered = mysql_num_rows($teamsQuery);
+
+		if ($numTeamsRegistered >= $leagueFull && $leagueFull != 0) {
+			return 2;
+		} else if ($numTeamsRegistered >= $numUntilWaiting && $leagueFull != 0) {
+			return 1;
+		} else {
+			return 0;
+		}
+	}
+
+	//Checks if a team exists in a certain league with a certain teamname
+	function checkTeamExists($leagueID, $teamName) {
+		global $teamsTable;
+		$teamsQuery = mysql_query("SELECT * FROM $teamsTable WHERE team_league_id = $leagueID AND team_name = '$teamName'");
+		$numTeams = mysql_num_rows($teamsQuery);
+		if ($numTeams > 0) 
+			return true;
+		else
+			return false;	
+	}
+
+	//This function formats a phone number into the proper display. Makes "5198234502" or anything similar appear as "(519)-823-4502"
+	//How it works:
+	//- Chops phone number input into 3 sections: area code, prefix (first 3 digits), and number (last 4 digits)
+	function formatPhoneNumber($strPhone){
+		$strPhone = preg_replace('/[^0-9]/','', $strPhone);
+		if (strlen($strPhone)!= 10){
+				return $strPhone;
+		}
+		$strArea = substr($strPhone, 0, 3);
+		$strPrefix = substr($strPhone, 3, 3);
+		$strNumber = substr($strPhone, 6, 4);
+		$strPhone = "(".$strArea.") ".$strPrefix."-".$strNumber;
+		return ($strPhone);
 	}
 }

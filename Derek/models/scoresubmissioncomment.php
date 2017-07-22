@@ -118,6 +118,7 @@ class Models_ScoreSubmissionComment extends Models_Generic implements Models_Int
 					. "
 						comment_score_submission_id = ?,
 						comment_value = ?
+					WHERE comment_id = ?
 					"
 			);
 			
@@ -125,7 +126,8 @@ class Models_ScoreSubmissionComment extends Models_Generic implements Models_Int
 			$stmt->execute(
 				array(
 					$this->getScoreSubmissionId(), 
-					$this->getComment()
+					$this->getComment(),
+					$this->getId()
 				)
 			); 
 			$this->db->commit(); 

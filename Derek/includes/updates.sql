@@ -23,6 +23,18 @@ ALTER TABLE `data_perpetualmotion`.`users_dbtable` CHARACTER SET = utf8 , ENGINE
 ALTER TABLE `data_perpetualmotion`.`venues_dbtable` CHARACTER SET = utf8 , ENGINE = InnoDB ;
 ALTER TABLE `data_perpetualmotion`.`teampicturearchive` CHARACTER SET = utf8 , ENGINE = InnoDB ;
 
+-- Email Addresses
+
+ALTER TABLE `data_perpetualmotion`.`addressdatabase` 
+CHARACTER SET = utf8 , ENGINE = InnoDB ,
+ADD COLUMN `id` INT(11) NOT NULL AUTO_INCREMENT FIRST,
+DROP PRIMARY KEY,
+ADD PRIMARY KEY (`id`);
+
+ALTER TABLE `data_perpetualmotion`.`addressdatabase` 
+ADD UNIQUE INDEX `UNIQUE_Address_Email` (`EmailAddress` ASC),
+ADD INDEX `INDEX_Address_Email` (`EmailAddress` ASC);
+
 -- LEAGUES
 
 delete l FROM data_perpetualmotion.leagues_dbtable l 

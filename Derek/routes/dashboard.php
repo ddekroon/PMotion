@@ -67,6 +67,7 @@
 
 			$leaguesController = new Controllers_LeaguesController($this->db, $this->logger);
 			$seasonsController = new Controllers_SeasonsController($this->db, $this->logger);
+			$sportsController = new Controllers_SportsController($this->db, $this->logger);
 
 			return $this->view->render($response, "dashboard/edit-team.phtml", [
 				"user" => $user,
@@ -74,7 +75,8 @@
 				"router" => $this->router,
 				"leaguesAvailableForRegistration" => $leaguesController->getLeaguesForRegistration($team->getLeague()->getSportId()),
 				"seasonsAvailableForRegistration" => $seasonsController->getSeasonsAvailableForRegistration(),
-				"sport" => $team->getLeague()->getSport()
+				"sport" => $team->getLeague()->getSport(),
+				"sports" => $sportsController->getSports()
 			]);
 
 		})->setName('edit-team');
