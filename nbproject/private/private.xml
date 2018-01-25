@@ -2,6 +2,28 @@
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-        <group/>
+        <group>
+            <file>file:/C:/Bin/web/PMotion/web-app/routes/score-reporter.php</file>
+            <file>file:/C:/Bin/web/PMotion/web-app/controllers/datescontroller.php</file>
+            <file>file:/C:/Bin/web/PMotion/control/Leagues/includeFiles/scheduleDeclarations.php</file>
+            <file>file:/C:/Bin/web/PMotion/web-app/controllers/leaguescontroller.php</file>
+            <file>file:/C:/Bin/web/PMotion/web-app/models/team.php</file>
+            <file>file:/C:/Bin/web/PMotion/web-app/routes/standings.php</file>
+            <file>file:/C:/Bin/web/PMotion/web-app/controllers/scorereportercontroller.php</file>
+            <file>file:/C:/Bin/web/PMotion/web-app/views/team-page.phtml</file>
+            <file>file:/C:/Bin/web/PMotion/logs/app.log</file>
+            <file>file:/C:/Bin/web/PMotion/web-app/models/sport.php</file>
+            <file>file:/C:/Bin/web/PMotion/js/custom-validation-methods.js</file>
+            <file>file:/C:/Bin/web/PMotion/allSports/scoreReporter.php</file>
+            <file>file:/C:/Bin/web/PMotion/allSports/thankYouReport.php</file>
+            <file>file:/C:/Bin/web/PMotion/web-app/views/score-reporter/score-reporter.phtml</file>
+            <file>file:/C:/Bin/web/PMotion/js/score-reporter.js</file>
+            <file>file:/C:/Bin/web/PMotion/control/Registration/includeFiles/leagVariableDeclarations.php</file>
+            <file>file:/C:/Bin/web/PMotion/web-app/index.php</file>
+            <file>file:/C:/Bin/web/PMotion/web-app/views/standings.phtml</file>
+            <file>file:/C:/Bin/web/PMotion/allSports/includeFiles/stndOtherFunctions.php</file>
+            <file>file:/C:/Bin/web/PMotion/web-app/secrets.php</file>
+            <file>file:/C:/Bin/web/PMotion/web-app/models/league.php</file>
+        </group>
     </open-files>
 </project-private>

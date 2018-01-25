@@ -1,0 +1,13 @@
+
+<link href="/css/stylesheets/styles.css" rel="stylesheet" type="text/css" />
+
+<div class='container-fluid'>
+	<h1>400 Bad Request</h1>
+
+	<p>You have submitted an invalid request. <a onClick="window.history.back();">Click here to go back to where you were.</a></p>
+
+	<?php if($request->getAttribute('errorMessage') != null) { ?>
+		<h2>Advanced</h2>
+		<p class='advanced'><?php echo $request->getAttribute('errorMessage') ?></p>
+	<?php } ?>
+</div>

@@ -1,0 +1,137 @@
+<div class='row' style='opacity:0;'>
+	<div class='form-group col-xs-12'>
+		<strong>Week <?php echo $team->getLeague()->getWeekInScoreReporter() ?></strong>
+		<span class='italic'><?php echo $leagueDate != null ? ' - ' . $leagueDate->getDescription() : "" ?></span>
+	</div>
+	<?php for ($i = 0; $i < count($matches); $i++) { ?>
+		<?php 
+			$match = $matches[$i];
+			
+			$matchClasses = count($matches) > 1 ? 'col-md-6 col-xs-12' : 'col-xs-12';
+			$scoreClasses = $team->getLeague()->getIsAskForScores() ? 'col-sm-6 col-xs-12' : 'col-xs-12';
+
+		?>
+
+		<div class='game f-small <?php print $matchClasses ?>' data-opp-team-id='<?php print $match->getOppTeamId($team) ?>'>
+			<p><span class="label label-default">Match <?php print $i+1?></span></p>
+			
+			<div class='form-group'>
+				<div class='row'>
+					<div class='col-sm-3 col-xs-12'>
+						<label for='MatchOpponent_<?php print $i+1?>'>Opponent</label>
+					</div>
+					<div class='col-sm-9 col-xs-12'>
+						<select name='oppTeamID_<?php print $i ?>' class='teamSelect oppTeamRequired form-control' id='MatchOpponent_<?php print $i+1?>'>
+							<option value='-1'></option>
+						</select>
+					</div>
+				</div>
+			</div>
+			
+			<?php if ($match->getOppTeamId($team) == 1) { // It's a practise game ?>
+
+				<?php for($j = 0; $j < $team->getLeague()->getNumGamesPerMatch(); $j++){ ?>
+					<input type='hidden' name='result_<?php echo $i ?>_<?php echo $j ?>' value='5' />
+					<input type='hidden' name='scoreUs_<?php echo $i ?>_<?php echo $j ?>' value='0' />
+					<input type='hidden' name='scoreThem_<?php echo $i ?>_<?php echo $j ?>' value='0' />
+				<?php } ?>
+
+			<?php } else { ?>
+				<?php for($j = 0; $j < $team->getLeague()->getNumGamesPerMatch(); $j++){ ?>
+					<div class='score form-group'>
+						<div class='row'>
+							<div class='col-sm-3 col-xs-12'>
+								<label for='GameResult_<?php print $i ?>_<?php print $j ?>'>Result <?php echo $j + 1 ?></label>
+							</div>
+							<div class='col-sm-9 col-xs-12'>
+								<div class='row'>
+									<div class='<?php print $scoreClasses ?>'>
+										<fieldset class='radioButtons text-right'>
+											<legend>Result</legend>
+
+											<input class='gameResultButton' type='radio' name='result_<?php echo $i ?>_<?php echo $j ?>' value='1' id='GameResult_<?php print $i ?>_<?php print $j ?>_Won' />
+											<label for='GameResult_<?php print $i ?>_<?php print $j ?>_Won'>We Won</label>
+
+											<input class='gameResultButton' type='radio' name='result_<?php echo $i ?>_<?php echo $j ?>' value='2' id='GameResult_<?php print $i ?>_<?php print $j ?>_Lost' />
+											<label for='GameResult_<?php print $i ?>_<?php print $j ?>_Lost'>We Lost</label>
+
+											<?php if($team->getLeague()->getIsTies()) { ?>
+												<input class='gameResultButton' type='radio' name='result_<?php echo $i ?>_<?php echo $j ?>' value='3' id='GameResult_<?php print $i ?>_<?php print $j ?>_Tied' />
+												<label for='GameResult_<?php print $i ?>_<?php print $j ?>_Tied'>We Tied</label>
+											<?php } ?>
+
+											<?php if($team->getLeague()->getIsShowCancelOption()) { ?>
+												<input class='gameResultButton' type='radio' name='result_<?php echo $i ?>_<?php echo $j ?>' value='4' id='GameResult_<?php print $i ?>_<?php print $j ?>_Cancelled' />
+												<label for='GameResult_<?php print $i ?>_<?php print $j ?>_Cancelled'>*Cancelled*</label>
+											<?php } ?>
+											<input type='hidden' id='GameResult_<?php print $i ?>_<?php print $j ?>' name='gameResult_<?php print $i ?>_<?php print $j ?>' class='radioButtonsResult gameResult' value='' />
+										</fieldset>
+										
+									</div>
+									
+									<?php if($team->getLeague()->getIsAskForScores()) { ?>
+										<div class='col-sm-6 col-xs-12'>
+											<div class='row'>
+												<div class='col-xs-6'>
+													<div class='row'>
+														<div class='col-xs-6 text-right'>
+															<label for='ScoreUs_<?php print $i ?>_<?php print $j ?>'>We Got</label>
+														</div>
+														<div class='col-xs-6'>
+															<input type='number' value='0' min='0' max='<?php print $team->getLeague()->getMaxPointsPerGame() ?>' name='scoreUs_<?php echo $i ?>_<?php echo $j ?>' id='ScoreUs_<?php print $i ?>_<?php print $j ?>' />
+														</div>
+													</div>
+												</div>
+												<div class='col-xs-6'>
+													<div class='row'>
+														<div class='col-xs-6 text-right'>
+															<label for='ScoreThem_<?php print $i ?>_<?php print $j ?>'>They Got</label>
+														</div>
+														<div class='col-xs-6'>
+															<input type='number' value='0' min='0' max='<?php print $team->getLeague()->getMaxPointsPerGame() ?>' name='scoreThem_<?php echo $i ?>_<?php echo $j ?>' id='ScoreThem_<?php print $i ?>_<?php print $j ?>'>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+									<?php } ?>
+									
+								</div>
+							</div>
+						</div>
+					</div>
+				<?php } ?>
+					
+				<div class='form-group row spirit-row'>
+					<div class='col-sm-3 col-xs-12'>
+						<label for='SpiritScore_<?php print $i ?>'>Spirit Score</label>
+					</div>
+					<div class='col-sm-9 col-xs-12'>
+						<fieldset class='radioButtons'>
+							<legend>Spirit Score</legend>
+							<?php for($k = 1; $k <= 5; $k+=.5) { ?>
+								<input type='radio' name='spiritScore_<?php print $i ?>' value='<?php print $k ?>' id='SpiritScore_<?php print $i ?>_<?php print $k * 2 ?>'
+									   <?php echo $k == 5 ? 'checked="checked"' : ''; ?> />
+								<label for='SpiritScore_<?php print $i ?>_<?php print $k * 2 ?>'><?php print $k ?></label>
+							<?php } ?>
+							<input type='hidden' id='SpiritScore_<?php print $i ?>' name='spiritScore[<?php print $i ?>]' class='spiritResult radioButtonsResult' value='5' />
+					   </fieldset>
+						
+						<?php /* <input required='required' type='text' class='spirit' name='spiritScore_<?php print $i ?>' value='5' id='SpiritScore_<?php print $i ?>' /> */ ?>
+						<?php /* <span id='SpiritScore_<?php print $i ?>_Val' class='sliderValue'>5</span> */ ?>
+								
+					</div>
+				</div>
+			<?php } ?>
+				
+			<div class='form-group row'>
+				<div class='col-sm-3 col-xs-12'>
+					<label for='Comments_<?php print $i ?>'>Comments</label>
+				</div>
+				<div class='col-sm-9 col-xs-12'>
+					<textarea name='matchComments_<?php print $i ?>' id='Comments_<?php print $i ?>' class='comment form-control'></textarea>
+				</div>
+			</div>
+		</div>
+	<?php } ?>
+</div>

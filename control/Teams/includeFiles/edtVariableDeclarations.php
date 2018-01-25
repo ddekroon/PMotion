@@ -69,7 +69,7 @@ function getAgentsData($leagueID) {
 	}
 	
 	$agentsQuery = mysql_query("SELECT * FROM $individualsTable INNER JOIN $playersTable ON $playersTable.player_id = $individualsTable.individual_player_id
-		WHERE individual_preferred_league_id = $leagueID AND player_team_id = 0 AND individual_finalized = 1 ORDER BY individual_small_group_id ASC, player_id ASC")
+		WHERE individual_preferred_league_id = $leagueID AND player_team_id is NULL AND individual_finalized = 1 ORDER BY individual_small_group_id ASC, player_id ASC")
 		or die('ERROR getting free agents '.mysql_error());
 	while($agentArray = mysql_fetch_array($agentsQuery)) {
 		$agent[$agentsNum] = new Player();

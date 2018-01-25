@@ -1,0 +1,106 @@
+
+<link href="/css/stylesheets/jquery-ui.min.css" rel="stylesheet" type="text/css" />
+<link href="/css/stylesheets/bootstrap-slider.min.css" rel="stylesheet" type="text/css" />
+<link href="/css/stylesheets/styles.css" rel="stylesheet" type="text/css" />
+
+<form class='scoreReporter scoreReporter-<?php print $sport->getId() ?> container-fluid' id="ScoreReporterForm" 
+	  action='<?php echo (isset($isDashboard) && $isDashboard ? $router->pathFor('dashboard-report-score') : $router->pathFor('report-score')); ?>'>
+	<input type="hidden" name="sportID" value='<?php print $sport->getId() ?>' />
+	<div class='clearfix form-group'>
+		<div class="logoContainer pull-right" style="text-align:center;">
+			<img src="<?php print $sport->getLogoLink(); ?>" alt="" />
+		</div>
+		<h1>Score Reporter</h1>
+	</div>
+	
+	<fieldset class='form-group'>
+		<legend>Game Information</legend>
+		<div class='form-group row'>
+			<div class='col-md-2 col-sm-3 col-xs-12'>
+				<label for='SelectLeague'>Select League <span class="required">*</span></label>
+			</div>
+			<div class='col-md-10 col-sm-9 col-xs-12'>
+				<select required='required' id='SelectLeague' name='leagueID' class='form-control'>
+					<option value='-1'></option>
+					<?php if(count($leagues) > 0) { ?>
+						<optgroup label='<?php echo $leagues[0]->getSeason()->getName() ?>'>
+							<?php 
+								$lastSeasonId = 0;
+								foreach($leagues as $curLeague) {
+
+									if($curLeague->getSeasonId() != $lastSeasonId && $lastSeasonId != 0) {
+										print '</optgroup><optgroup label="' . $curLeague->getSeason()->getName() . '">';
+									}
+
+									print "<option value='" . $curLeague->getId() . "' " 
+											. ($curLeague->getId() == $league->getId() ? "selected='selected'" : '') . ">"
+											. $curLeague->getName() . " - " . $curLeague->getDayString()
+											. "</option>";
+
+									$lastSeasonId = $curLeague->getSeasonId();
+								}
+							?>
+						</optgroup>
+					<?php } ?>
+				</select>
+			</div>
+		</div>
+		<div class='form-group row'>
+			<div class='col-md-2 col-sm-3 col-xs-12'>
+				<label for='SelectTeam'>Select Team <span class="required">*</span></label>
+			</div>
+			<div class='col-md-10 col-sm-9 col-xs-12'>
+				<select required='required' id='SelectTeam' name='teamID' class='form-control'>
+					<option value='-1'></option>
+				</select>
+			</div>
+		</div>
+
+		<div class="weekDate"></div>
+	</fieldset>
+	<fieldset id='MatchesFieldset' style='display:none;' class='form-group'>
+		<legend>Matches</legend>
+		<div id="Matches">
+
+		</div>
+	</fieldset>
+	<fieldset id='ContactFieldset' class='form-group'>
+		<legend>Contact Information</legend>
+		<div class='row form-group'>
+			<div class='col-md-2 col-sm-3 col-xs-12'>
+				<label for='SubmitterName'>Name <span class="required">*</span></label>
+			</div>
+			<div class='col-md-10 col-sm-9 col-xs-12'>
+				<div class="input-group">
+					<span class="input-group-addon" id="SubmitUsernameAddon"><span class="glyphicon glyphicon-user" aria-hidden="true"></span></span>
+					<input required='required' type='text' id='SubmitterName' name='submitterName' value='<?php echo isset($user) && $user != null ? $user->getFirstName() . " " . $user->getLastName() : "" ?>' class='form-control' aria-describedby='SubmitUsernameAddon' />
+				</div>
+			</div>
+		</div>
+		<div class='row form-group'>
+			<div class='col-md-2 col-sm-3 col-xs-12'>
+				<label for='SubmitterEmail'>Email</label>
+			</div>
+			<div class='col-md-10 col-sm-9 col-xs-12'>
+				<div class="input-group">
+					<span class="input-group-addon" id="SubmitEmailAddon">@</span>
+					<input type='email' id='SubmitterEmail' name='submitterEmail' value='<?php echo isset($user) && $user != null ? $user->getEmail() : "" ?>' class='form-control' aria-describedby="SubmitEmailAddon" />
+				</div>
+			</div>
+		</div>
+		<div id='errordiv' class='form-group'></div>
+		<div class="form-group">
+			<button type='submit' value='submitScore' name='action' class='btn btn-primary'>Submit</button>
+		</div>
+	</fieldset>
+</form>
+
+<script src="/js/score-reporter.js"></script>
+<script>
+	<?php if($league != null && $league->getId() != null) { ?> 
+		getLeagueTeams($("#SelectTeam"), <?php print $league->getId() ?>, <?php print $team != null && $team->getId() != null ? $team->getId() : 0 ?>); 
+	<?php } ?>
+	<?php if($team != null && $team->getId() != null) { ?> 
+		loadMatches(<?php print $team->getId() ?>);
+	<?php } ?>
+</script>

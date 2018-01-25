@@ -117,7 +117,9 @@ function getCurVenueID($nodeString) {
 				if(preg_match("/$venueName[$i]/i", $schedVars->curVenue) > 0) {
 					$schedVars->curVenueID = $schedVars->venueID[$i];
 				}
-				if(!in_array($schedVars->curVenueID, $schedVars->usedVenueIDs)) {
+				
+				//If either no venues have been used or the current venue hasn't been used.
+				if($schedVars->usedVenueIDs == null || !in_array($schedVars->curVenueID, $schedVars->usedVenueIDs)) {
 					$schedVars->venueRow = $schedVars->maxVenueRow + 1;
 					$schedVars->usedVenueIDs[$schedVars->venueRow] = $schedVars->curVenueID;
 					if($schedVars->venueRow > $schedVars->maxVenueRow) {

@@ -84,7 +84,7 @@ function createAgent($teamID, $leagueID) {
 	$playerID = $playerArray['maxNum'] +1;
 	
 	mysql_query("INSERT INTO $playersTable (player_id, player_team_id, player_firstname, player_lastname, player_email, player_sex, player_is_individual, player_note, player_is_captain)
-		VALUES ($playerID, 0, '$agentFirstName', '$agentLastName', '$agentEmail', '$agentGender', 1, '$agentNote', 0)") or die('ERROR adding new player '.mysql_error());
+		VALUES ($playerID, NULL, '$agentFirstName', '$agentLastName', '$agentEmail', '$agentGender', 1, '$agentNote', 0)") or die('ERROR adding new player '.mysql_error());
 	mysql_query("INSERT INTO $individualsTable (individual_player_id, individual_preferred_league_id, individual_created, individual_finalized, individual_small_group_id)
 		VALUES ($playerID, $leagueID, NOW(), 1, $agentGroupID)") or die('ERROR adding new individual '.mysql_error());
 	insertPlayerAddressDB($agentFirstName, $agentLastName, $agentEmail);
@@ -173,7 +173,7 @@ function removePlayers($numPlayers, $teamID) {
 		$effectedCount = 0;
 		foreach($_POST['player'] as $player) {
 			if(($playerID = $_POST['playerID'][$player]) != '') {
-				mysql_query("UPDATE $playersTable SET player_team_id = 0 WHERE player_id = $playerID") 
+				mysql_query("UPDATE $playersTable SET player_team_id = NULL WHERE player_id = $playerID") 
 					or die('ERROR adding player '.mysql_error());
 				$effectedCount++;
 			}

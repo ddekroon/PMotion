@@ -237,9 +237,13 @@ form .error, .red {
 	&.scoreReporter-4 { /* soccer */
 		@include score-reporter(#424242);
 	}
-
-	.spirit-row {
-		margin-top:30px;
+	
+	.btn-group {
+		@include flexbox();
+		
+		> .btn {
+			width:100%;
+		}
 	}
 }
 

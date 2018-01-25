@@ -1,0 +1,23 @@
+
+<link href="/css/stylesheets/jquery-ui.min.css" rel="stylesheet" type="text/css" />
+<link href="/css/stylesheets/styles.css" rel="stylesheet" type="text/css" />
+
+<?php $teams = $league->getTeams(); ?>
+<div class='text-center'>
+	<h1><?php echo $league->getName() ?></h1>
+	<p>** Click on a team name to see their team page **</p>
+	<table class='table table-condensed table-striped table-responsive f-small' style='max-width:400px; margin:auto;'>
+		<tbody>
+			<?php $teamCount = 1; ?>
+			<?php foreach($teams as $curTeam) { ?>
+				<tr>
+					<td>Team <?php echo $teamCount++; ?></td>
+					<td>
+						<?php $teamPageUrl = $isDashboard ? $router->pathFor('dashboard-team-page', ['teamID' => $curTeam->getId()]) : $router->pathFor('team-page', ['teamID' => $curTeam->getId()] ) ?>
+						<a href="<?php echo $teamPageUrl ?>"><?php echo $curTeam->getName() ?> </a>
+					</td>
+				</tr>
+			<?php } ?>
+		</tbody>
+	</table>
+</div>

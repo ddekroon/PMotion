@@ -44,11 +44,11 @@
 	}
 	
 	function getTeamOneLink() {
-		return '/allSports/teamPage.php?teamID='.$this->teamOneID;
+		return '/web-app/team/' . $this->teamOneID;
 	}
 	
 	function getTeamTwoLink() {
-		return '/allSports/teamPage.php?teamID='.$this->teamTwoID;
+		return '/web-app/team/' . $this->teamTwoID;
 	}
 	
 	function getTeamOneString() {
