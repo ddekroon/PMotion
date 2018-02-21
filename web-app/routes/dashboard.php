@@ -10,6 +10,7 @@
 		$seasonsController = new Controllers_SeasonsController($this->db, $this->logger);
 		
 		return $this->view->render($response, "dashboard.phtml", [
+			"request" => $request,
 			"user" => $user,
 			"router" => $this->router,
 			"seasonsInRegistration" => $seasonsController->getSeasonsAvailableForRegistration(),
@@ -44,7 +45,7 @@
 				return $response->withRedirect($this->router->pathFor('dashboard-forbidden'), 403);
 			}
 
-			return $this->view->render($response, "dashboard/edit-profile.phtml", [
+			return $this->view->render($response, "registration/edit-profile.phtml", [
 				"request" => $request,
 				"router" => $this->router,
 				"user" => $user
@@ -185,3 +186,33 @@
 		})->setName('dashboard-search-page');
 		
 	})->add($dashboard)->add($authenticate);
+	
+	//Edit Profile
+	$app->post('/edit-profile', function (Request $request, Response $response) {
+		$user = Models_User::withID($this->db, $this->logger, $_SESSION[Controllers_AuthController::SESSION_USER_ID]);
+
+		$returnObj = array();
+		
+		if(is_null($user) || $user->getId() == null) {
+			$returnObj["status"] = 0;
+			$returnObj["errorMessage"] = "You aren't logged in. Please refresh your page.";
+		} else {
+		
+			$usersController = new Controllers_UsersController($this->db, $this->logger);
+
+			try {
+				$usersController->saveProfile($user, $request);
+				$returnObj["status"] = 1;
+				
+			} catch(Exception $e) {
+				$this->logger->debug("Caught Exception: " . $e . "\n");
+				$returnObj["status"] = 0;
+				$returnObj["errorMessage"] = $e->getMessage();
+			}
+		}
+
+		$response->getBody()->write(json_encode($returnObj));
+
+		return $response;
+		
+	})->setName('submit-edit-profile')->add($authenticate);

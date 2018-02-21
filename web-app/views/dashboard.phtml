@@ -1,6 +1,6 @@
 
 	<div class='clearfix form-group'>
-		<h1>Dashboard</h1>
+		<h1>My Dashboard</h1>
 	</div>
 	<?php if(sizeof($seasonsInScoreReporter) > 0) { ?>
 		<fieldset class='form-group'>
@@ -11,7 +11,7 @@
 					<?php foreach(Includes_DayOfWeek::getDays() as $day) { ?>
 						<?php if($day == Includes_DayOfWeek::SATURDAY || $day == Includes_DayOfWeek::FRIDAY) continue; ?>
 						<?php $myTeams = $teamsController->getTeamsForUser($user, $regSeason, $day); ?>
-						<div class="col-sm-4 col-xs-6">
+						<div class="<?php if($day == Includes_DayOfWeek::WEDNESDAY) echo "col-sm-offset-2"; ?> col-sm-4 col-xs-6">
 							<div class="panel <?php echo $day == date('N') % 7 ? 'panel-primary' : 'panel-default' ?>" style="padding:0;">
 								<div class="panel-heading text-center f-small">
 									<?php echo Includes_DayOfWeek::getDayString($day); ?>
@@ -46,7 +46,7 @@
 					<?php foreach(Includes_DayOfWeek::getDays() as $day) { ?>
 						<?php if($day == Includes_DayOfWeek::SATURDAY || $day == Includes_DayOfWeek::FRIDAY) continue; ?>
 						<?php $myTeams = $teamsController->getTeamsForUser($user, $regSeason, $day); ?>
-						<div class="col-sm-4 col-xs-6">
+						<div class="<?php if($day == Includes_DayOfWeek::WEDNESDAY) echo "col-sm-offset-2"; ?> col-sm-4 col-xs-6">
 							<div class="panel panel-default" style="padding:0;">
 								<div class="panel-heading text-center f-small">
 									<?php echo Includes_DayOfWeek::getDayString($day); ?>
@@ -87,17 +87,22 @@
 					<?php if($curTeam->getLeague() != null && $curTeam->getLeague()->getSeason() != null &&
 							(!$curTeam->getLeague()->getSeason()->getIsAvailableRegistration() && !$curTeam->getLeague()->getSeason()->getIsAvailableScoreReporter())) { ?>
 						<tr>
-							<td><a href="<?php echo $router->pathFor('edit-team', ['teamID' => $curTeam->getId()] ); ?>"><?php echo $curTeam->getName() ?></a></td>
-							<td><?php echo $curTeam->getLeague()->getName() . ' - ' . $curTeam->getLeague()->getDayString() . ' - ' . $curTeam->getLeague()->getSport()->getName() ?></td>
+							<td>
+								<?php //TODO link to edit or view page. <a href="<?php echo $router->pathFor('edit-team', ['teamID' => $curTeam->getId()] ); "><?php echo $curTeam->getName() </a> ?>
+								<?php echo $curTeam->getName() ?>
+							</td>
+							<td><?php echo $curTeam->getLeague()->getId() !== null ? $curTeam->getLeague()->getName() . ' - ' . $curTeam->getLeague()->getDayString() . ' - ' . $curTeam->getLeague()->getSport()->getName() : "" ?></td>
 							<td data-sort="<?php echo $curTeam->getDateCreated() ?>">
-								<?php echo $curTeam->getLeague()->getSeason()->getName() . " " . $curTeam->getLeague()->getSeason()->getYear() ?>
+								<?php echo $curTeam->getLeague()->getId() !== null ? $curTeam->getLeague()->getSeason()->getName() . " " . $curTeam->getLeague()->getSeason()->getYear() : "" ?>
 							</td>
 							<td>
-								<div class='btn-group btn-group-sm float-right'>
-									<a class='btn btn-primary' href="<?php echo $router->pathFor('dashboard-team-page', ['teamID' => $curTeam->getId()] ); ?>">
-										<span class='glyphicon glyphicon-picture'></span> Team Page
-									</a>
-								</div>
+								<?php if($curTeam->getLeague()->getId() !== null) { ?>
+									<div class='btn-group btn-group-sm float-right'>
+										<a class='btn btn-primary' href="<?php echo $router->pathFor('dashboard-team-page', ['teamID' => $curTeam->getId()] ); ?>">
+											<span class='glyphicon glyphicon-picture'></span> Team Page
+										</a>
+									</div>
+								<?php } ?>
 							</td>
 						</tr>
 					<?php } ?>
@@ -109,9 +114,9 @@
 		$(function() {
 			$("#PastTeamsTable").DataTable({
 				"columns": [
-					{ "orderable": true },
-					{ "orderable": true },
-					{ "orderable": true },
+					{ "orderable": false },
+					{ "orderable": false },
+					{ "orderable": false },
 					{ "orderable": false }
 				],
 				"order": [[ 2, "desc" ]]

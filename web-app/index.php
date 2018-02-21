@@ -1,5 +1,11 @@
 <?php
 
+date_default_timezone_set('America/Toronto');
+define('DS', DIRECTORY_SEPARATOR);
+define('ROOT', realpath('..') . DS);
+define('APP_PATH', ROOT . 'web-app' . DS);
+define('TEMPLATES_PATH', APP_PATH . 'templates');
+
 header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
 header("Cache-Control: post-check=0, pre-check=0", false);
 header("Pragma: no-cache");
@@ -25,6 +31,7 @@ spl_autoload_register(function($classname) {
 $config['displayErrorDetails'] = true;
 $config['addContentLengthHeader'] = false;
 $config['determineRouteBeforeAppMiddleware'] = true;
+$config['email_template_path'] = APP_PATH . 'templates';
 
 require_once('secrets.php');
 
@@ -34,7 +41,7 @@ $container = $app->getContainer();
 
 $container['logger'] = function($c) {
     $logger = new \Monolog\Logger('my_logger');
-    $file_handler = new \Monolog\Handler\StreamHandler(realpath($_SERVER['DOCUMENT_ROOT']).DIRECTORY_SEPARATOR.'logs'.DIRECTORY_SEPARATOR.'app.log');
+    $file_handler = new \Monolog\Handler\StreamHandler(ROOT . DS . 'logs' . DS . 'app.log');
     $logger->pushHandler($file_handler);
     return $logger;
 };
@@ -95,7 +102,9 @@ $authenticate = function ($request, $response, $next) {
 	} else {
 		session_unset();
 		session_destroy();
-		$response = $response->withRedirect($this->router->pathFor('login'), 303);
+		
+		$response = $response->withRedirect($this->router->pathFor('login') . 
+				"?redirect=" . $request->getUri()->getBasePath() . '/' . $request->getUri()->getPath(), 303);
 	}
 		
 	return $response;
@@ -104,12 +113,12 @@ $authenticate = function ($request, $response, $next) {
 $defaultTemplate = function ($request, $response, $next) {
 	$response = $this->view->render($response, 'template/default-header.phtml', [
 		"router" => $this->router,
-		"request" => $this->request
+		"request" => $request
 	]);	
 	$response = $next($request, $response);
 	$response = $this->view->render($response, 'template/default-footer.phtml', [
 		"router" => $this->router,
-		"request" => $this->request
+		"request" => $request
 	]);
 	
 	return $response;
@@ -131,6 +140,7 @@ $dashboard =  function ($request, $response, $next) {
 	$curUser = Models_User::withID($this->db, $this->logger, $_SESSION[Controllers_AuthController::SESSION_USER_ID]);
 
 	$response = $this->view->render($response, 'template/dashboard-header.phtml', [
+		"request" => $request,
 		"user" => $curUser,
 		"router" => $this->router,
 		"isHomepage" => $request->getAttribute('route')->getName() == 'dashboard',

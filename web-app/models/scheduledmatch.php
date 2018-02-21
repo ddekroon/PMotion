@@ -167,7 +167,7 @@ class Models_ScheduledMatch extends Models_Generic implements Models_Interface, 
 	
 	public function getScoreSubmissions($team) {
 		
-		echo '-' . $team->getId() . '-' . $this->getTeamOneId(). '-' . $this->getTeamTwoId() . '-';
+		//echo '-' . $team->getId() . '-' . $this->getTeamOneId(). '-' . $this->getTeamTwoId() . '-';
 		
 		
 		if($this->scoreSubmissions == null && $this->db != null && ($this->getTeamOneId() == $team->getId() || $this->getTeamTwoId() == $team->getId()) ) {
@@ -179,7 +179,7 @@ class Models_ScheduledMatch extends Models_Generic implements Models_Interface, 
 					. "WHERE scoreSubmissions.score_submission_team_id = " . $team->getId() . " AND scoreSubmissions.score_submission_ignored = 0 "
 					. "ORDER BY dates.date_week_number ASC, scoreSubmissions.score_submission_is_phantom ASC, scoreSubmissions.score_submission_id ASC";
 			
-			echo $sql;
+			//echo $sql;
 			
 			$stmt = $this->db->query($sql);
 
@@ -188,7 +188,7 @@ class Models_ScheduledMatch extends Models_Generic implements Models_Interface, 
 			}
 		}
 		
-		print_r($this->scoreSubmissions);
+		//print_r($this->scoreSubmissions);
 		
 		return $this->scoreSubmissions;
 	}

@@ -72,7 +72,7 @@ class Models_Team extends Models_Generic implements Models_Interface, JsonSerial
 		$this->losses = $data['team_losses'];
 		$this->ties = $data['team_ties'];
 		$this->mostRecentWeekSubmitted = $data['team_most_recent_week_submitted'];
-		$this->dateCreated = strtotime($data['team_created']);
+		$this->dateCreated = new DateTime($data['team_created']);
 		$this->isFinalized = $data['team_finalized'];
 		$this->isPaid = $data['team_paid'];
 		$this->isDeleted = $data['team_deleted'];
@@ -148,6 +148,10 @@ class Models_Team extends Models_Generic implements Models_Interface, JsonSerial
 		}
 		
 		return $this->players;
+	}
+	
+	function setPlayers(array $players) {
+		$this->players = $players;
 	}
 	
 	function getPlayerByID($playerID) {
@@ -524,7 +528,10 @@ class Models_Team extends Models_Generic implements Models_Interface, JsonSerial
 	}
 	
 	public function save() {
-		try {			
+		try {
+			
+			$this->setDateCreated(new DateTime());
+			
 			$stmt = $this->db->prepare("INSERT INTO " . Includes_DBTableNames::teamsTable . " "
 					. "(
 						team_league_id, team_name, team_num_in_league, team_managed_by_user_id, team_wins, team_losses, team_ties, 
@@ -533,7 +540,7 @@ class Models_Team extends Models_Generic implements Models_Interface, JsonSerial
 						team_is_convenor, team_dropped_out, team_late_email_allowed
 					) "
 					. "VALUES "
-					. "(?, ?, ?, ?, ?, ?, ?, ?, NOW(), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+					. "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
 			);
 			
 			$this->db->beginTransaction(); 
@@ -546,7 +553,8 @@ class Models_Team extends Models_Generic implements Models_Interface, JsonSerial
 					$this->getWins(), 
 					$this->getLosses(), 
 					$this->getTies(), 
-					$this->getMostRecentWeekSubmitted(), 
+					$this->getMostRecentWeekSubmitted(),
+					$this->getDateCreated() != null ? $this->getDateCreated()->format('Y-m-d H:i:s') : null,
 					$this->getIsFinalized() ? 1 : 0, 
 					$this->getIsPaid() ? 1 : 0, 
 					$this->getIsDeleted() ? 1 : 0, 
@@ -559,6 +567,7 @@ class Models_Team extends Models_Generic implements Models_Interface, JsonSerial
 					$this->getIsLateEmailAllowed() ? 1 : 0
 				)
 			); 
+			
 			$this->setId($this->db->lastInsertId());
 			$this->db->commit(); 
 			

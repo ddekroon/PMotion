@@ -1,6 +1,6 @@
 
 	<div class='clearfix form-group'>
-		<h1>Registration</h1>
+		<h1>Perpetual Motion Team Registration</h1>
 	</div>
 
 	<fieldset id='MatchesFieldset' class='form-group'>
@@ -27,10 +27,20 @@
 				<tbody>
 					<?php foreach($user->getTeams() as $curTeam) { ?>
 						<tr>
-							<td><a href="<?php echo $router->pathFor('dashboard-register-team', ['sportID' => $curTeam->getLeague()->getSportId(), 'pastTeamID' => $curTeam->getId()] ); ?>"><?php echo $curTeam->getName() ?></a></td>
-							<td><?php echo $curTeam->getLeague()->getName() . " - " . $curTeam->getLeague()->getDayString() . ' - ' . $curTeam->getLeague()->getSport()->getName() ?></td>
-							<td data-sort="<?php echo $curTeam->getDateCreated() ?>">
-								<?php echo $curTeam->getLeague()->getSeason()->getName() . " " . $curTeam->getLeague()->getSeason()->getYear() ?>
+							<td>
+								<?php
+									if(!$curTeam->getLeague()->getSeason()->getIsAvailableRegistration()) {
+										$regLink = $router->pathFor('dashboard-register-team', ['sportID' => $curTeam->getLeague()->getSportId(), 'pastTeamID' => $curTeam->getId()] );
+									} else {
+										$regLink = $router->pathFor('edit-team', ['sportID' => $curTeam->getLeague()->getSportId(), 'teamID' => $curTeam->getId()] );
+									}
+								?>
+								<a href="<?php echo $regLink ?>"><?php echo $curTeam->getName() ?></a></td>
+							<td><?php echo $curTeam->getLeague()->getId() !== null ? $curTeam->getLeague()->getName() . " - " . $curTeam->getLeague()->getDayString() . ' - ' . $curTeam->getLeague()->getSport()->getName() : "" ?></td>
+							<td data-sort="<?php echo $curTeam->getDateCreated()->format('Y-m-d') ?>">
+								<?php if($curTeam->getLeague()->getSeason() != null) { ?>
+									<?php echo $curTeam->getLeague()->getSeason()->getName() . " " . $curTeam->getLeague()->getSeason()->getYear() ?>
+								<?php } ?>
 							</td>
 							<td class='visible-lg visible-md visible-sm'><?php echo $curTeam->getIsFinalized() ? "Yes" : "No" ?></td>
 							<td class="text-right">
@@ -43,7 +53,7 @@
 											<a href="<?php echo $router->pathFor('edit-team', ['teamID' => $curTeam->getId()] ); ?>">View Past Team</a>
 										</li>
 										<li>
-											<a onclick="return false" title="Remove this team from your list of past and active teams. This cannot be undone.">
+											<a onclick="removeTeamFromDashboard(<?php echo $curTeam->getId() ?>, $(this).closest('tr'));" title="Remove this team from your list of past and active teams. This cannot be undone.">
 												<span class="glyphicon glyphicon-remove-sign"></span> Remove
 											</a>
 										</li>
@@ -61,7 +71,7 @@
 		<legend>Registration Due By</legend>
 		<?php 
 			if($regSeason->getIsRegistrationBySport()) { 
-				$regSportsByDate = array();
+				/* $regSportsByDate = array();
 				
 				foreach($sports as $sport) {
 					
@@ -74,6 +84,13 @@
 				
 				foreach($regSportsByDate as $date => $sports) {
 					print "<p>" . join(", ", $sports) . ": <span class='red'><strong>" . date("F d", $date) . "</strong></span></p>";
+				} */
+				
+				foreach($sports as $sport) {
+					echo "<div class='row'>" 
+							. "<div class='col-xs-3'>" . $sport->getName() . "</div>"
+							. "<div class='col-xs-9'><span class='red'><strong>" . date("F d, Y", $sport->getRegistrationDueDate()) . "</strong></span></div>"
+						. "</div>";
 				}
 			} else {
 				echo $regSeason->getRegistrationDueBy();
@@ -129,11 +146,12 @@
 	<script>
 		$(function() {
 			$("#PastTeamsTable").DataTable({
+				"pageLength": 10,
 				"columns": [
-					{ "orderable": true },
-					{ "orderable": true },
-					{ "orderable": true },
-					{ "orderable": true },
+					{ "orderable": false },
+					{ "orderable": false },
+					{ "orderable": false },
+					{ "orderable": false },
 					{ "orderable": false }
 				],
 				"order": [[ 2, "desc" ]]

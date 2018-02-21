@@ -79,6 +79,10 @@ class Models_Season extends Models_Generic implements Models_Interface, JsonSeri
 	function getIsAvailableScoreReporter() {
 		return $this->isAvailableScoreReporter;
 	}
+	
+	function getIsAvailableRegistrationOrScoreReporter() {
+		return $this->isAvailableRegistration || $this->isAvailableScoreReporter;
+	}
 
 	function getNumWeeks() {
 		return $this->numWeeks;

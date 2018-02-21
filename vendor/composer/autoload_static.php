@@ -25,6 +25,10 @@ class ComposerStaticInitf61ae23ecf2aa9d30ede3a87156261e5
         array (
             'Monolog\\' => 8,
         ),
+        'L' => 
+        array (
+            'League\\Plates\\' => 14,
+        ),
         'I' => 
         array (
             'Interop\\Container\\' => 18,
@@ -55,6 +59,10 @@ class ComposerStaticInitf61ae23ecf2aa9d30ede3a87156261e5
         'Monolog\\' => 
         array (
             0 => __DIR__ . '/..' . '/monolog/monolog/src/Monolog',
+        ),
+        'League\\Plates\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/league/plates/src',
         ),
         'Interop\\Container\\' => 
         array (

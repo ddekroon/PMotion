@@ -43,15 +43,19 @@ class Models_Generic implements JsonSerializable {
 		return get_class($this) . " [ " . $this->getId() . " ] ";
 	}
 	
+	public function varDump() {
+		var_dump(get_object_vars($this));
+	}
+	
 	public function jsonSerialize() {
 		return "{ id: $this->id }";
 	}
 	
 	function saveOrUpdate() {
 		if($this->getId() == null) {
-			save();
+			$this->save();
 		} else {
-			update();
+			$this->update();
 		}
 	}
 	

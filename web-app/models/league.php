@@ -286,6 +286,19 @@ class Models_League extends Models_Generic implements Models_Interface, JsonSeri
 	function getName() {
 		return $this->name;
 	}
+	
+	function getFormattedName() {
+		return $this->getSport()->getName() . ' - ' . $this->getName() . ' - ' . $this->getDayString();
+	}
+	
+	function getRegistrationFormattedName() {
+		$leagueName = $this->getName();
+
+		$leagueName .= $this->getIsFullTeams() ? ' - ** Full - Waiting List **' : '';
+		$leagueName .= " - " . $this->getDayString() . " (Team Fee: $" . number_format($this->getRegistrationFee(), 2) . ')';
+		
+		return $leagueName;
+	}
 
 	function getSeasonId() {
 		return $this->seasonId;

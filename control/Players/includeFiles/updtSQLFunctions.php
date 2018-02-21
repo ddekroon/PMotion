@@ -65,7 +65,7 @@ function updatePlayer($playerID) {
 			mysql_query("UPDATE $userTable SET user_email = '$playerUserEmail' WHERE user_id = $playerUserID") 
 				or die('ERROR setting user email - '.mysql_error());
 		}
-		mysql_query("UPDATE $playersTable SET player_team_id = $teamID, player_firstname = '$playerFirstName', 
+		mysql_query("UPDATE $playersTable SET player_team_id = " . ($teamID > 0 ? $teamID : "NULL") . ", player_firstname = '$playerFirstName', 
 			player_lastname = '$playerLastName', player_email = '$playerEmail', player_sex = '$playerGender', player_phone = '$playerPhone',
 			player_note = '$playerNote', player_is_captain = $playerIsCaptain WHERE player_id = $playerID") 
 			or die('ERROR updating player '.mysql_error());

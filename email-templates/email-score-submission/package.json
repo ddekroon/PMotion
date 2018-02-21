@@ -1,0 +1,26 @@
+{
+  "name": "gulp-email-workflow",
+  "version": "1.0.0",
+  "description": "Email build process using Gulp",
+  "main": "gulpfile.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mark-monteiro/gulp-email-workflow.git"
+  },
+  "dependencies": {
+  },
+  "devDependencies": {
+    "gulp": "^3.9.0",
+    "gulp-inline-css": "^3.0.0",
+    "gulp-less": "^3.0.3",
+    "gulp-minify-css": "^1.2.1",
+    "gulp-rename": "^1.2.2",
+    "gulp-replace": "^0.5.4",
+    "gulp-util": "^3.0.7"
+  },
+  "scripts": {
+    "test": "start \"\" \"./build/campaign.html\""
+  },
+  "author": "Mark Monteiro",
+  "license": "ISC"
+}

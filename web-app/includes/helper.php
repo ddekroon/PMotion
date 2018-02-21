@@ -28,4 +28,38 @@ abstract class Includes_Helper {
 		
 		return $toReturn;
 	}
+	
+	public static function isValidEmail($address) {
+		// check an email address is possibly valid
+		return preg_match('/^[a-zA-Z0-9_.-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9.-]+$/', $address);
+	}
+	
+	//checks if the string contains anything other than letters, numbers, underscores, dashes, or periods
+	public static function isValidUsername($string){
+		return !preg_match('/[^a-zA-Z0-9_]/', $string);
+	}
+
+	public static function formatPhoneNumber($strPhone) {
+		
+		$curPhoneString = preg_replace("[^0-9]",'', $strPhone);
+		if (strlen($curPhoneString) != 10) {
+			return $strPhone;
+		}
+		$strArea = substr($curPhoneString, 0, 3);
+		$strPrefix = substr($curPhoneString, 3, 3);
+		$strNumber = substr($curPhoneString, 6, 4);
+
+		$curPhoneString = '(' . $strArea . ') ' . $strPrefix . '-' . $strNumber;
+
+		return $curPhoneString;
+	}
+	
+	/* public static function cleanHtml($html) {
+		$dom = new DOMDocument();
+		// we want nice output
+		$dom->preserveWhiteSpace = false;
+		$dom->loadHTML($html);
+		$dom->formatOutput = true;
+		return $dom->saveHTML();
+	} */
 }

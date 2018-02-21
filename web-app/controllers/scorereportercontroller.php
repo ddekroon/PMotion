@@ -2,6 +2,13 @@
 
 	class Controllers_ScoreReporterController extends Controllers_Controller {
 
+		private $templateEngine;
+		
+		public function __construct($db, $logger) {
+			parent::__construct($db, $logger);
+			$this->templateEngine = new League\Plates\Engine(TEMPLATES_PATH);
+		}
+		
 		public function getMatchesInScoreReporter($team) {
 
 			if(isset($team) && $team->getId() != null && $team->getLeague() !== null && $team->getLeague()->getId() != null) {
@@ -227,141 +234,45 @@
 				return;
 			}
 			
+			$emailController = new Controllers_EmailsController($this->db, $this->logger);
+			$emailTemplate = Includes_EmailTypes::scoreSubmission();
+			
 			$commentAdded = false;
-			$currDate = date('r');
-			$firstSubmission = array_values($submissions)[0];
- 
-			$mailBody = '<html><body><div><table>'
-				. "<tr><td>=======================================</td></tr>"
-				. "<tr><td>Results mailed on $currDate</td></tr>"
-				. "<tr><td>Team Name:      " . $team->getName() . "</td></tr>"
-				. '<tr><td>Submitted by:   ' .  $firstSubmission->getSubmitterName() . ' (' . $firstSubmission->getSubmitterEmail() . ')</td></tr>'
-				. "<tr><td>League:         " . $league->getDayString() . " " .$league->getName() . "</td></tr>"
-				. "<tr><td>Date Played:    Week " . $firstSubmission->getDate()->getWeekNumber() . " - " . $firstSubmission->getDate()->getDescription() . "</td></tr>"
-				. "<tr><td>======================================</td></tr></table></div>";
-			
-			$mailBody.='<div><table>';
-			
-			$scheduledMatches = $this->getMatchesInScoreReporter($team);
 			$gameNum = 0;
 			
 			for ($i = 0; $i < $league->getNumMatches(); $i++) {
 				$curSubmission = $submissions[$gameNum];
+				$gameNum = $gameNum + $league->getNumGamesPerMatch();
 				
-				for($j = 0; $j < $league->getNumGamesPerMatch(); $j++) {
-					$gameNum++;
-				}
-				
-				$teamsNotEqual = false; //By default assume they submitted for the correct team.
-				$oppSubmissions = [];
-				
-				//Not playoffs, not against practice team, there is a scheduled match opp team
-				if(!$league->getIsInPlayoffs() && $curSubmission->getOppTeamId() > 1 
-						&& sizeof($scheduledMatches) > $i && $scheduledMatches[$i]->getOppTeamId($team) > 0) {
-					
-					if ($curSubmission->getOppTeamId() != $scheduledMatches[$i]->getOppTeamId($team)) {
-						$teamsNotEqual = true;
-					} else {
-						$oppSubmissions = $this->getScoreSubmissions($curSubmission->getOppTeam(), null, $curSubmission->getDate());
-					}
-				}
-
-				$mailBody .= '<tr align="center"><td colspan=10><font color="#FF0000"><b>';
-				
-				$teamDBSubmissions = $this->getScoreSubmissions($team, null, $curSubmission->getDate());
-				
-				if (sizeof($teamDBSubmissions) > 0) {
-					$mailBody .= "Results have already been submitted, these will be ignored<br />";
-				}
-				
-				if(!$league->getIsInPlayoffs() && $curSubmission->getOppTeamId() > 0) {
-					
-					if ($teamsNotEqual) {
-						$mailBody .= "Opponent submitted against is different than in the database<br />";
-					} else {
-						
-						$oppSubmissionsCorrect = false;
-						$curSubmissionAndOppSubmissionMatch = true; //1 signifies are the same
-						
-						for($k = 0; $k < sizeof($oppSubmissions); $k++) {
-							if($oppSubmissions[$k]->getOppTeamId() == $team->getId()) {
-								
-								$oppSubmissionsCorrect = true;
-								
-								for($m = 0; $m < $games; $m++) {
-									if (!checkSubmissionsMatch($submissions[($i * $games) + $m], $oppSubmissions[$k + $m])) {
-										$curSubmissionAndOppSubmissionMatch = false;
-									}
-								}
-								
-								//$k = 1000000; //Could i not just use break; here?
-							}
-						}
-						if (!$curSubmissionAndOppSubmissionMatch) {
-							$mailBody.= "Submitted results don't match their opponenets<br />";
-						} 
-						if(!$oppSubmissionsCorrect && sizeof($oppSubmissions) > 0) {
-							$mailBody.= "Opponents submitted against different teams<br />";
-						}
-					}
-				}
-				
-				$mailBody .= '<br /></b></font>';
-				$mailBody .= '</td></tr><tr><td align=center>';
-				$mailBody .= "Submitted Results<br />";
-				$mailBody .= "------------------------------------------<br />";
-				$mailBody .= $this->printGameResults($submissions, $i * $league->getNumGamesPerMatch());
-				$mailBody .= "------------------------------------------";
-
-				$mailBody .= "</td><td width='10px'></td><td align=center>Opponent Results<br />";
-				$mailBody .= "------------------------------------------<br />";
-				
-				if (sizeof($oppSubmissions) > 0) {
-					for($k=0;$k<$matches*$games ; $k = $k+$games) {
-						if($dbOppTeamOppID[$k] == $teamID) {
-							$mailBody.= $this->printGameResults($sportID, $dbOppTeamOppID[$k], $dbOppTeamResult, $dbOppTeamScoreUs, $dbOppTeamScoreThem, $games, $k, $oppSpiritScore);
-						}
-					}			
-				} else {
-					$mailBody .= (!$league->getIsInPlayoffs() ? "Haven't submitted their scores yet<br />" : "Playoffs<br />");
-				}
-				$mailBody .= "------------------------------------------";
-
-				$mailBody .= "</tr><tr><td colspan='3'>Comments: " 
-						. ($curSubmission->getScoreSubmissionComment() != null ? $curSubmission->getScoreSubmissionComment()->getComment() : '')
-						. "</td></tr>";
-
 				if ($curSubmission->getScoreSubmissionComment() != null && strlen($curSubmission->getScoreSubmissionComment()) > 2) {
 					$commentAdded = true;
 				}
 			}
 			
-			$mailBody.='</table></div></body></html>';
+			$subject = ($commentAdded ? "COMMENT - " : "") . $league->getName() . " - " . $league->getDayString() . " - " . $team->getName();
+			
+			$body = $this->templateEngine->render('email-score-submission', [
+				"team" => $team,
+				"league" => $league,
+				"submissions" => $submissions,
+				"firstSubmission" => array_values($submissions)[0],
+				"currDate" => date('F j, Y g:ia'),
+				"scheduledMatches" => $this->getMatchesInScoreReporter($team),
+				"scoreReporterController" => $this,
+				"matches" => $league->getNumMatches(),
+				"games" => $league->getNumGamesPerMatch()
+			]);
 
-			if ($commentAdded) {
-				$subject = "COMMENT - " . $league->getName() . " - " . $league->getDayString() . " - " . $team->getName();
-			} else {
-				$subject = $league->getName() . " - " . $league->getDayString() . " - " . $team->getName();
-			}
-
-			$mailBody = stripslashes($mailBody);
-			
-			$from_header  = 'MIME-Version: 1.0' . "\r\n";
-			$from_header .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
-			$from_header .= 'Content-Transfer-Encoding: base64' . "\r\n";
-			$from_header .= 'From: score-reporter@perpetualmotion.org';
-			
-			
-			foreach(Includes_WhoGetsEmailed::scoreSubmission() as $adminEmail) {
-				
-				$this->logger->debug($adminEmail);
-				$this->logger->debug($mailBody);
-				$this->logger->debug($_SERVER['SERVER_NAME']);
-				
-				if($_SERVER['SERVER_NAME'] != 'local.perpetualmotion.org') {
-					mail($adminEmail, $subject, rtrim(chunk_split(base64_encode($mailBody))), $from_header);
-				}
-			}
+			$emailController->createAndSendEmail(
+					$emailTemplate->getEmailType(), 
+					$subject, 
+					$body, 
+					implode(",", $emailTemplate->getToAddresses()), 
+					$emailTemplate->getFromName(),
+					$emailTemplate->getFromAddress(), 
+					null, 
+					null
+			);
 
 			return 1;
 		}
@@ -375,8 +286,9 @@
 			return true;
 		}
 
+		//DD Feb 11, 2018: No longer using this function now that the email is templated.
 		//Formats a teams submission for an email and returns the text
-		public function printGameResults(array $submissions, $matchNum) {
+		/* public function printGameResults(array $submissions, $matchNum) {
 			
 			if($submissions == null || sizeof($submissions) <= $matchNum) {
 				return "";
@@ -420,7 +332,7 @@
 			$contents .= '<br /><br />';
 			
 			return $contents;	
-		}
+		} */
 		
 		public function updateStandingsFromSubmissions(Models_Team $team, array $scoreSubmissions) {
 			foreach($scoreSubmissions as $submission) {

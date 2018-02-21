@@ -161,7 +161,6 @@ class Controllers_TeamsController extends Controllers_Controller {
 		$isUpdate = true;
 				
 		if(!isset($team) || $team == null || $team->getId() == null) {
-						
 			$team = Models_Team::withID($this->db, $this->logger, -1);
 			$isUpdate = false;
 			$team->setManagedByUserId($user->getId());
@@ -172,7 +171,7 @@ class Controllers_TeamsController extends Controllers_Controller {
 		$sport = Models_Sport::withID($this->db, $this->logger, $allPostVars['sportID']);
 		
 		if(isset($allPostVars['leagueID'])) {
-			$team->setLeagueId($allPostVars['leagueID']);
+			$team->setLeagueId((int)$allPostVars['leagueID']);
 		}
 		$team->setName($allPostVars['teamName']);
 		
@@ -181,18 +180,17 @@ class Controllers_TeamsController extends Controllers_Controller {
 		$team->getCaptain()->setEmail($allPostVars['capEmail']);
 		$team->getCaptain()->setPhoneNumber($allPostVars['capPhoneNumber']);
 		$team->getCaptain()->setGender($allPostVars['capGender']);
+		$team->getCaptain()->setHowHeardMethod(isset($allPostVars['capHowHeardMethod']) ? $allPostVars['capHowHeardMethod'] : '0');
+		$team->getCaptain()->setHowHeardOtherText(isset($allPostVars['capHowHeardMethodOther']) ? $allPostVars['capHowHeardMethodOther'] : '');
 		
-		if($action == 'register') {
-			$team->getCaptain()->setHowHeardMethod($allPostVars['capHowHeardMethod']);
-			$team->getCaptain()->setHowHeardOtherText($allPostVars['capHowHeardMethodOther']);
-		}
+		$players = $team->getPlayers();
 		
 		for($i = 0; $i < $sport->getNumPlayerInputsForRegistration(); $i++) {
 			$playerID = $allPostVars['playerID_' . $i];
-			$curPlayer = $team->getPlayerByID($playerID);
+			$curPlayer = Models_Player::withRow($this->db, $this->logger, []);
 			
-			if($curPlayer == null || $curPlayer->getId() == null) {
-				$curPlayer = Models_Player::withID($this->db, $this->logger, -1);
+			if($isUpdate && isset($playerID) && !empty($playerID) && $playerID > 0) {
+				$curPlayer = $team->getPlayerByID($playerID);
 			}
 			
 			$curPlayer->setFirstName($allPostVars['playerFirstName_' . $i]);
@@ -200,12 +198,17 @@ class Controllers_TeamsController extends Controllers_Controller {
 			$curPlayer->setEmail($allPostVars['playerEmail_' . $i]);
 			$curPlayer->setGender($allPostVars['playerGender_' . $i]);
 			
-			$team->getPlayers()[$i] = $curPlayer;
+			if($isUpdate) {
+				$players[$i] = $curPlayer;
+			} else {
+				$players[] = $curPlayer;
+			}
 		}
+				
+		$team->setPlayers($players);
 		
 		$team->getRegistrationComment()->setComment($allPostVars['teamComments']);
 		//$team->getPlayers();
-		
 		
 		if($action == 'register') {
 			$stmt = $this->db->query("SELECT MAX(team_num_in_league) as highestTeamNum FROM " . Includes_DBTableNames::teamsTable . " "
@@ -225,8 +228,10 @@ class Controllers_TeamsController extends Controllers_Controller {
 			$team->setNumInLeague(0);
 			$team->setIsFinalized(false);
 			$team->setManagedByUserId($user->getId());
-			$team->setPicName($team->getLeagueId() . ($team->getNumInLeague() < 10 ?  '-0' : '-') . $team->getNumInLeague());
+			$team->setPicName("");
 		}
+		
+		//$team->varDump();
 		
 		$team->saveOrUpdate();
 		
@@ -244,7 +249,6 @@ class Controllers_TeamsController extends Controllers_Controller {
 				
 		$team->getRegistrationComment()->saveOrUpdate();
 		
-		
 		$userHistory = Models_UserHistory::withID($this->db, $this->logger, -1);
 		$userHistory->setUserId($user->getId());
 		$userHistory->setUsername($user->getUsername());
@@ -260,6 +264,10 @@ class Controllers_TeamsController extends Controllers_Controller {
 		}
 		
 		if($action == 'register') {
+			$registrationController = new Controllers_RegistrationController($this->db, $this->logger);
+			$registrationController->sendRegistrationEmail($team);
+			$registrationController->sendWaiverEmails($team);
+			
 			return "Your team has been registered.";
 		} else if(!$isUpdate) {
 			return "Your team has been saved.";
@@ -389,8 +397,6 @@ class Controllers_TeamsController extends Controllers_Controller {
 			$sql .= $limit;
 		}
 		
-		//echo $sql;
-		
 		try {
 		
 			$this->db->setAttribute(PDO::ATTR_CURSOR, PDO::CURSOR_FWDONLY);
@@ -490,5 +496,35 @@ class Controllers_TeamsController extends Controllers_Controller {
 		}
 		
 		return $sql;
+	}
+	
+	function removeTeam($team) {
+		$team->setIsDeleted(true);
+		$team->update();
+	}
+	
+	function getIsReturningTeam(Models_Team $team) {
+		$sql = "SELECT count(team.team_id) as teamCount FROM " . Includes_DBTableNames::teamsTable . " as team "
+				. " INNER JOIN " . Includes_DBTableNames::leaguesTable . " league ON league.league_id = team.team_league_id"
+				. " WHERE league_season_id = " . ($team->getLeague()->getSeasonId() - 1) . " AND team_managed_by_user_id = " . $team->getManagedByUserId()
+				. " AND team_finalized = 1";
+				
+		try {
+			$this->db->setAttribute(PDO::ATTR_CURSOR, PDO::CURSOR_FWDONLY);
+			$stmt = $this->db->prepare($sql);
+
+			$stmt->execute();
+		} catch(PDOException $e) {
+			// error handling
+			return false;
+		}
+		
+		$row = $stmt->fetch();
+		
+		if($row != false) {
+			return $row['teamCount'] > 0;
+		}
+		
+		return false;
 	}
 }

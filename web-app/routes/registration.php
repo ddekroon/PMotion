@@ -59,6 +59,19 @@
 			//return $response;
 		})->setName('dashboard-register-team');
 		
+		$app->get('/registration-success', function (Request $request, Response $response) {
+			
+			$curUser = Models_User::withID($this->db, $this->logger, $_SESSION[Controllers_AuthController::SESSION_USER_ID]);
+			
+			return $this->view->render($response, "registration/registration-success.phtml", [
+					"request", $request,
+					"router" => $this->router,
+					"isDashboard" => true,
+					"user" => $curUser
+				]
+			);
+		})->setName('registration-success');
+		
 	})->add($dashboard)->add($authenticate);
 	
 	$app->post('/save-team[/{teamID}]', function (Request $request, Response $response) {
@@ -85,4 +98,124 @@
 
 	})->setName('save-team')->add($authenticate);
 
+	$app->post('/remove-team/{teamID}', function(Request $request, Response $response) {
+
+		$returnObj = array();
+		$teamsController = new Controllers_TeamsController($this->db, $this->logger);
+		
+		try {
+			
+			$team = Models_Team::withID($this->db, $this->logger, (int)$request->getAttribute('teamID'));
+			
+			if($team != null && $team->getId() != null) {
+				$teamsController->removeTeam($team);
+				$returnObj["status"] = 1;
+			} else {
+				$returnObj["status"] = 0;
+			}
+		} catch(Exception $e) {
+			$this->logger->debug("Caught Exception: " . $e . "\n");
+			$returnObj["status"] = 0;
+			$returnObj["errorMessage"] = $e->getMessage();
+		}
+
+		$response->getBody()->write(json_encode($returnObj));
+
+		return $response;
+	})->setName('remove-team')->add($authenticate);
+	
+	//Create Account
+	$app->get('/create-account', function (Request $request, Response $response) {
+
+		return $this->view->render($response, "registration/edit-profile.phtml", [
+			"request" => $request,
+			"router" => $this->router
+		]);
+	})->setName('create-account')->add($defaultTemplate);
+	
+	$app->post('/submit-account', function (Request $request, Response $response) {
+		$returnObj = array();
+		
+		$usersController = new Controllers_UsersController($this->db, $this->logger);
+
+		try {
+			$usersController->saveProfile(null, $request);
+			$returnObj["status"] = 1;
+
+		} catch(Exception $e) {
+			$this->logger->debug("Caught Exception: " . $e . "\n");
+			$returnObj["status"] = 0;
+			$returnObj["errorMessage"] = $e->getMessage();
+		}
+
+		$response->getBody()->write(json_encode($returnObj));
+
+		return $response;
+		
+	})->setName('submit-account');
+	
+	
+	//Forgot Password
+	$app->get('/reset-password[/{validationKey}]', function (Request $request, Response $response) {
+		
+		$validationKey = $request->getAttribute('validationKey');
+		
+		if(isset($validationKey) && !empty($validationKey)) {
+			$userController = new Controllers_UsersController($this->db, $this->logger);
+			$user = $userController->getUserByValidationKey($validationKey);
+		}
+		
+		return $this->view->render($response, "registration/reset-password.phtml", [
+			"request" => $request,
+			"router" => $this->router,
+			"isKeyValid" => isset($user) && $user->getId() != null,
+			"username" => isset($user) ? $user->getUsername() : "",
+			"validationKey" => $validationKey
+		]);
+	})->setName('reset-password')->add($defaultTemplate);
+	
+	$app->post('/request-reset-password', function (Request $request, Response $response) {
+		$returnObj = array();
+		
+		$usersController = new Controllers_UsersController($this->db, $this->logger);
+
+		try {
+			$usersController->startResetPasswordProcess($request);
+			$returnObj["status"] = 1;
+			$returnObj["successMessage"] = "Password reset successfully. Please check your email for a link to reset your new password.";
+			
+		} catch(Exception $e) {
+			$this->logger->debug("Caught Exception: " . $e . "\n");
+			$returnObj["status"] = 0;
+			$returnObj["errorMessage"] = $e->getMessage();
+		}
+
+		$response->getBody()->write(json_encode($returnObj));
+
+		return $response;
+		
+	})->setName('request-reset-password');
+	
+	$app->post('/submit-reset-password/{validationKey}', function (Request $request, Response $response) {
+		$returnObj = array();
+		
+		$usersController = new Controllers_UsersController($this->db, $this->logger);
+		$validationKey = $request->getAttribute('validationKey');
+		
+		try {
+			$usersController->finishResetPasswordProcess($validationKey, $request);
+			$returnObj["status"] = 1;
+			$returnObj["successMessage"] = "Password reset successfully.";
+			
+		} catch(Exception $e) {
+			$this->logger->debug("Caught Exception: " . $e . "\n");
+			$returnObj["status"] = 0;
+			$returnObj["errorMessage"] = $e->getMessage();
+		}
+
+		$response->getBody()->write(json_encode($returnObj));
+
+		return $response;
+		
+	})->setName('submit-reset-password');
 ?>

@@ -65,6 +65,6 @@ function checkForUpdate($sportID, $seasonID) {
 
 function deleteLeague($leagueID) {
 	global $leaguesTable;
-	mysql_query("UPDATE $leaguesTable SET league_season_id = 0 WHERE league_id = $leagueID") or die('ERROR deleting league - '.mysql_error());
+	mysql_query("UPDATE $leaguesTable SET league_season_id = NULL WHERE league_id = $leagueID") or die('ERROR deleting league - '.mysql_error());
 	print 'League '.$leagueID.' deleted<br />';
 }

@@ -46,6 +46,11 @@ class Models_Player extends Models_Generic implements Models_Interface, JsonSeri
 	}
 	
 	public function fill(array $data) {
+		
+		if(empty($data)) {
+			return;
+		}
+		
 		if(isset($data['player_id'])) {
             $this->id = $data['player_id'];
         }
@@ -170,14 +175,6 @@ class Models_Player extends Models_Generic implements Models_Interface, JsonSeri
 
 	function setHowHeardOtherText($howHeardOtherText) {
 		$this->howHeardOtherText = $howHeardOtherText;
-	}
-	
-	public function saveOrUpdate() {
-		if($this->getId() == null) {
-			$this->save();
-		} else {
-			$this->update();
-		}
 	}
 	
 	public function save() {

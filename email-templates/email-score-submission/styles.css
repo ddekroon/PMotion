@@ -1,0 +1,187 @@
+/* ============================ 
+	VARIABLES
+=================================== */
+/* -------------------------------------
+    GLOBAL
+------------------------------------- */
+body {
+  font-family: "Helvetica Neue", "Helvetica", Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  height: 100%;
+  -webkit-text-size-adjust: none;
+  width: 100% !important;
+  color: #494e52;
+  font-size: 14px;
+}
+table {
+  border: none;
+  vertical-align: top;
+  padding: 0;
+  margin: 0;
+  border-collapse: collapse;
+  width: 100%;
+  color: #494e52;
+}
+td {
+  padding: 7px;
+  margin: 0;
+  vertical-align: top;
+}
+td.padding-right {
+  padding-right: 20px;
+}
+td.padding-left {
+  padding-left: 20px;
+}
+/* -------------------------------------
+    ELEMENTS
+------------------------------------- */
+a {
+  color: #ed1c24;
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+}
+.strong {
+  font-weight: bold;
+}
+.center {
+  text-align: center;
+}
+.secondary {
+  color: #ed1c24;
+}
+.secondary-background {
+  background: #ed1c24;
+  color: #ffffff;
+}
+.secondary-background a {
+  color: white;
+}
+.grey-background {
+  background: #494e52;
+}
+/* -------------------------------------
+    BODY
+------------------------------------- */
+table.body-wrap {
+  padding: 0;
+  width: 100%;
+}
+/* -------------------------------------
+    TYPOGRAPHY
+------------------------------------- */
+h1,
+h2,
+h3,
+h4 {
+  font-weight: 600;
+  margin: 10px 0 20px;
+  text-transform: uppercase;
+}
+h1 {
+  font-size: 33px;
+  color: #ed1c24;
+  border-bottom: 9px solid #ed1c24;
+  font-weight: 600;
+}
+h2 {
+  font-size: 16px;
+}
+h3 {
+  font-size: 20px;
+  background: #ed1c24;
+  color: #ffffff;
+  text-align: center;
+  padding: 3px;
+}
+p,
+ul,
+ol {
+  font-size: 13px;
+  font-weight: normal;
+  margin-bottom: 10px;
+  padding: 0;
+}
+ul,
+ol {
+  list-style-position: inside;
+}
+ul li,
+ol li {
+  margin: 0;
+  list-style-position: inside;
+  padding: 0;
+}
+/* ---------------------------------------------------
+    RESPONSIVENESS
+------------------------------------------------------ */
+/* Set a max-width, and make it display as block so it will automatically stretch to that width, but will also shrink down on a phone or something */
+.container {
+  margin: 0 auto;
+  width: 655px;
+}
+.container-big {
+  margin: 0 auto;
+}
+.container-small {
+  width: 615px;
+  margin: 0 auto;
+}
+/* This should also be a block element, so that it will fill 100% of the .container */
+.content {
+  display: block;
+  margin: 0 auto;
+  padding: 20px;
+}
+/* Let's make sure tables in the content area are 100% wide */
+.content table {
+  width: 100%;
+  border: none;
+  padding: 0;
+  margin: 0;
+}
+/* ------------------------------------------------
+	DEFAULT
+=---------------------------------------------- */
+.half {
+  width: 50%;
+}
+.one-quarter {
+  width: 25%;
+}
+.three-quarters {
+  width: 75%;
+}
+.gray-bar {
+  padding: 0;
+  background: #494e52;
+  height: 3px;
+}
+.light-gray-bar {
+  padding: 0;
+  background: #d8d8d8;
+  height: 3px;
+}
+.gray-bar-right {
+  border-right: 3px solid #494e52;
+}
+.float-left {
+  float: left;
+}
+.float-right {
+  float: right;
+}
+.clear {
+  clear: both;
+}
+.align-right {
+  text-align: right;
+}
+.align-left {
+  text-align: left;
+}
+.align-center {
+  text-align: center;
+}

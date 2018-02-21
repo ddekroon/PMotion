@@ -16,6 +16,7 @@
 				<img src="/Logos/Perpetualmotionlogo2.jpg" width="300" />
 			</div>
 			<form id="LoginForm">
+				<input type="hidden" name="redirect" value="<?php echo $request->getQueryParam("redirect", ""); ?>" />
 				<div class='row form-group'>
 					<div class='col-sm-3 col-xs-4'>
 						<label for='Username'>Username</label>
@@ -71,7 +72,7 @@
 					action: "<?php print $router->pathFor('login') ?>",
 					success: function(resp) {
 						if(resp.status === 1) {
-							location.href = "<?php print $router->pathFor('dashboard') ?>";
+							location.href = resp.redirect;
 						} else {
 							alert(resp.errorMessage);
 						}

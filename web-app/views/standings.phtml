@@ -11,7 +11,12 @@
 	<?php } else { ?>
 		<h3>Standings</h3>
 	<?php } ?>
-	<p><?php print 'Week ' . $league->getDateInStandings()->getWeekNumber() . ' - ' . $league->getDateInStandings()->getDescription() ?></p>
+	<p><?php 
+			echo 'Week ' 
+				. ($league->getDateInStandings() != null
+					? $league->getDateInStandings()->getWeekNumber() . ' - ' . $league->getDateInStandings()->getDescription()
+					: '0'); ?>
+	</p>
 	
 	<?php if(count($teams) > 0) { ?>
 		<table class='activeStandings table table-condensed table-striped table-responsive f-small'>

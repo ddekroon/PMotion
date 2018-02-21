@@ -31,7 +31,7 @@
 				"router" => $this->router
 			]
 		);
-	})->setName('login')->add($defaultTemplate);
+	})->setName('login');
 	
 	$app->post('/login', function (Request $request, Response $response) {
 		
@@ -39,8 +39,12 @@
 		
 		$returnObj = array();
 		
+		$allPostVars = $request->getParsedBody();
+		$redirect = $allPostVars["redirect"];
+		
 		if($login->logUserIn($request)) {
 			$returnObj["status"] = 1;
+			$returnObj["redirect"] = isset($redirect) && !empty($redirect) ? $redirect : $this->router->pathFor('dashboard');
 		} else {
 			$returnObj["status"] = 0;
 			$returnObj["errorMessage"] = "Invalid Credentials";
@@ -91,16 +95,6 @@
 		
 		return $response;
 	})->add($authenticate);
-	
-	//Create Account
-	$app->get('/create-account', function (Request $request, Response $response) {
-		return $this->view->render($response, "coming-soon.phtml", []);
-	})->setName('create-account')->add($defaultTemplate);
-	
-	//Forgot Password
-	$app->get('/reset-password', function (Request $request, Response $response) {
-		return $this->view->render($response, "coming-soon.phtml", []);
-	})->setName('reset-password')->add($defaultTemplate);
 	
 	//Generic get league teams
 	$app->get('/get-league-teams/{leagueID}', function(Request $request, Response $response) {
@@ -247,4 +241,19 @@
 		
 	})->setName('download-ics');
 	
+	$app->get('/template', function (Request $request, Response $response) {
+		
+		$templatePath = $this->get('settings')['email_template_path'];
+		
+		// Create new Plates instance
+		$templates = new League\Plates\Engine($templatePath);
+
+		// Render a template
+		$content = $templates->render('email-team-registration', ['test' => 'Hi Derek']);
+		
+		return $this->view->render($response, "template.phtml", [
+			"content" => $content
+		]);
+		
+	})->setName('template');
 ?>

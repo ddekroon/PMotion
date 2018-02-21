@@ -22,6 +22,10 @@
 		
 		public function getLeaguesForRegistration($sportID) {
 
+			if($sportID == null || $sportID <= 0) {
+				return [];
+			}
+			
 			$sql = "SELECT league.* FROM " . Includes_DBTableNames::leaguesTable . " as league "
 					. "INNER JOIN " . Includes_DBTableNames::seasonsTable . " season ON season.season_id = league.league_season_id "
 					. "WHERE season.season_available_registration = 1 AND league.league_sport_id = $sportID "
@@ -67,8 +71,12 @@
 			$curTime = intval(date('G'));
 			
 			//if it is a correct time to switch the week in score reporter
-			if ($nextDate && $nextDate->getDayOfYearNumber() != '' 
-					&& ($curDayOfYear > $nextDate->getDayOfYearNumber() || ($curDayOfYear == $nextDate->getDayOfYearNumber() && $curTime >= $league->getHideSpiritHour()))) { 
+			if (isset($nextDate) && 
+					(
+						$curDayOfYear > $nextDate->getDayOfYearNumber() 
+						|| ($curDayOfYear == $nextDate->getDayOfYearNumber() && $curTime >= $league->getHideSpiritHour())
+					)
+			) { 
 				
 				$this->updateLeagueWeekNumberInScoreReporter($league, $nextDate->getWeekNumber());
 				

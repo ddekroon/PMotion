@@ -1,0 +1,171 @@
+<?php $basePath = $request->getUri()->getScheme() . '://' . $request->getUri()->getHost(); ?>
+
+	<?php if(isset($user)) { ?>
+		<div class='clearfix form-group'>
+			<h1>My Profile - <?php echo $user->getFirstName() . " " . $user->getLastName() ?></h1>
+		</div>
+		<fieldset class='form-group'>
+			<legend>Calendar Integration</legend>
+			<div class="row">
+				<div class="col-sm-6 col-xs-12">
+					<div class="alert alert-info f-small" role="alert">
+						<span class="glyphicon glyphicon-info-sign"></span>
+						Sync your scheduled matches to your personal calendar. Just paste the link below into Gmail, iCal, Outlook, etc. to sync your games.
+					</div>
+				</div>
+				<div class="col-sm-6 col-xs-12">
+					<div class="panel panel-default">
+						<div class="panel-body">
+							<code class="f-small"><?php echo $basePath . $router->pathFor('download-ics', ['userID' => $user->getId()] ); ?></code>
+						</div>
+					</div>
+				</div>
+			</div>
+		</fieldset>
+	<?php } else { ?>
+		<div class='clearfix form-group'>
+			<div class="float-right">
+				<img src="/Logos/Perpetualmotionlogo2.jpg" width="300" />
+			</div>
+			<h1>Create a Profile</h1>
+		</div>
+	<?php } ?>
+	<?php 
+		if(isset($user)) {
+			$action = $router->pathFor('submit-edit-profile', [] );
+		} else {
+			$action = $router->pathFor('submit-account', [] );
+		}
+	?>
+	<form id='EditProfileForm' action='<?php echo $action ?>' method='post'>
+		<fieldset class='form-group'>
+			<legend>Edit Information</legend>
+			<div class='row form-group'>
+				<div class='col-xs-4'>
+					<label for='UserFirstName'>First Name</label>
+				</div>
+				<div class='col-xs-8'>
+					<input type='text' id='UserFirstName' name='userFirstName' required="required" minlength="2"
+						   value="<?php echo isset($user) ? htmlentities($user->getFirstName(), ENT_QUOTES) : "" ?>" class='form-control' />
+				</div>
+			</div>
+			<div class='row form-group'>
+				<div class='col-xs-4'>
+					<label for='UserLastName'>Last Name</label>
+				</div>
+				<div class='col-xs-8'>
+					<input type='text' id='UserLastName' name='userLastName' required="required" minlength="2"
+						   value="<?php echo isset($user) ? htmlentities($user->getLastName(), ENT_QUOTES) : "" ?>" class='form-control' />
+				</div>
+			</div>
+			<div class='row form-group'>
+				<div class='col-xs-4'>
+					<label for='UserEmail'>Email</label>
+				</div>
+				<div class='col-xs-8'>
+					<input type='text' id='UserEmail' name='userEmail'
+						   value="<?php echo isset($user) ? htmlentities($user->getEmail(), ENT_QUOTES) : "" ?>" class='form-control' />
+				</div>
+			</div>
+			<div class='row form-group'>
+				<div class='col-xs-4'>
+					<label for='UserPhoneNumber'>Phone Number</label>
+				</div>
+				<div class='col-xs-8'>
+					<input type='text' id='UserPhoneNumber' name='userPhoneNumber' required="required"
+						   value="<?php echo isset($user) ? htmlentities($user->getPhone(), ENT_QUOTES) : "" ?>" class='form-control' />
+				</div>
+			</div>
+			<div class='row form-group'>
+				<div class='col-xs-4'>
+					<label for='UserGender'>Gender</label>
+				</div>
+				<div class='col-xs-8'>
+					<select id='UserGender' name='userGender' class='form-control' required="required">
+						<option value=''>Select One</option>
+						<option value='M' <?php echo isset($user) && $user->getGender() == 'M' ? 'selected="selected"' : '' ?>>Male</option>
+						<option value='F' <?php echo isset($user) && $user->getGender() == 'F' ? 'selected="selected"' : '' ?>>Female</option>
+					</select>
+				</div>
+			</div>
+		</fieldset>
+		
+		<?php if(!isset($user)) { ?>
+			<fieldset>
+				<legend>Login Information<small>Username and password must be between 6 and 16 characters. Please do not use spaces, quotes, or apostrophes.</small></legend>
+
+				<div class='row form-group'>
+					<div class='col-xs-4'>
+						<label for='UserUsername'>Username</label>
+					</div>
+					<div class='col-xs-8'>
+						<input type='text' id='UserUsername' name='username' required='required' minlength='6' maxlength='16' pattern='^\w+$'
+							   class='form-control' value='' />
+					</div>
+				</div>
+				<div class='row form-group'>
+					<div class='col-xs-4'>
+						<label for='UserPassword'>Password</label>
+					</div>
+					<div class='col-xs-8'>
+						<input type='password' id='UserPassword' name='password' required='required' minlength='6' maxlength='16'
+							   class='form-control' value='' />
+					</div>
+				</div>
+				<div class='row form-group'>
+					<div class='col-xs-4'>
+						<label for='UserConfirmPassword'>Confirm Password</label>
+					</div>
+					<div class='col-xs-8'>
+						<input type='password' id='UserConfirmPassword' name='userConfirmPassword' required='required'
+							   minlength='6' maxlength='16' class='form-control' value='' />
+					</div>
+				</div>
+			</fieldset>
+		<?php } ?>
+		<div class='text-right'>
+			<button class='btn btn-primary' type='submit' name='action' value='save'><?php echo isset($user) ? "Save" : "Create Account" ?></button>
+		</div>
+	</form>
+	<script>
+		$(function() {
+			$("#UserPhoneNumber").mask('(000) 000 0000');
+			$("#EditProfileForm").validate({
+				errorElement: "div",
+				rules: {
+					userEmail: {
+						required: true,
+						email:true
+					},
+					userConfirmPassword: {
+						equalTo: "#UserPassword"
+					}
+				},
+				messages: {
+					username: {
+						pattern: "The username entered contained invalid characters. Only upper & lower case characters, numbers, and underscores are allowed."
+					},
+					userConfirmPassword: {
+						equalTo: "Entered confirmation password does not match the original password."
+					}
+				}
+			});
+					
+			$("#EditProfileForm").ajaxForm({
+				method:"post",
+				dataType:"json",
+				success:function(resp) {
+					if(resp.status == 1) {
+						alert("<?php echo isset($user) ? "Account Saved" : "Registration Successful"; ?>");
+						<?php if(!isset($user)) echo "location.href = '" . $router->pathFor("login", []) . "';"; ?>
+						
+					} else {
+						alert(resp.errorMessage);
+					}
+				},
+				error:function(resp) {
+					alert("Error connecting to server.");
+				}
+			});
+		});
+	</script>

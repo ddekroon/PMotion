@@ -2,16 +2,19 @@
 
 class Models_User extends Models_Generic implements Models_Interface, JsonSerializable {
     protected $id;
-    protected $username;
-    protected $hashedPassword;
-	protected $firstName;
-	protected $lastName;
-	protected $email;
-	protected $phone;
-	protected $gender;
-	protected $verifyCode;
-	protected $access;
+    protected $username = '';
+    protected $hashedPassword = '';
+	protected $firstName = '';
+	protected $lastName = '';
+	protected $email = '';
+	protected $phone = 0;
+	protected $gender = '';
+	protected $verifyCode = '';
+	protected $access = 0;
 	protected $createdDate;
+	
+	protected $regPassword = '';
+	protected $regPasswordConfirm = '';
 	
 	protected $teams;
 	
@@ -60,6 +63,7 @@ class Models_User extends Models_Generic implements Models_Interface, JsonSerial
 		$this->gender = $data['user_sex'];
 		$this->verifyCode = $data['user_verify_code'];
 		$this->access = $data['user_all_access'];
+		$this->createdDate =  new DateTime($data['user_created']);
 	}
 	
 	function getTeams() {
@@ -158,5 +162,166 @@ class Models_User extends Models_Generic implements Models_Interface, JsonSerial
 
 	function setAccess($access) {
 		$this->access = $access;
+	}
+	
+	function getCreatedDate() {
+		return $this->createdDate;
+	}
+
+	function getRegPassword() {
+		return $this->regPassword;
+	}
+
+	function getRegPasswordConfirm() {
+		return $this->regPasswordConfirm;
+	}
+
+	function setCreatedDate($createdDate) {
+		$this->createdDate = $createdDate;
+	}
+
+	function setRegPassword($regPassword) {
+		$this->regPassword = $regPassword;
+	}
+
+	function setRegPasswordConfirm($regPasswordConfirm) {
+		$this->regPasswordConfirm = $regPasswordConfirm;
+	}
+	
+	function validateRegistration() {
+
+		$error = '';
+		$userController = new Controllers_UsersController($this->db, $this->logger);
+		
+		//This makes sure they did not leave any fields blank
+		if ($this->getFirstName() == null
+				|| $this->getLastName() == null
+				|| $this->getEmail() == null
+				|| $this->getPhone() == null
+				|| $this->getGender() == null
+				|| $this->getUsername() == null
+				|| $this->getRegPassword() == null
+				|| $this->getRegPasswordConfirm() == null) {
+			$error .= "Some of the required fields are missing from this registration.\n"; //Shouldn't be possible with frontend javascript validation
+		}
+
+		// checks if the username is in use
+		if($userController->getUserByUsername($this->getUsername()) != null) {
+			$error .= "The username " . $this->getUsername() . " is already in use.\n";
+		}
+
+		//checks that the user name is between 6 and 16 characters
+		$userLength = strlen($this->getUsername());
+		if($userLength <= 5 || $userLength >= 17) {
+			$error .= "Username must be between 6 and 16 characters.\n";
+		}
+
+		//checks that the password is between 6 and 16 characters
+		$passLength = strlen($this->getRegPassword());
+		if($passLength <= 5 || $passLength >= 17) {
+			$error .= "Password must be between 6 and 16 characters.\n";
+		}
+
+		// checks if the email is in use
+		if($userController->getUserByEmail($this->getEmail()) != null) {
+			$error .= 'There is already an account registered with the email ' . $this->getEmail() . "\n";
+		}
+
+		//check if the email is invalid and give an error
+		if (!Includes_Helper::isValidEmail($this->getEmail())) {
+			$error .= "The email address " . $this->getEmail() . " is not valid (ex. 'something@something.com').\n";
+		}
+		
+		//check if the phone number is proper (10 digits, formatting doesn't matter), throw error if not
+		if(!preg_match('^(\D*)?(\d{3})(\D*)?(\d{3})(\D*)?(\d{4})$^', $this->getPhone())){
+			$error.="You entered an invalid phone number (Please provide 10 digits in the format (xxx) xxx-xxxx)\n";
+		}
+
+		if (!Includes_Helper::isValidUsername($this->getUsername())){
+			$error .= "The username entered contained invalid characters. No spaces, apostrophes, or quotes please.\n";
+		}
+
+		// this makes sure both passwords entered match
+		if ($this->getRegPassword() != $this->getRegPasswordConfirm()) {
+			$error .= "Your passwords don't match\n";
+		}
+
+		//If there are errors, exit the program and show the messages
+		if(!empty($error)) {
+			return "The following errors were found in your submission. Please correct and resubmit.\n\n$error";
+		}
+	}
+	
+	function save() {
+		
+		try {			
+			$stmt = $this->db->prepare("INSERT INTO " . Includes_DBTableNames::userTable . " "
+					. "(
+						user_username, user_firstname, user_lastname, user_password, user_email, user_phone, user_sex, 
+						user_verify_code, user_all_access, user_created
+					) "
+					. "VALUES "
+					. "(?, ?, ?, ?, ?, ?, ?, ?, 0, NOW())"
+			);
+			
+			$this->db->beginTransaction(); 
+			$stmt->execute(
+				array(
+					$this->getUsername(), 
+					$this->getFirstName(), 
+					$this->getLastName(), 
+					$this->getHashedPassword(), 
+					$this->getEmail(), 
+					$this->getPhone(), 
+					$this->getGender(),
+					$this->getVerifyCode()
+				)
+			); 
+			$this->setId($this->db->lastInsertId());
+			$this->db->commit(); 
+			
+		} catch (Exception $ex) {
+			$this->db->rollback();
+			$this->logger->log($ex->getMessage()); 
+		}
+		
+		$userHistoryController = new Controllers_UserHistoryController($this->db, $this->logger);
+		$userHistoryController->logUserHistory($this, 'Registered successfully as a new user.', '');
+	}
+	
+	function update() {
+		try {			
+			$stmt = $this->db->prepare("UPDATE " . Includes_DBTableNames::userTable . " SET "
+					. "
+						user_firstname = ?, 
+						user_lastname = ?, 
+						user_password = ?, 
+						user_email = ?, 
+						user_phone = ?, 
+						user_sex = ?,
+						user_verify_code = ?
+					WHERE user_id = ?
+					"
+			);
+			
+			$this->db->beginTransaction(); 
+			$stmt->execute(
+				array(
+					$this->getFirstName(), 
+					$this->getLastName(), 
+					$this->getHashedPassword(), 
+					$this->getEmail(), 
+					$this->getPhone(), 
+					$this->getGender(),
+					$this->getVerifyCode(),
+					$this->getId()
+				)
+			); 
+			$this->db->commit(); 
+			
+		} catch (Exception $ex) {
+			$this->db->rollback();
+			$this->logger->log($ex->getMessage()); 
+		}
 	}
 }

@@ -5,6 +5,7 @@ abstract class Includes_DBTableNames {
 	const authTable = 'auth_dbtable';
 	const captainsTable = 'captains_dbtable';	
 	const datesTable = 'dates_dbtable';
+	const emailsTable = 'emails_dbtable';
 	const faqTable = 'faq_dbtable';
 	const fieldsTable = 'fields_dbtable';
 	const gameSlotsTable = 'game_slots_dbtable';
@@ -12,6 +13,7 @@ abstract class Includes_DBTableNames {
 	const leaguesTable = 'leagues_dbtable';
 	const playersTable = 'players_dbtable';
 	const prizesTable = 'prizes';
+	const propertiesTable = 'properties_dbtable';
 	const registrationCommentsTable = 'registration_comments_dbtable';
 	const scheduledMatchesTable = 'scheduled_matches_dbtable';
 	const scheduleVariablesTable = 'schedule_variables_dbtable';

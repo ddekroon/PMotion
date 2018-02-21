@@ -118,10 +118,6 @@ a {
 .table {
 	font-size:$f-small;
 
-	@include bp('min-width', $screen-sm) {
-		font-size:$f-normal;
-	}
-
 	> tbody > tr > td {
 		vertical-align: middle;
 	}
@@ -129,6 +125,13 @@ a {
 
 .table-responsive {
 	border:none;
+}
+
+//Data Tables
+div.dataTables_wrapper {
+	.dataTables_info, .dataTables_length, .dataTables_filter, .dataTables_paginate {
+		font-size:$f-small;
+	}
 }
 
 input[type="button"], input[type="submit"], button, .button, .btn, a {
@@ -291,20 +294,20 @@ legend {
 			background:rgba(#0066CC, 0.05);
 		}
 	}
-
+	
 	&.sport-panel-3 {
-		border-bottom-color:#474F54;
-
-		&:hover {
-			background:rgba(#474F54, 0.05);
-		}
-	}
-
-	&.sport-panel-4 {
 		border-bottom-color:#0A790A;
 
 		&:hover {
 			background:rgba(#0A790A, 0.05);
+		}
+	}
+
+	&.sport-panel-4 {
+		border-bottom-color:#474F54;
+
+		&:hover {
+			background:rgba(#474F54, 0.05);
 		}
 	}
 	

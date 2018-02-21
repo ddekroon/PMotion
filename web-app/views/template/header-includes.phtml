@@ -4,5 +4,5 @@
 		
 <script src="/js/jquery-1.11.0.min.js"></script>
 <script>
-	var baseUrl = "<?php echo $request->getUri()->getBasePath(); ?>";
+	var baseUrl = "<?php echo isset($request) ? $request->getUri()->getBasePath() : ""; ?>";
 </script>
