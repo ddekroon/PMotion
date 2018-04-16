@@ -2,6 +2,39 @@
 
 abstract class Includes_EmailTypes {
 	
+	public static function userRegistered() {
+		return Includes_EmailTemplate::createEmailTemplate(
+				"User Registered",
+				[], 
+				"User Registered", 
+				"email-user-registration", 
+				"Perpetual Motion Information",
+				"info@perpetualmotion.org"
+		);
+	}
+	
+	public static function passwordResetRequest() {
+		return Includes_EmailTemplate::createEmailTemplate(
+				"Password Reset Request",
+				[], 
+				"Perpetual Motion Password Reset Request", 
+				"email-request-password-reset", 
+				"Perpetual Motion Information",
+				"info@perpetualmotion.org"
+		);
+	}
+	
+	public static function passwordResetSuccess() {
+		return Includes_EmailTemplate::createEmailTemplate(
+				"Password Reset Success",
+				[], 
+				"Perpetual Motion Password Reset Success", 
+				"email-password-reset-success", 
+				"Perpetual Motion Information",
+				"info@perpetualmotion.org"
+		);
+	}
+	
 	public static function tournamentTeamRegistered() {
 		return Includes_EmailTemplate::createEmailTemplate(
 				"Tournament Team Registered",

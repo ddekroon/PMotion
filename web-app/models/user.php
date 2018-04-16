@@ -188,6 +188,21 @@ class Models_User extends Models_Generic implements Models_Interface, JsonSerial
 		$this->regPasswordConfirm = $regPasswordConfirm;
 	}
 	
+	function getAuthJson() {
+		return array(
+			"id"		=> $this->getId(),
+			"username"	=> $this->getUsername(),
+			"firstName"	=> $this->getFirstname(),
+			"lastName"	=> $this->getLastname(),
+			"email"		=> $this->getEmail(),
+			"access"	=> $this->getAccess()
+		);
+	}
+	
+	function getAuthJsonString() {
+		return json_encode(getAuthJson());
+	}
+	
 	function validateRegistration() {
 
 		$error = '';

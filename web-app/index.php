@@ -91,6 +91,14 @@ $app->add(function (Request $request, Response $response, callable $next) {
     return $next($request, $response);
 });
 
+$app->add(function ($req, $res, $next) {
+    $response = $next($req, $res);
+    return $response
+        ->withHeader('Access-Control-Allow-Origin', '*')
+        ->withHeader('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type, Accept, Origin, Authorization')
+        ->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+});
+
 $authenticate = function ($request, $response, $next) {
 		
 	session_start();
@@ -157,7 +165,8 @@ $dashboard =  function ($request, $response, $next) {
 	return $response;
 };
 
-//include('routes/api/sports.php');
+include('routes/api/sports.php');
+include('routes/api/teams.php');
 include('routes/default.php');
 include('routes/score-reporter.php');
 include('routes/dashboard.php');

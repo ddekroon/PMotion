@@ -4,6 +4,7 @@
         "monolog/monolog": "^1.22",
         "slim/php-view": "^2.2",
         "nikic/fast-route": "^1.0",
-        "league/plates": "^3.3"
+        "league/plates": "^3.3",
+        "firebase/php-jwt": "^5.0"
     }
 }

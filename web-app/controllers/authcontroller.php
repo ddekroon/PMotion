@@ -3,6 +3,8 @@
 use \Psr\Http\Message\ServerRequestInterface as Request;
 use \Psr\Http\Message\ResponseInterface as Response;
 
+use \Firebase\JWT\JWT;
+
 class Controllers_AuthController extends Controllers_Controller {
 
 	const SELECTOR = 'pMotionSelector';
@@ -61,31 +63,42 @@ class Controllers_AuthController extends Controllers_Controller {
 
 		if(isset($_SESSION[$this::SESSION_USER_ID]) && !is_null($_SESSION[$this::SESSION_USER_ID])) {
 			return true;
-		} else {
+		}
 			
-			$allPostVars = $request->getParsedBody();
-			$selector = NULL;
-			$token = NULL;
-			
-			if(!is_null($allPostVars)) {
-				foreach($allPostVars as $key => $param){
-					if($key == $this::SELECTOR) {
-						$selector = $param;
-					} else if($key == $this::TOKEN) {
-						$token = $tokenName;
-					}
+		if($this->shouldAuthenticateCookie($request)) {
+			return true;
+		}
+		
+		if($this->shouldAuthenticateJWS($request)) {
+			return true;
+		}
+		
+		return false;
+	}
+	
+	function shouldAuthenticateCookie($request) {
+		$allPostVars = $request->getParsedBody();
+		$selector = NULL;
+		$token = NULL;
+
+		if(!is_null($allPostVars)) {
+			foreach($allPostVars as $key => $param){
+				if($key == $this::SELECTOR) {
+					$selector = $param;
+				} else if($key == $this::TOKEN) {
+					$token = $tokenName;
 				}
 			}
-			
-			//request parameters don't include our selector or token, try to find them in the cookies.
-			if(is_null($selector) || is_null($token)) {
-				$selector = filter_input(INPUT_COOKIE, $this::SELECTOR);
-				$token = filter_input(INPUT_COOKIE, $this::TOKEN);
-			}
-			
-			if(!is_null($selector) && !is_null($token)) {
-				return $this->approveSignInToken($selector, $token);
-			}
+		}
+
+		//request parameters don't include our selector or token, try to find them in the cookies.
+		if(is_null($selector) || is_null($token)) {
+			$selector = filter_input(INPUT_COOKIE, $this::SELECTOR);
+			$token = filter_input(INPUT_COOKIE, $this::TOKEN);
+		}
+
+		if(!is_null($selector) && !is_null($token)) {
+			return $this->approveSignInToken($selector, $token);
 		}
 		
 		return false;
@@ -110,6 +123,29 @@ class Controllers_AuthController extends Controllers_Controller {
 				return true;	
 			} else {
 				$this->destroySavedLogin($selector);
+			}
+		}
+		
+		return false;
+	}
+	
+	function shouldAuthenticateJWS($request) {
+		foreach($request->getServerParams() as $key => $param){
+			if($key == "HTTP_AUTHORIZATION") {
+				$tokens = explode(" ", $param);
+				
+				if($tokens[0] == "Bearer") {
+					$authToken = $this->decodeJWTToken($tokens[1]);
+					
+					if($this->isValidJWTToken($authToken, $request)) {
+						$user = Models_User::withID($this->db, $this->logger, $authToken["user"]->id);
+						
+						$this->logger->debug($user);
+						
+						$this->setSavedLogin("", "", $user);
+						return true;
+					}
+				}
 			}
 		}
 		
@@ -209,5 +245,56 @@ class Controllers_AuthController extends Controllers_Controller {
 		}
 
 		return false;
+	}
+	
+	function generateJWTToken(Request $request, Models_User $user) {
+		$privateKey = <<<EOD
+-----BEGIN RSA PRIVATE KEY-----
+MIICXAIBAAKBgFohrubtvxIVRvNVxqcNiojgwiHLhRN4PqZSXfCRtkvZGCKuiG7R
+3wl0Ib5XZ3g6ZdvMvoeI1ZqX/IntAUmQmoll3OmcIIwHTxiJQlaWSDrQWtxqVVf3
+UDa1ZvPOgzCTtxyUtDkh12Yy6sEdayjNjs8eeI9TWqueE4mZD+yuTsz1AgMBAAEC
+gYAQDKtuZ6t8dtl5fy6ulJS0pwEqr2j0/JZ7W3Nq4SeK/g90LYwR38FNl6ZilIHS
+QOPebekHjXAr5SCNFu0BwoQh+Ms4UJI+/5QgJBU5Fl3kX18UfPMKFvcjv0p6X/8t
++He7gZaIJw5XOLYpbw0Dt+xbUyhIhiNUseSOunTCGI8NSQJBAKs2OD4hfokAnDn1
+nhofTnFFfL+Tl+OplAKXcH3P5YMPJw0JCnDOAzrhqM7wBkB1Vsbea1AS6mX374i7
+I5YYkqsCQQCGxFOonL4K+7P68g2QaGQ/xSH7DhxXiiVuXQ4em2IP9ewctH07y/VD
+SqNm3Vmio7sgubFGdAxkFcwDWyKRJR7fAkEAqhypLTJiYwV0NDJS8GmCqxD7re2b
+0NxA74JAhwD1bY60okMFWKeYlfx4mYPq8kij+9wqi9j/hGkgWp518UBhGQJAX8Uz
+InbJAuseWu4av42/+CVyYYQElh0hPo24k/2eMXN1KG0HNjBaCkkHV/ljUpYCTF5J
+4aRkjdeDlLr2FKmJhwJBAKhBb8FBc14OBzpHTkK7NdEJIigLO2P4Y+G3QxeOPWB0
+OcD/iNBmHtAUFkiVRu+e/om/Ga6nyz/PGk09YGDIiKM=
+-----END RSA PRIVATE KEY-----
+EOD;
+		
+		$token = array(
+			"iss" => $request->getUri()->getHost(),
+			"aud" => $request->getUri()->getHost(),
+			"user" => $user->getAuthJson()
+		);
+
+		return JWT::encode($token, $privateKey, 'RS256');
+	}
+	
+	function decodeJWTToken($jwt) {
+		
+		$publicKey = <<<EOD
+-----BEGIN PUBLIC KEY-----
+MIGeMA0GCSqGSIb3DQEBAQUAA4GMADCBiAKBgFohrubtvxIVRvNVxqcNiojgwiHL
+hRN4PqZSXfCRtkvZGCKuiG7R3wl0Ib5XZ3g6ZdvMvoeI1ZqX/IntAUmQmoll3Omc
+IIwHTxiJQlaWSDrQWtxqVVf3UDa1ZvPOgzCTtxyUtDkh12Yy6sEdayjNjs8eeI9T
+WqueE4mZD+yuTsz1AgMBAAE=
+-----END PUBLIC KEY-----
+EOD;
+		
+		return (array)JWT::decode($jwt, $publicKey, array('RS256'));
+	}
+	
+	function isValidJWTToken($jwt, Request $request) {	
+		return 
+			is_array($jwt)
+			&& array_key_exists("iss", $jwt) && $jwt["iss"] == $request->getUri()->getHost()
+			&& array_key_exists("aud", $jwt) && $jwt["aud"] == $request->getUri()->getHost()
+			&& array_key_exists("user", $jwt) 
+				&& !empty($jwt["user"]) && !empty($jwt["user"]->id);
 	}
 }

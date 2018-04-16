@@ -46,7 +46,7 @@ a {
 	}
 }
 
-.row {
+.row:not(.no-flex) {
 	@include flexbox();
 	align-items:center;
 	@include prefix(flex-wrap, wrap);
@@ -317,3 +317,5 @@ legend {
 		width:-webkit-calc(100% - 30px);
 	}
 }
+
+@import "print";

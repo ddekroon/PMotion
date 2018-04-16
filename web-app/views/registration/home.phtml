@@ -29,7 +29,7 @@
 						<tr>
 							<td>
 								<?php
-									if(!$curTeam->getLeague()->getSeason()->getIsAvailableRegistration()) {
+									if(!$curTeam->getLeague()->getSeason()->getIsAvailableRegistration() || !$curTeam->getIsFinalized()) {
 										$regLink = $router->pathFor('dashboard-register-team', ['sportID' => $curTeam->getLeague()->getSportId(), 'pastTeamID' => $curTeam->getId()] );
 									} else {
 										$regLink = $router->pathFor('edit-team', ['sportID' => $curTeam->getLeague()->getSportId(), 'teamID' => $curTeam->getId()] );

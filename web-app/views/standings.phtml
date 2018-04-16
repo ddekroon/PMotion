@@ -1,13 +1,20 @@
+<?php $teams = $league->getTeams(); ?>
+
 <?php if(!isset($includedInTeamPage) || !$includedInTeamPage) { ?>
 	<link href="/css/stylesheets/jquery-ui.min.css" rel="stylesheet" type="text/css" />
 	<link href="/css/stylesheets/styles.css" rel="stylesheet" type="text/css" />
 <?php } ?>
 
-<?php $teams = $league->getTeams(); ?>
-
 <?php if($league->getWeekInStandings() < 50 && $league->getWeekInStandings() > 0) { ?>
 	<?php if(!isset($includedInTeamPage) || !$includedInTeamPage) { ?>
-		<h1><?php print $league->getSport()->getName().' - '.$league->getName().' - '.$league->getDayString(); ?></h1>
+		<div class="row no-flex">
+			<div class="col-sm-2 col-xs-12 pull-right text-right">
+				<button onclick="window.print();" class="btn btn-primary h4 hidden-print"><span class="glyphicon glyphicon-print"></span> Print</button>
+			</div>
+			<div class="col-sm-10 col-xs-12">
+				<h1><?php print $league->getSport()->getName().' - '.$league->getName().' - '.$league->getDayString(); ?></h1>
+			</div>
+		</div>
 	<?php } else { ?>
 		<h3>Standings</h3>
 	<?php } ?>
@@ -108,10 +115,20 @@
 		
 <?php } else if($league->getWeekInStandings() >= 50) { ?>
 	<?php if(!isset($includedInTeamPage) || !$includedInTeamPage) { ?>
-		<h1>
-			<?php print $league->getDayString() . ' ' . $league->getSport()->getName() . ' - ' . $league->getName() . ' - ' . $league->getSeason()->getName() . ' ' . $league->getSeason()->getYear();  ?>
-		</h1>
-		<h2 class='leagueWinners'>Final Standings</h2>
+		<div class="row no-flex">
+			<div class="col-sm-2 col-xs-12 pull-right text-right">
+				<button onclick="window.print();" class="btn btn-primary h4 hidden-print"><span class="glyphicon glyphicon-print"></span> Print</button>
+			</div>
+			<div class="col-sm-10 col-xs-12">
+				<h1>
+					<?php print $league->getDayString() . ' ' . $league->getSport()->getName() 
+							. ' - ' . $league->getName() . ' - ' . $league->getSeason()->getName() . ' ' . $league->getSeason()->getYear();  
+					?>
+				</h1>
+			</div>
+		</div>
+		
+		<h3 class='leagueWinners'>Final Standings</h2>
 	<?php } else { ?>
 		<h3>Final Standings</h3>
 	<?php } ?>

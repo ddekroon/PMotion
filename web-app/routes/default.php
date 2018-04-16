@@ -35,18 +35,21 @@
 	
 	$app->post('/login', function (Request $request, Response $response) {
 		
-		$login = new Controllers_AuthController($this->db, $this->logger);
+		$authController = new Controllers_AuthController($this->db, $this->logger);
 		
 		$returnObj = array();
 		
 		$allPostVars = $request->getParsedBody();
-		$redirect = $allPostVars["redirect"];
+		$redirect = array_key_exists("redirect", $allPostVars) ? $allPostVars["redirect"] : null;
 		
-		if($login->logUserIn($request)) {
-			$returnObj["status"] = 1;
+		if($authController->logUserIn($request)) {
+			$curUser = Models_User::withID($this->db, $this->logger, $_SESSION[Controllers_AuthController::SESSION_USER_ID]);
+			$returnObj = $curUser->getAuthJson();
+			
 			$returnObj["redirect"] = isset($redirect) && !empty($redirect) ? $redirect : $this->router->pathFor('dashboard');
+			$returnObj["token"] = $authController->generateJWTToken($request, $curUser);
 		} else {
-			$returnObj["status"] = 0;
+			$response = $response->withStatus(401);
 			$returnObj["errorMessage"] = "Invalid Credentials";
 		}
 

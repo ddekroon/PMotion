@@ -50,4 +50,8 @@ GlobalFiles/connect.php
 GlobalFiles/dbConnect.php
 GlobalFiles/dbConnectBackup.php
 Derek/secrets.php
-css/.sass-cache/
+css/.sass-cache/**
+WebApp-Angular/**
+App/**
+vendor/**
+Registration/**

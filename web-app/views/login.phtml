@@ -71,14 +71,15 @@
 					type: "post",
 					action: "<?php print $router->pathFor('login') ?>",
 					success: function(resp) {
-						if(resp.status === 1) {
-							location.href = resp.redirect;
-						} else {
-							alert(resp.errorMessage);
-						}
+						location.href = resp.redirect;
 					},
-					error: function() {
-						alert("Error connecting to server.");
+					error: function(xhr, ajaxOptions, thrownError) {
+						let responseJson = xhr.responseJSON;
+						if(responseJson != null && responseJson.errorMessage != null) {
+							alert(responseJson.errorMessage);
+						} else {
+							alert("Error connecting to server.");
+						}
 					}
 				});
 			});

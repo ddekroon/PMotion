@@ -171,17 +171,20 @@ class Controllers_UsersController extends Controllers_Controller {
 				</tr>
 			</table>";
 
-		$emailSubject= "New User Registered - " . $user->getUsername();
-		$from_head  = 'MIME-Version: 1.0' . "\r\n";
-		$from_head .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
-		$from_head .= 'From: info@perpetualmotion.org';
+		$subject= "New User Registered - " . $user->getUsername();
 		
-		if($_SERVER['SERVER_NAME'] == 'local.perpetualmotion.org') {
-			$this->logger->debug($emailBody);
-		} else {
-			mail($user->getEmail(), $emailSubject, $emailBody, $from_head);
-		}
+		$emailController = new Controllers_EmailsController($this->db, $this->logger);
+		$emailType = Includes_EmailTypes::userRegistered();
 		
+		$emailController->createAndSendEmail($emailType->getEmailType(), 
+				$subject, 
+				$emailBody, 
+				$user->getEmail(), 
+				$emailType->getFromName(), 
+				$emailType->getFromAddress(), 
+				null, 
+				null
+		);
 	}
 	
 	function startResetPasswordProcess($request) {
@@ -226,17 +229,18 @@ class Controllers_UsersController extends Controllers_Controller {
 		. "<p>Thanks,<br />"
 		. "The Perpetual Motion Team.</body></html>";
 		
-		$emailSubject = "Perpetual Motion Password Reset Request";
+		$emailController = new Controllers_EmailsController($this->db, $this->logger);
+		$emailType = Includes_EmailTypes::passwordResetRequest();
 		
-		$from_head  = 'MIME-Version: 1.0' . "\r\n";
-		$from_head .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
-		$from_head .= 'From: info@perpetualmotion.org';
-		
-		if($_SERVER['SERVER_NAME'] == 'local.perpetualmotion.org') {
-			$this->logger->debug($emailBody);
-		} else {
-			mail($user->getEmail(), $emailSubject, $emailBody, $from_head);
-		}
+		$emailController->createAndSendEmail($emailType->getEmailType(), 
+				$emailType->getSubject(), 
+				$emailBody, 
+				$user->getEmail(), 
+				$emailType->getFromName(), 
+				$emailType->getFromAddress(), 
+				null, 
+				null
+		);
 	}
 	
 	function finishResetPasswordProcess($validationKey, $request) {
@@ -281,16 +285,17 @@ class Controllers_UsersController extends Controllers_Controller {
 		. "<p>Thanks,<br />"
 		. "The Perpetual Motion Team.</body></html>";
 		
-		$emailSubject = "Perpetual Motion Password Reset Success";
+		$emailController = new Controllers_EmailsController($this->db, $this->logger);
+		$emailType = Includes_EmailTypes::passwordResetSuccess();
 		
-		$from_head  = 'MIME-Version: 1.0' . "\r\n";
-		$from_head .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
-		$from_head .= 'From: info@perpetualmotion.org';
-		
-		if($_SERVER['SERVER_NAME'] == 'local.perpetualmotion.org') {
-			$this->logger->debug($emailBody);
-		} else {
-			mail($user->getEmail(), $emailSubject, $emailBody, $from_head);
-		}
+		$emailController->createAndSendEmail($emailType->getEmailType(), 
+				$emailType->getSubject(), 
+				$emailBody, 
+				$user->getEmail(), 
+				$emailType->getFromName(), 
+				$emailType->getFromAddress(), 
+				null, 
+				null
+		);
 	}
 }
