@@ -1,6 +1,0 @@
-#!/bin/bash
-for file in *.*; do
-mv $file $file.old
-sed 's/204.10.57.11/localhost/g' $file.old > $file
-rm -f $file.old
-done
