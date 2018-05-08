@@ -85,7 +85,7 @@
 										$oppSubmissionsCorrect = false;
 										$curSubmissionAndOppSubmissionMatch = true; //1 signifies are the same
 
-										for($k = 0; $k < sizeof($oppSubmissions); $k++) {
+										for($k = 0; $k < sizeof($oppSubmissions); $k+= $games) {
 											if($oppSubmissions[$k]->getOppTeamId() == $team->getId()) {
 
 												$oppSubmissionsCorrect = true;
