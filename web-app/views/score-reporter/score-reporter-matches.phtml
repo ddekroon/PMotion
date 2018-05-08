@@ -38,14 +38,14 @@
 
 			<?php } else { ?>
 				<?php for($j = 0; $j < $team->getLeague()->getNumGamesPerMatch(); $j++){ ?>
-					<div class='score form-group'>
-						<div class='row'>
+					<div class='score'>
+						<div class='row form-group'>
 							<div class='col-sm-3 col-xs-12'>
 								<label for='GameResult_<?php print $i ?>_<?php print $j ?>'>Result <?php echo $j + 1 ?></label>
 							</div>
 							<div class='col-sm-9 col-xs-12'>
 								<div class='row'>
-									<div class='<?php print $scoreClasses ?>'>
+									<div class='col-xs-12'>
 										<fieldset class='radioButtons text-right'>
 											<legend>Result</legend>
 
@@ -66,11 +66,16 @@
 											<?php } ?>
 											<input type='hidden' id='GameResult_<?php print $i ?>_<?php print $j ?>' name='gameResult_<?php print $i ?>_<?php print $j ?>' class='radioButtonsResult gameResult' value='' />
 										</fieldset>
-										
 									</div>
+								</div>
+							</div>
+						</div>
 									
-									<?php if($team->getLeague()->getIsAskForScores()) { ?>
-										<div class='col-sm-6 col-xs-12'>
+						<?php if($team->getLeague()->getIsAskForScores()) { ?>
+							<div class='row form-group'>
+								<div class='col-sm-9 col-xs-12 col-sm-offset-3'>
+									<div class="row">
+										<div class='col-xs-12'>
 											<div class='row'>
 												<div class='col-xs-6'>
 													<div class='row'>
@@ -94,11 +99,10 @@
 												</div>
 											</div>
 										</div>
-									<?php } ?>
-									
+									</div>
 								</div>
 							</div>
-						</div>
+						<?php } ?>
 					</div>
 				<?php } ?>
 					
