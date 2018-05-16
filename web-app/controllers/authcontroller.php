@@ -214,7 +214,7 @@ class Controllers_AuthController extends Controllers_Controller {
 		$_SESSION[$this::SESSION_USER_ID] = $user->getId();
 	}
 	
-	function createNewAuthToken($user, $unhashedToken) {
+	function createNewAuthToken($user, $unhashedToken) {asdfasdf
 		
 		$selector = $this->generateRandomKey(12);
 		$hashedToken = $this->generateUserTokenHash($unhashedToken);
