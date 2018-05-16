@@ -49,3 +49,4 @@
 [2018-04-15 19:37:13] my_logger.DEBUG: Models_User [ 1729 ]  [] []
 [2018-04-15 19:37:13] my_logger.DEBUG: Hi derek [] []
 [2018-05-16 18:21:05] my_logger.DEBUG: Error deleting Auth token DWC5GoOWj3wb : 00000:: [] []
+[2018-05-16 18:42:28] my_logger.DEBUG: Error deleting Auth token PQKm1UqNBWBB : 00000:: [] []
