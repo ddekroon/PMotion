@@ -48,6 +48,7 @@
 [2018-04-15 19:37:07] my_logger.DEBUG: Hi derek [] []
 [2018-04-15 19:37:13] my_logger.DEBUG: Models_User [ 1729 ]  [] []
 [2018-04-15 19:37:13] my_logger.DEBUG: Hi derek [] []
+<<<<<<< HEAD
 [2018-05-16 18:21:05] my_logger.DEBUG: Error deleting Auth token DWC5GoOWj3wb : 00000:: [] []
 <<<<<<< HEAD
 [2018-05-16 18:42:28] my_logger.DEBUG: Error deleting Auth token PQKm1UqNBWBB : 00000:: [] []
@@ -65,3 +66,5 @@
 [2018-05-24 12:04:59] my_logger.ERROR: SQLSTATE[HY000] [1045] Access denied for user 'pmotiondata'@'localhost' (using password: YES) [] []
 =======
 >>>>>>> parent of 06c83e8... Adding null check in on registration season for registration page
+=======
+>>>>>>> parent of c9a4c27... Auth controller issue with passing result of a function to another function
