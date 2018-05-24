@@ -255,7 +255,7 @@
 								<option value="1" <?php echo $team->getPaymentMethod() == 1 ? "selected='selected'" : "" ?>>I will send an email money transfer to dave@perpetualmotion.org</option>
 								<option value="2" <?php echo $team->getPaymentMethod() == 2 ? "selected='selected'" : "" ?>>I will mail cheque to Perpetual Motion's home office</option>
 								<option value="3" <?php echo $team->getPaymentMethod() == 3 ? "selected='selected'" : "" ?>>I will bring cash/cheque to Perpetual Motion's home office</option>
-								<?php if(!empty($regSeason) && ($regSeason->getName() == 'Spring' || $regSeason->getName() == 'Summer')) { ?>
+								<?php if($regSeason->getName() == 'Spring' || $regSeason->getName() == 'Summer') { ?>
 									<option value="4" <?php echo $team->getPaymentMethod() == 4 ? "selected='selected'" : "" ?>>I will bring cash/cheque to registration night</option>            
 								<?php } ?>
 							</select>
@@ -264,39 +264,37 @@
 					<p class='text-center'><strong>Make Cheques Payable to Perpetual Motion</strong></p>
 					<p class='text-center'><strong>Send This Confirmation Form & Fees to:</strong><br />78 Kathleen St. Guelph, Ontario; N1H 4Y3</p>
 				</fieldset>
-                <?php if(!empty($regSeason)) { ?>
-                    <fieldset class='registrationDate'>
-                        <legend>Registration Due By</legend>
-                        <h4><?php print $regSeason->getName() ?> League</h4>
-                        <?php 
-                            if($regSeason->getIsRegistrationBySport()) { 
-                                /* $regSportsByDate = array();
-    
-                                foreach($sports as $sport) {
-                                    if(!isset($regSportsByDate[$sport->getRegistrationDueDate()])) {
-                                        $regSportsByDate[$sport->getRegistrationDueDate()] = array();
-                                    }	
-    
-                                    $regSportsByDate[$sport->getRegistrationDueDate()][] = $sport->getName();
-                                }
-    
-                                foreach($regSportsByDate as $date => $sports) {
-                                    print "<p>" . join(", ", $sports) . ": <span class='red'><strong>" . date("F d", $date) . "</strong></span></p>";
-                                } */
-                                
-                                foreach($sports as $curSport) {
-                                    echo "<div class='row'>" 
-                                        . "<div class='col-xs-3'>" . $curSport->getName() . "</div>"
-                                        . "<div class='col-xs-9'><span class='red'><strong>" . date("F d, Y", $curSport->getRegistrationDueDate()) . "</strong></span></div>"
-                                    . "</div>";
-                                }
-                            } else {
-                                echo $regSeason->getRegistrationDueBy();
-                            }
-                        ?>
-                    </fieldset>
-                   <?php } ?>
-                   <p>&nbsp;</p>
+				<fieldset class='registrationDate'>
+					<legend>Registration Due By</legend>
+					<h4><?php print $regSeason->getName() ?> League</h4>
+					<?php 
+						if($regSeason->getIsRegistrationBySport()) { 
+							/* $regSportsByDate = array();
+
+							foreach($sports as $sport) {
+								if(!isset($regSportsByDate[$sport->getRegistrationDueDate()])) {
+									$regSportsByDate[$sport->getRegistrationDueDate()] = array();
+								}	
+
+								$regSportsByDate[$sport->getRegistrationDueDate()][] = $sport->getName();
+							}
+
+							foreach($regSportsByDate as $date => $sports) {
+								print "<p>" . join(", ", $sports) . ": <span class='red'><strong>" . date("F d", $date) . "</strong></span></p>";
+							} */
+							
+							foreach($sports as $curSport) {
+								echo "<div class='row'>" 
+									. "<div class='col-xs-3'>" . $curSport->getName() . "</div>"
+									. "<div class='col-xs-9'><span class='red'><strong>" . date("F d, Y", $curSport->getRegistrationDueDate()) . "</strong></span></div>"
+								. "</div>";
+							}
+						} else {
+							echo $regSeason->getRegistrationDueBy();
+						}
+					?>
+					<p>&nbsp;</p>
+				</fieldset>
 			<?php } ?>
 			<fieldset class='form-group'>
 				<?php if($registerTeam) { ?>
