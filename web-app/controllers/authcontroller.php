@@ -219,11 +219,13 @@ class Controllers_AuthController extends Controllers_Controller {
 		$selector = $this->generateRandomKey(12);
 		$hashedToken = $this->generateUserTokenHash($unhashedToken);
 		
-		try {      
+		try {
+			$userId = $user->getId();
+			
 			$stmt = $this->db->prepare("INSERT INTO " . Includes_DBTableNames::authTable . " VALUES (NULL, :selector, :hashedToken, :userId)");
 			$stmt->bindParam(':selector', $selector, PDO::PARAM_STR);
 			$stmt->bindParam(':hashedToken', $hashedToken, PDO::PARAM_STR);
-			$stmt->bindParam(':userId', $user->getId(), PDO::PARAM_INT);
+			$stmt->bindParam(':userId', $userId, PDO::PARAM_INT);
 			$stmt->execute();
 			
 			return $this->getAuthTokenBySelector($selector);
