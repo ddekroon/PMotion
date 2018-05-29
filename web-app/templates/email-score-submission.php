@@ -49,12 +49,9 @@
 						
 							for ($i = 0; $i < $league->getNumMatches(); $i++) {
 								$curSubmission = $submissions[$gameNum];
+								$gameNum += $league->getNumGamesPerMatch();
 								
 								$submissionErrors = [];
-
-								for($j = 0; $j < $league->getNumGamesPerMatch(); $j++) {
-									$gameNum++;
-								}
 
 								$teamsNotEqual = false; //By default assume they submitted for the correct team.
 								$oppSubmissions = [];
@@ -85,16 +82,18 @@
 										$oppSubmissionsCorrect = false;
 										$curSubmissionAndOppSubmissionMatch = true; //1 signifies are the same
 
-										for($k = 0; $k < sizeof($oppSubmissions); $k+= $games) {
+										for($k = 0; $k < sizeof($oppSubmissions); $k++) {
 											if($oppSubmissions[$k]->getOppTeamId() == $team->getId()) {
 
 												$oppSubmissionsCorrect = true;
 
-												for($m = 0; $m < $games; $m++) {
-													if (!$scoreReporterController->checkSubmissionsMatch($submissions[($i * $games) + $m]->getResult(), $oppSubmissions[$k + $m]->getResult())) {
+												for($m = 0; $m < $league->getNumGamesPerMatch(); $m++) {
+													if (!$scoreReporterController->checkSubmissionsMatch($submissions[($i * $league->getNumGamesPerMatch()) + $m]->getResult(), $oppSubmissions[$k + $m]->getResult())) {
 														$curSubmissionAndOppSubmissionMatch = false;
 													}
 												}
+												
+												break; //If we get the opp submissions for the current team and check the game submissions now break because we have everything we need.
 											}
 										}
 										if (!$curSubmissionAndOppSubmissionMatch) {
@@ -134,7 +133,7 @@
 									</td>
 									<td class="half" style="margin: 0; padding: 7px; vertical-align: top; width: 50%;">
 										<?php if (sizeof($oppSubmissions) > 0) { ?>
-											<?php for($k = 0; $k < $matches * $games; $k = $k + $games) { ?>
+											<?php for($k = 0; $k < $matches * $league->getNumGamesPerMatch(); $k = $k + $league->getNumGamesPerMatch()) { ?>
 												<?php if($oppSubmissions[$k]->getOppTeamId() == $team->getId()) { ?>
 													<?php 
 														$this->insert('partials/email-score-submission-game', [

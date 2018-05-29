@@ -2,7 +2,10 @@
 	$league = $submissions[0]->getTeam()->getLeague();
 	
 	$spiritScoreVal = 0;
-	$spiritScore = $submissions[$matchNum]->getSpiritScore();
+	
+	$gameNum = $league->getNumGamesPerMatch() * $matchNum;
+	
+	$spiritScore = $submissions[$gameNum]->getSpiritScore();
 
 	if($spiritScore != null) {
 		$spiritScoreVal = $spiritScore->getValue();
@@ -14,6 +17,7 @@
 		$spiritScoreString = number_format((float)$spiritScoreVal, 1, '.', '');
 	}
 ?>
+<p></p>
 <table style="border: none; border-collapse: collapse; color: #494e52; margin: 0; padding: 0; vertical-align: top; width: 100%;">
 	<tbody>
 		<tr>
@@ -22,11 +26,11 @@
 		</tr>
 		<?php for($i = 0; $i < $league->getNumGamesPerMatch(); $i++) { ?>
 			<?php 
-				if(sizeof($submissions) <= $matchNum + $i) {
+				if(sizeof($submissions) <= $gameNum + $i) {
 					continue; //No submission for this game. Not sure how this is possible but hey, good to error check.
 				}
 
-				$curSubmission = $submissions[$matchNum + $i];
+				$curSubmission = $submissions[$gameNum + $i];
 			?>
 				
 			<tr>
