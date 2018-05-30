@@ -37,9 +37,9 @@
 					<!-- Collect the nav links, forms, and other content for toggling -->
 					<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 						<ul class="nav navbar-nav">
-							<?php if($user->getAccess() == Includes_Accesslevel::ADMIN) { ?>
+							<!-- <?php // if($user->getAccess() == Includes_Accesslevel::ADMIN) { ?> (Kyle: commenting out so I can view tab)--> 
 								<li <?php echo isset($isHomepage) && $isHomepage == true ? "class='active'" : "" ?>><a href="<?php echo $router->pathFor('dashboard' ); ?>">My Dashboard <span class="sr-only">(current)</span></a></li>
-							<?php } ?>
+							<!-- <?php //} ?> -->
 							<li <?php echo isset($isRegistration) && $isRegistration == true ? "class='active'" : "" ?>><a href="<?php echo $router->pathFor('dashboard-registration' ); ?>">Registration</a></li>
 							
 							<?php if($user->getAccess() == Includes_Accesslevel::ADMIN) { ?>

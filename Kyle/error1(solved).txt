@@ -6,3 +6,5 @@ Fatal error: Uncaught exception 'InvalidArgumentException' with message 'Invalid
 
 -------------
 Kyle: app.log has more info, however it's more vague
+
+UPDATE: Solved by starting MySQL via bat file instead of XAMPP
