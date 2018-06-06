@@ -133,12 +133,12 @@
 									</td>
 									<td class="half" style="margin: 0; padding: 7px; vertical-align: top; width: 50%;">
 										<?php if (sizeof($oppSubmissions) > 0) { ?>
-											<?php for($k = 0; $k < $matches * $league->getNumGamesPerMatch(); $k = $k + $league->getNumGamesPerMatch()) { ?>
-												<?php if($oppSubmissions[$k]->getOppTeamId() == $team->getId()) { ?>
+											<?php for($k = 0, $oppMatchNum = 0; $k < $matches * $league->getNumGamesPerMatch(); $k = $k + $league->getNumGamesPerMatch(), $oppMatchNum++) { ?>
+												<?php if(sizeof($oppSubmissions) >= $k && $oppSubmissions[$k]->getOppTeamId() == $team->getId()) { ?>
 													<?php 
 														$this->insert('partials/email-score-submission-game', [
 															"submissions" => $oppSubmissions,
-															"matchNum" => $i
+															"matchNum" => $oppMatchNum
 														]);
 													?>
 												<?php } ?>

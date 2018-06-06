@@ -108,17 +108,17 @@
 					
 				<div class='form-group row spirit-row'>
 					<div class='col-sm-3 col-xs-12'>
-						<label for='SpiritScore_<?php print $i ?>'>Spirit Score</label>
+						<label for='SpiritScore_<?php print $i ?>'>Spirit Score <span class="required">*</span></label>
 					</div>
 					<div class='col-sm-9 col-xs-12'>
 						<fieldset class='radioButtons'>
 							<legend>Spirit Score</legend>
 							<?php for($k = 1; $k <= 5; $k+=.5) { ?>
 								<input type='radio' name='spiritScore_<?php print $i ?>' value='<?php print $k ?>' id='SpiritScore_<?php print $i ?>_<?php print $k * 2 ?>'
-									   <?php echo $k == 5 ? 'checked="checked"' : ''; ?> />
+									   <?php //echo $k == 5 ? 'checked="checked"' : ''; ?> />
 								<label for='SpiritScore_<?php print $i ?>_<?php print $k * 2 ?>'><?php print $k ?></label>
 							<?php } ?>
-							<input type='hidden' id='SpiritScore_<?php print $i ?>' name='spiritScore[<?php print $i ?>]' class='spiritResult radioButtonsResult' value='5' />
+							<input type='hidden' id='SpiritScore_<?php print $i ?>' name='spiritScore[<?php print $i ?>]' class='spiritResult radioButtonsResult' value='' />
 					   </fieldset>
 						
 						<?php /* <input required='required' type='text' class='spirit' name='spiritScore_<?php print $i ?>' value='5' id='SpiritScore_<?php print $i ?>' /> */ ?>

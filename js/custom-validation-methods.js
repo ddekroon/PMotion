@@ -6,7 +6,7 @@ $.validator.addMethod("oppTeamRequired", function(value, element, params) {
 
 //Comments are required 
 $.validator.addMethod("commentRequired", function(value, element, params) {
-	return $(element).closest(".game").find(".spiritResult").val() >= 4 || value.length > 3;
+	return $(element).closest(".game").find(".spiritResult").val() >= 4 || $(element).closest(".game").find(".spiritResult").val() == '' || value.length > 3;
 }, "A comment is required when a spirit score of 3.5 or less is given.");
 
 $.validator.addMethod("gameResultRequired", $.validator.methods.required, "Game results are required.");

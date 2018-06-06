@@ -13,7 +13,7 @@
 	
 	$spiritScoreVal = 0;
 	
-	$gameNum = $laegue->getNumGamesPerMatch() * $matchNum;
+	$gameNum = $league->getNumGamesPerMatch() * $matchNum;
 	
 	$spiritScore = $submissions[$gameNum]->getSpiritScore();
 
@@ -31,7 +31,7 @@
 	<tbody>
 		<tr>
 			<td class="gray-bar-right align-right padding-right strong one-quarter">Opposition</td>
-			<td class="padding-left three-quarters"><?php echo $submissions[$matchNum]->getOppTeam()->getName() ?></td>
+			<td class="padding-left three-quarters"><?php echo $submissions[$gameNum]->getOppTeam()->getName() ?></td>
 		</tr>
 		<?php for($i = 0; $i < $league->getNumGamesPerMatch(); $i++) { ?>
 			<?php 
