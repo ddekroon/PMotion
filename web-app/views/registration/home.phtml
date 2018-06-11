@@ -1,10 +1,55 @@
 
 	<div class='clearfix form-group'>
-		<h1>Perpetual Motion Team Registration</h1>
+		<h1>Perpetual Motion Registration</h1>
 	</div>
 
+	<fieldset class="RegTypeButtons" style="margin-bottom: 15px;">
+		<legend>Registration Type</legend>
+		<div class="col-sm-3 col-xs-6">
+			<a href="#" role="button" class="btn btn-primary btn-block">Register As Individual&nbsp;<br>or Small Group</a>
+		</div>
+		<div class="col-sm-3 col-xs-6">
+			<button type="button" class="btn btn-primary btn-block" onclick="document.getElementById('middle').scrollIntoView()" style="height: 54px">Re-register Previous Team</button>
+		</div>
+		<div class="col-sm-3 col-xs-6">
+			<button type="button" class="btn btn-primary btn-block" onclick="document.getElementById('bottom').scrollIntoView()" style="height: 54px">Register New Team</button>
+		</div>
+	</fieldset>
+
+	<fieldset class='registrationDate' style="margin-bottom: 15px">
+		<legend>Registration Due By</legend>
+		<?php 
+			if($regSeason->getIsRegistrationBySport()) { 
+				/* $regSportsByDate = array();
+				
+				foreach($sports as $sport) {
+					
+					if(!isset($regSportsByDate[$sport->getRegistrationDueDate()])) {
+						$regSportsByDate[$sport->getRegistrationDueDate()] = array();
+					}	
+					
+					$regSportsByDate[$sport->getRegistrationDueDate()][] = $sport->getName();
+				}
+				
+				foreach($regSportsByDate as $date => $sports) {
+					print "<p>" . join(", ", $sports) . ": <span class='red'><strong>" . date("F d", $date) . "</strong></span></p>";
+				} */
+				
+				foreach($sports as $sport) {
+					echo "<div class='row'>" 
+							. "<div class='col-xs-3'>" . $sport->getName() . "</div>"
+							. "<div class='col-xs-9'><span class='red'><strong>" . date("F d, Y", $sport->getRegistrationDueDate()) . "</strong></span></div>"
+						. "</div>";
+				}
+			} else {
+				echo $regSeason->getRegistrationDueBy();
+			}
+		?>
+		<!-- <p>&nbsp;</p> -->
+	</fieldset>
+
 	<fieldset id='MatchesFieldset' class='form-group'>
-		<legend>
+		<legend id="middle">
 			Previous Teams Registered
 			<small>Click on your team's name to re-register a previous team for the <?php print $regSeason->getName() ?> league</small>
 		</legend>
@@ -67,38 +112,7 @@
 		</div>
 	</fieldset>
 
-	<fieldset class='registrationDate'>
-		<legend>Registration Due By</legend>
-		<?php 
-			if($regSeason->getIsRegistrationBySport()) { 
-				/* $regSportsByDate = array();
-				
-				foreach($sports as $sport) {
-					
-					if(!isset($regSportsByDate[$sport->getRegistrationDueDate()])) {
-						$regSportsByDate[$sport->getRegistrationDueDate()] = array();
-					}	
-					
-					$regSportsByDate[$sport->getRegistrationDueDate()][] = $sport->getName();
-				}
-				
-				foreach($regSportsByDate as $date => $sports) {
-					print "<p>" . join(", ", $sports) . ": <span class='red'><strong>" . date("F d", $date) . "</strong></span></p>";
-				} */
-				
-				foreach($sports as $sport) {
-					echo "<div class='row'>" 
-							. "<div class='col-xs-3'>" . $sport->getName() . "</div>"
-							. "<div class='col-xs-9'><span class='red'><strong>" . date("F d, Y", $sport->getRegistrationDueDate()) . "</strong></span></div>"
-						. "</div>";
-				}
-			} else {
-				echo $regSeason->getRegistrationDueBy();
-			}
-		?>
-		<p>&nbsp;</p>
-	</fieldset>
-	<fieldset class='bottomButtons'>
+	<fieldset class='bottomButtons' id="bottom">
 		<legend>
 			Register a New Team
 			<small>Select a league logo below to start a new registration</small>
