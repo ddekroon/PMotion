@@ -527,4 +527,53 @@ class Controllers_TeamsController extends Controllers_Controller {
 		
 		return false;
 	}
+	
+	function getUnbalancedStandingsTeamData() {
+
+		$sql = "SELECT team.*, "
+		. "	IFNULL(team_submitted_wins, 0) as team_submitted_wins, "
+		. "	IFNULL(team_submitted_losses, 0) as team_submitted_losses, "
+		. "	IFNULL(team_submitted_ties, 0) as team_submitted_ties, "
+		. "	IFNULL(team_submitted_practices, 0) as team_submitted_practices, "
+		. "	IFNULL(team_submitted_cancels, 0) as team_submitted_cancels, "
+		. "	IFNULL(team_opp_submitted_wins, 0) as team_opp_submitted_wins, "
+		. "	IFNULL(team_opp_submitted_losses, 0) as team_opp_submitted_losses, "
+		. "	IFNULL(team_opp_submitted_ties, 0) as team_opp_submitted_ties "
+		. "FROM  teams_dbtable as team "
+		. "	INNER JOIN leagues_dbtable league ON league.league_id = team.team_league_id "
+		. "	INNER JOIN seasons_dbtable season ON season.season_id = league.league_season_id AND season_available_score_reporter = 1 "
+		. "	LEFT OUTER JOIN ( "
+		. "		SELECT "
+		. "			score_submission_team_id, "
+		. "			sum(case when score_submission_result = 1 then 1 else 0 end) as team_submitted_wins, "
+		. "			sum(case when score_submission_result = 2 then 1 else 0 end) as team_submitted_losses, "
+		. "			sum(case when score_submission_result = 3 then 1 else 0 end) as team_submitted_ties, "
+		. "			sum(case when score_submission_result = 5 then 1 else 0 end) as team_submitted_practices, "
+		. "			sum(case when score_submission_result = 4 then 1 else 0 end) as team_submitted_cancels "
+		. "		FROM score_submissions_dbtable "
+		. "		WHERE score_submission_ignored = 0 "
+		. "		GROUP BY score_submission_team_id "
+		. "	) teamScoreSubmission ON teamScoreSubmission.score_submission_team_id = team.team_id "
+		. "	LEFT OUTER JOIN ( "
+		. "		SELECT "
+		. "			score_submission_opp_team_id, "
+		. "			sum(case when score_submission_result = 1 then 1 else 0 end) as team_opp_submitted_wins, "
+		. "			sum(case when score_submission_result = 2 then 1 else 0 end) as team_opp_submitted_losses, "
+		. "			sum(case when score_submission_result = 3 then 1 else 0 end) as team_opp_submitted_ties "
+		. "		FROM score_submissions_dbtable "
+		. "		WHERE score_submission_ignored = 0 "
+		. "		GROUP BY score_submission_opp_team_id "
+		. "	) oppScoreSubmission ON oppScoreSubmission.score_submission_opp_team_id = team.team_id "
+		. "WHERE (team_num_in_league > 0 || team_id = 1) "
+		. "ORDER BY league_day_number ASC, league_name ASC, team_num_in_league ASC";
+		
+		$stmt = $this->db->query($sql);
+		$allTeams = [];
+		
+        while(($row = $stmt->fetch()) != false) {		
+            $allTeams[] = Models_Team::withRow($this->db, $this->logger, $row);
+        }
+		
+		return $allTeams;
+	}
 }
