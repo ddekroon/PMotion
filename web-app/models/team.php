@@ -22,16 +22,6 @@ class Models_Team extends Models_Generic implements Models_Interface, JsonSerial
     protected $isDroppedOut = false;
 	protected $isLateEmailAllowed = true;
 	
-	protected $submittedWins;
-	protected $submittedLosses;
-	protected $submittedTies;
-	protected $submittedPractices;
-	protected $submittedCancels;
-	
-	protected $oppSubmittedWins;
-	protected $oppSubmittedLosses;
-	protected $oppSubmittedTies;
-	
 	private $league;
 	private $manager;
 	private $captain;
@@ -93,16 +83,6 @@ class Models_Team extends Models_Generic implements Models_Interface, JsonSerial
 		$this->isConvenor = $data['team_is_convenor'];
 		$this->isDroppedOut = $data['team_dropped_out'];
 		$this->isLateEmailAllowed = $data['team_late_email_allowed'];
-		
-		$this->submittedWins = array_key_exists('team_submitted_wins', $data) ? $data['team_submitted_wins'] : 0;
-		$this->submittedTies = array_key_exists('team_submitted_ties', $data) ? $data['team_submitted_ties'] : 0;
-		$this->submittedLosses = array_key_exists('team_submitted_losses', $data) ? $data['team_submitted_losses'] : 0;
-		$this->submittedPractices = array_key_exists('team_submitted_practices', $data) ? $data['team_submitted_practices'] : 0;
-		$this->submittedCancels = array_key_exists('team_submitted_cancels', $data) ? $data['team_submitted_cancels'] : 0;
-		
-		$this->oppSubmittedWins = array_key_exists('team_opp_submitted_wins', $data) ? $data['team_opp_submitted_wins'] : 0;
-		$this->oppSubmittedTies = array_key_exists('team_opp_submitted_ties', $data) ? $data['team_opp_submitted_ties'] : 0;
-		$this->oppSubmittedLosses = array_key_exists('team_opp_submitted_losses', $data) ? $data['team_opp_submitted_losses'] : 0;
 	}
 	
 	function getShortName() {
@@ -537,69 +517,6 @@ class Models_Team extends Models_Generic implements Models_Interface, JsonSerial
 
 	function setIsLateEmailAllowed($isLateEmailAllowed) {
 		$this->isLateEmailAllowed = $isLateEmailAllowed;
-	}
-	function getSubmittedWins() {
-		return $this->submittedWins;
-	}
-
-	function getSubmittedLosses() {
-		return $this->submittedLosses;
-	}
-
-	function getSubmittedTies() {
-		return $this->submittedTies;
-	}
-	
-	function getSubmittedPractices() {
-		return $this->submittedPractices;
-	}
-	
-	function getSubmittedCancels() {
-		return $this->submittedCancels;
-	}
-
-	function setSubmittedWins($submittedWins) {
-		$this->submittedWins = $submittedWins;
-	}
-
-	function setSubmittedLosses($submittedLosses) {
-		$this->submittedLosses = $submittedLosses;
-	}
-
-	function setSubmittedTies($submittedTies) {
-		$this->submittedTies = $submittedTies;
-	}
-	
-	function setSubmittedPractices($submittedPractices) {
-		$this->submittedPractices = $submittedPractices;
-	}
-	
-	function setSubmittedCancels($submittedCancels) {
-		$this->submittedCancels = $submittedCancels;
-	}
-
-	function getOppSubmittedWins() {
-		return $this->oppSubmittedWins;
-	}
-
-	function getOppSubmittedLosses() {
-		return $this->oppSubmittedLosses;
-	}
-
-	function getOppSubmittedTies() {
-		return $this->oppSubmittedTies;
-	}
-
-	function setOppSubmittedWins($oppSubmittedWins) {
-		$this->oppSubmittedWins = $oppSubmittedWins;
-	}
-
-	function setOppSubmittedLosses($oppSubmittedLosses) {
-		$this->oppSubmittedLosses = $oppSubmittedLosses;
-	}
-
-	function setOppSubmittedTies($oppSubmittedTies) {
-		$this->oppSubmittedTies = $oppSubmittedTies;
 	}
 	
 	public function saveOrUpdate() {

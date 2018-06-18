@@ -165,26 +165,6 @@ $dashboard =  function ($request, $response, $next) {
 	return $response;
 };
 
-$controlPanel =  function ($request, $response, $next) {
-
-	$curUser = Models_User::withID($this->db, $this->logger, $_SESSION[Controllers_AuthController::SESSION_USER_ID]);
-
-	$response = $this->view->render($response, 'template/control-panel-header.phtml', [
-		"request" => $request,
-		"user" => $curUser,
-		"router" => $this->router
-	]);
-
-	$response = $next($request, $response);
-
-	$response = $this->view->render($response, 'template/control-panel-footer.phtml', [
-		"user" => $curUser,
-		"router" => $this->router
-	]);
-
-	return $response;
-};
-
 include('routes/api/sports.php');
 include('routes/api/teams.php');
 include('routes/default.php');
@@ -192,10 +172,6 @@ include('routes/score-reporter.php');
 include('routes/dashboard.php');
 include('routes/registration.php');
 include('routes/standings.php');
-
-//Control Panel
-include('routes/control-panel/default.php');
-include('routes/control-panel/standings.php');
 
 $app->run();
 
