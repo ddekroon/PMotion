@@ -5,14 +5,19 @@
 
 	<fieldset class="RegTypeButtons" style="margin-bottom: 15px;">
 		<legend>Registration Type</legend>
-		<div class="col-sm-3 col-xs-6">
-			<a href="#" role="button" class="btn btn-primary btn-block" style="height: 3.857em">Register As Individual&nbsp;<br>or Small Group</a>
-		</div>
-		<div class="col-sm-3 col-xs-6">
-			<button type="button" class="btn btn-primary btn-block" onclick="document.getElementById('middle').scrollIntoView()" style="height: 3.857em">Re-register Previous Team</button>
-		</div>
-		<div class="col-sm-3 col-xs-6">
-			<button type="button" class="btn btn-primary btn-block" onclick="document.getElementById('bottom').scrollIntoView()" style="height: 3.857em">Register New Team</button>
+		<div class="buttonset">
+			<a href='<?php echo $router->pathFor('dashboard-register-group', ['sportID' => 1]); ?>' role="button" class="btn btn-primary">
+				<span class="glyphicon glyphicon-user"></span>
+				Register As Individual or Small Group
+			</a>
+			<a class="btn btn-primary" href="#prevTeam">
+				<span class="glyphicon glyphicon-th-list"></span>
+				Re-register Previous Team
+			</a>
+			<a class="btn btn-primary" href="#newTeam">
+				<span class="glyphicon glyphicon-plus"></span>
+				Register New Team
+			</a>
 		</div>
 	</fieldset>
 
@@ -45,11 +50,11 @@
 				echo $regSeason->getRegistrationDueBy();
 			}
 		?>
-		<!-- <p>&nbsp;</p> -->
+		<!-- <p>&nbsp;</p> // No idea what purpose this was serving -Kyle -->
 	</fieldset>
 
 	<fieldset id='MatchesFieldset' class='form-group'>
-		<legend id="middle">
+		<legend id="prevTeam">
 			Previous Teams Registered
 			<small>Click on your team's name to re-register a previous team for the <?php print $regSeason->getName() ?> league</small>
 		</legend>
@@ -112,7 +117,7 @@
 		</div>
 	</fieldset>
 
-	<fieldset class='bottomButtons' id="bottom">
+	<fieldset class='bottomButtons' id="newTeam">
 		<legend>
 			Register a New Team
 			<small>Select a league logo below to start a new registration</small>

@@ -1,7 +1,4 @@
-
-<!-- CURRENTLY MOSTLY JUST edit-team.phtml COPIED OVER -->
-
-<?php 
+<?php
 	$newTeam = false;
 	$viewTeam = false;
 		
@@ -32,19 +29,33 @@
 				<img src='<?php echo $sport->getLogoLink() ?>' />
 			</div>
 			<div class='col-xs-12 col-sm-9 col-sm-pull-3'>
-				<h1><?php echo $registerTeam ? 'Register a Team' : ($viewTeam ? 'View' : 'Edit') . ' Team - ' . $team->getName() ?></h1>
+				<h1>Register as Individual or Small Group</h1>
 			</div>
 		</div>
 		<fieldset class='form-group'>
-			<legend>Division and Team Name</legend>
-			<div class='row form-group'>
+			<legend>League Information</legend>
+			<!-- <div class='row form-group'>  // Commenting this all out because it isn't necessary if they click from a sport's page. This section is to let them choose sport if they come from registration page
 				<div class='col-md-2 col-sm-3 col-xs-4'>
-					<label for='TeamLeague'>League <span class="required">*</span></label>
+					<label for='chosenSport'>Sport <span class="required">*</span></label>
 				</div>
 				<div class='col-md-10 col-sm-9 col-xs-8'>
-					<?php if(!$newTeam && $team->getIsFinalized()) { //Can't change league for a finalized team. ?>
-						<input type='text' id='TeamLeague' name='leagueName' value="<?php echo $team->getLeague()->getName() . ' - ' . $team->getLeague()->getDayString() ?>" readonly="readonly" class='form-control' />
-					<?php } else { ?>
+					<select name="chosenSportID" id="chosenSport" class='form-control' required='required'method="get" onchange="document.location.href='<//?php echo $router->pathFor('dashboard-register-group', ['sportID' => $_GET['chosenSport']] ); ?>'">
+						<option value="-1">-- Sport --</option>
+						<//?php 
+							foreach($sports as $curSport)
+							{
+								print "<option value='" . $curSport->getId() . "'>" . $curSport->getName() . "</option>";
+							}
+
+						?>
+					</select>
+				</div>
+			</div> -->
+			<div class='row form-group'>
+				<div class='col-md-2 col-sm-3 col-xs-4'>
+					<label for='TeamLeague'>Preferred League<span class="required">*</span></label>
+				</div>
+				<div class='col-md-10 col-sm-9 col-xs-8'>
 						<select name="leagueID" id="TeamLeague" class='form-control' required='required'>
 							<option value="-1">-- League --</option>
 							<?php if(count($leaguesAvailableForRegistration) > 0) { ?>
@@ -68,79 +79,72 @@
 								</optgroup>
 							<?php } ?>
 						</select>
-					<?php } ?>
 				</div>
 			</div>
 			<div class='row form-group'>
 				<div class='col-md-2 col-sm-3 col-xs-4'>
-					<label for='TeamName'>Team Name <span class="required">*</span></label>
+					<label for='TeamLeague'>2nd Choice</label>
 				</div>
 				<div class='col-md-10 col-sm-9 col-xs-8'>
-					<input type='text' id='TeamName' name='teamName' required='required' value="<?php echo htmlentities($team->getName(), ENT_QUOTES) ?>" class='form-control' />
+						<select name="leagueID2" id="TeamLeague" class='form-control'>
+							<!-- LeagueID changed to leagueID2 to avoid required message, don't know if this screws with the parsing yet -->
+							<option value="-1"></option>
+							<?php if(count($leaguesAvailableForRegistration) > 0) { ?>
+								<optgroup label='<?php echo $leaguesAvailableForRegistration[0]->getSeason()->getName() ?> Leagues'>
+									<?php 
+										$lastSeasonId = 0;
+										foreach($leaguesAvailableForRegistration as $curLeague) {
+
+											if($curLeague->getSeasonId() != $lastSeasonId && $lastSeasonId != 0) {
+												print '</optgroup><optgroup label="' . $curLeague->getSeason()->getName() . ' Leagues">';
+											}
+
+											print "<option value='" . $curLeague->getId() . "' " 
+													. ($curLeague->getId() == $team->getLeagueId() ? "selected='selected'" : '') . ">"
+													. $curLeague->getRegistrationFormattedName()
+													. "</option>";
+
+											$lastSeasonId = $curLeague->getSeasonId();
+										}
+									?>
+								</optgroup>
+							<?php } ?>
+						</select>
+				</div>
+			</div>
+			<div class='row form-group'>
+				<div class='col-md-2 col-sm-3 col-xs-4'>
+					<label for='TeamLeague'>3rd Choice</label>
+				</div>
+				<div class='col-md-10 col-sm-9 col-xs-8'>
+						<select name="leagueID3" id="TeamLeague" class='form-control'>
+							<option value="-1"></option>
+							<?php if(count($leaguesAvailableForRegistration) > 0) { ?>
+								<optgroup label='<?php echo $leaguesAvailableForRegistration[0]->getSeason()->getName() ?> Leagues'>
+									<?php 
+										$lastSeasonId = 0;
+										foreach($leaguesAvailableForRegistration as $curLeague) {
+
+											if($curLeague->getSeasonId() != $lastSeasonId && $lastSeasonId != 0) {
+												print '</optgroup><optgroup label="' . $curLeague->getSeason()->getName() . ' Leagues">';
+											}
+
+											print "<option value='" . $curLeague->getId() . "' " 
+													. ($curLeague->getId() == $team->getLeagueId() ? "selected='selected'" : '') . ">"
+													. $curLeague->getRegistrationFormattedName()
+													. "</option>";
+
+											$lastSeasonId = $curLeague->getSeasonId();
+										}
+									?>
+								</optgroup>
+							<?php } ?>
+						</select>
 				</div>
 			</div>
 		</fieldset>
 		<fieldset class='form-group'>
-			<legend>Captain Information<small>The captain is the first person we'll contact with team inquiries and is responsible for submitting scores.</small></legend>
-			<div class='row form-group'>
-				<div class='col-md-6 col-xs-12'>
-					<div class='row'>
-						<div class='col-xs-4'>
-							<label for='CapFirstName'>First Name <span class="required">*</span></label>
-						</div>
-						<div class='col-xs-8'>
-							<input type='text' id='CapFirstName' name='capFirstName' required='required' value="<?php echo htmlentities(($team->getCaptain()->getId() == null ? $user->getFirstName() : $team->getCaptain()->getFirstName()), ENT_QUOTES) ?>" class='form-control' />
-						</div>
-					</div>
-				</div>
-				<div class='col-md-6 col-xs-12'>
-					<div class='row'>
-						<div class='col-xs-4'>
-							<label for='CapLastName'>Last Name <span class="required">*</span></label>
-						</div>
-						<div class='col-xs-8'>
-							<input type='text' id='CapLastName' name='capLastName' required='required' value="<?php echo htmlentities(($team->getCaptain()->getId() == null ? $user->getLastName() : $team->getCaptain()->getLastName()), ENT_QUOTES) ?>" class='form-control' />
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class='row form-group'>
-				<div class='col-md-2 col-xs-4'>
-					<label for='CapEmail'>Email <span class="required">*</span></label>
-				</div>
-				<div class='col-md-10 col-xs-8'>
-					<input type='text' id='CapEmail' name='capEmail' required='required' value="<?php echo htmlentities(($team->getCaptain()->getId() == null ? $user->getEmail() : $team->getCaptain()->getEmail()), ENT_QUOTES) ?>" class='form-control' />
-				</div>
-			</div>
-			<div class='row form-group'>
-				<div class='col-md-6 col-xs-12'>
-					<div class='row'>
-						<div class='col-xs-4'>
-							<label for='CapPhoneNumber'>Phone Number <span class="required">*</span></label>
-						</div>
-						<div class='col-xs-8'>
-							<input type='text' id='CapPhoneNumber' name='capPhoneNumber' required='required' value="<?php echo htmlentities(($team->getCaptain()->getId() == null ? $user->getPhone() : $team->getCaptain()->getPhoneNumber()), ENT_QUOTES) ?>" class='form-control' />
-						</div>
-					</div>
-				</div>
-				<div class='col-md-6 col-xs-12'>
-					<div class='row'>
-						<div class='col-xs-4'>
-							<label for='CapGender'>Gender <span class="required">*</span></label>
-						</div>
-						<div class='col-xs-8'>
-							<select id='CapGender' name='capGender' required='required' class='form-control'>
-								<option value=''>Select One</option>
-								<option value='M' <?php echo ($team->getCaptain()->getId() == null ? $user->getGender() : $team->getCaptain()->getGender()) == 'M' ? 'selected="selected"' : '' ?>>Male</option>
-								<option value='F' <?php echo ($team->getCaptain()->getId() == null ? $user->getGender() : $team->getCaptain()->getGender()) == 'F' ? 'selected="selected"' : '' ?>>Female</option>
-							</select>
-						</div>
-					</div>
-				</div>
-			</div>
-		</fieldset>
-		<fieldset class='form-group'>
-			<legend>Player Information<small>The second player will be listed as an alternate contact if the captain is unavailable.</small></legend>
+			<legend>Player Information<small>The second player will be listed as an alternate contact if the first is unavailable.</small></legend>
 			<div id="RegPlayersContainer" style="height:212px;overflow:hidden;">
 				<div class='table-responsive'>
 					<table id="TeamMembers" class="table table-condensed table-striped">
@@ -150,7 +154,9 @@
 								<th>First Name</th>
 								<th>Last Name</th>
 								<th>Email</th>
+								<th>Phone Number</th>
 								<th>Gender</th>
+								<th>Skill Level</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -172,7 +178,7 @@
 									}
 								?>
 								<tr>
-									<td><?php echo $i + 1; ?>
+									<td><?php echo $i == 0 ? "You <span class='required'>*</span>" : $i + 1; ?>
 									<td>
 										<label class='sr-only' for='PlayerFirstName_<?php echo $i ?>'>First Name</label>
 										<input type='text' style="min-width:100px;" class='form-control' id='PlayerFirstName_<?php echo $i ?>' name='playerFirstName_<?php echo $i ?>' value='<?php echo htmlentities($firstName, ENT_QUOTES) ?>' />
