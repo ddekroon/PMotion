@@ -251,3 +251,4 @@
 [2018-06-19 16:00:26] my_logger.ERROR: Email not sent: Models_Email [ 1986 ]  You must provide at least one recipient email address. [] []
 [2018-06-19 16:40:11] my_logger.ERROR: Named route does not exist for name: save-group {"sportID":"1"} []
 [2018-06-19 16:40:35] my_logger.ERROR: Named route does not exist for name: save-group {"sportID":"1"} []
+[2018-06-20 10:59:20] my_logger.DEBUG: Error deleting Auth token LF2Pf7pC3Gft : 00000:: [] []

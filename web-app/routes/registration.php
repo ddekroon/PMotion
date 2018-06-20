@@ -59,13 +59,13 @@
 			//return $response;
 		})->setName('dashboard-register-team');
 
-		$app->get('/register-group[/{sportID}[/{pastTeamID}]]', function (Request $request, Response $response) {
+		$app->get('/register-group[/{sportID}]', function (Request $request, Response $response) {
 
-			$curUser = Models_User::withID($this->db, $this->logger, $_SESSION[Controllers_AuthController::SESSION_USER_ID]);
+			// $curUser = Models_User::withID($this->db, $this->logger, $_SESSION[Controllers_AuthController::SESSION_USER_ID]);
 			
 			$sportID = $request->getAttribute('sportID');
 			$sport = Models_Sport::withID($this->db, $this->logger, $sportID);
-			$pastTeam = Models_Team::withID($this->db, $this->logger, $request->getAttribute('pastTeamID'));
+			$pastTeam = Models_Team::withID($this->db, $this->logger, $request->getAttribute('pastTeamID')); // REMOVING PAST TEAM HERE OR BELOW REMOVES THE STYLING - FIND WHY
 			
 			$leaguesController = new Controllers_LeaguesController($this->db, $this->logger);
 			$seasonsController = new Controllers_SeasonsController($this->db, $this->logger);
@@ -76,8 +76,8 @@
 					"router" => $this->router,
 					"sport" => $sport,
 					"team" => $pastTeam, // Will be removed
-					"user" => $curUser, // Need to remove for people not logged in
-					"registerTeam" => true, // Will be removed
+					// "user" => $curUser, // Need to remove for people not logged in
+					// "registerTeam" => true, // Will be removed
 					"league" => new Models_League(),
 					"leaguesAvailableForRegistration" => $leaguesController->getLeaguesForRegistration($sportID),
 					"seasonsAvailableForRegistration" => $seasonsController->getSeasonsAvailableForRegistration(),
@@ -127,11 +127,22 @@
 
 	})->setName('save-team')->add($authenticate);
 
-	$app->post('/save-group[/{teamID}]', function (Request $request, Response $response) {
+	$app->post('/save-group', function (Request $request, Response $response) {
 
-		
+
 		// $curUser = Models_User::withID($this->db, $this->logger, $_SESSION[Controllers_AuthController::SESSION_USER_ID]);
 		// $team = Models_Team::withID($this->db, $this->logger, (int)$request->getAttribute('teamID'));
+
+		$groupsController = new Controllers_GroupsController($this->db, $this->logger);
+
+		try {
+			$successMessage = $groupsController->insertGroup($group, $request);
+			$returnObj["status"] = 1;
+			$returnObj["successMessage"] = $successMessage;
+		} catch(Exception $e) {
+			$returnObj["status"] = 0;
+			$returnObj["errorMessage"] = $e->getMessage();
+		}
 
 		// $teamsController = new Controllers_TeamsController($this->db, $this->logger);
 
