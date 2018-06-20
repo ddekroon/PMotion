@@ -14,7 +14,7 @@ class Models_Individual extends Models_Generic implements Models_Interface, Json
 	protected $howHeardMethod;
 	protected $howHeardOtherText;
 
-	private $registrationComment;
+	protected $registrationComment;
 
 	public static function withID($db, $logger, $id) {
 		$instance = new self();

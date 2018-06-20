@@ -33,30 +33,30 @@
 			</div>
 		</div>
 		<fieldset class='form-group'>
-			<legend>League Information</legend>
+			<legend>League Information<small>Select your preferences in order of importance.</small></legend>
 			<!-- <div class='row form-group'>  // Commenting this all out because it isn't necessary if they click from a sport's page. This section is to let them choose sport if they come from registration page
 				<div class='col-md-2 col-sm-3 col-xs-4'>
 					<label for='chosenSport'>Sport <span class="required">*</span></label>
 				</div>
 				<div class='col-md-10 col-sm-9 col-xs-8'>
-					<select name="chosenSportID" id="chosenSport" class='form-control' required='required'method="get" onchange="document.location.href='<//?php echo $router->pathFor('dashboard-register-group', ['sportID' => $_GET['chosenSport']] ); ?>'">
+					<select name="chosenSportID" id="chosenSport" class='form-control' required='required' method='post' onchange="document.location.href='<?//php echo $router->pathFor('dashboard-register-group', ['sportID' => $_POST['chosenSportID']] ); ?>'">
 						<option value="-1">-- Sport --</option>
-						<//?php 
+						<?/*php 
 							foreach($sports as $curSport)
 							{
 								print "<option value='" . $curSport->getId() . "'>" . $curSport->getName() . "</option>";
 							}
 
-						?>
+						*/?>
 					</select>
 				</div>
 			</div> -->
 			<div class='row form-group'>
 				<div class='col-md-2 col-sm-3 col-xs-4'>
-					<label for='TeamLeague'>Preferred League<span class="required">*</span></label>
+					<label for='GroupLeague'>Preferred League&nbsp;<span class="required">*</span></label>
 				</div>
 				<div class='col-md-10 col-sm-9 col-xs-8'>
-						<select name="leagueID" id="TeamLeague" class='form-control' required='required'>
+						<select name="leagueID" id="GroupLeague" class='form-control' required='required'>
 							<option value="-1">-- League --</option>
 							<?php if(count($leaguesAvailableForRegistration) > 0) { ?>
 								<optgroup label='<?php echo $leaguesAvailableForRegistration[0]->getSeason()->getName() ?> Leagues'>
@@ -68,8 +68,7 @@
 												print '</optgroup><optgroup label="' . $curLeague->getSeason()->getName() . ' Leagues">';
 											}
 
-											print "<option value='" . $curLeague->getId() . "' " 
-													. ($curLeague->getId() == $team->getLeagueId() ? "selected='selected'" : '') . ">"
+											print "<option value='" . $curLeague->getId() . "'>"
 													. $curLeague->getRegistrationFormattedName()
 													. "</option>";
 
@@ -83,10 +82,10 @@
 			</div>
 			<div class='row form-group'>
 				<div class='col-md-2 col-sm-3 col-xs-4'>
-					<label for='TeamLeague'>2nd Choice</label>
+					<label for='GroupLeague'>2nd Choice</label>
 				</div>
 				<div class='col-md-10 col-sm-9 col-xs-8'>
-						<select name="leagueID2" id="TeamLeague" class='form-control'>
+						<select name="leagueID2" id="GroupLeague" class='form-control'>
 							<!-- LeagueID changed to leagueID2 to avoid required message, don't know if this screws with the parsing yet -->
 							<option value="-1"></option>
 							<?php if(count($leaguesAvailableForRegistration) > 0) { ?>
@@ -99,8 +98,7 @@
 												print '</optgroup><optgroup label="' . $curLeague->getSeason()->getName() . ' Leagues">';
 											}
 
-											print "<option value='" . $curLeague->getId() . "' " 
-													. ($curLeague->getId() == $team->getLeagueId() ? "selected='selected'" : '') . ">"
+											print "<option value='" . $curLeague->getId() . "'>"
 													. $curLeague->getRegistrationFormattedName()
 													. "</option>";
 
@@ -114,10 +112,10 @@
 			</div>
 			<div class='row form-group'>
 				<div class='col-md-2 col-sm-3 col-xs-4'>
-					<label for='TeamLeague'>3rd Choice</label>
+					<label for='GroupLeague'>3rd Choice</label>
 				</div>
 				<div class='col-md-10 col-sm-9 col-xs-8'>
-						<select name="leagueID3" id="TeamLeague" class='form-control'>
+						<select name="leagueID3" id="GroupLeague" class='form-control'>
 							<option value="-1"></option>
 							<?php if(count($leaguesAvailableForRegistration) > 0) { ?>
 								<optgroup label='<?php echo $leaguesAvailableForRegistration[0]->getSeason()->getName() ?> Leagues'>
@@ -129,8 +127,7 @@
 												print '</optgroup><optgroup label="' . $curLeague->getSeason()->getName() . ' Leagues">';
 											}
 
-											print "<option value='" . $curLeague->getId() . "' " 
-													. ($curLeague->getId() == $team->getLeagueId() ? "selected='selected'" : '') . ">"
+											print "<option value='" . $curLeague->getId() . "'>"
 													. $curLeague->getRegistrationFormattedName()
 													. "</option>";
 
@@ -144,10 +141,10 @@
 			</div>
 		</fieldset>
 		<fieldset class='form-group'>
-			<legend>Player Information<small>The second player will be listed as an alternate contact if the first is unavailable.</small></legend>
+			<legend>Player Information<small>First additional player will be the alternate contact for the group.</small></legend>
 			<div id="RegPlayersContainer" style="height:212px;overflow:hidden;">
 				<div class='table-responsive'>
-					<table id="TeamMembers" class="table table-condensed table-striped">
+					<table id="groupMembers" class="table table-condensed table-striped">
 						<thead>
 							<tr>
 								<th></th>
@@ -160,43 +157,54 @@
 							</tr>
 						</thead>
 						<tbody>
-							<?php $numPlayers = isset($sport) && $sport->getId() != null ? $sport->getNumPlayerInputsForRegistration() : 10 ?>
+							<?php $numPlayers = (isset($sport) && $sport->getId() != null) ? $sport->getNumPlayerInputsForRegistration() : 10 ?>
 							<?php for($i = 0; $i < $numPlayers; $i++) { ?>
 								<?php 
-									$curPlayer = $i < count($team->getPlayers()) ? $team->getPlayers()[$i] : new Models_Player(); 
-									
-									if($i == 0 && $curPlayer->getId() == null) {
-										$firstName = $user->getFirstName();
-										$lastName = $user->getLastName();
-										$email = $user->getEmail();
-										$gender = $user->getGender();
-									} else {
-										$firstName = $curPlayer->getFirstName();
-										$lastName = $curPlayer->getLastName();
-										$email = $curPlayer->getEmail();
-										$gender = $curPlayer->getGender();
-									}
+									$curPlayer = new Models_Player();
+
+									$firstName = $curPlayer->getFirstName();
+									$lastName = $curPlayer->getLastName();
+									$email = $curPlayer->getEmail();
+									$gender = $curPlayer->getGender();
 								?>
 								<tr>
-									<td><?php echo $i == 0 ? "You <span class='required'>*</span>" : $i + 1; ?>
+									<td style="min-width:45px;"><?php echo $i == 0 ? "You <span class='required'>*</span>" : $i + 1; ?>
 									<td>
 										<label class='sr-only' for='PlayerFirstName_<?php echo $i ?>'>First Name</label>
-										<input type='text' style="min-width:100px;" class='form-control' id='PlayerFirstName_<?php echo $i ?>' name='playerFirstName_<?php echo $i ?>' value='<?php echo htmlentities($firstName, ENT_QUOTES) ?>' />
+										<input type='text' style="min-width:50px;" class='form-control' id='PlayerFirstName_<?php echo $i ?>' name='playerFirstName_<?php echo $i ?>' value='<?php echo htmlentities($firstName, ENT_QUOTES) ?>' <?php echo $i == 0 ? "required='required'" : "" ?> />
 										<input type='hidden' name='playerID_<?php echo $i ?>' value='<?php echo $curPlayer->getId() ?>' />
 									</td>
 									<td>
 										<label class='sr-only' for='PlayerLastName_<?php echo $i ?>'>Last Name</label>
-										<input type='text' style="min-width:100px;" class='form-control' id='PlayerLastName_<?php echo $i ?>' name='playerLastName_<?php echo $i ?>' value='<?php echo htmlentities($lastName, ENT_QUOTES) ?>' />
+										<input type='text' style="min-width:50px;" class='form-control' id='PlayerLastName_<?php echo $i ?>' name='playerLastName_<?php echo $i ?>' value='<?php echo htmlentities($lastName, ENT_QUOTES) ?>' <?php echo $i == 0 ? "required='required'" : "" ?> />
 									</td>
 									<td>
-										<label class='sr-only' for='PlayerEmail<?php echo $i ?>'>Email</label>
-										<input type='text' style="min-width:200px;" class='form-control' id='PlayerEmail_<?php echo $i ?>' name='playerEmail_<?php echo $i ?>' value='<?php echo htmlentities($email, ENT_QUOTES) ?>' />
+										<label class='sr-only' for='PlayerEmail_<?php echo $i ?>'>Email</label>
+										<input type='text' style="min-width:200px;" class='form-control' id='PlayerEmail_<?php echo $i ?>' name='playerEmail_<?php echo $i ?>' value='<?php echo htmlentities($email, ENT_QUOTES) ?>' <?php echo $i == 0 ? "required='required'" : "" ?> />
 									</td>
 									<td>
-										<label class='sr-only' for='PlayerGender_<?php echo $i ?>'>Email</label>
-										<select id='PlayerGender_<?php echo $i ?>' style="min-width:80px;" name="playerGender_<?php echo $i ?>" class='form-control'>
+										<?php $phoneNumber ='' // Remove this later - see skillLevel note ?>
+										<label class='sr-only' for='PlayerPhoneNumber_<?php echo $i ?>'>Phone Number</label>
+										<input type='text' style="min-width:100px;" class='form-control' id='PlayerPhoneNumber_<?php echo $i ?>' value='<?php echo htmlentities($phoneNumber, ENT_QUOTES) ?>' <?php echo $i == 0 ? "required='required'" : "" ?> />
+									</td>
+									<td>
+										<?php $gender = 'M'; // Sets default gender for options ?>
+										<label class='sr-only' for='PlayerGender_<?php echo $i ?>'>Gender</label>
+										<select id='PlayerGender_<?php echo $i ?>' style="min-width:100px;" name="playerGender_<?php echo $i ?>" class='form-control'>
 											<option value='M' <?php print $gender == 'M' ? 'selected="selected"' : '' ?>>Male</option>
 											<option value='F' <?php print $gender == 'F' ? 'selected="selected"' : '' ?>>Female</option>
+										</select>
+									</td>
+									<td>
+										<?php $skillLevel = 0 // Change this value to alter default skillLevel shown?>
+										<label class='sr-only' for='PlayerSkill_<?php echo $i ?>'>Skill Level</label>
+										<select id='PlayerSkill_<?php echo $i ?>' style="min-width:100px;" name="PlayerSkill_<?php echo $i ?>" class='form-control'>
+											<option value='-1'>Choose</option>
+											<option value='5' <?php print $skillLevel == '5' ? 'selected="selected"' : '' ?>>5 (High)</option>
+											<option value='4' <?php print $skillLevel == '4' ? 'selected="selected"' : '' ?>>4</option>
+											<option value='3' <?php print $skillLevel == '3' ? 'selected="selected"' : '' ?>>3</option>
+											<option value='2' <?php print $skillLevel == '2' ? 'selected="selected"' : '' ?>>2</option>
+											<option value='1' <?php print $skillLevel == '1' ? 'selected="selected"' : '' ?>>1 (Low)</option>
 										</select>
 									</td>
 								</tr>
@@ -209,124 +217,93 @@
 				<button type="button" class="btn btn-primary" onclick="displayAllPlayers();">More Players <span class="glyphicon glyphicon-chevron-down"></span></button>
 			</div>
 		</fieldset>
-		<?php if(!$viewTeam) { ?>
-			<fieldset class='form-group'>
-				<legend>Comments<small>Comments, notes, player needs, etc. (limit 1000 characters)</small></legend>
+		<fieldset class='form-group'>
+			<legend>Comments<small>Comments, notes, player needs, etc. (limit 1000 characters).</small></legend>
 
-				<div class='row form-group'>
-					<div class='col-md-2 col-xs-4'>
-						<label for='TeamComments'>Comments</label>
-					</div>
-					<div class='col-md-10 col-xs-8'>
-						<textarea class='form-control' name="teamComments" id='TeamComments'><?php echo htmlentities(!$newTeam && $team->getRegistrationComment() != null ? $team->getRegistrationComment()->getComment() : "", ENT_QUOTES) ?></textarea>
-					</div>
+			<div class='row form-group'>
+				<div class='col-md-2 col-xs-4'>
+					<label for='TeamComments'>Comments</label>
 				</div>
-				<?php if($user->getCreatedDate() > $oneYearAgo) { ?>
-					<div class='row form-group'>
-						<div class='col-md-2 col-xs-4'>
-							<label for='CapHowHeardMethod'>How did you hear about us?</label>
-						</div>
-						<div class='col-md-10 col-xs-8'>
-							<select name="capHowHeardMethod" id='CapHowHeardMethod' class='form-control' onchange="showTextbox(this)">
-								<option value="0" <?php echo $team->getCaptain()->getHowHeardMethod() == 0 ? "selected='selected'" : "" ?>>Choose Method</option>
-								<option value="1" <?php echo $team->getCaptain()->getHowHeardMethod() == 1 ? "selected='selected'" : "" ?>>Google/Internet Search</option>
-								<option value="2" <?php echo $team->getCaptain()->getHowHeardMethod() == 2 ? "selected='selected'" : "" ?>>Facebook Page</option>
-								<option value="3" <?php echo $team->getCaptain()->getHowHeardMethod() == 3 ? "selected='selected'" : "" ?>>Kijiji Ad</option>
-								<option value="4" <?php echo $team->getCaptain()->getHowHeardMethod() == 4 ? "selected='selected'" : "" ?>>Returning Player</option>
-								<option value="5" <?php echo $team->getCaptain()->getHowHeardMethod() == 5 ? "selected='selected'" : "" ?>>From A Friend</option>
-								<option value="6" <?php echo $team->getCaptain()->getHowHeardMethod() == 6 ? "selected='selected'" : "" ?>>Restaurant Advertisement</option>
-								<option value="7" <?php echo $team->getCaptain()->getHowHeardMethod() == 7 ? "selected='selected'" : "" ?>>The Guelph Community Guide</option>
-								<option value="8" <?php echo $team->getCaptain()->getHowHeardMethod() == 8 ? "selected='selected'" : "" ?>>Other</option>            
-							</select>
-						</div>
-					</div>
-					<div class='row form-group' id='HowHeardOtherMethod' <?php echo $team->getCaptain()->getHowHeardMethod() != 8 ? "style='display:none;'" : "" ?>>
-						<div class='col-md-2 col-xs-4'>
-							<label for='CapHowHeardMethodOther'>Please specify other method</label>
-						</div>
-						<div class='col-md-10 col-xs-8'>
-							<input name="capHowHeardMethodOther" class='form-control' id='CapHowHeardMethodOther' value='<?php echo htmlentities($team->getCaptain()->getHowHeardOtherText(), ENT_QUOTES) ?>' type='text' />
-						</div>
-					</div>
-				<?php } ?>
-			</fieldset>
-			<?php if($registerTeam) { ?>
-				<fieldset id='EditTeamFeesSection' class='form-group' data-display='true'>
-					<legend>Confirm Fees<small>The registration process is not finalized until fees have been paid</small></legend>
-					<div class='row form-group'>
-						<div class='col-md-2 col-xs-4'>
-							<label for='TeamPayMethod'>Method <span class="required">*</span></label>
-						</div>
-						<div class='col-md-10 col-xs-8'>
-							<select name="teamPaymentMethod" id='TeamPayMethod' class='form-control'>
-								<option value="-1" readonly='readonly' <?php echo $team->getPaymentMethod() == 0 ? "selected='selected'" : "" ?>>Choose Payment Method</option>
-								<option value="1" <?php echo $team->getPaymentMethod() == 1 ? "selected='selected'" : "" ?>>I will send an email money transfer to dave@perpetualmotion.org</option>
-								<option value="2" <?php echo $team->getPaymentMethod() == 2 ? "selected='selected'" : "" ?>>I will mail cheque to Perpetual Motion's home office</option>
-								<option value="3" <?php echo $team->getPaymentMethod() == 3 ? "selected='selected'" : "" ?>>I will bring cash/cheque to Perpetual Motion's home office</option>
-								<?php if(!empty($regSeason) && ($regSeason->getName() == 'Spring' || $regSeason->getName() == 'Summer')) { ?>
-									<option value="4" <?php echo $team->getPaymentMethod() == 4 ? "selected='selected'" : "" ?>>I will bring cash/cheque to registration night</option>            
-								<?php } ?>
-							</select>
-						</div>
-					</div>
-					<p class='text-center'><strong>Make Cheques Payable to Perpetual Motion</strong></p>
-					<p class='text-center'><strong>Send This Confirmation Form & Fees to:</strong><br />78 Kathleen St. Guelph, Ontario; N1H 4Y3</p>
-				</fieldset>
-                <?php if(!empty($regSeason)) { ?>
-                    <fieldset class='registrationDate'>
-                        <legend>Registration Due By</legend>
-                        <h4><?php print $regSeason->getName() ?> League</h4>
-                        <?php 
-                            if($regSeason->getIsRegistrationBySport()) { 
-                                /* $regSportsByDate = array();
-    
-                                foreach($sports as $sport) {
-                                    if(!isset($regSportsByDate[$sport->getRegistrationDueDate()])) {
-                                        $regSportsByDate[$sport->getRegistrationDueDate()] = array();
-                                    }	
-    
-                                    $regSportsByDate[$sport->getRegistrationDueDate()][] = $sport->getName();
-                                }
-    
-                                foreach($regSportsByDate as $date => $sports) {
-                                    print "<p>" . join(", ", $sports) . ": <span class='red'><strong>" . date("F d", $date) . "</strong></span></p>";
-                                } */
-                                
-                                foreach($sports as $curSport) {
-                                    echo "<div class='row'>" 
-                                        . "<div class='col-xs-3'>" . $curSport->getName() . "</div>"
-                                        . "<div class='col-xs-9'><span class='red'><strong>" . date("F d, Y", $curSport->getRegistrationDueDate()) . "</strong></span></div>"
-                                    . "</div>";
-                                }
-                            } else {
-                                echo $regSeason->getRegistrationDueBy();
-                            }
-                        ?>
-                    </fieldset>
-                   <?php } ?>
-                   <p>&nbsp;</p>
-			<?php } ?>
-			<fieldset class='form-group'>
-				<?php if($registerTeam) { ?>
-					<legend>Register or Save<small>Submit your team registration to the convenor or save details to your profile for another time.</small></legend>
-				<?php } else { ?>
-					<legend>Update<small>Update your team registration. If you need to remove this team please contact <a href="mailto:dave@perpetualmotion.org">Dave</a>.</small></legend>
-				<?php } ?>
-				<p>
-					<?php if(!isset($registerTeam) || $registerTeam == false) { ?>
-						<button type='submit' class='btn btn-primary' name='submit' value='update' onclick="return checkUpdate()"><span class='glyphicon glyphicon-floppy-disk'></span> Update</button>
-					<?php } else { ?>
-						<button type='submit' class='btn btn-primary' name='submit' value='register' onclick='$("#EditTeamForm input[name=action]").val("register");'>
-							<span class='glyphicon glyphicon-saved'></span> Register
-						</button>
-						<button type='submit' class='btn btn-primary' name='submit' value='save' onclick='$("#EditTeamForm input[name=action]").val("save");'>
-							<span class='glyphicon glyphicon-floppy-disk'></span> Save Details
-						</button>
-					<?php } ?>
-					<button type='button' class="btn btn-primary pull-right" onclick='javascript:window.print();'><span class='glyphicon glyphicon-print'></span> Print Form</button>
-				</p>
-			</fieldset>
+				<div class='col-md-10 col-xs-8'>
+					<textarea class='form-control' name="teamComments" id='TeamComments'></textarea>
+				</div>
+			</div>
+			<div class='row form-group'>
+				<div class='col-md-2 col-xs-4'>
+					<label for='CapHowHeardMethod'>How did you hear about us?</label>
+				</div>
+				<div class='col-md-10 col-xs-8'>
+					<select name="capHowHeardMethod" id='CapHowHeardMethod' class='form-control' onchange="showTextbox(this)">
+						<option value="0">Choose Method</option>
+						<option value="1">Google/Internet Search</option>
+						<option value="2">Facebook Page</option>
+						<option value="3">Kijiji Ad</option>
+						<option value="4">Returning Player</option>
+						<option value="5">From A Friend</option>
+						<option value="6">Restaurant Advertisement</option>
+						<option value="7">The Guelph Community Guide</option>
+						<option value="8">Other</option>            
+					</select>
+				</div>
+			</div>
+			<div class='row form-group' id='HowHeardOtherMethod' <?php echo $team->getCaptain()->getHowHeardMethod() != 8 ? "style='display:none;'" : "" ?>>
+				<div class='col-md-2 col-xs-4'>
+					<label for='CapHowHeardMethodOther'>Please specify other method</label>
+				</div>
+				<div class='col-md-10 col-xs-8'>
+					<input name="capHowHeardMethodOther" class='form-control' id='CapHowHeardMethodOther' value='<?php echo htmlentities($team->getCaptain()->getHowHeardOtherText(), ENT_QUOTES) ?>' type='text' />
+				</div>
+			</div>
+		</fieldset>
+		<fieldset id='EditTeamFeesSection' class='form-group' data-display='true'>
+			<legend>Confirm Fees<small>The registration process is not finalized until fees have been paid.</small></legend>
+			<div class='row form-group'>
+				<div class='col-md-2 col-xs-4'>
+					<label for='TeamPayMethod'>Method <span class="required">*</span></label>
+				</div>
+				<div class='col-md-10 col-xs-8'>
+					<select name="teamPaymentMethod" id='TeamPayMethod' class='form-control'>
+						<option value="-1" readonly='readonly'>Choose Payment Method</option>
+						<option value="1">I will send an email money transfer to dave@perpetualmotion.org</option>
+						<option value="2">I will mail cheque to Perpetual Motion's home office</option>
+						<option value="3">I will bring cash/cheque to Perpetual Motion's home office</option>
+						<?php if(!empty($regSeason) && ($regSeason->getName() == 'Spring' || $regSeason->getName() == 'Summer')) { ?>
+							<option value="4">I will bring cash/cheque to registration night</option>
+						<?php } ?>
+					</select>
+				</div>
+			</div>
+			<p class='text-center'><strong>Make Cheques Payable to Perpetual Motion</strong></p>
+			<p class='text-center'><strong>Send This Confirmation Form & Fees to:</strong><br />78 Kathleen St. Guelph, Ontario; N1H 4Y3</p>
+		</fieldset>
+        <?php if(!empty($regSeason)) { ?>
+            <fieldset class='registrationDate'>
+                <legend>Registration Due By</legend>
+                <h4><?php print $regSeason->getName() ?> League</h4>
+                <?php 
+                    if($regSeason->getIsRegistrationBySport()) {
+                        foreach($sports as $curSport) {
+                            echo "<div class='row'>" 
+                                . "<div class='col-xs-3'>" . $curSport->getName() . "</div>"
+                                . "<div class='col-xs-9'><span class='red'><strong>" . date("F d, Y", $curSport->getRegistrationDueDate()) . "</strong></span></div>"
+                            . "</div>";
+                        }
+                    } else {
+                        echo $regSeason->getRegistrationDueBy();
+                    }
+                ?>
+            </fieldset>
 		<?php } ?>
+        <p>&nbsp;</p>
+		<fieldset class='form-group'>
+				<legend>Register<small>Submit your group registration to the convenor.</small></legend>
+			<p>
+				<button type='submit' class='btn btn-primary' name='submit' value='register' onclick='$("#EditTeamForm input[name=action]").val("register");'>
+					<span class='glyphicon glyphicon-saved'></span> Register
+				</button>
+				<button type='button' class="btn btn-primary pull-right" onclick='javascript:window.print();'><span class='glyphicon glyphicon-print'></span> Print Form</button>
+			</p>
+		</fieldset>
 	</form>
 
 	<script>
@@ -357,8 +334,7 @@
 					}
 				},
 				messages: {
-					leagueID: "League is required",
-					teamName: "Team Name is required"
+					leagueID: "League is required"
 				},
 				submitHandler:function(form) {
 					var paymentSection = $("#EditTeamFeesSection");
@@ -371,7 +347,7 @@
 					
 					$(form).ajaxSubmit({
 						type:"post",
-						url:"<?php echo $router->pathFor('save-team', ['teamID' => (!$newTeam && $team->getId() != null ? $team->getId() : -1) ]); ?>",
+						url:"<?php echo $router->pathFor('save-group', ['teamID' => (!$newTeam && $team->getId() != null ? $team->getId() : -1) ]); ?>",
 						dataType:"json",
 						success:function(resp) {
 							if(resp.status === 1) {
@@ -411,7 +387,7 @@
 			//var contentHeight = $text.addClass('heightAuto').height();
 			
 			$("#RegPlayersContainer").animate({ 
-				height: $("#TeamMembers").height()
+				height: $("#groupMembers").height()
 			}, 500);
 			
 			$("#RegPlayersMoreContainer").slideUp();

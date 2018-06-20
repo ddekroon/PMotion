@@ -75,10 +75,10 @@
 					"request", $request,
 					"router" => $this->router,
 					"sport" => $sport,
-					"team" => $pastTeam,
-					"user" => $curUser,
-					"registerTeam" => true,
-					"league" => $pastTeam->getId() != null ? $pastTeam->getLeague() : new Models_League(),
+					"team" => $pastTeam, // Will be removed
+					"user" => $curUser, // Need to remove for people not logged in
+					"registerTeam" => true, // Will be removed
+					"league" => new Models_League(),
 					"leaguesAvailableForRegistration" => $leaguesController->getLeaguesForRegistration($sportID),
 					"seasonsAvailableForRegistration" => $seasonsController->getSeasonsAvailableForRegistration(),
 					"sports" => $sportsController->getSports()
@@ -126,6 +126,31 @@
 		return $response;
 
 	})->setName('save-team')->add($authenticate);
+
+	$app->post('/save-group[/{teamID}]', function (Request $request, Response $response) {
+
+		
+		// $curUser = Models_User::withID($this->db, $this->logger, $_SESSION[Controllers_AuthController::SESSION_USER_ID]);
+		// $team = Models_Team::withID($this->db, $this->logger, (int)$request->getAttribute('teamID'));
+
+		// $teamsController = new Controllers_TeamsController($this->db, $this->logger);
+
+		// $returnObj = array();
+				
+		/*try {
+			$successMessage = $teamsController->insertOrUpdateTeam($team, $curUser, $request);
+			$returnObj["status"] = 1;
+			$returnObj["successMessage"] = $successMessage;
+		} catch(Exception $e) {
+			$returnObj["status"] = 0;
+			$returnObj["errorMessage"] = $e->getMessage();
+		}*/
+
+		// $response->getBody()->write(json_encode($returnObj));
+
+		return $response;
+
+	})->setName('save-group')->add($authenticate);
 
 	$app->post('/remove-team/{teamID}', function(Request $request, Response $response) {
 

@@ -248,3 +248,6 @@
 [2018-06-12 15:31:16] my_logger.DEBUG: Error deleting Auth token LZjQzcieEymu : 00000:: [] []
 [2018-06-12 15:32:54] my_logger.DEBUG: Error deleting Auth token wu17WQ2ISIt7 : 00000:: [] []
 [2018-06-15 13:29:41] my_logger.ERROR: View cannot render `dashboard/edit-group.phtml` because the template does not exist {"sportID":"1"} []
+[2018-06-19 16:00:26] my_logger.ERROR: Email not sent: Models_Email [ 1986 ]  You must provide at least one recipient email address. [] []
+[2018-06-19 16:40:11] my_logger.ERROR: Named route does not exist for name: save-group {"sportID":"1"} []
+[2018-06-19 16:40:35] my_logger.ERROR: Named route does not exist for name: save-group {"sportID":"1"} []
