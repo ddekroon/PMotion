@@ -252,3 +252,8 @@
 [2018-06-19 16:40:11] my_logger.ERROR: Named route does not exist for name: save-group {"sportID":"1"} []
 [2018-06-19 16:40:35] my_logger.ERROR: Named route does not exist for name: save-group {"sportID":"1"} []
 [2018-06-20 10:59:20] my_logger.DEBUG: Error deleting Auth token LF2Pf7pC3Gft : 00000:: [] []
+[2018-06-25 15:32:14] my_logger.ERROR: Level "Test successful" is not defined, use one of: 100, 200, 250, 300, 400, 500, 550, 600 {"sportID":"1"} []
+[2018-06-25 15:35:55] my_logger.ERROR: Level "TEST" is not defined, use one of: 100, 200, 250, 300, 400, 500, 550, 600 {"sportID":"1"} []
+[2018-06-25 15:36:15] my_logger.ERROR: Level "TEST" is not defined, use one of: 100, 200, 250, 300, 400, 500, 550, 600 {"sportID":"1"} []
+[2018-06-25 15:36:29] my_logger.ERROR: Level "TEST" is not defined, use one of: 100, 200, 250, 300, 400, 500, 550, 600 {"sportID":"1"} []
+[2018-06-25 15:37:40] my_logger.CRITICAL: TEST [] []

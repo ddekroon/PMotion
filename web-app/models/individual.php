@@ -58,7 +58,7 @@ class Models_Individual extends Models_Generic implements Models_Interface, Json
 		$this->playerID = $data['individual_player_id'];
 		$this->phoneNumber = $data['individual_phone'];
 		$this->preferredLeagueID = $data['individual_preferred_league_id'];
-		$this->dateCreated = $data['individual_created'];
+		$this->dateCreated = new DateTime($data['individual_created']);
 		$this->isFinalized = $data['individual_finalized'];
 		$this->managedByID = $data['individual_managed_by_user_id'];
 		$this->groupID = $data['individual_small_group_id'];
@@ -148,6 +148,8 @@ class Models_Individual extends Models_Generic implements Models_Interface, Json
 	}
 
 	public function save() {
+
+		// THIS HAS JUST BEEN COPIED FROM PLAYER.PHP AND NOT CHANGED YET
 		
 		if(empty($this->getPlayerID())) {
 			return;

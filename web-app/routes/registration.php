@@ -65,11 +65,13 @@
 			
 			$sportID = $request->getAttribute('sportID');
 			$sport = Models_Sport::withID($this->db, $this->logger, $sportID);
-			$pastTeam = Models_Team::withID($this->db, $this->logger, $request->getAttribute('pastTeamID')); // REMOVING PAST TEAM HERE OR BELOW REMOVES THE STYLING - FIND WHY
+			$pastTeam = Models_Team::withID($this->db, $this->logger, $request->getAttribute('pastTeamID')); // REMOVING PAST TEAM HERE OR BELOW REMOVES THE STYLING - FIND OUT WHY
 			
 			$leaguesController = new Controllers_LeaguesController($this->db, $this->logger);
 			$seasonsController = new Controllers_SeasonsController($this->db, $this->logger);
 			$sportsController = new Controllers_SportsController($this->db, $this->logger);
+
+			// $this->logger->critical("TEST");
 			
 			return $this->view->render($response, "dashboard/edit-group.phtml", [
 					"request", $request,
@@ -129,10 +131,12 @@
 
 	$app->post('/save-group', function (Request $request, Response $response) {
 
-
 		// $curUser = Models_User::withID($this->db, $this->logger, $_SESSION[Controllers_AuthController::SESSION_USER_ID]);
 
 		$groupsController = new Controllers_GroupsController($this->db, $this->logger);
+
+		// $groupsController->logger->critical("TEST"); Doesn't work??
+		$this->logger->critical('Save group accessed');
 
 		$returnObj = array();
 

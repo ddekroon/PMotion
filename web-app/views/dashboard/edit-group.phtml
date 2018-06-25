@@ -312,14 +312,8 @@
 				leagueID: "League is required"
 			},
 			submitHandler:function(form) {
-				var paymentSection = $("#EditGroupFeesSection");
-				
-				//if($("#EditGroupForm input[name=action]").val() === "register" && paymentSection.attr('data-display') === 'false') {
-				//	paymentSection.attr('data-display', 'true');
-				//	paymentSection.slideDown(300);
-				//	return;
-				//}
-				
+				// var paymentSection = $("#EditGroupFeesSection"); Unused in group (it's from edit-team)
+
 				$(form).ajaxSubmit({
 					type:"post",
 					url:"<?php echo $router->pathFor('save-group'); ?>",
@@ -331,8 +325,8 @@
 							alert(resp.errorMessage);
 						}
 					},
-					error:function() {
-						alert("Error connecting to server");
+					error:function(resp) {
+						alert("Error connecting to server" + resp.errorMessage);
 					}
 				});
 			},
