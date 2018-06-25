@@ -131,33 +131,21 @@
 
 
 		// $curUser = Models_User::withID($this->db, $this->logger, $_SESSION[Controllers_AuthController::SESSION_USER_ID]);
-		// $team = Models_Team::withID($this->db, $this->logger, (int)$request->getAttribute('teamID'));
 
 		$groupsController = new Controllers_GroupsController($this->db, $this->logger);
 
+		$returnObj = array();
+
 		try {
-			$successMessage = $groupsController->insertGroup($group, $request);
+			$successMessage = $groupsController->insertGroup($request);
 			$returnObj["status"] = 1;
 			$returnObj["successMessage"] = $successMessage;
 		} catch(Exception $e) {
 			$returnObj["status"] = 0;
 			$returnObj["errorMessage"] = $e->getMessage();
-		}
+		} 
 
-		// $teamsController = new Controllers_TeamsController($this->db, $this->logger);
-
-		// $returnObj = array();
-				
-		/*try {
-			$successMessage = $teamsController->insertOrUpdateTeam($team, $curUser, $request);
-			$returnObj["status"] = 1;
-			$returnObj["successMessage"] = $successMessage;
-		} catch(Exception $e) {
-			$returnObj["status"] = 0;
-			$returnObj["errorMessage"] = $e->getMessage();
-		}*/
-
-		// $response->getBody()->write(json_encode($returnObj));
+		$response->getBody()->write(json_encode($returnObj));
 
 		return $response;
 

@@ -1,6 +1,6 @@
 <?php $regSeason = end($seasonsAvailableForRegistration); ?>
 
-<form id='EditTeamForm'>
+<form id='EditGroupForm'>
 	<input type='hidden' name='sportID' value='<?php echo $sport->getId() ?>' />
 	
 	<div class='row form-group'>
@@ -231,14 +231,14 @@
 			</div>
 		</div>
 	</fieldset>
-	<fieldset id='EditTeamFeesSection' class='form-group' data-display='true'>
+	<fieldset id='EditGroupFeesSection' class='form-group' data-display='true'>
 		<legend>Confirm Fees<small>The registration process is not finalized until fees have been paid.</small></legend>
 		<div class='row form-group'>
 			<div class='col-md-2 col-xs-4'>
-				<label for='TeamPayMethod'>Method <span class="required">*</span></label>
+				<label for='groupPayMethod'>Method <span class="required">*</span></label>
 			</div>
 			<div class='col-md-10 col-xs-8'>
-				<select name="teamPaymentMethod" id='TeamPayMethod' class='form-control'>
+				<select name="groupPaymentMethod" id='groupPayMethod' class='form-control'>
 					<option value="-1" readonly='readonly'>Choose Payment Method</option>
 					<option value="1">I will send an email money transfer to dave@perpetualmotion.org</option>
 					<option value="2">I will mail cheque to Perpetual Motion's home office</option>
@@ -274,7 +274,7 @@
 	<fieldset class='form-group'>
 			<legend>Register<small>Submit your group registration to the convenor.</small></legend>
 		<p>
-			<button type='submit' class='btn btn-primary' name='submit' value='register' onclick='$("#EditTeamForm input[name=action]").val("register");'>
+			<button type='submit' class='btn btn-primary' name='submit' value='register' onclick='$("#EditGroupForm input[name=action]").val("register");'>
 				<span class='glyphicon glyphicon-saved'></span> Register
 			</button>
 			<button type='button' class="btn btn-primary pull-right" onclick='javascript:window.print();'><span class='glyphicon glyphicon-print'></span> Print Form</button>
@@ -284,14 +284,13 @@
 
 <script>
 	$(function() {
-
 		$.validator.addMethod("registering", 
 			function(value, element) {
-				if($("#EditTeamForm input[name=action]").val() === 'save') {
+				if($("#EditGroupForm input[name=action]").val() === 'save') {
 					return true;
 				}
 				
-				if($("#EditTeamFeesSection").attr('data-display') === 'false') {
+				if($("#EditGroupFeesSection").attr('data-display') === 'false') {
 					return true;
 				} else {
 					return $(element).val() > 0;
@@ -299,9 +298,9 @@
 			}, "Please enter your payment method."
 		);
 
-		$("#EditTeamForm").validate({
+		$("#EditGroupForm").validate({
 			rules: {
-				teamPaymentMethod: {
+				groupPaymentMethod: {
 					"registering": true
 				},
 				leagueID: {
@@ -313,9 +312,9 @@
 				leagueID: "League is required"
 			},
 			submitHandler:function(form) {
-				var paymentSection = $("#EditTeamFeesSection");
+				var paymentSection = $("#EditGroupFeesSection");
 				
-				//if($("#EditTeamForm input[name=action]").val() === "register" && paymentSection.attr('data-display') === 'false') {
+				//if($("#EditGroupForm input[name=action]").val() === "register" && paymentSection.attr('data-display') === 'false') {
 				//	paymentSection.attr('data-display', 'true');
 				//	paymentSection.slideDown(300);
 				//	return;

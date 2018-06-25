@@ -147,6 +147,48 @@ class Models_Individual extends Models_Generic implements Models_Interface, Json
 		$this->howHeardOtherText = $howHeardOtherText;
 	}
 
+	public function save() {
+		
+		if(empty($this->getPlayerID())) {
+			return;
+		}
+		
+		try {
+			$stmt = $this->db->prepare("INSERT INTO " . Includes_DBTableNames::individualsTable . " "
+					. "(
+						player_team_id, player_is_captain, player_firstname, player_lastname, player_email, player_sex, player_phone, player_skill,
+						player_is_individual, player_note, player_hear_method, player_hear_other_text
+					) "
+					. "VALUES "
+					. "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+			);
+			
+			$this->db->beginTransaction(); 
+			$stmt->execute(
+				array(
+					$this->getTeamId(), 
+					$this->getIsCaptain() ? 1 : 0, 
+					$this->getFirstName(), 
+					$this->getLastName(), 
+					$this->getEmail(), 
+					$this->getGender(), 
+					$this->getPhoneNumber(), 
+					$this->getSkillLevel(), 
+					$this->getIsIndividual() ? 1 : 0, 
+					$this->getNote(), 
+					$this->getHowHeardMethod(), 
+					$this->getHowHeardOtherText()
+				)
+			); 
+			$this->setId($this->db->lastInsertId());
+			$this->db->commit(); 
+			
+		} catch (Exception $ex) {
+			$this->db->rollback();
+			$this->logger->log($ex->getMessage()); 
+		}
+	}
+
 }
 
 ?>
