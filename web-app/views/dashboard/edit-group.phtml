@@ -1,6 +1,7 @@
 <?php $regSeason = end($seasonsAvailableForRegistration); ?>
 
 <form id='EditGroupForm'>
+	<input type='hidden' name='action' value='ignore' />
 	<input type='hidden' name='sportID' value='<?php echo $sport->getId() ?>' />
 	
 	<div class='row form-group'>
@@ -163,7 +164,7 @@
 								<td>
 									<?php $phoneNumber ='' // Remove this later - see skillLevel note ?>
 									<label class='sr-only' for='PlayerPhoneNumber_<?php echo $i ?>'>Phone Number</label>
-									<input type='text' style="min-width:100px;" class='form-control' id='PlayerPhoneNumber_<?php echo $i ?>' value='<?php echo htmlentities($phoneNumber, ENT_QUOTES) ?>' <?php echo $i == 0 ? "required='required'" : "" ?> />
+									<input type='text' style="min-width:100px;" class='form-control' id='PlayerPhoneNumber_<?php echo $i ?>' name='playerPhoneNumber_<?php echo $i ?>' value='<?php echo htmlentities($phoneNumber, ENT_QUOTES) ?>' <?php echo $i == 0 ? "required='required'" : "" ?> />
 								</td>
 								<td>
 									<label class='sr-only' for='PlayerGender_<?php echo $i ?>'>Gender</label>
@@ -174,8 +175,8 @@
 								</td>
 								<td>
 									<label class='sr-only' for='PlayerSkill_<?php echo $i ?>'>Skill Level</label>
-									<select id='PlayerSkill_<?php echo $i ?>' style="min-width:100px;" name="PlayerSkill_<?php echo $i ?>" class='form-control'>
-										<option value='-1'>Choose</option>
+									<select id='PlayerSkill_<?php echo $i ?>' style="min-width:100px;" name="playerSkill_<?php echo $i ?>" class='form-control'>
+										<option value='0'>Choose</option>
 										<option value='5'>5 (High)</option>
 										<option value='4'>4</option>
 										<option value='3'>3</option>
@@ -312,11 +313,11 @@
 				leagueID: "League is required"
 			},
 			submitHandler:function(form) {
-				// var paymentSection = $("#EditGroupFeesSection"); Unused in group (it's from edit-team)
+				// var paymentSection = $("#EditGroupFeesSection"); Unused in group registration (it's from edit-team)
 
 				$(form).ajaxSubmit({
 					type:"post",
-					url:"<?php echo $router->pathFor('save-group'); ?>",
+					url:"<?php echo $router->pathFor('save-group', []); ?>",
 					dataType:"json",
 					success:function(resp) {
 						if(resp.status === 1) {
@@ -325,8 +326,14 @@
 							alert(resp.errorMessage);
 						}
 					},
-					error:function(resp) {
-						alert("Error connecting to server" + resp.errorMessage);
+					error:function(jqXHR, textStatus, errorThrown) {
+						console.log('jqXHR: ');
+						console.log(jqXHR);
+						console.log('textStatus: ');
+						console.log(textStatus);
+						console.log('errorThrown: ');
+						console.log(errorThrown);
+						alert("Error connecting to server");
 					}
 				});
 			},

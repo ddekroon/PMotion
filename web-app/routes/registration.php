@@ -136,7 +136,7 @@
 		$groupsController = new Controllers_GroupsController($this->db, $this->logger);
 
 		// $groupsController->logger->critical("TEST"); Doesn't work??
-		$this->logger->critical('Save group accessed');
+		// $this->logger->critical('Save group accessed!!'); // For testing - Kyle
 
 		$returnObj = array();
 
@@ -147,7 +147,7 @@
 		} catch(Exception $e) {
 			$returnObj["status"] = 0;
 			$returnObj["errorMessage"] = $e->getMessage();
-		} 
+		}
 
 		$response->getBody()->write(json_encode($returnObj));
 
