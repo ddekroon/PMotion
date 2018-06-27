@@ -135,7 +135,7 @@ class Models_Individual extends Models_Generic implements Models_Interface, Json
 		$this->groupID = $groupID;
 	}
 
-	function setPaymentMethod($paymentMethod)) {
+	function setPaymentMethod($paymentMethod) {
 		$this->paymentMethod = $paymentMethod;
 	}
 
@@ -148,37 +148,34 @@ class Models_Individual extends Models_Generic implements Models_Interface, Json
 	}
 
 	public function save() {
-
-		// THIS HAS JUST BEEN COPIED FROM PLAYER.PHP AND NOT CHANGED YET
 		
-		if(empty($this->getPlayerID())) {
+		 if(empty($this->getPlayerID())) {
 			return;
-		}
+		} 
 		
 		try {
+			$this->setDateCreated(new DateTime());
+
 			$stmt = $this->db->prepare("INSERT INTO " . Includes_DBTableNames::individualsTable . " "
 					. "(
-						player_team_id, player_is_captain, player_firstname, player_lastname, player_email, player_sex, player_phone, player_skill,
-						player_is_individual, player_note, player_hear_method, player_hear_other_text
+						individual_player_id, individual_phone, individual_preferred_league_id, individual_created, individual_finalized, individual_managed_by_user_id, individual_small_group_id, individual_payment_method, individual_hear_method, individual_hear_other_text
 					) "
 					. "VALUES "
-					. "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+					. "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
 			);
 			
 			$this->db->beginTransaction(); 
 			$stmt->execute(
 				array(
-					$this->getTeamId(), 
-					$this->getIsCaptain() ? 1 : 0, 
-					$this->getFirstName(), 
-					$this->getLastName(), 
-					$this->getEmail(), 
-					$this->getGender(), 
+					$this->getPlayerID(), 
 					$this->getPhoneNumber(), 
-					$this->getSkillLevel(), 
-					$this->getIsIndividual() ? 1 : 0, 
-					$this->getNote(), 
-					$this->getHowHeardMethod(), 
+					$this->getPreferredLeagueID(), 
+					$this->getDateCreated() != null ? $this->getDateCreated()->format('Y-m-d H:i:s') : null, 
+					$this->getIsFinalized(), 
+					$this->getManagedByID(),
+					$this->getGroupID(), 
+					$this->getPaymentMethod(), 
+					$this->getHowHeardMethod(), // FIND OUT WHERE TEAMS/PLAYERS SET THIS
 					$this->getHowHeardOtherText()
 				)
 			); 

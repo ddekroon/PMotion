@@ -35,19 +35,19 @@ class Controllers_GroupsController extends Controllers_Controller {
 			{
 				$curPlayer->setHowHeardMethod(isset($allPostVars['capHowHeardMethod']) ? $allPostVars['capHowHeardMethod'] : '');
 				$curPlayer->setHowHeardOtherText(isset($allPostVars['capHowHeardMethodOther']) ? $allPostVars['capHowHeardMethodOther'] : '');
-				// $managerID = $curPlayer->getId(); // Not sure this will grab ID correctly
+				// $managerID = $curPlayer->getId(); // Fo
 			}
 
-			/* $curIndiv = Models_Individual::withRow($this->db, $this->logger, []);
+			$curIndiv = Models_Individual::withRow($this->db, $this->logger, []);
 
-			$curIndiv->setPlayerID($curPlayer->getId()); // Not sure this will grab ID correctly
+			
 			$curIndiv->setPhoneNumber($allPostVars['playerPhoneNumber_' . $i]);
 			$curIndiv->setPreferredLeagueID($allPostVars['leagueID']);
 			// $curIndiv->setDateCreated(?);
 			$curIndiv->setIsFinalized(true);
-			$curIndiv->setManagedByID($managerID); // Not certain this will work right
+			// $curIndiv->setManagedByID($managerID); // Managed by USER ID not player ID, so this is not needed to be anything but 0
 			$curIndiv->setGroupID($newGroupID);
-			$curIndiv->setPaymentMethod($allPostVars['groupPayMethod']); */
+			$curIndiv->setPaymentMethod($allPostVars['groupPaymentMethod']);
 
 			// TODO: how to do dateCreated. Does table do it auto?
 
@@ -55,7 +55,9 @@ class Controllers_GroupsController extends Controllers_Controller {
 			$newPlayer = $curPlayer->getFirstName();
 
 			if(isset($newPlayer)) {
-				$curPlayer->saveOrUpdate();
+				$curPlayer->saveOrUpdate(); //Works, but commented until individual is working so people don't keep getting added to player table on tests
+				$curIndiv->setPlayerID($curPlayer->getId()); // Not sure this will grab ID correctly
+				$curIndiv->save();
 			}
 			//$curIndiv->save();
 
