@@ -142,10 +142,13 @@
 							<?php 
 								$curPlayer = new Models_Player();
 
+								// Setting all these vars is redundant without logged in user version of the page. They were meant to autofill user's info
+								// All the values='htmlentities' stuff is redundant too without a user logged in
 								$firstName = $curPlayer->getFirstName();
 								$lastName = $curPlayer->getLastName();
 								$email = $curPlayer->getEmail();
 								$gender = $curPlayer->getGender();
+								$phoneNumber = $curPlayer->getPhoneNumber();
 							?>
 							<tr>
 								<td style="min-width:45px;"><?php echo $i == 0 ? "You <span class='required'>*</span>" : $i + 1; ?>
@@ -162,7 +165,6 @@
 									<input type='text' style="min-width:200px;" class='form-control' id='PlayerEmail_<?php echo $i ?>' name='playerEmail_<?php echo $i ?>' value='<?php echo htmlentities($email, ENT_QUOTES) ?>' <?php echo $i == 0 ? "required='required'" : "" ?> />
 								</td>
 								<td>
-									<?php $phoneNumber ='' // Remove this later - see skillLevel note ?>
 									<label class='sr-only' for='PlayerPhoneNumber_<?php echo $i ?>'>Phone Number</label>
 									<input type='text' style="min-width:100px;" class='form-control' id='PlayerPhoneNumber_<?php echo $i ?>' name='playerPhoneNumber_<?php echo $i ?>' value='<?php echo htmlentities($phoneNumber, ENT_QUOTES) ?>' <?php echo $i == 0 ? "required='required'" : "" ?> />
 								</td>
@@ -199,10 +201,10 @@
 
 		<div class='row form-group'>
 			<div class='col-md-2 col-xs-4'>
-				<label for='TeamComments'>Comments</label>
+				<label for='groupComments'>Comments</label>
 			</div>
 			<div class='col-md-10 col-xs-8'>
-				<textarea class='form-control' name="teamComments" id='TeamComments'></textarea>
+				<textarea class='form-control' name="groupComments" id='groupComments'></textarea>
 			</div>
 		</div>
 		<div class='row form-group'>
@@ -228,7 +230,7 @@
 				<label for='CapHowHeardMethodOther'>Please specify other method</label>
 			</div>
 			<div class='col-md-10 col-xs-8'>
-				<input name="capHowHeardMethodOther" class='form-control' id='CapHowHeardMethodOther' value='<?php echo htmlentities($team->getCaptain()->getHowHeardOtherText(), ENT_QUOTES) ?>' type='text' />
+				<input name="capHowHeardMethodOther" class='form-control' id='CapHowHeardMethodOther' type='text' />
 			</div>
 	</fieldset>
 		</div>

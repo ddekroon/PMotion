@@ -22,7 +22,6 @@ class Controllers_GroupsController extends Controllers_Controller {
 		}
 
 		for($i = 0; $i < $sport->getNumPlayerInputsForRegistration(); $i++) {
-			// $playerID = $allPostVars['playerID_' . $i] // Is this even doing anything?
 
 			$curPlayer = Models_Player::withRow($this->db, $this->logger, []);
 			
@@ -38,35 +37,29 @@ class Controllers_GroupsController extends Controllers_Controller {
 			{
 				$curPlayer->setHowHeardMethod(isset($allPostVars['capHowHeardMethod']) ? $allPostVars['capHowHeardMethod'] : 0);
 				$curPlayer->setHowHeardOtherText(isset($allPostVars['capHowHeardMethodOther']) ? $allPostVars['capHowHeardMethodOther'] : '');
-				// $managerID = $curPlayer->getId(); // Read note below for info
 			}
 
 			$curIndiv = Models_Individual::withRow($this->db, $this->logger, []);
 
-			
+			// dateCreated and individualID are both automatically assigned by db upon submission, so they aren't mentioned here
+
 			$curIndiv->setPhoneNumber($allPostVars['playerPhoneNumber_' . $i]);
 			$curIndiv->setPreferredLeagueID($allPostVars['leagueID']);
-			// $curIndiv->setDateCreated(?);
 			$curIndiv->setIsFinalized(true);
 			// $curIndiv->setManagedByID($managerID); // Managed by USER ID not player ID, so this is not needed to be anything but 0
 			$curIndiv->setGroupID($newGroupID);
 			$curIndiv->setPaymentMethod($allPostVars['groupPaymentMethod']);
-			$curIndiv->setHowHeardMethod(0);
-			$curIndiv->setHowHeardOtherText('');
-
-			// TODO: how to do dateCreated. Does table do it auto?
+			$curIndiv->setHowHeardMethod(0); // This is unused in db. It's stored and used via player table
+			$curIndiv->setHowHeardOtherText(''); // Same as previous
 
 			// TODO: Set note (I think under player)
 			$newPlayer = $curPlayer->getFirstName();
 
 			if(isset($newPlayer)) {
-				$curPlayer->saveOrUpdate(); //Works, but commented until individual is working so people don't keep getting added to player table on tests
-				$curIndiv->setPlayerID($curPlayer->getId()); // Not sure this will grab ID correctly
+				$curPlayer->saveOrUpdate();
+				$curIndiv->setPlayerID($curPlayer->getId());
 				$curIndiv->save();
 			}
-			//$curIndiv->save();
-
-			// $players[] = $curPlayer; // Pretty sure this isn't needed as we're not adding players to something, just individuals to players
 		}
 
 		return "Your group has been registered!";
