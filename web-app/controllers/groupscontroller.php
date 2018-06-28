@@ -10,12 +10,15 @@ class Controllers_GroupsController extends Controllers_Controller {
 
 		$sport = Models_Sport::withID($this->db, $this->logger, $allPostVars['sportID']);
 
-		if(isset($allPostVars['playerFirstName_1'])) {
+		if(!empty($allPostVars['playerFirstName_1'])) {
 			$stmt = $this->db->query("SELECT MAX(individual_small_group_id) as highestGroupNum FROM " . Includes_DBTableNames::individualsTable);
 
 			if(($row = $stmt->fetch()) != false) {
 				$newGroupID = $row['highestGroupNum'] + 1;
 			}
+		}
+		else {
+			$newGroupID = 0;
 		}
 
 		for($i = 0; $i < $sport->getNumPlayerInputsForRegistration(); $i++) {
@@ -33,9 +36,9 @@ class Controllers_GroupsController extends Controllers_Controller {
 
 			if($i == 0)
 			{
-				$curPlayer->setHowHeardMethod(isset($allPostVars['capHowHeardMethod']) ? $allPostVars['capHowHeardMethod'] : '');
+				$curPlayer->setHowHeardMethod(isset($allPostVars['capHowHeardMethod']) ? $allPostVars['capHowHeardMethod'] : 0);
 				$curPlayer->setHowHeardOtherText(isset($allPostVars['capHowHeardMethodOther']) ? $allPostVars['capHowHeardMethodOther'] : '');
-				// $managerID = $curPlayer->getId(); // Fo
+				// $managerID = $curPlayer->getId(); // Read note below for info
 			}
 
 			$curIndiv = Models_Individual::withRow($this->db, $this->logger, []);
@@ -48,6 +51,8 @@ class Controllers_GroupsController extends Controllers_Controller {
 			// $curIndiv->setManagedByID($managerID); // Managed by USER ID not player ID, so this is not needed to be anything but 0
 			$curIndiv->setGroupID($newGroupID);
 			$curIndiv->setPaymentMethod($allPostVars['groupPaymentMethod']);
+			$curIndiv->setHowHeardMethod(0);
+			$curIndiv->setHowHeardOtherText('');
 
 			// TODO: how to do dateCreated. Does table do it auto?
 

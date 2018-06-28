@@ -219,19 +219,19 @@
 					<option value="5">From A Friend</option>
 					<option value="6">Restaurant Advertisement</option>
 					<option value="7">The Guelph Community Guide</option>
-					<option value="8">Other</option>            
+					<option value="8">Other</option>
 				</select>
 			</div>
 		</div>
-		<div class='row form-group' id='HowHeardOtherMethod' <?php echo $team->getCaptain()->getHowHeardMethod() != 8 ? "style='display:none;'" : "" ?>>
+		<div class='row form-group' id='HowHeardOtherMethod' style='display:none;'>
 			<div class='col-md-2 col-xs-4'>
 				<label for='CapHowHeardMethodOther'>Please specify other method</label>
 			</div>
 			<div class='col-md-10 col-xs-8'>
 				<input name="capHowHeardMethodOther" class='form-control' id='CapHowHeardMethodOther' value='<?php echo htmlentities($team->getCaptain()->getHowHeardOtherText(), ENT_QUOTES) ?>' type='text' />
 			</div>
-		</div>
 	</fieldset>
+		</div>
 	<fieldset id='EditGroupFeesSection' class='form-group' data-display='true'>
 		<legend>Confirm Fees<small>The registration process is not finalized until fees have been paid.</small></legend>
 		<div class='row form-group'>
