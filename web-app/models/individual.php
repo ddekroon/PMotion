@@ -1,6 +1,6 @@
 <?php
 
-// NOT COMPLETE
+/* Created by Kyle Conrad - Summer 2018 */
 
 class Models_Individual extends Models_Generic implements Models_Interface, JsonSerializable {
 	protected $playerID;
@@ -13,8 +13,6 @@ class Models_Individual extends Models_Generic implements Models_Interface, Json
 	protected $paymentMethod;
 	protected $howHeardMethod;
 	protected $howHeardOtherText;
-
-	protected $registrationComment;
 
 	public static function withID($db, $logger, $id) {
 		$instance = new self();

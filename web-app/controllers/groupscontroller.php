@@ -1,5 +1,7 @@
 <?php
 
+/* Created by Kyle Conrad - Summer 2018 */
+
 class Controllers_GroupsController extends Controllers_Controller {
 
 	public function insertGroup($request)
@@ -10,6 +12,7 @@ class Controllers_GroupsController extends Controllers_Controller {
 
 		$sport = Models_Sport::withID($this->db, $this->logger, $allPostVars['sportID']);
 
+		/* If there's multiple individuals it becomes a group and this assigns the groupID for the new group - Kyle */
 		if(!empty($allPostVars['playerFirstName_1'])) {
 			$stmt = $this->db->query("SELECT MAX(individual_small_group_id) as highestGroupNum FROM " . Includes_DBTableNames::individualsTable);
 
@@ -37,6 +40,18 @@ class Controllers_GroupsController extends Controllers_Controller {
 			{
 				$curPlayer->setHowHeardMethod(isset($allPostVars['capHowHeardMethod']) ? $allPostVars['capHowHeardMethod'] : 0);
 				$curPlayer->setHowHeardOtherText(isset($allPostVars['capHowHeardMethodOther']) ? $allPostVars['capHowHeardMethodOther'] : '');
+
+				// Creating the note from comments section
+				// for($i = 2; $i <= 3; $i++) {
+				// 	if(isset($allPostVars['leagueID' . $i]))
+				// 	{
+				// 		$groupNote = "PL"
+				// 	}
+					$groupNote = (isset($allPostVars['groupComments']) ? $allPostVars['groupComments'] : ''); //use .= once for is active again
+				// }
+				
+				$curPlayer->setNote($groupNote);
+				$curPlayer->getRegistrationComment()->setComment($groupNote);
 			}
 
 			$curIndiv = Models_Individual::withRow($this->db, $this->logger, []);
@@ -46,11 +61,11 @@ class Controllers_GroupsController extends Controllers_Controller {
 			$curIndiv->setPhoneNumber($allPostVars['playerPhoneNumber_' . $i]);
 			$curIndiv->setPreferredLeagueID($allPostVars['leagueID']);
 			$curIndiv->setIsFinalized(true);
-			// $curIndiv->setManagedByID($managerID); // Managed by USER ID not player ID, so this is not needed to be anything but 0
+			// $curIndiv->setManagedByID($managerID); /* Managed by USER ID not player ID, so this is not needed to be anything but 0 unless user-based individual registration is implemented later */
 			$curIndiv->setGroupID($newGroupID);
 			$curIndiv->setPaymentMethod($allPostVars['groupPaymentMethod']);
-			$curIndiv->setHowHeardMethod(0); // This is unused in db. It's stored and used via player table
-			$curIndiv->setHowHeardOtherText(''); // Same as previous
+			$curIndiv->setHowHeardMethod(0); // This is stored but unused in this db table. It's stored and used via player table
+			$curIndiv->setHowHeardOtherText(''); // Same note as previous
 
 			// TODO: Set note (I think under player)
 			$newPlayer = $curPlayer->getFirstName();
@@ -59,6 +74,10 @@ class Controllers_GroupsController extends Controllers_Controller {
 				$curPlayer->saveOrUpdate();
 				$curIndiv->setPlayerID($curPlayer->getId());
 				$curIndiv->save();
+
+				if($i == 0) {
+					$curPlayer->getRegistrationComment()->saveOrUpdate();
+				}
 			}
 		}
 
