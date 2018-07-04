@@ -40,15 +40,26 @@ class Controllers_GroupsController extends Controllers_Controller {
 			{
 				$curPlayer->setHowHeardMethod(isset($allPostVars['capHowHeardMethod']) ? $allPostVars['capHowHeardMethod'] : 0);
 				$curPlayer->setHowHeardOtherText(isset($allPostVars['capHowHeardMethodOther']) ? $allPostVars['capHowHeardMethodOther'] : '');
+				$groupNote = '';
 
-				// Creating the note from comments section
-				// for($i = 2; $i <= 3; $i++) {
-				// 	if(isset($allPostVars['leagueID' . $i]))
-				// 	{
-				// 		$groupNote = "PL"
-				// 	}
-					$groupNote = (isset($allPostVars['groupComments']) ? $allPostVars['groupComments'] : ''); //use .= once for is active again
-				// }
+				/* Creating the note from comments section - Kyle */
+				for($j = 2; $j <= 3; $j++) {
+					if(($allPostVars['leagueID' . $j]) != -1) {
+						$prefLeagueID = $allPostVars['leagueID' . $j];
+
+						$sql = "SELECT * FROM " . Includes_DBTableNames::leaguesTable . " WHERE league_id = '$prefLeagueID'";
+
+						$stmt = $this->db->query($sql);
+
+						if(($row = $stmt->fetch()) != false) {
+							$otherLeague = Models_League::withRow($this->db, $this->logger, $row);
+						}
+						$prefLeagueName = $otherLeague->getRegistrationFormattedName();
+
+						$groupNote .= "PL$j-" . $prefLeagueName . ' ';
+					}
+				}
+				$groupNote .= (isset($allPostVars['groupComments']) ? $allPostVars['groupComments'] : ''); //use .= once for is active again
 				
 				$curPlayer->setNote($groupNote);
 				$curPlayer->getRegistrationComment()->setComment($groupNote);
@@ -67,7 +78,6 @@ class Controllers_GroupsController extends Controllers_Controller {
 			$curIndiv->setHowHeardMethod(0); // This is stored but unused in this db table. It's stored and used via player table
 			$curIndiv->setHowHeardOtherText(''); // Same note as previous
 
-			// TODO: Set note (I think under player)
 			$newPlayer = $curPlayer->getFirstName();
 
 			if(isset($newPlayer)) {

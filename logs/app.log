@@ -298,3 +298,8 @@
 [2018-07-03 16:41:11] my_logger.CRITICAL: TEST [] []
 [2018-07-03 16:41:11] my_logger.CRITICAL: 0 [] []
 [2018-07-03 16:41:11] my_logger.CRITICAL: attempting to save comment!!! [] []
+[2018-07-04 12:15:05] my_logger.DEBUG: Groupnote: PEW [] []
+[2018-07-04 12:18:58] my_logger.DEBUG: Groupnote: PL2-B Division - Wednesday (Team Fee: $450.00) PL3-C Division - Wednesday (Team Fee: $450.00) TEST PL 8 [] []
+[2018-07-04 12:22:56] my_logger.DEBUG: Groupnote: PL2-C Division - Tuesday (Team Fee: $475.00) PL3-B Division - Wednesday (Team Fee: $450.00) TEST PL 9 [] []
+[2018-07-04 12:26:03] my_logger.DEBUG: Groupnote: PL2-B Division - Wednesday (Team Fee: $450.00) PL3-B Division - Wednesday (Team Fee: $450.00) TEST PL 10 - problem found? [] []
+[2018-07-04 12:26:03] my_logger.CRITICAL: comment? [] []
