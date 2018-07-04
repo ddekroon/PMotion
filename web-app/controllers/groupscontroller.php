@@ -42,7 +42,7 @@ class Controllers_GroupsController extends Controllers_Controller {
 				$curPlayer->setHowHeardOtherText(isset($allPostVars['capHowHeardMethodOther']) ? $allPostVars['capHowHeardMethodOther'] : '');
 				$groupNote = '';
 
-				/* Creating the note from comments section - Kyle */
+				/* Creating the note from comments section including 2nd and 3rd choice leagues - Kyle */
 				for($j = 2; $j <= 3; $j++) {
 					if(($allPostVars['leagueID' . $j]) != -1) {
 						$prefLeagueID = $allPostVars['leagueID' . $j];
@@ -59,7 +59,7 @@ class Controllers_GroupsController extends Controllers_Controller {
 						$groupNote .= "PL$j-" . $prefLeagueName . ' ';
 					}
 				}
-				$groupNote .= (isset($allPostVars['groupComments']) ? $allPostVars['groupComments'] : ''); //use .= once for is active again
+				$groupNote .= (isset($allPostVars['groupComments']) ? $allPostVars['groupComments'] : '');
 				
 				$curPlayer->setNote($groupNote);
 				$curPlayer->getRegistrationComment()->setComment($groupNote);
@@ -82,6 +82,8 @@ class Controllers_GroupsController extends Controllers_Controller {
 
 			if(isset($newPlayer)) {
 				$curPlayer->saveOrUpdate();
+				$this->insertPlayerAddressDB($curPlayer);
+
 				$curIndiv->setPlayerID($curPlayer->getId());
 				$curIndiv->save();
 
@@ -93,6 +95,26 @@ class Controllers_GroupsController extends Controllers_Controller {
 
 		return "Your group has been registered!";
 
+	}
+
+	/* This function is entirely from teamscontroller.php and works here without needing any changes */
+	function insertPlayerAddressDB($player) {
+
+		if(filter_var($player->getEmail(), FILTER_VALIDATE_EMAIL)) {
+			
+			$stmt = $this->db->query("SELECT count(*) as numEmails FROM " . Includes_DBTableNames::addressesTable . " WHERE EmailAddress = '" . $player->getEmail() . "'");
+
+			if(($row = $stmt->fetch()) != false) {
+				if($row['numEmails'] == 0) {
+					$newEmail = Models_EmailAddress::withID($this->db, $this->logger, -1);
+					$newEmail->setFirstName($player->getFirstName());
+					$newEmail->setLastName($player->getLastName());
+					$newEmail->setEmail($player->getEmail());
+					
+					$newEmail->save();
+				}
+			}
+		}
 	}
 
 }

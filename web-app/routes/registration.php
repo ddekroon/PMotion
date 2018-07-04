@@ -153,7 +153,7 @@
 
 		return $response;
 
-	})->setName('save-group')->add($authenticate);
+	})->setName('save-group');
 
 	$app->post('/remove-team/{teamID}', function(Request $request, Response $response) {
 
