@@ -135,7 +135,6 @@
 
 		$groupsController = new Controllers_GroupsController($this->db, $this->logger);
 
-		// $groupsController->logger->critical("TEST"); Doesn't work??
 		// $this->logger->critical('Save group accessed!!'); // For testing - Kyle
 
 		$returnObj = array();

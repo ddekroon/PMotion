@@ -109,7 +109,6 @@ class Controllers_RegistrationController extends Controllers_Controller {
 		);
 	}
 
-
 	function sendWaiverEmails(Models_Team $team) {
 		
 		$toSend = array();
@@ -126,6 +125,43 @@ class Controllers_RegistrationController extends Controllers_Controller {
 						&& !in_array($curPlayer->getEmail(), $toSend)) {
 					array_push($toSend, $curPlayer->getEmail());
 				}
+			}
+		}
+		
+		$emailController = new Controllers_EmailsController($this->db, $this->logger);
+		$emailTemplate = Includes_EmailTypes::sendWaiver();
+		
+		$emailController->createAndSendEmail(
+				$emailTemplate->getEmailType(), 
+				$subject, 
+				$body, 
+				null,
+				$emailTemplate->getFromName(),
+				$emailTemplate->getFromAddress(), 
+				null, 
+				implode(',', $toSend)
+		);
+		
+		//sendEmailsBcc($toSend,'info@perpetualmotion.org', $subject, $body);
+	}
+
+	/* Currently set to run for every player instead of using an array of players and running it once. Should probably be changed later to the latter */
+	function sendWaiverEmailsGroup(array $groupMembers) {
+
+		$toSend = array();
+
+		$body = $this->templateEngine->render('email-waiver-group', []);
+
+		$subject = 'Online Waiver - Free Agent';
+
+		foreach($groupMembers as $curPlayer) {
+			if($curPlayer != null && $curPlayer->getEmail() != null) {
+				if(filter_var($curPlayer->getEmail(), FILTER_VALIDATE_EMAIL) && !in_array($curPlayer->getEmail(), $toSend)) {
+					$toSend[] = $curPlayer->getEmail();
+				}
+			}
+			else {
+				$this->logger->critical("No player found by group waiver form");
 			}
 		}
 		

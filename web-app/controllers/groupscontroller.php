@@ -7,8 +7,6 @@ class Controllers_GroupsController extends Controllers_Controller {
 	public function insertGroup($request)
 	{
 		$allPostVars = $request->getParsedBody();
-		// $this->logger->critical("Player found!"); // For testing - Kyle
-
 
 		$sport = Models_Sport::withID($this->db, $this->logger, $allPostVars['sportID']);
 
@@ -23,6 +21,8 @@ class Controllers_GroupsController extends Controllers_Controller {
 		else {
 			$newGroupID = 0;
 		}
+
+		$groupMembers = array();
 
 		for($i = 0; $i < $sport->getNumPlayerInputsForRegistration(); $i++) {
 
@@ -80,18 +80,29 @@ class Controllers_GroupsController extends Controllers_Controller {
 
 			$newPlayer = $curPlayer->getFirstName();
 
-			if(isset($newPlayer)) {
-				$curPlayer->saveOrUpdate();
-				$this->insertPlayerAddressDB($curPlayer);
+			if(!empty($newPlayer)) {
+				$curPlayer->saveOrUpdate(); // TEMP 1 - testing waiver functionality
 
-				$curIndiv->setPlayerID($curPlayer->getId());
-				$curIndiv->save();
+				$groupMembers[] = $curPlayer;
+				// $this->insertPlayerAddressDB($curPlayer); / TEMP 1
 
-				if($i == 0) {
-					$curPlayer->getRegistrationComment()->saveOrUpdate();
-				}
+				// $curIndiv->setPlayerID($curPlayer->getId()); // TEMP 1
+				// $curIndiv->save(); // TEMP 1
+
+				/* if($i == 0) {
+					// $curPlayer->getRegistrationComment()->saveOrUpdate(); // TEMP 1
+				} */
 			}
 		}
+
+		foreach($groupMembers as $pew)
+		{
+			$this->logger->debug("Player: " . $pew->getFirstName() . " " . $pew->getEmail());
+		}
+
+		$registrationController = new Controllers_RegistrationController($this->db, $this->logger);
+
+		$registrationController->sendWaiverEmailsGroup($groupMembers);
 
 		return "Your group has been registered!";
 
