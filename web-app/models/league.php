@@ -88,7 +88,7 @@ class Models_League extends Models_Generic implements Models_Interface, JsonSeri
 		$this->isTies = $data['league_has_ties'] > 0;
 		$this->isPracticeGames = $data['league_has_practice_games'] > 0;
 		$this->maxPointsPerGame = $data['league_max_points_per_game'];
-		$this->isCancelOption = $data['league_show_cancel_default_option'] > 0;
+		$this->isShowCancelOption = $data['league_show_cancel_default_option'] > 0;
 		$this->isSendLateEmail = $data['league_send_late_email'] > 0;
 		$this->hideSpiritHour = $data['league_hide_spirit_hour'];
 		$this->showSpiritHour = $data['league_show_spirit_hour'];
