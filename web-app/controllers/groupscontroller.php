@@ -88,17 +88,17 @@ class Controllers_GroupsController extends Controllers_Controller {
 			}
 
 			if(!empty($newPlayer)) {
-				$curPlayer->saveOrUpdate(); // TEMP 1 - testing email functionality
+				$curPlayer->saveOrUpdate();
 
 				$groupMembers[] = $curPlayer;
-				// $this->insertPlayerAddressDB($curPlayer); // TEMP 1
+				$this->insertPlayerAddressDB($curPlayer);
 
-				$curIndiv->setPlayerID($curPlayer->getId()); // TEMP 1
+				$curIndiv->setPlayerID($curPlayer->getId());
 				$curIndiv->save(); // TEMP 1
 
-				/* if($i == 0) {
-					// $curPlayer->getRegistrationComment()->saveOrUpdate(); // TEMP 1
-				} */
+				 if($i == 0) {
+					$curPlayer->getRegistrationComment()->saveOrUpdate();
+				} 
 			}
 		}
 
@@ -114,7 +114,7 @@ class Controllers_GroupsController extends Controllers_Controller {
 
 		$registrationController->sendRegistrationEmailGroup($groupMembers, $capIndiv);
 
-		// $registrationController->sendWaiverEmailsGroup($groupMembers); // TEMP 2 - Waiver working, now doing reg emails
+		$registrationController->sendWaiverEmailsGroup($groupMembers);
 
 		return "Your group has been registered!";
 

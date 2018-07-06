@@ -603,3 +603,5 @@
 [2018-07-05 16:20:59] my_logger.DEBUG: Emails: 1 [] []
 [2018-07-05 16:22:54] my_logger.DEBUG: Player: Dave kyle@perpetualmotion.org [] []
 [2018-07-05 16:22:54] my_logger.DEBUG: Player: Kal kcomrade53@gmail.com [] []
+[2018-07-06 12:29:02] my_logger.CRITICAL: No player found by group waiver form [] []
+[2018-07-06 12:29:02] my_logger.CRITICAL: No player found by group waiver form [] []

@@ -219,9 +219,6 @@ class Controllers_RegistrationController extends Controllers_Controller {
 					$toSend[] = $curPlayer->getEmail();
 				}
 			}
-			else {
-				$this->logger->critical("No player found by group waiver form");
-			}
 		}
 		
 		$emailController = new Controllers_EmailsController($this->db, $this->logger);
