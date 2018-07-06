@@ -122,8 +122,7 @@ class Controllers_RegistrationController extends Controllers_Controller {
 				$regEmailTemplate->getEmailType(), 
 				$adminSubject, 
 				$adminBody, 
-				'kyle@perpetualmotion.org', // For testing. Replace with next line later
-				// implode(",", $regEmailTemplate->getToAddresses()), 
+				implode(",", $regEmailTemplate->getToAddresses()), 
 				$regEmailTemplate->getFromName(),
 				$regEmailTemplate->getFromAddress(), 
 				null, 
