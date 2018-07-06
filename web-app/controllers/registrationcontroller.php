@@ -72,36 +72,34 @@ class Controllers_RegistrationController extends Controllers_Controller {
 		);
 	}
 
-	function sendRegistrationEmailGroup(Models_Team $team) {
+	function sendRegistrationEmailGroup(array $groupMembers, Models_Individual $group) {
 		
 		$emailController = new Controllers_EmailsController($this->db, $this->logger);
 
-		$isComment = $team->getRegistrationComment() != null && !empty($team->getRegistrationComment());
-		$captain = $team->getCaptain();
+		$captain = $groupMembers[0];
+		$leagueChoice = Models_League::withID($this->db, $this->logger, $group->getPreferredLeagueID());
+		$payment = $group->getPaymentMethod();
+
+		$isComment = $captain->getRegistrationComment() != null && !empty($captain->getRegistrationComment());
 		$howHeardMethod = $captain->getHowHeardMethod() > 0 ? Includes_HeardAboutUsMethods::getMethodByOrdinal($captain->getHowHeardMethod()) : null;
 		$howHeardOther = $captain->getHowHeardMethod() > 0 ? $captain->getHowHeardOtherText() : '';
 
-		$subject= 'Registration Confirmation - ' . $team->getName() . ' - ' . $team->getLeague()->getFormattedName() 
-				. ' - ' . $team->getLeague()->getSeason()->getName();
+		$subject = 'Registration Confirmation - ' . (sizeof($groupMembers) > 1 ? 'Small Group' : 'Individual') . ' - ' . $leagueChoice->getRegistrationFormattedNameGroup();
 		
-		$adminSubject = 'Reg - ' . ($isComment ? 'Com - ' : '') . $team->getName() . ' - ' . $team->getLeague()->getFormattedName() 
-				. ' - ' . $team->getLeague()->getSeason()->getName();
-		
-		if($team->getLeague()->getIsFullTeams()) {
-			$subject .= ' - Full - Waiting List';
-			$adminSubject .= ' - Full - Waiting List';
-		}
+		$adminSubject = 'Reg - ' . ($isComment ? 'Com - ' : '') . (sizeof($groupMembers) > 1 ? 'Small Group' : 'Individual') . ' - ' . $leagueChoice->getRegistrationFormattedNameGroup();
 
 		$regEmailTemplate = Includes_EmailTypes::groupRegistered();
 		
 		$params = [
-			"team" => $team,
+			"groupMembers" => $groupMembers,
+			"group" => $group,
+			"leagueChoice" => $leagueChoice,
 			"adminEmail" => false,
 			"howHeardMethod" => $howHeardMethod,
 			"howHeardOther" => $howHeardOther,
-			"paymentMethod" => Includes_PaymentMethods::getMethodByOrdinal($team->getPaymentMethod()),
+			"paymentMethod" => Includes_PaymentMethods::getMethodByOrdinal($payment),
 			"isComment" => $isComment,
-			"captain" => $team->getCaptain()
+			"captain" => $captain
 		];
 		
 		$body = $this->templateEngine->render($regEmailTemplate->getTemplateLink(), $params);
@@ -110,7 +108,7 @@ class Controllers_RegistrationController extends Controllers_Controller {
 				$regEmailTemplate->getEmailType(), 
 				$subject, 
 				$body, 
-				$team->getCaptain()->getEmail(), 
+				$captain->getEmail(), 
 				$regEmailTemplate->getFromName(),
 				$regEmailTemplate->getFromAddress(), 
 				null, 
@@ -124,7 +122,8 @@ class Controllers_RegistrationController extends Controllers_Controller {
 				$regEmailTemplate->getEmailType(), 
 				$adminSubject, 
 				$adminBody, 
-				implode(",", $regEmailTemplate->getToAddresses()), 
+				'kyle@perpetualmotion.org', // For testing. Replace with next line later
+				// implode(",", $regEmailTemplate->getToAddresses()), 
 				$regEmailTemplate->getFromName(),
 				$regEmailTemplate->getFromAddress(), 
 				null, 

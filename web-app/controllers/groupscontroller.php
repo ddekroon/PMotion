@@ -47,14 +47,17 @@ class Controllers_GroupsController extends Controllers_Controller {
 					if(($allPostVars['leagueID' . $j]) != -1) {
 						$prefLeagueID = $allPostVars['leagueID' . $j];
 
-						$sql = "SELECT * FROM " . Includes_DBTableNames::leaguesTable . " WHERE league_id = '$prefLeagueID'";
+						$otherLeague = Models_League::withID($this->db, $this->logger, $prefLeagueID);
+
+						/* Does same thing as line above, but not as easily */
+						/* $sql = "SELECT * FROM " . Includes_DBTableNames::leaguesTable . " WHERE league_id = '$prefLeagueID'";
 
 						$stmt = $this->db->query($sql);
 
 						if(($row = $stmt->fetch()) != false) {
 							$otherLeague = Models_League::withRow($this->db, $this->logger, $row);
-						}
-						$prefLeagueName = $otherLeague->getRegistrationFormattedName();
+						} */
+						$prefLeagueName = $otherLeague->getRegistrationFormattedNameGroup();
 
 						$groupNote .= "PL$j-" . $prefLeagueName . ' ';
 					}
@@ -80,14 +83,18 @@ class Controllers_GroupsController extends Controllers_Controller {
 
 			$newPlayer = $curPlayer->getFirstName();
 
+			if($i == 0) {
+				$capIndiv = $curIndiv; // May not work correctly here
+			}
+
 			if(!empty($newPlayer)) {
 				$curPlayer->saveOrUpdate(); // TEMP 1 - testing email functionality
 
 				$groupMembers[] = $curPlayer;
 				// $this->insertPlayerAddressDB($curPlayer); // TEMP 1
 
-				// $curIndiv->setPlayerID($curPlayer->getId()); // TEMP 1
-				// $curIndiv->save(); // TEMP 1
+				$curIndiv->setPlayerID($curPlayer->getId()); // TEMP 1
+				$curIndiv->save(); // TEMP 1
 
 				/* if($i == 0) {
 					// $curPlayer->getRegistrationComment()->saveOrUpdate(); // TEMP 1
@@ -100,9 +107,12 @@ class Controllers_GroupsController extends Controllers_Controller {
 			$this->logger->debug("Player: " . $pew->getFirstName() . " " . $pew->getEmail());
 		} */
 
+		$leaguePref = $allPostVars['leagueID'];
+		$payment = $allPostVars['groupPaymentMethod'];
+
 		$registrationController = new Controllers_RegistrationController($this->db, $this->logger);
 
-		// $registrationController->sendRegistrationEmailGroup($groupMembers);
+		$registrationController->sendRegistrationEmailGroup($groupMembers, $capIndiv);
 
 		// $registrationController->sendWaiverEmailsGroup($groupMembers); // TEMP 2 - Waiver working, now doing reg emails
 

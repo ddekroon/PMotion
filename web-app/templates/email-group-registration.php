@@ -1,5 +1,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
+
+<!-- Created by Kyle Conrad - Summer 2018 -->
+<!-- This document is based on email-team-registration.php -->
+
 	<head>
 		<title>Score Reporter Email</title>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -32,37 +36,13 @@
 											<tr>
 												<td class="gray-bar-right align-right padding-right strong one-quarter" style="border-right: 3px solid #494e52; font-weight: 700; margin: 0; padding: 7px; padding-right: 20px; text-align: right; vertical-align: top; width: 25%;">League</td>
 												<td class="padding-left three-quarters" style="margin: 0; padding: 7px; padding-left: 20px; vertical-align: top; width: 75%;">
-													<?php echo $team->getLeague()->getSport()->getName() . ' - ' . $team->getLeague()->getRegistrationFormattedName() ?>
-												</td>
-											</tr>
-											<tr>
-												<td class="gray-bar-right align-right padding-right strong one-quarter" style="border-right: 3px solid #494e52; font-weight: 700; margin: 0; padding: 7px; padding-right: 20px; text-align: right; vertical-align: top; width: 25%;">
-													<?php $returningString ?> Team Name
-												</td>
-												<td class="padding-left three-quarters" style="margin: 0; padding: 7px; padding-left: 20px; vertical-align: top; width: 75%;">
-													<?php echo $team->getName() ?>
+													<?php echo $leagueChoice->getSport()->getName() . ' - ' . $leagueChoice->getRegistrationFormattedNameGroup() ?>
 												</td>
 											</tr>
 											<tr>
 												<td class="gray-bar-right align-right padding-right strong one-quarter" style="border-right: 3px solid #494e52; font-weight: 700; margin: 0; padding: 7px; padding-right: 20px; text-align: right; vertical-align: top; width: 25%;">Date</td>
 												<td class="padding-left three-quarters" style="margin: 0; padding: 7px; padding-left: 20px; vertical-align: top; width: 75%;">
-													<?php echo $team->getDateCreated()->format('F j, Y g:ia'); ?>
-												</td>
-											</tr>
-											<?php if($adminEmail) { ?>
-												<tr>
-													<td class="gray-bar-right align-right padding-right strong one-quarter" style="border-right: 3px solid #494e52; font-weight: 700; margin: 0; padding: 7px; padding-right: 20px; text-align: right; vertical-align: top; width: 25%;">TeamID</td>
-													<td class="padding-left three-quarters" style="margin: 0; padding: 7px; padding-left: 20px; vertical-align: top; width: 75%;">
-														<?php echo $team->getId(); ?>
-													</td>
-												</tr>
-											<?php } ?>
-											<tr>
-												<td class="gray-bar-right align-right padding-right strong one-quarter" style="border-right: 3px solid #494e52; font-weight: 700; margin: 0; padding: 7px; padding-right: 20px; text-align: right; vertical-align: top; width: 25%;">Captain</td>
-												<td class="padding-left three-quarters" style="margin: 0; padding: 7px; padding-left: 20px; vertical-align: top; width: 75%;">
-													<?php echo $captain->getFirstName() . ' ' . $captain->getLastName() . ' (' . $captain->getGender() . ')' ?><br>
-													<?php echo $captain->getEmail() ?><br>
-													<?php echo Includes_Helper::formatPhoneNumber($captain->getPhoneNumber()) ?>
+													<?php echo $group->getDateCreated()->format('F j, Y g:ia'); ?>
 												</td>
 											</tr>
 										</tbody>
@@ -79,11 +59,11 @@
 											<tr>
 												<td class="gray-bar-right align-right padding-right strong one-quarter" style="border-right: 3px solid #494e52; font-weight: 700; margin: 0; padding: 7px; padding-right: 20px; text-align: right; vertical-align: top; width: 25%;">Players</td>
 												<td class="padding-left three-quarters" style="margin: 0; padding: 7px; padding-left: 20px; vertical-align: top; width: 75%;">
-													<?php if($team->getPlayers() != null && !empty($team->getPlayers())) { ?>
+													<?php if($groupMembers != null && !empty($groupMembers)) { ?>
 														<?php $curPlayerNum = 1; ?>
 														<table class="align-center" style="border: none; border-collapse: collapse; color: #494e52; margin: 0; padding: 0; text-align: center; vertical-align: top; width: 100%;">
-															<tr><th></th><th>First Name</th><th>Last Name</th><th>Email</th><th>Gender</th></tr>
-															<?php foreach($team->getPlayers() as $curPlayer) { ?>
+															<tr><th></th><th>First Name</th><th>Last Name</th><th>Email</th><th>Phone</th><th>Gender</th><th>Skill</th></tr>
+															<?php foreach($groupMembers as $curPlayer) { ?>
 																<?php if($curPlayer->getFirstName() != '' 
 																		|| $curPlayer->getLastName() != ''
 																		|| $curPlayer->getEmail() != '') { ?>
@@ -92,7 +72,9 @@
 																		<td style="margin: 0; padding: 7px; vertical-align: top;"><?php echo $curPlayer->getFirstName() ?></td>
 																		<td style="margin: 0; padding: 7px; vertical-align: top;"><?php echo $curPlayer->getLastName() ?></td>
 																		<td style="margin: 0; padding: 7px; vertical-align: top;"><?php echo $curPlayer->getEmail() ?></td>
+																		<td style="margin: 0; padding: 7px; vertical-align: top;"><?php echo Includes_Helper::formatPhoneNumber($curPlayer->getPhoneNumber()) ?></td>
 																		<td style="margin: 0; padding: 7px; vertical-align: top;"><?php echo $curPlayer->getGender() ?></td>
+																		<td style="margin: 0; padding: 7px; vertical-align: top;"><?php echo $curPlayer->getSkillLevel() ?></td>
 																	</tr>
 																<?php } ?>
 															<?php } ?>
@@ -130,7 +112,7 @@
 												<tr>
 													<td class="gray-bar-right align-right padding-right strong one-quarter" style="border-right: 3px solid #494e52; font-weight: 700; margin: 0; padding: 7px; padding-right: 20px; text-align: right; vertical-align: top; width: 25%;">Comments</td>
 													<td class="padding-left three-quarters" style="margin: 0; padding: 7px; padding-left: 20px; vertical-align: top; width: 75%;">
-														<?php echo $team->getRegistrationComment()->getComment() ?>
+														<?php echo $captain->getRegistrationComment()->getComment() ?>
 													</td>
 												</tr>
 											<?php } ?>

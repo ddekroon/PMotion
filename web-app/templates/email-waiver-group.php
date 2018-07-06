@@ -1,5 +1,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
+
+<!-- Created by Kyle Conrad - Summer 2018 -->
+<!-- This document is based on email-waiver.php -->
+
 	<head>
 		<title>Score Reporter Email</title>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
