@@ -13,7 +13,7 @@
 	
 	$spiritScoreVal = 0;
 	
-	$gameNum = $laegue->getNumGamesPerMatch() * $matchNum;
+	$gameNum = $league->getNumGamesPerMatch() * $matchNum;
 	
 	$spiritScore = $submissions[$gameNum]->getSpiritScore();
 

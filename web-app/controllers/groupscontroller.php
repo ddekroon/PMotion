@@ -81,10 +81,10 @@ class Controllers_GroupsController extends Controllers_Controller {
 			$newPlayer = $curPlayer->getFirstName();
 
 			if(!empty($newPlayer)) {
-				$curPlayer->saveOrUpdate(); // TEMP 1 - testing waiver functionality
+				$curPlayer->saveOrUpdate(); // TEMP 1 - testing email functionality
 
 				$groupMembers[] = $curPlayer;
-				// $this->insertPlayerAddressDB($curPlayer); / TEMP 1
+				// $this->insertPlayerAddressDB($curPlayer); // TEMP 1
 
 				// $curIndiv->setPlayerID($curPlayer->getId()); // TEMP 1
 				// $curIndiv->save(); // TEMP 1
@@ -95,14 +95,16 @@ class Controllers_GroupsController extends Controllers_Controller {
 			}
 		}
 
-		foreach($groupMembers as $pew)
+		/* foreach($groupMembers as $pew) // This was for testing that groupMembers info is being stored properly in array
 		{
 			$this->logger->debug("Player: " . $pew->getFirstName() . " " . $pew->getEmail());
-		}
+		} */
 
 		$registrationController = new Controllers_RegistrationController($this->db, $this->logger);
 
-		$registrationController->sendWaiverEmailsGroup($groupMembers);
+		// $registrationController->sendRegistrationEmailGroup($groupMembers);
+
+		// $registrationController->sendWaiverEmailsGroup($groupMembers); // TEMP 2 - Waiver working, now doing reg emails
 
 		return "Your group has been registered!";
 

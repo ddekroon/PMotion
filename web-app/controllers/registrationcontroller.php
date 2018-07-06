@@ -71,6 +71,66 @@ class Controllers_RegistrationController extends Controllers_Controller {
 				null
 		);
 	}
+
+	function sendRegistrationEmailGroup(Models_Team $team) {
+		
+		$emailController = new Controllers_EmailsController($this->db, $this->logger);
+
+		$isComment = $team->getRegistrationComment() != null && !empty($team->getRegistrationComment());
+		$captain = $team->getCaptain();
+		$howHeardMethod = $captain->getHowHeardMethod() > 0 ? Includes_HeardAboutUsMethods::getMethodByOrdinal($captain->getHowHeardMethod()) : null;
+		$howHeardOther = $captain->getHowHeardMethod() > 0 ? $captain->getHowHeardOtherText() : '';
+
+		$subject= 'Registration Confirmation - ' . $team->getName() . ' - ' . $team->getLeague()->getFormattedName() 
+				. ' - ' . $team->getLeague()->getSeason()->getName();
+		
+		$adminSubject = 'Reg - ' . ($isComment ? 'Com - ' : '') . $team->getName() . ' - ' . $team->getLeague()->getFormattedName() 
+				. ' - ' . $team->getLeague()->getSeason()->getName();
+		
+		if($team->getLeague()->getIsFullTeams()) {
+			$subject .= ' - Full - Waiting List';
+			$adminSubject .= ' - Full - Waiting List';
+		}
+
+		$regEmailTemplate = Includes_EmailTypes::groupRegistered();
+		
+		$params = [
+			"team" => $team,
+			"adminEmail" => false,
+			"howHeardMethod" => $howHeardMethod,
+			"howHeardOther" => $howHeardOther,
+			"paymentMethod" => Includes_PaymentMethods::getMethodByOrdinal($team->getPaymentMethod()),
+			"isComment" => $isComment,
+			"captain" => $team->getCaptain()
+		];
+		
+		$body = $this->templateEngine->render($regEmailTemplate->getTemplateLink(), $params);
+		
+		$emailController->createAndSendEmail(
+				$regEmailTemplate->getEmailType(), 
+				$subject, 
+				$body, 
+				$team->getCaptain()->getEmail(), 
+				$regEmailTemplate->getFromName(),
+				$regEmailTemplate->getFromAddress(), 
+				null, 
+				null
+		);
+		
+		$params["adminEmail"] = true;
+		$adminBody = $this->templateEngine->render($regEmailTemplate->getTemplateLink(), $params);
+		
+		$emailController->createAndSendEmail(
+				$regEmailTemplate->getEmailType(), 
+				$adminSubject, 
+				$adminBody, 
+				implode(",", $regEmailTemplate->getToAddresses()), 
+				$regEmailTemplate->getFromName(),
+				$regEmailTemplate->getFromAddress(), 
+				null, 
+				null
+		);
+	}
 	
 	function sendTeamUnregisteredEmail(Models_Team $team) {
 		
@@ -166,7 +226,7 @@ class Controllers_RegistrationController extends Controllers_Controller {
 		}
 		
 		$emailController = new Controllers_EmailsController($this->db, $this->logger);
-		$emailTemplate = Includes_EmailTypes::sendWaiver();
+		$emailTemplate = Includes_EmailTypes::sendWaiver(); /* sendWaiver() in emailtypes calls email-waiver.php, not email-waiver-group.php. So create a new type sendWaiverGroup() that contains the latter for templateLink if this stops working correctly */
 		
 		$emailController->createAndSendEmail(
 				$emailTemplate->getEmailType(), 
