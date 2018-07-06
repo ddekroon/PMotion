@@ -46,13 +46,13 @@ Network Trash Folder
 Temporary Items
 .apdisk
 WebApp/
-GlobalFiles/connect.php
-GlobalFiles/dbConnect.php
-GlobalFiles/dbConnectBackup.php
-Derek/secrets.php
+GlobalFiles/**
+web-app/secrets.php
 css/.sass-cache/**
 WebApp-Angular/**
 App/**
 vendor/**
 Registration/**
 /nbproject/private/
+/control/**
+Login/**
