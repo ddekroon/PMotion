@@ -23,6 +23,7 @@ class Controllers_GroupsController extends Controllers_Controller {
 		}
 
 		$groupMembers = array();
+		$capIndiv = null;
 
 		for($i = 0; $i < $sport->getNumPlayerInputsForRegistration(); $i++) {
 
@@ -81,13 +82,12 @@ class Controllers_GroupsController extends Controllers_Controller {
 			$curIndiv->setHowHeardMethod(0); // This is stored but unused in this db table. It's stored and used via player table
 			$curIndiv->setHowHeardOtherText(''); // Same note as previous
 
-			$newPlayer = $curPlayer->getFirstName();
-
 			if($i == 0) {
 				$capIndiv = $curIndiv; // May not work correctly here
 			}
 
-			if(!empty($newPlayer)) {
+			$playerName = $curPlayer->getFirstName(); //DD: Needs to be put into a var before getting passed to empty() function
+			if(!empty($playerName)) {
 				$curPlayer->saveOrUpdate();
 
 				$groupMembers[] = $curPlayer;
@@ -97,7 +97,7 @@ class Controllers_GroupsController extends Controllers_Controller {
 				$curIndiv->save(); // TEMP 1
 
 				 if($i == 0) {
-					$curPlayer->getRegistrationComment()->saveOrUpdate();
+					$curPlayer->getRegistrationComment()->saveOrUpdate(); // DD: this save should happen within the process of saving the player on line 90. 
 				} 
 			}
 		}
@@ -107,8 +107,8 @@ class Controllers_GroupsController extends Controllers_Controller {
 			$this->logger->debug("Player: " . $pew->getFirstName() . " " . $pew->getEmail());
 		} */
 
-		$leaguePref = $allPostVars['leagueID'];
-		$payment = $allPostVars['groupPaymentMethod'];
+		//$leaguePref = $allPostVars['leagueID'];
+		//$payment = $allPostVars['groupPaymentMethod'];
 
 		$registrationController = new Controllers_RegistrationController($this->db, $this->logger);
 

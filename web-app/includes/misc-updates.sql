@@ -36,3 +36,6 @@ ADD UNIQUE INDEX `UNIQUE_PROPERTY_KEY` (`key` ASC);
 
 ALTER TABLE `data_perpetualmotion`.`properties_dbtable` 
 ADD INDEX `INDEX_PROPERTY_KEY` (`key` ASC);
+
+ALTER TABLE `data_perpetualmotion`.`emails_dbtable` 
+CHANGE COLUMN `subject` `subject` VARCHAR(200) NOT NULL ;

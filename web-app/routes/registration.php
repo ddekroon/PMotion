@@ -61,11 +61,10 @@
 
 		$app->get('/register-group[/{sportID}]', function (Request $request, Response $response) {
 
-			// $curUser = Models_User::withID($this->db, $this->logger, $_SESSION[Controllers_AuthController::SESSION_USER_ID]);
+			$curUser = Models_User::withID($this->db, $this->logger, $_SESSION[Controllers_AuthController::SESSION_USER_ID]);
 			
 			$sportID = $request->getAttribute('sportID');
 			$sport = Models_Sport::withID($this->db, $this->logger, $sportID);
-			$pastTeam = Models_Team::withID($this->db, $this->logger, $request->getAttribute('pastTeamID')); // REMOVING PAST TEAM HERE OR BELOW REMOVES THE STYLING - FIND OUT WHY
 			
 			$leaguesController = new Controllers_LeaguesController($this->db, $this->logger);
 			$seasonsController = new Controllers_SeasonsController($this->db, $this->logger);
@@ -77,17 +76,12 @@
 					"request", $request,
 					"router" => $this->router,
 					"sport" => $sport,
-					"team" => $pastTeam, // Will be removed
-					// "user" => $curUser, // Need to remove for people not logged in
-					// "registerTeam" => true, // Will be removed
-					"league" => new Models_League(),
+					"user" => $curUser,
 					"leaguesAvailableForRegistration" => $leaguesController->getLeaguesForRegistration($sportID),
 					"seasonsAvailableForRegistration" => $seasonsController->getSeasonsAvailableForRegistration(),
 					"sports" => $sportsController->getSports()
 				]
 			);
-
-			//return $response;
 		})->setName('dashboard-register-group');
 		
 		$app->get('/registration-success', function (Request $request, Response $response) {
@@ -102,6 +96,18 @@
 				]
 			);
 		})->setName('registration-success');
+		
+		$app->get('/dashboard-registration-group-success', function (Request $request, Response $response) {
+			$curUser = Models_User::withID($this->db, $this->logger, $_SESSION[Controllers_AuthController::SESSION_USER_ID]);
+
+			return $this->view->render($response, "registration/registration-group-success.phtml", [
+					"request", $request,
+					"router" => $this->router,
+					"isDashboard" => true,
+					"user" => $curUser
+				]
+			);
+		})->setName('dashboard-registration-group-success');
 		
 	})->add($dashboard)->add($authenticate);
 	
@@ -128,6 +134,26 @@
 		return $response;
 
 	})->setName('save-team')->add($authenticate);
+	
+	$app->get('/registration/register-group[/{sportID}]', function (Request $request, Response $response) {
+
+		$sportID = $request->getAttribute('sportID');
+		$sport = Models_Sport::withID($this->db, $this->logger, $sportID);
+
+		$leaguesController = new Controllers_LeaguesController($this->db, $this->logger);
+		$seasonsController = new Controllers_SeasonsController($this->db, $this->logger);
+		$sportsController = new Controllers_SportsController($this->db, $this->logger);
+
+		return $this->view->render($response, "dashboard/edit-group.phtml", [
+				"request", $request,
+				"router" => $this->router,
+				"sport" => $sport,
+				"leaguesAvailableForRegistration" => $leaguesController->getLeaguesForRegistration($sportID),
+				"seasonsAvailableForRegistration" => $seasonsController->getSeasonsAvailableForRegistration(),
+				"sports" => $sportsController->getSports()
+			]
+		);
+	})->setName('register-group')->add($defaultTemplate);
 
 	$app->post('/save-group', function (Request $request, Response $response) {
 
@@ -140,9 +166,8 @@
 		$returnObj = array();
 
 		try {
-			$successMessage = $groupsController->insertGroup($request);
+			$returnObj["successMessage"] = $groupsController->insertGroup($request);
 			$returnObj["status"] = 1;
-			$returnObj["successMessage"] = $successMessage;
 		} catch(Exception $e) {
 			$returnObj["status"] = 0;
 			$returnObj["errorMessage"] = $e->getMessage();
@@ -153,6 +178,16 @@
 		return $response;
 
 	})->setName('save-group');
+	
+	$app->get('/registration-group-success', function (Request $request, Response $response) {
+		
+		return $this->view->render($response, "registration/registration-group-success.phtml", [
+				"request", $request,
+				"router" => $this->router,
+				"isDashboard" => false,
+			]
+		);
+	})->setName('registration-group-success')->add($defaultTemplate);
 
 	$app->post('/remove-team/{teamID}', function(Request $request, Response $response) {
 

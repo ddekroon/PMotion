@@ -1,0 +1,17 @@
+<div id='RegistratonGroupThankYou'>
+	<div class='container-fluid text-center'>
+		<h2>Thank you for registering!</h2>
+		<br />
+		<p>You'll receive a confirmation email from Perpetual Motion very soon.</p>
+		<p>&nbsp;</p>
+		<p class="image"><img border="0" src="/Logos/Perpetualmotionlogo2.jpg" width="95%" style="max-width:400px;"></p>
+		<?php if($isDashboard) { ?>
+			<p>&nbsp;</p>
+			<div class='text-center'>
+				<a class='px-2' href='<?php echo $router->pathFor('dashboard-registration', []); ?>'>
+					Return to Registration Home Page
+				</a>
+			</div>
+		<?php } ?>
+	</div>
+</div>

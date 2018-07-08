@@ -39,28 +39,28 @@
 				<label for='GroupLeague'>Preferred League&nbsp;<span class="required">*</span></label>
 			</div>
 			<div class='col-md-10 col-sm-9 col-xs-8'>
-					<select name="leagueID" id="GroupLeague" class='form-control' required='required'>
-						<option value="-1">-- League --</option>
-						<?php if(count($leaguesAvailableForRegistration) > 0) { ?>
-							<optgroup label='<?php echo $leaguesAvailableForRegistration[0]->getSeason()->getName() ?> Leagues'>
-								<?php 
-									$lastSeasonId = 0;
-									foreach($leaguesAvailableForRegistration as $curLeague) {
+				<select name="leagueID" id="GroupLeague" class='form-control' required='required'>
+					<option value="-1">-- League --</option>
+					<?php if(count($leaguesAvailableForRegistration) > 0) { ?>
+						<optgroup label='<?php echo $leaguesAvailableForRegistration[0]->getSeason()->getName() ?> Leagues'>
+							<?php 
+								$lastSeasonId = 0;
+								foreach($leaguesAvailableForRegistration as $curLeague) {
 
-										if($curLeague->getSeasonId() != $lastSeasonId && $lastSeasonId != 0) {
-											print '</optgroup><optgroup label="' . $curLeague->getSeason()->getName() . ' Leagues">';
-										}
-
-										print "<option value='" . $curLeague->getId() . "'>"
-												. $curLeague->getRegistrationFormattedNameGroup()
-												. "</option>";
-
-										$lastSeasonId = $curLeague->getSeasonId();
+									if($curLeague->getSeasonId() != $lastSeasonId && $lastSeasonId != 0) {
+										print '</optgroup><optgroup label="' . $curLeague->getSeason()->getName() . ' Leagues">';
 									}
-								?>
-							</optgroup>
-						<?php } ?>
-					</select>
+
+									print "<option value='" . $curLeague->getId() . "'>"
+											. $curLeague->getRegistrationFormattedNameGroup()
+											. "</option>";
+
+									$lastSeasonId = $curLeague->getSeasonId();
+								}
+							?>
+						</optgroup>
+					<?php } ?>
+				</select>
 			</div>
 		</div>
 		<div class='row form-group'>
@@ -143,15 +143,19 @@
 						<?php $numPlayers = (isset($sport) && $sport->getId() != null) ? $sport->getNumPlayerInputsForRegistration() : 10 ?>
 						<?php for($i = 0; $i < $numPlayers; $i++) { ?>
 							<?php 
-								$curPlayer = new Models_Player();
-
-								// Setting all these vars is redundant without logged in user version of the page. They were meant to autofill user's info
-								// All the values='htmlentities' stuff is redundant too without a user logged in
-								$firstName = $curPlayer->getFirstName();
-								$lastName = $curPlayer->getLastName();
-								$email = $curPlayer->getEmail();
-								$gender = $curPlayer->getGender();
-								$phoneNumber = $curPlayer->getPhoneNumber();
+								$firstName = '';
+								$lastName = '';
+								$email = '';
+								$gender = '';
+								$phoneNumber = '';
+								
+								if($i == 0 && isset($user) && $user != null) { //If user is logged in
+									$firstName = $user->getFirstName();
+									$lastName = $user->getLastName();
+									$email = $user->getEmail();
+									$gender = $user->getGender();
+									$phoneNumber = $user->getPhone();
+								}
 							?>
 							<tr>
 								<td style="min-width:45px;"><?php echo $i == 0 ? "You <span class='required'>*</span>" : $i + 1; ?>
@@ -235,8 +239,8 @@
 			<div class='col-md-10 col-xs-8'>
 				<input name="capHowHeardMethodOther" class='form-control' id='CapHowHeardMethodOther' type='text' />
 			</div>
-	</fieldset>
 		</div>
+	</fieldset>
 	<fieldset id='EditGroupFeesSection' class='form-group' data-display='true'>
 		<legend>Confirm Fees<small>The registration process is not finalized until fees have been paid.</small></legend>
 		<div class='row form-group'>
@@ -278,7 +282,7 @@
 	<?php } ?>
     <p>&nbsp;</p>
 	<fieldset class='form-group'>
-			<legend>Register<small>Submit your group registration to the convenor.</small></legend>
+		<legend>Register<small>Submit your group registration to the convenor.</small></legend>
 		<p>
 			<button type='submit' class='btn btn-primary' name='submit' value='register' onclick='$("#EditGroupForm input[name=action]").val("register");'>
 				<span class='glyphicon glyphicon-saved'></span> Register
@@ -326,7 +330,11 @@
 					dataType:"json",
 					success:function(resp) {
 						if(resp.status === 1) {
-							document.location = "<?php echo $router->pathFor('registration-success', []); ?>";
+							<?php if(isset($user) && $user != null) { ?>
+								document.location = "<?php echo $router->pathFor('dashboard-registration-group-success', []); ?>";
+							<?php } else { ?>
+								document.location = "<?php echo $router->pathFor('registration-group-success', []); ?>";
+							<?php } ?>
 						} else {
 							alert(resp.errorMessage);
 						}
