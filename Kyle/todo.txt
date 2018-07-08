@@ -1,3 +1,3 @@
 Todo list for Kyle:
 
-// Please fill this out whenever you get a chance so I know what specific tasks you need me for
+1) Redo individual/group registration - Bring it into 2018, add some js validation and transitions and shit, kind of like the team registration

@@ -15,6 +15,7 @@ class Models_Player extends Models_Generic implements Models_Interface, JsonSeri
     protected $howHeardOtherText = '';
 	
 	private $team;
+	private $registrationComment;
 
 	public static function withID($db, $logger, $id) {
 		$instance = new self();
@@ -79,6 +80,19 @@ class Models_Player extends Models_Generic implements Models_Interface, JsonSeri
 	
 	function setTeam($team) {
 		$this->team = $team;
+	}
+
+	function getRegistrationComment() {
+
+		if($this->registrationComment == null) {
+			$this->registrationComment = Models_RegistrationComment::withID($this->db, $this->logger, -1);
+			$this->registrationComment->setIsIndividualComment(true);
+			$this->registrationComment->setIsTeamComment(false);
+			// $this->registrationComment->setPlayerId($this->getId()); /* ALL NULL IN DB TO DATE SO I'M LEAVING THIS OUT - also it's supposed to be individual id not player id, so don't get confused */
+			$this->registrationComment->setUserId(0); // No user at the moment for indiv reg
+		}
+
+		return $this->registrationComment;
 	}
 
 	function getTeamId() {

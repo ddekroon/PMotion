@@ -3,7 +3,6 @@
 	use \Psr\Http\Message\ServerRequestInterface as Request;
 	use \Psr\Http\Message\ResponseInterface as Response;
 
-	
 	$app->group('/api/teams', function () use ($app) {
 		$app->get('/{teamID}', function (Request $request, Response $response) {
 

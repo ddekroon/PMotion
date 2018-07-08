@@ -71,6 +71,64 @@ class Controllers_RegistrationController extends Controllers_Controller {
 				null
 		);
 	}
+
+	function sendRegistrationEmailGroup(array $groupMembers, Models_Individual $group) {
+		
+		$emailController = new Controllers_EmailsController($this->db, $this->logger);
+
+		$captain = $groupMembers[0];
+		$leagueChoice = Models_League::withID($this->db, $this->logger, $group->getPreferredLeagueID());
+		$payment = $group->getPaymentMethod();
+
+		$isComment = $captain->getRegistrationComment() != null && !empty($captain->getRegistrationComment());
+		$howHeardMethod = $captain->getHowHeardMethod() > 0 ? Includes_HeardAboutUsMethods::getMethodByOrdinal($captain->getHowHeardMethod()) : null;
+		$howHeardOther = $captain->getHowHeardMethod() > 0 ? $captain->getHowHeardOtherText() : '';
+
+		$subject = 'Registration Confirmation - ' . (sizeof($groupMembers) > 1 ? 'Small Group' : 'Individual') . ' - ' . $leagueChoice->getRegistrationFormattedNameGroup();
+		
+		$adminSubject = 'Reg - ' . ($isComment ? 'Com - ' : '') . (sizeof($groupMembers) > 1 ? 'Small Group' : 'Individual') . ' - ' . $leagueChoice->getRegistrationFormattedNameGroup();
+
+		$regEmailTemplate = Includes_EmailTypes::groupRegistered();
+		
+		$params = [
+			"groupMembers" => $groupMembers,
+			"group" => $group,
+			"leagueChoice" => $leagueChoice,
+			"adminEmail" => false,
+			"howHeardMethod" => $howHeardMethod,
+			"howHeardOther" => $howHeardOther,
+			"paymentMethod" => Includes_PaymentMethods::getMethodByOrdinal($payment),
+			"isComment" => $isComment,
+			"captain" => $captain
+		];
+		
+		$body = $this->templateEngine->render($regEmailTemplate->getTemplateLink(), $params);
+		
+		$emailController->createAndSendEmail(
+				$regEmailTemplate->getEmailType(), 
+				$subject, 
+				$body, 
+				$captain->getEmail(), 
+				$regEmailTemplate->getFromName(),
+				$regEmailTemplate->getFromAddress(), 
+				null, 
+				null
+		);
+		
+		$params["adminEmail"] = true;
+		$adminBody = $this->templateEngine->render($regEmailTemplate->getTemplateLink(), $params);
+		
+		$emailController->createAndSendEmail(
+				$regEmailTemplate->getEmailType(), 
+				$adminSubject, 
+				$adminBody, 
+				implode(",", $regEmailTemplate->getToAddresses()), 
+				$regEmailTemplate->getFromName(),
+				$regEmailTemplate->getFromAddress(), 
+				null, 
+				null
+		);
+	}
 	
 	function sendTeamUnregisteredEmail(Models_Team $team) {
 		
@@ -109,7 +167,6 @@ class Controllers_RegistrationController extends Controllers_Controller {
 		);
 	}
 
-
 	function sendWaiverEmails(Models_Team $team) {
 		
 		$toSend = array();
@@ -131,6 +188,40 @@ class Controllers_RegistrationController extends Controllers_Controller {
 		
 		$emailController = new Controllers_EmailsController($this->db, $this->logger);
 		$emailTemplate = Includes_EmailTypes::sendWaiver();
+		
+		$emailController->createAndSendEmail(
+				$emailTemplate->getEmailType(), 
+				$subject, 
+				$body, 
+				null,
+				$emailTemplate->getFromName(),
+				$emailTemplate->getFromAddress(), 
+				null, 
+				implode(',', $toSend)
+		);
+		
+		//sendEmailsBcc($toSend,'info@perpetualmotion.org', $subject, $body);
+	}
+
+	/* Currently set to run for every player instead of using an array of players and running it once. Should probably be changed later to the latter */
+	function sendWaiverEmailsGroup(array $groupMembers) {
+
+		$toSend = array();
+
+		$body = $this->templateEngine->render('email-waiver-group', []);
+
+		$subject = 'Online Waiver - Free Agent';
+
+		foreach($groupMembers as $curPlayer) {
+			if($curPlayer != null && $curPlayer->getEmail() != null) {
+				if(filter_var($curPlayer->getEmail(), FILTER_VALIDATE_EMAIL) && !in_array($curPlayer->getEmail(), $toSend)) {
+					$toSend[] = $curPlayer->getEmail();
+				}
+			}
+		}
+		
+		$emailController = new Controllers_EmailsController($this->db, $this->logger);
+		$emailTemplate = Includes_EmailTypes::sendWaiver(); /* sendWaiver() in emailtypes calls email-waiver.php, not email-waiver-group.php. So create a new type sendWaiverGroup() that contains the latter for templateLink if this stops working correctly */
 		
 		$emailController->createAndSendEmail(
 				$emailTemplate->getEmailType(), 
