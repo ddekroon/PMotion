@@ -1,3 +1,15 @@
 Todo list for Kyle:
 
 1) Redo individual/group registration - Bring it into 2018, add some js validation and transitions and shit, kind of like the team registration
+
+DD:
+- Small group email templates weren't created using the gulp files in /email-templates
+- League Skill Level is missing (at least for ultimate). This should be coming from the config table in the db.
+
+- Create a page in the control panel for editing config items - I started working on converting the control panel to use the PHPSlim system (http://data.perpetualmotion.org/web-app/control-panel/standings/unbalanced-standings). I would prefer the new page for this is done through the same system.
+- Start converting control panel to new system
+
+- Start fixing DB configs that don't make sense. Individuals table shouldn't exist:
+	- There should just be a flag on the players table to mark 'Is Individual'
+	- Dates table doesn't actually save the date as a date in the db. It uses a series of strings
+	- A score submission should contain the comment and spirit score, and there should be a 1 to n connection to another table for the individual match data (win, loss, tie, etc)
