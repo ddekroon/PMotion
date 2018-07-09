@@ -57,3 +57,6 @@ Registration/**
 /control/**
 Login/**
 *.orig
+
+# Kyle's temp folder for copies
+Pastes/**
