@@ -72,15 +72,15 @@ class Controllers_RegistrationController extends Controllers_Controller {
 		);
 	}
 
-	function sendRegistrationEmailGroup(array $groupMembers, Models_Individual $group) { //DD: The var name group is confusing. Shouldn't it be something like $indvCaptain?
+	function sendRegistrationEmailGroup(array $groupMembers, Models_Individual $indivCaptain) {
 		
 		$emailController = new Controllers_EmailsController($this->db, $this->logger);
 
 		$captain = $groupMembers[0];
-		$leagueChoice = Models_League::withID($this->db, $this->logger, $group->getPreferredLeagueID());
-		$payment = $group->getPaymentMethod();
+		$leagueChoice = Models_League::withID($this->db, $this->logger, $indivCaptain->getPreferredLeagueID());
+		$payment = $indivCaptain->getPaymentMethod();
 
-		$isComment = $captain->getRegistrationComment() != null && !empty($captain->getRegistrationComment()); //DD: In theory couldn't you just get $captain from some kind of a function $group->getPlayer()? I think my preference would be you just send the list of individuals into this function
+		$isComment = $captain->getRegistrationComment() != null && !empty($captain->getRegistrationComment()); //DD: In theory couldn't you just get $captain from some kind of a function $indivCaptain->getPlayer()? I think my preference would be you just send the list of individuals into this function
 		$howHeardMethod = $captain->getHowHeardMethod() > 0 ? Includes_HeardAboutUsMethods::getMethodByOrdinal($captain->getHowHeardMethod()) : null;
 		$howHeardOther = $captain->getHowHeardMethod() > 0 ? $captain->getHowHeardOtherText() : '';
 
@@ -92,7 +92,7 @@ class Controllers_RegistrationController extends Controllers_Controller {
 		
 		$params = [
 			"groupMembers" => $groupMembers,
-			"group" => $group,
+			"group" => $indivCaptain,
 			"leagueChoice" => $leagueChoice,
 			"adminEmail" => false,
 			"howHeardMethod" => $howHeardMethod,
