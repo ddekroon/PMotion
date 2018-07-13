@@ -53,7 +53,7 @@
 				</p>
 			</div>
 		</div> -->
-		<!-- <div class='row form-group'>  <?php // Commenting this all out because it isn't necessary if they click from a sport's page. This section is to let them choose sport if they come from registration page ?>
+		<!-- <div class='row form-group'>  <?php // KC: Commenting this all out because it isn't necessary if they click from a sport's page. This section is to let them choose sport if they come from registration page - IT ALSO DOESN'T WORK YET?>
 			<div class='col-md-2 col-sm-3 col-xs-4'>
 				<label for='chosenSport'>Sport <span class="required">*</span></label>
 			</div>
@@ -105,7 +105,7 @@
 			</div>
 			<div class='col-md-10 col-sm-9 col-xs-8'>
 					<select name="leagueID2" id="GroupLeague" class='form-control'>
-						<!-- LeagueID changed to leagueID2 to avoid required message, don't know if this screws with the parsing yet -->
+						<!-- LeagueID changed to leagueID2 to avoid 'required' message -->
 						<option value="-1"></option>
 						<?php if(count($leaguesAvailableForRegistration) > 0) { ?>
 							<optgroup label='<?php echo $leaguesAvailableForRegistration[0]->getSeason()->getName() ?> Leagues'>

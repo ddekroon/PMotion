@@ -13,6 +13,14 @@ Program that tells the user of any potential issues with the score submissions/s
 	$numTeamsWithIncorrectNumberOfSubmissions = 0; 
 ?>
 
+<!-- KC: Temporary for accessing other pages -->
+<div>
+	<a href='<?php echo $router->pathFor('config'); ?>' role="button" class="btn btn-primary">
+		<span class="glyphicon glyphicon-user"></span>
+		TAKE ME TO WONDERLAND
+	</a>
+</div>
+
 <h1>Unbalanced Standings</h1>
 <form method='POST' action='teamStandingsViewer.php'>
 	<h2>Uneven Score Submissions</h2>

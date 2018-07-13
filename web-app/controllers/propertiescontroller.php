@@ -26,6 +26,19 @@
 			
 			return null;
 		}
+
+		public function getNumProperties() {
+
+			$sql = "SELECT MAX(id) as numProps FROM " . Includes_DBTableNames::propertiesTable;
+
+			$stmt = $this->db->query($sql);
+
+			if(($row = $stmt->fetch()) != false) {
+				return $row['numProps'];
+			}
+
+			return null;
+		}
 		
 		public function saveOrUpdateProperty($key, $value) {
 			

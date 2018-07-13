@@ -1,0 +1,41 @@
+<?php 
+/*****************************************
+File: configuration.phtml
+Creator: Kyle Conrad
+Created: July 13/2018
+Program that lets user edit the contents of the properties table of db
+******************************************/
+?>
+
+<h1>Properties Configuration</h1>
+<form method='POST'>
+	<h2>Edit config properties</h2>
+	<table class='col-xs-12' name='pew'>
+		<thead>
+			<tr>
+				<th class='col-xs-10'>Identification Key</th>
+				<th class='col-xs-2 text-center'>Edit Value</th>
+			</tr>
+		</thead>
+		<tbody>
+			<?php 
+				$numProps = $propController->getNumProperties();
+
+				for($i = 1; $i <= $numProps; $i++) {
+					$curProp = Models_Property::withID($db, $logger, $i);
+					$validCheck = $curProp->getKey();
+
+					/* KC: This IF prevents empty rows from showing if property table skips an id */
+					if(!empty($validCheck)) { ?>
+						<tr>
+							<td><?php print $curProp->getKey(); ?></td>
+							<td>
+								<a href='<?php echo $router->pathFor('configEdit', ['propID' => $i]); ?>' role="button" class="btn btn-primary btn-block">EDIT</a>
+							</td>
+						</tr>
+					<?php }
+				}
+			?>
+		</tbody>
+	</table>
+

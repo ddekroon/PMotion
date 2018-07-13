@@ -196,6 +196,7 @@ include('routes/standings.php');
 //Control Panel
 include('routes/control-panel/default.php');
 include('routes/control-panel/standings.php');
+include('routes/control-panel/registration.php');
 
 $app->run();
 

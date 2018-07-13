@@ -609,3 +609,6 @@
 [2018-07-11 13:37:37] my_logger.DEBUG:  [] []
 [2018-07-11 13:40:17] my_logger.DEBUG:  [] []
 [2018-07-11 13:40:37] my_logger.DEBUG:  [] []
+[2018-07-13 11:42:50] my_logger.ERROR: Named route does not exist for name: config [] []
+[2018-07-13 11:44:03] my_logger.ERROR: Named route does not exist for name: config [] []
+[2018-07-13 13:30:29] my_logger.ERROR: Missing data for URL segment: propID [] []
