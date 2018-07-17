@@ -150,7 +150,10 @@
 		return $this->view->render($response, "dashboard/edit-group.phtml", [
 				"request", $request,
 				"router" => $this->router,
+				"sportID" => $sportID,
 				"sport" => $sport,
+				"db" => $this->db,
+				"logger" => $this->logger,
 				"leaguesAvailableForRegistration" => $leaguesController->getLeaguesForRegistration($sportID),
 				"seasonsAvailableForRegistration" => $seasonsController->getSeasonsAvailableForRegistration(),
 				"sports" => $sportsController->getSports()
