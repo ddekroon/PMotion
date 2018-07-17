@@ -59,6 +59,7 @@
 			//return $response;
 		})->setName('dashboard-register-team');
 
+		/* Group registration when logged in - another function below for when not */
 		$app->get('/register-group[/{sportID}]', function (Request $request, Response $response) {
 
 			$curUser = Models_User::withID($this->db, $this->logger, $_SESSION[Controllers_AuthController::SESSION_USER_ID]);
@@ -100,6 +101,7 @@
 			);
 		})->setName('registration-success');
 		
+		/* Group registration success when logged in - another function below for when not */
 		$app->get('/dashboard-registration-group-success', function (Request $request, Response $response) {
 			$curUser = Models_User::withID($this->db, $this->logger, $_SESSION[Controllers_AuthController::SESSION_USER_ID]);
 
@@ -138,6 +140,7 @@
 
 	})->setName('save-team')->add($authenticate);
 	
+	/* For accessing group registration form when not logged in (different path) */
 	$app->get('/registration/register-group[/{sportID}]', function (Request $request, Response $response) {
 
 		$sportID = $request->getAttribute('sportID');
@@ -185,6 +188,7 @@
 
 	})->setName('save-group');
 	
+	/* Success form for group registration when not logged in (different path) */
 	$app->get('/registration-group-success', function (Request $request, Response $response) {
 		
 		return $this->view->render($response, "registration/registration-group-success.phtml", [
