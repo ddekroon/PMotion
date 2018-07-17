@@ -11,7 +11,5 @@ Program that lets user edit the contents of a particular property from the prope
 <form method='GET'>
 	<h2>Editing <?php echo $prop->getKey() ?></h2>
 
-	<textarea rows='10' cols='120'>
-		<?php echo htmlentities($prop->getValue(), ENT_QUOTES) ?>	
-	</textarea>
+	<textarea rows='10' cols='120'><?php echo htmlentities($prop->getValue(), ENT_QUOTES) ?></textarea>
 </form>
