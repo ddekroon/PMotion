@@ -3,10 +3,11 @@
 		<h1>Perpetual Motion Registration</h1>
 	</div>
 
+	<!-- Buttons for accessing different registration types. Added for individual registration via dashboard when logged in -->
 	<fieldset class="RegTypeButtons" style="margin-bottom: 15px;">
 		<legend>Registration Type</legend>
 		<div class="buttonset">
-			<a href='<?php echo $router->pathFor('dashboard-register-group', ['sportID' => 1]); ?>' role="button" class="btn btn-primary">
+			<a href='<?php echo $router->pathFor('dashboard-register-group', ['sportID' => 0]); ?>' role="button" class="btn btn-primary">
 				<span class="glyphicon glyphicon-user"></span>
 				Register As Individual or Small Group
 			</a>

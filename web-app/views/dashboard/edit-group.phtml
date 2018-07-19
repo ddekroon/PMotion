@@ -1,9 +1,56 @@
 <?php $regSeason = end($seasonsAvailableForRegistration); ?>
 
 <!-- Created by Kyle Conrad - Summer 2018 -->
-<!-- This document is based on edit-team.phtml -->
+<!-- This document is based partially on edit-team.phtml -->
 
-<form id='EditGroupForm'>
+<!-- Appears only when sport hasn't been selected when user comes from dashboard logged in -->
+<fieldset class='bottomButtons' <?php echo $sportID != 0 ? "style='display:none'" : "" ?>>
+	<legend>
+		Sport
+		<small>Form will appear once sport is selected.</small>
+	</legend>
+	<div class="row logosTable">
+		<div class="col-sm-3 col-xs-6">
+			<a href='<?php echo $router->pathFor('dashboard-register-group', ['sportID' => 1] ); ?>'>
+				<div class="sport-panel sport-panel-1 square square-75">
+					<div class='position-center'>
+						<img src='/Logos/ultimate_0.png' />
+					</div>
+				</div>
+			</a>
+		</div>
+		<div class="col-sm-3 col-xs-6">
+			<a href='<?php echo $router->pathFor('dashboard-register-group', ['sportID' => 2] ); ?>'>
+				<div class="sport-panel sport-panel-2 square square-75">
+					<div class='position-center'>
+						<img src='/Logos/volleyball_0.png' />
+					</div>
+				</div>
+			</a>
+		</div>
+		<div class="col-sm-3 col-xs-6">
+			<a href='<?php echo $router->pathFor('dashboard-register-group', ['sportID' => 3] ); ?>'>
+				<div class="sport-panel sport-panel-3 square square-75">
+					<div class='position-center'>
+						<img src='/Logos/football_0.png' />
+					</div>
+				</div>
+			</a>
+		</div>
+		<div class="col-sm-3 col-xs-6">
+			<a href='<?php echo $router->pathFor('dashboard-register-group', ['sportID' => 4] ); ?>'>
+				<div class="sport-panel sport-panel-4 square square-75">
+					<div class='position-center'>
+						<img src='/Logos/soccer_0.png'>
+					</div>
+				</div>
+			</a>
+		</div>
+	</div>
+</fieldset>
+
+<!-- Appears once sport is selected if coming from dashboard when logged in -->
+<form <?php echo $sportID == 0 ? 'style="display: none;"' : '' ?> id='EditGroupForm'>
 	<input type='hidden' name='action' value='ignore' />
 	<input type='hidden' name='sportID' value='<?php echo $sport->getId() ?>' />
 	
@@ -15,6 +62,7 @@
 			<h1>Register as Individual or Small Group</h1>
 		</div>
 	</div>
+	
 	<fieldset class='form-group'>
 		<legend>League Information<small>Select your preferences in order of importance.</small></legend>
 		<?php 
@@ -51,23 +99,6 @@
 					<b>Intermediate 6's:</b> Similar to intermediate 4's but with less court to cover. <br />
 					<b>Recreational 6's:</b> Out to have fun with less emphasis on the classic "bump-set-spike" play.
 				</p>
-			</div>
-		</div> -->
-		<!-- <div class='row form-group'>  <?php // KC: Commenting this all out because it isn't necessary if they click from a sport's page. This section is to let them choose sport if they come from registration page - IT ALSO DOESN'T WORK YET?>
-			<div class='col-md-2 col-sm-3 col-xs-4'>
-				<label for='chosenSport'>Sport <span class="required">*</span></label>
-			</div>
-			<div class='col-md-10 col-sm-9 col-xs-8'>
-				<select name="chosenSportID" id="chosenSport" class='form-control' required='required' method='post' onchange="document.location.href='<?php //echo $router->pathFor('dashboard-register-group', ['sportID' => $_POST['chosenSportID']] ); ?>'">
-					<option value="-1">-- Sport --</option>
-					<?/*php 
-						foreach($sports as $curSport)
-						{
-							print "<option value='" . $curSport->getId() . "'>" . $curSport->getName() . "</option>";
-						}
-
-					*/?>
-				</select>
 			</div>
 		</div> -->
 		<div class='row form-group'>
