@@ -612,3 +612,4 @@
 [2018-07-13 11:42:50] my_logger.ERROR: Named route does not exist for name: config [] []
 [2018-07-13 11:44:03] my_logger.ERROR: Named route does not exist for name: config [] []
 [2018-07-13 13:30:29] my_logger.ERROR: Missing data for URL segment: propID [] []
+[2018-07-20 11:17:56] my_logger.DEBUG: Error deleting Auth token XGFAmvuFL7iZ : 00000:: [] []
