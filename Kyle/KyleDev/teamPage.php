@@ -1,16 +1,18 @@
 <?php
 date_default_timezone_set('America/New_York');
+$temp = realpath($_SERVER['DOCUMENT_ROOT']).DIRECTORY_SEPARATOR.'allSports'.DIRECTORY_SEPARATOR;
+
 require_once(realpath($_SERVER['DOCUMENT_ROOT']).DIRECTORY_SEPARATOR.'GlobalFiles'.DIRECTORY_SEPARATOR.'dbConnect.php');
 require_once(realpath($_SERVER['DOCUMENT_ROOT']).DIRECTORY_SEPARATOR.'GlobalFiles'.DIRECTORY_SEPARATOR.'tableNames.php');
 require_once(realpath($_SERVER['DOCUMENT_ROOT']).DIRECTORY_SEPARATOR.'GlobalFiles'.DIRECTORY_SEPARATOR.'connect.php');
 require_once(realpath($_SERVER['DOCUMENT_ROOT']).DIRECTORY_SEPARATOR.'GlobalFiles'.DIRECTORY_SEPARATOR.'tableNames.php');
-require_once('includeFiles/matchClass.php');
-require_once('includeFiles/tmpgVariableDeclarations2.php');
-require_once('includeFiles/tmpgFormFunctions2.php');
-require_once('includeFiles/teamClass.php');
-require_once('includeFiles/stndVariableDeclarations.php');
-require_once('includeFiles/stndOtherFunctions.php'); 
-require_once('includeFiles/stndFormFunctions.php');
+require_once($temp.'includeFiles/matchClass.php');
+require_once($temp.'includeFiles/tmpgVariableDeclarations2.php');
+require_once($temp.'includeFiles/tmpgFormFunctions2.php');
+require_once($temp.'includeFiles/teamClass.php');
+require_once($temp.'includeFiles/stndVariableDeclarations.php');
+require_once($temp.'includeFiles/stndOtherFunctions.php'); 
+require_once($temp.'includeFiles/stndFormFunctions.php');
 
 if(($teamID = $_GET['teamID']) == '') 
 {

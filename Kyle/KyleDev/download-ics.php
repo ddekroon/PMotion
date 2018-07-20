@@ -5,8 +5,24 @@
 	header('Content-type: text/calendar; charset=utf-8');
 	header('Content-Disposition: attachment; filename=pmotion-scheduled-matches.ics');
 	
-	include 'ics.php';
+	include 'ics.php'; // Don't know if this is needed, or if semicolon is required either
+	echo Includes_ICS::header_to_string();
 
+	foreach(/*match*/) {
+		$ics = new ics(array(
+			'location' => '',
+			'summary' => '',
+			'dtstart' => '',
+			'dtend' => '',
+			'url' => '',
+			'uid' => '' . '@pmotionmatches', // I think this needs to be set
+			'description' => '' // TODO: Put link to venue in here (for map)
+		));
+
+		echo $ics->to_string();
+	}
+
+	echo Includes_ICS::footer_to_string();
 
 
 	// All below is for web-app teams
