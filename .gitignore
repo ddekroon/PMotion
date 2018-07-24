@@ -56,6 +56,7 @@ Registration/**
 /nbproject/private/
 /control/**
 Login/**
+allSports/*
 *.orig
 
 # Kyle's temp folder for copies
