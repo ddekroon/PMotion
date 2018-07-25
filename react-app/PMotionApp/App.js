@@ -1,19 +1,30 @@
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { Component } from 'react';
+import { 
+    Alert, 
+    TouchableHighlight, 
+    StyleSheet, 
+    Text, 
+    View, 
+    WebView
+} from 'react-native';
+import NavBar from 'react-native-navbar';
 
-export default class App extends React.Component {
+export default class Index extends Component {
+
+    _onPressButton() {
+        Alert.alert('Button pressed!')
+    }
     render() {
+
         return (
-            <View style={styles.container}>
-                <Text>Open up App.js to start working on your app!</Text>
-                <Text>Changes you make will automatically reload.</Text>
-                <Text>Shake your phone to open the developer menu.</Text>
-                <Text>Sample text.</Text>
-                <Text></Text>
-            </View>
         );
     }
 }
+
+const titleConfig = {
+            title: 'Perpetual Motion Mobile',
+            style: {color: '#fff'}
+};
 
 const styles = StyleSheet.create({
     container: {
@@ -21,5 +32,12 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
         alignItems: 'center',
         justifyContent: 'center',
+    },
+    webStyle: {
+        flex: 1,
+    },
+    navBar: {
+        backgroundColor: '#de1219',
+        // topBarElevationShadowEnabled: true,
     },
 });
