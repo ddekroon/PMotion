@@ -2,17 +2,24 @@ import React, { Component } from 'react';
 import { StyleSheet, Text, View, WebView } from 'react-native';
 import NavBar from 'react-native-navbar';
 
-export default class Schedule extends Component {
+export default class ScoreReporter extends Component {
 
+	static navigationOptions = {
+        title: 'Perpetual Motion Mobile',
+        headerStyle: {
+            backgroundColor: '#de1219',
+        },
+        headerTintColor: '#fff',
+    };
 	render() {
+		const { navigate } = this.props.navigation;
+        // console.warn("Report score for sport: " + this.props.navigation.state.params.sportID);
+
 		return (
-			<View style={{flex: 1, marginTop: 20}}>
-                <View>
-                    <NavBar title={titleConfig} style={styles.navBar} />
-                </View>
+			<View style={{flex: 1}}>
                 <View style={styles.webStyle}>
                     <WebView 
-                        source={{uri: 'http://data.perpetualmotion.org/web-app/score-reporter/4'}}
+                        source={{uri: 'http://data.perpetualmotion.org/web-app/score-reporter/' + this.props.navigation.state.params.sportID}}
                         style={{flex: 1}}
                         scalesPageToFit={true}
                     />

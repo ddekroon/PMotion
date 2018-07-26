@@ -1,43 +1,17 @@
+'use strict';
+
 import React, { Component } from 'react';
-import { 
-    Alert, 
-    TouchableHighlight, 
-    StyleSheet, 
-    Text, 
-    View, 
-    WebView
-} from 'react-native';
-import NavBar from 'react-native-navbar';
+import { createStackNavigator } from 'react-navigation';
+import Index from './index.js';
+import ScoreReporter from './scoreReport.js';
+import Schedule from './schedule.js';
+import SportMain from './sportMain.js';
 
-export default class Index extends Component {
-
-    _onPressButton() {
-        Alert.alert('Button pressed!')
-    }
-    render() {
-
-        return (
-        );
-    }
-}
-
-const titleConfig = {
-            title: 'Perpetual Motion Mobile',
-            style: {color: '#fff'}
-};
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#fff',
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    webStyle: {
-        flex: 1,
-    },
-    navBar: {
-        backgroundColor: '#de1219',
-        // topBarElevationShadowEnabled: true,
-    },
+const App = createStackNavigator({
+    Home: { screen: Index },
+    Scores: { screen: ScoreReporter },
+    Schedule: { screen: Schedule },
+    Sports: { screen: SportMain }
 });
+
+export default App;
