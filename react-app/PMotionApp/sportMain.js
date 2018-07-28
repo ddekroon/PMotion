@@ -8,8 +8,8 @@ import {
     View, 
     WebView
 } from 'react-native';
-import NavBar from 'react-native-navbar';
-import App from './App.js';
+import styles from './styles.js';
+import { getSportName } from './sportFunctions.js';
 
 export default class SportMain extends Component {
 
@@ -23,47 +23,33 @@ export default class SportMain extends Component {
         },
         headerTintColor: '#fff',
     };
+
     render() {
         const { navigate } = this.props.navigation;
+        var sportID = this.props.navigation.state.params.sportID;
+        var sportName = getSportName(sportID);
         // console.warn("Sport: " + this.props.navigation.state.params.sportID);
 
         return (
             <View style={styles.container}>
-                <Button
-                    title="Report Scores"
-                    // color="#ff5f4e" // Find better colour choice?
+                <Text style={styles.mainHeader}>{sportName} Menu</Text>
+                <TouchableHighlight
+                    style={styles.button}
                     onPress={() =>
-                        navigate('Scores', {sportID: this.props.navigation.state.params.sportID})
+                        navigate('Scores', {sportID: sportID})
                     }
-                />
-                <Button
-                    title="View Schedule"
+                >
+                    <Text style={styles.buttonText}>Report Scores</Text>
+                </TouchableHighlight>
+                <TouchableHighlight
+                    style={styles.button}
                     onPress={() =>
-                        navigate('Schedule', {sportID: this.props.navigation.state.params.sportID})
+                        navigate('Schedule', {sportID: sportID})
                     }
-                />
+                >
+                    <Text style={styles.buttonText}>View Schedules</Text>
+                </TouchableHighlight>
             </View>
         );
     }
-}
-
-const titleConfig = {
-            title: 'Perpetual Motion Mobile',
-            style: {color: '#fff'}
 };
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#fff',
-        alignItems: 'center',
-        justifyContent: 'space-evenly',
-    },
-    webStyle: {
-        flex: 1,
-    },
-    navBar: {
-        backgroundColor: '#de1219',
-        // topBarElevationShadowEnabled: true,
-    },
-});

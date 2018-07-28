@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { StyleSheet, Text, View, WebView } from 'react-native';
-import NavBar from 'react-native-navbar';
+import styles from './styles.js';
 
 export default class ScoreReporter extends Component {
 
@@ -13,14 +13,14 @@ export default class ScoreReporter extends Component {
     };
 	render() {
 		const { navigate } = this.props.navigation;
+		const sportID = this.props.navigation.state.params.sportID;
         // console.warn("Report score for sport: " + this.props.navigation.state.params.sportID);
 
 		return (
 			<View style={{flex: 1}}>
                 <View style={styles.webStyle}>
                     <WebView 
-                        source={{uri: 'http://data.perpetualmotion.org/web-app/score-reporter/' + this.props.navigation.state.params.sportID}}
-                        style={{flex: 1}}
+                        source={{uri: 'http://data.perpetualmotion.org/web-app/score-reporter/' + sportID}}
                         scalesPageToFit={true}
                     />
                 </View>
@@ -33,19 +33,3 @@ const titleConfig = {
             title: 'Perpetual Motion Mobile',
             style: {color: '#fff'}
 };
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#fff',
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    webStyle: {
-        flex: 1,
-    },
-    navBar: {
-        backgroundColor: '#de1219',
-        // topBarElevationShadowEnabled: true,
-    },
-});

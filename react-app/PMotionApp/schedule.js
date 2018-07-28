@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Alert, Button, StyleSheet, Text, View, WebView } from 'react-native';
-import NavBar from 'react-native-navbar';
+import styles from './styles.js';
+import { getSportName } from './sportFunctions.js';
 
 export default class Schedule extends Component {
 
@@ -13,39 +14,28 @@ export default class Schedule extends Component {
     };
 	render() {
 		const { navigate } = this.props.navigation;
+		const sportID = this.props.navigation.state.params.sportID;
         // console.warn("Schedule for sport: " + this.props.navigation.state.params.sportID);
+
+        let sportName = getSportName(sportID);
 
 		return (
 			<View style={{flex: 1}}>
                 <View style={styles.webStyle}>
                     <WebView 
-                        source={{uri: 'http://data.perpetualmotion.org/allSports/schedule.php?leagueID=1610'}}
-                        style={{flex: 1}}
+                        // source={{uri: 'http://data.perpetualmotion.org/allSports/schedule.php?leagueID=1610'}}
+                        source={{uri: 'http://perpetualmotion.org/' + sportName + '/schedules-standings#'}}
                         scalesPageToFit={true}
                     />
                 </View>
             </View>
 		);
 	}
+
+	
 }
 
 const titleConfig = {
             title: 'Perpetual Motion Mobile',
             style: {color: '#fff'}
 };
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#fff',
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    webStyle: {
-        flex: 1,
-    },
-    navBar: {
-        backgroundColor: '#de1219',
-        // topBarElevationShadowEnabled: true,
-    },
-});
