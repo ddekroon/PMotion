@@ -32,23 +32,39 @@ export default class SportMain extends Component {
 
         return (
             <View style={styles.container}>
-                <Text style={styles.mainHeader}>{sportName} Menu</Text>
-                <TouchableHighlight
-                    style={styles.button}
-                    onPress={() =>
-                        navigate('Scores', {sportID: sportID})
-                    }
-                >
-                    <Text style={styles.buttonText}>Report Scores</Text>
-                </TouchableHighlight>
-                <TouchableHighlight
-                    style={styles.button}
-                    onPress={() =>
-                        navigate('Schedule', {sportID: sportID})
-                    }
-                >
-                    <Text style={styles.buttonText}>View Schedules</Text>
-                </TouchableHighlight>
+                <View style={styles.header}>
+                    <View style={{height: '15%'}}></View>
+                    <Text style={styles.mainHeader}>{sportName} Menu</Text>
+                    <Text style={styles.mainText}>Please select an option</Text>
+                </View>
+
+                <View style={styles.sportsContent}>
+                    <View style={styles.contentRow}>
+                        <View style={styles.buttonContainerSingle}>
+                            <TouchableHighlight
+                                style={styles.button}
+                                onPress={() =>
+                                    navigate('Scores', {sportID: sportID})
+                                }
+                            >
+                                <Text style={styles.buttonText}>REPORT SCORES</Text>
+                            </TouchableHighlight>
+                        </View>
+                    </View>
+
+                    <View style={styles.contentRow}>
+                        <View style={styles.buttonContainerSingle}>
+                            <TouchableHighlight
+                                style={styles.button}
+                                onPress={() =>
+                                    navigate('Schedule', {sportID: sportID})
+                                }
+                            >
+                                <Text style={styles.buttonText}>VIEW SCHEDULES</Text>
+                            </TouchableHighlight>
+                        </View>
+                    </View>
+                </View>
             </View>
         );
     }

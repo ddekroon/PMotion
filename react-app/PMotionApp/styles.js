@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native';
+import { Platform, StyleSheet } from 'react-native';
 
 export default StyleSheet.create({
 	container: {
@@ -10,32 +10,40 @@ export default StyleSheet.create({
     logoContainer: {
     	height: '15%',
         padding: 5,
-        // backgroundColor: '#292929',
     },
     logo: {
         flex: 1,
         minWidth: 80,
         minHeight: 20,
-        maxWidth: 400,
-        maxHeight: 100,
+        // maxWidth: 400,
+        // maxHeight: 100,
         justifyContent: 'center',
     },
     header: {
-    	height: '10%',
+    	height: '30%',
     	width: '100%',
     	backgroundColor: '#fff',
     	alignItems: 'center',
     },
     mainHeader: {
         fontSize: 40,
-        fontWeight: 'bold',
+        // fontWeight: 'bold', // Can't use this with custom font
+        alignItems: 'center',
+        fontFamily: 'JockeyOne-Regular', // Custom font may require setup on XCode and Android Studio
     },
-    content: {
-    	height: '75%',
+    mainContent: {
+    	height: '50%',
     	width: '100%',
     	// justifyContent: 'center',
     	flexWrap: 'wrap',
-    	backgroundColor: '#ababab',
+    	backgroundColor: '#fff',
+    },
+    mainText: {
+    },
+    sportsContent: {
+    	height: '70%',
+    	width: '100%',
+    	backgroundColor: '#fff',
     },
     contentRow: {
     	flex: 1,
@@ -52,7 +60,7 @@ export default StyleSheet.create({
         paddingHorizontal: 16,
         paddingVertical: 8,
         elevation: 2,
-     	width: '100%',
+     	width: '90%',
      	height: '50%',
      	justifyContent: 'center',
      	alignItems: 'center',
@@ -60,6 +68,7 @@ export default StyleSheet.create({
     buttonText: {
         color: '#fff',
         fontWeight: 'bold',
+        fontSize: 15,
     },
     buttonContainer: {
     	width: '50%',
@@ -68,6 +77,26 @@ export default StyleSheet.create({
     	alignItems: 'center',
     	// flex: 1,
     	backgroundColor: '#272727',
+    	padding: '2%',
+    },
+    buttonContainerSingle: {
+    	height: '100%',
+    	width: '100%',
+    	justifyContent: 'center',
+    	alignItems: 'center',
+    	backgroundColor: '#272727',
     	padding: 5,
+    },
+    footer: {
+    	height: '5%',
+    	width: '100%',
+    	justifyContent: 'center',
+    	alignItems: 'center',
+    	backgroundColor: '#272727',
+    },
+    mainFooter: {
+    	color: '#fff',
+    	fontSize: 12,
+    	alignItems: 'center',
     },
 });

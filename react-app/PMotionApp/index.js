@@ -12,10 +12,22 @@ import {
 import NavBar from 'react-native-navbar';
 import App from './App.js';
 import styles from './styles.js';
+import { Font } from 'expo';
 
 export default class Index extends Component {
 
-    // color="#ff5f4e" // Find better colour choice?
+    /* This function and the one below run first to ensure that the custom font(s) are loaded */
+    state = {
+        fontLoaded: false,
+    };
+
+    async componentDidMount() {
+        await Font.loadAsync({
+            'JockeyOne-Regular': require('./assets/fonts/JockeyOne-Regular.ttf'),
+        });
+
+        this.setState({ fontLoaded: true });
+    };
 
     _onPressButton() {
         Alert.alert('Button pressed!')
@@ -38,10 +50,17 @@ export default class Index extends Component {
                         source={require('./img/Perpetualmotionlogo2.png')} 
                     />
                 </View>
+
                 <View style={styles.header}>
-                    <Text style={styles.mainHeader}>Select your sport</Text>
+                {
+                    this.state.fontLoaded ? (
+                        <Text style={styles.mainHeader}>Select your sport</Text>
+                    ) : null
+                }
+                    <Text style={styles.mainText}>To report scores or view schedules</Text>
                 </View>
-                <View style={styles.content}>
+
+                <View style={styles.mainContent}>
                     <View style={styles.contentRow}>
                         <View style={styles.buttonContainer}>
                             <TouchableHighlight
@@ -53,6 +72,7 @@ export default class Index extends Component {
                                 <Text style={styles.buttonText}>ULTIMATE</Text>
                             </TouchableHighlight>
                         </View>
+
                         <View style={styles.buttonContainer}>
                             <TouchableHighlight
                                 style={styles.button}
@@ -64,6 +84,7 @@ export default class Index extends Component {
                             </TouchableHighlight>
                         </View>
                     </View>
+
                     <View style={styles.contentRow}>
                         <View style={styles.buttonContainer}>
                             <TouchableHighlight
@@ -75,6 +96,7 @@ export default class Index extends Component {
                                 <Text style={styles.buttonText}>FOOTBALL</Text>
                             </TouchableHighlight>
                         </View>
+
                         <View style={styles.buttonContainer}>
                             <TouchableHighlight
                                 style={styles.button}
@@ -86,6 +108,10 @@ export default class Index extends Component {
                             </TouchableHighlight>
                         </View>
                     </View>
+                </View>
+
+                <View style={styles.footer}>
+                    <Text style={styles.mainFooter}>{'\u00A9'} 2002-2018, Perpetual Motion Sports & Entertainment Inc.</Text>
                 </View>
             </View>
         );
