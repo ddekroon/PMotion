@@ -87,6 +87,25 @@ export default StyleSheet.create({
     	backgroundColor: '#272727',
     	padding: 5,
     },
+    sportButtonContainer: { // UNUSED
+        width: '50%',
+        height: '100%',
+        justifyContent: 'center',
+    },
+    sportButton: {
+        borderRadius: 4,
+        borderBottomWidth: 8,
+        padding: 3,
+        width: '98%',
+        height: '90%',
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#fff',
+    },
+    sportLogo: {
+        resizeMode: 'contain',
+        width: '100%',
+    },
     footer: {
     	height: '5%',
     	width: '100%',

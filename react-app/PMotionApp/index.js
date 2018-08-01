@@ -29,11 +29,8 @@ export default class Index extends Component {
         this.setState({ fontLoaded: true });
     };
 
-    _onPressButton() {
-        Alert.alert('Button pressed!')
-    };
     static navigationOptions = {
-        title: 'Perpetual Motion Mobile',
+        title: 'Perpetual Motion Home',
         headerStyle: {
             backgroundColor: '#de1219',
         },
@@ -64,23 +61,29 @@ export default class Index extends Component {
                     <View style={styles.contentRow}>
                         <View style={styles.buttonContainer}>
                             <TouchableHighlight
-                                style={styles.button}
+                                style={[styles.sportButton, {borderBottomColor: '#C3121C'}]}
                                 onPress={() =>
                                     navigate('Sports', {sportID: 1})
                                 }
                             >
-                                <Text style={styles.buttonText}>ULTIMATE</Text>
+                                <Image 
+                                    style={styles.sportLogo}
+                                    source={require('./img/ultimate_0.png')}
+                                />
                             </TouchableHighlight>
                         </View>
 
                         <View style={styles.buttonContainer}>
                             <TouchableHighlight
-                                style={styles.button}
+                                style={[styles.sportButton, {borderBottomColor: '#0066CC'}]}
                                 onPress={() =>
                                     navigate('Sports', {sportID: 2})
                                 }
                             >
-                                <Text style={styles.buttonText}>VOLLEYBALL</Text>
+                                <Image 
+                                    style={styles.sportLogo}
+                                    source={require('./img/volleyball_0.png')}
+                                />
                             </TouchableHighlight>
                         </View>
                     </View>
@@ -88,23 +91,29 @@ export default class Index extends Component {
                     <View style={styles.contentRow}>
                         <View style={styles.buttonContainer}>
                             <TouchableHighlight
-                                style={styles.button}
+                                style={[styles.sportButton, {borderBottomColor: '#0a790a'}]}
                                 onPress={() =>
                                     navigate('Sports', {sportID: 3})
                                 }
                             >
-                                <Text style={styles.buttonText}>FOOTBALL</Text>
+                                <Image 
+                                    style={styles.sportLogo}
+                                    source={require('./img/football_0.png')}
+                                />
                             </TouchableHighlight>
                         </View>
 
                         <View style={styles.buttonContainer}>
                             <TouchableHighlight
-                                style={styles.button}
+                                style={[styles.sportButton, {borderBottomColor: '#474F54'}]}
                                 onPress={() =>
                                     navigate('Sports', {sportID: 4})
                                 }
                             >
-                                <Text style={styles.buttonText}>SOCCER</Text>
+                                <Image 
+                                    style={styles.sportLogo}
+                                    source={require('./img/soccer_0.png')}
+                                />
                             </TouchableHighlight>
                         </View>
                     </View>
