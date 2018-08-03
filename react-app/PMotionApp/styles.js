@@ -4,20 +4,24 @@ export default StyleSheet.create({
 	container: {
         flex: 1,
         backgroundColor: '#fff',
-        alignItems: 'center',
-        justifyContent: 'flex-start',
+        // alignItems: 'center',
+        // justifyContent: 'flex-start',
     },
     logoContainer: {
-    	height: '15%',
-        padding: 5,
-    },
-    logo: {
-        flex: 1,
-        minWidth: 80,
-        minHeight: 20,
-        // maxWidth: 400,
-        // maxHeight: 100,
+    	height: '25%',
+        width: '100%',
+        paddingVertical: 5,
+        paddingHorizontal: 10,
+        alignItems: 'center',
         justifyContent: 'center',
+    },
+    mainLogo: {
+        resizeMode: 'contain',
+        width: '100%',
+    },
+    subLogo: {
+        width: '100%',
+        height: '20%',
     },
     header: {
     	height: '30%',
@@ -29,21 +33,25 @@ export default StyleSheet.create({
         fontSize: 40,
         // fontWeight: 'bold', // Can't use this with custom font
         alignItems: 'center',
-        fontFamily: 'JockeyOne-Regular', // Custom font may require setup on XCode and Android Studio
+        // fontFamily: 'JockeyOne-Regular', // Custom font may require setup on XCode and Android Studio - may not need this custom font if I replace titles/headers with images+logos
     },
     mainContent: {
-    	height: '50%',
+    	height: '70%',
     	width: '100%',
     	// justifyContent: 'center',
     	flexWrap: 'wrap',
-    	backgroundColor: '#fff',
+    	backgroundColor: '#272727',
+        borderTopRightRadius: 4,
+        borderTopLeftRadius: 4,
     },
     mainText: {
     },
     sportsContent: {
-    	height: '70%',
+    	height: '75%',
     	width: '100%',
-    	backgroundColor: '#fff',
+    	backgroundColor: '#272727',
+        borderTopRightRadius: 4,
+        borderTopLeftRadius: 4,
     },
     contentRow: {
     	flex: 1,
@@ -75,6 +83,7 @@ export default StyleSheet.create({
     	height:'100%',
     	justifyContent: 'center',
     	alignItems: 'center',
+        borderRadius: 4,
     	// flex: 1,
     	backgroundColor: '#272727',
     	padding: '2%',
@@ -84,6 +93,7 @@ export default StyleSheet.create({
     	width: '100%',
     	justifyContent: 'center',
     	alignItems: 'center',
+        borderRadius: 4,
     	backgroundColor: '#272727',
     	padding: 5,
     },
@@ -97,7 +107,7 @@ export default StyleSheet.create({
         borderBottomWidth: 8,
         padding: 3,
         width: '98%',
-        height: '90%',
+        height: '70%',
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: '#fff',

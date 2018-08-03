@@ -9,28 +9,13 @@ import {
     View, 
     WebView
 } from 'react-native';
-import NavBar from 'react-native-navbar';
 import App from './App.js';
 import styles from './styles.js';
-import { Font } from 'expo';
 
 export default class Index extends Component {
 
-    /* This function and the one below run first to ensure that the custom font(s) are loaded */
-    state = {
-        fontLoaded: false,
-    };
-
-    async componentDidMount() {
-        await Font.loadAsync({
-            'JockeyOne-Regular': require('./assets/fonts/JockeyOne-Regular.ttf'),
-        });
-
-        this.setState({ fontLoaded: true });
-    };
-
     static navigationOptions = {
-        title: 'Perpetual Motion Home',
+        title: 'Perpetual Motion Mobile',
         headerStyle: {
             backgroundColor: '#de1219',
         },
@@ -42,19 +27,9 @@ export default class Index extends Component {
             <View style={styles.container}>
                 <View style={styles.logoContainer}>
                     <Image 
-                        style={styles.logo}
-                        resizeMode="contain"
+                        style={styles.mainLogo}
                         source={require('./img/Perpetualmotionlogo2.png')} 
                     />
-                </View>
-
-                <View style={styles.header}>
-                {
-                    this.state.fontLoaded ? (
-                        <Text style={styles.mainHeader}>Select your sport</Text>
-                    ) : null
-                }
-                    <Text style={styles.mainText}>To report scores or view schedules</Text>
                 </View>
 
                 <View style={styles.mainContent}>
