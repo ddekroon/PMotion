@@ -30,12 +30,5 @@ export default class Schedule extends Component {
                 </View>
             </View>
 		);
-	}
-
-	
+	}	
 }
-
-const titleConfig = {
-            title: 'Perpetual Motion Mobile',
-            style: {color: '#fff'}
-};

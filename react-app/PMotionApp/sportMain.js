@@ -10,7 +10,7 @@ import {
     WebView
 } from 'react-native';
 import styles from './styles.js';
-import { getSportName, getSportLogo, getReadySet } from './sportFunctions.js';
+import { getSportName, getSportLogo, getReadySet, getSportColour } from './sportFunctions.js';
 
 export default class SportMain extends Component {
 
@@ -18,9 +18,10 @@ export default class SportMain extends Component {
         Alert.alert('Button pressed!')
     };
     static navigationOptions = {
+
         title: 'Perpetual Motion Mobile',
         headerStyle: {
-            backgroundColor: '#de1219',
+            backgroundColor: '#de1219', 
         },
         headerTintColor: '#fff',
     };
@@ -31,14 +32,13 @@ export default class SportMain extends Component {
         var sportName = getSportName(sportID);
         var sportLogo = getSportLogo(sportID);
         var readySetPlay = getReadySet(sportID);
-
-        // console.warn("Sport: " + this.props.navigation.state.params.sportID);
+        var sportColour = getSportColour(sportID); // Find out how to change nav bar to sport's colour
 
         return (
             <View style={styles.container}>
                 <View style={styles.logoContainer}>
                     <Image 
-                        style={[styles.mainLogo, {maxHeight: '80%'}]}
+                        style={[styles.mainLogo, {height: '80%'}]}
                         source={sportLogo} 
                     />
                     <View style={styles.subLogo}>
@@ -72,6 +72,19 @@ export default class SportMain extends Component {
                                 }
                             >
                                 <Text style={styles.buttonText}>VIEW SCHEDULES</Text>
+                            </TouchableHighlight>
+                        </View>
+                    </View>
+
+                    <View style={styles.contentRow}>
+                        <View style={styles.buttonContainerSingle}>
+                            <TouchableHighlight
+                                style={styles.button}
+                                onPress={() =>
+                                    navigate('FieldStatus')
+                                }
+                            >
+                                <Text style={styles.buttonText}>FIELD STATUS</Text>
                             </TouchableHighlight>
                         </View>
                     </View>

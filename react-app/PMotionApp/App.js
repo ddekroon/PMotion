@@ -3,6 +3,7 @@
 import React, { Component } from 'react';
 import { createStackNavigator } from 'react-navigation';
 import Index from './index.js';
+import FieldStatus from './fieldStatus.js';
 import ScoreReporter from './scoreReport.js';
 import Schedule from './schedule.js';
 import SportMain from './sportMain.js';
@@ -12,6 +13,7 @@ import styles from './styles.js';
 
 const App = createStackNavigator({
     Home: { screen: Index },
+    FieldStatus: { screen: FieldStatus },
     Scores: { screen: ScoreReporter },
     Schedule: { screen: Schedule },
     Sports: { screen: SportMain }

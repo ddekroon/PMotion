@@ -70,3 +70,27 @@ export const getReadySet = (sportID)=>{
 
     return readySet;
 };
+
+export const getSportColour = (sportID)=>{
+	let sportColour;
+
+	switch(sportID) {
+        case 1:
+            sportColour = '#C3121C';
+            break;
+        case 2:
+            sportColour = '#0066CC';
+            break;
+        case 3:
+            sportColour = '#0a790a';
+            break;
+        case 4:
+            sportColour = '#474F54';
+            break;
+        default:
+            sportColour = '#272727'; // Shouldn't ever default
+            break;
+    }
+
+    return sportColour;
+};
