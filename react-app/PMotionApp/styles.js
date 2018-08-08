@@ -128,4 +128,12 @@ export default StyleSheet.create({
     	fontSize: 12,
     	alignItems: 'center',
     },
+    offlineErrorView: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    offlineErrorText: {
+        textAlign: 'center',
+    },
 });

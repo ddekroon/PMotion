@@ -16,32 +16,23 @@ export default class FieldStatus extends Component {
         super(props);
 
         this.state = {
-            loaded: false,
+            // loaded: false,
         }
     }
 
 	render() {
 		const { navigate } = this.props.navigation;
-        const isLoaded = this.state.loaded;
+        // const isLoaded = this.state.loaded;
 
 		return (
 			<View style={{flex: 1}}>
                 <View style={styles.webStyle}>
-                    {isLoaded ? (null) : (
-                        <View>
-                            <Text>If page doesn't appear within a few seconds, please check internet connection</Text>
-                        </View>
-                    )}
                     <WebView 
                         source={{uri: 'http://guelph.ca/seasonal/sports-field-status/'}}
-                        onLoadEnd={ ()=> {
-                                this.setState({ loaded: true });
-                            }
-                        }
                         renderError={ ()=> {
                                 return(
-                                    <View>
-                                        <Text>Error occurred while loading the page...</Text>
+                                    <View style={styles.offlineErrorView}>
+                                        <Text style={styles.offlineErrorText}>Error occurred while loading the page... Please check your internet connection</Text>
                                     </View>
                                     );
                             }

@@ -17,36 +17,27 @@ export default class Schedule extends Component {
         super(props);
 
         this.state = {
-            loaded: false,
+            // loaded: false,
         }
     }
-    
+
 	render() {
 		const { navigate } = this.props.navigation;
 		const sportID = this.props.navigation.state.params.sportID;
-        const isLoaded = this.state.loaded;
+        // const isLoaded = this.state.loaded;
 
         let sportName = getSportName(sportID);
 
 		return (
 			<View style={{flex: 1}}>
                 <View style={styles.webStyle}>
-                    {isLoaded ? (null) : (
-                        <View>
-                            <Text>If page doesn't appear within a few seconds, please check internet connection</Text>
-                        </View>
-                    )}
                     <WebView 
                         // source={{uri: 'http://data.perpetualmotion.org/allSports/schedule.php?leagueID=1610'}}
                         source={{uri: 'http://perpetualmotion.org/' + sportName + '/schedules-standings#'}}
-                        onLoadEnd={ ()=> {
-                                this.setState({ loaded: true });
-                            }
-                        }
-                        onError={ ()=> {
+                        renderError={ ()=> {
                                 return(
-                                    <View>
-                                        <Text>Error occurred while loading the page...</Text>
+                                    <View style={styles.offlineErrorView}>
+                                        <Text style={styles.offlineErrorText}>Error occurred while loading the page... Please check your internet connection</Text>
                                     </View>
                                     );
                             }
