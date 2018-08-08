@@ -19,7 +19,14 @@ export default class FieldStatus extends Component {
                 <View style={styles.webStyle}>
                     <WebView 
                         source={{uri: 'http://guelph.ca/seasonal/sports-field-status/'}}
-                        scalesPageToFit={true}
+                        onError={ ()=> {
+                                return(
+                                    <View>
+                                        <Text>Error occurred while loading the page...</Text>
+                                    </View>
+                                    );
+                            }
+                        }
                     />
                 </View>
             </View>

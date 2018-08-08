@@ -14,14 +14,20 @@ export default class ScoreReporter extends Component {
 	render() {
 		const { navigate } = this.props.navigation;
 		const sportID = this.props.navigation.state.params.sportID;
-        // console.warn("Report score for sport: " + this.props.navigation.state.params.sportID);
 
 		return (
 			<View style={{flex: 1}}>
                 <View style={styles.webStyle}>
                     <WebView 
                         source={{uri: 'http://data.perpetualmotion.org/web-app/score-reporter/' + sportID}}
-                        scalesPageToFit={true}
+                        onError={ ()=> {
+                                return(
+                                    <View>
+                                        <Text>Error occurred while loading the page...</Text>
+                                    </View>
+                                    );
+                            }
+                        }
                     />
                 </View>
             </View>

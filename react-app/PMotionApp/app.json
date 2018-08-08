@@ -2,7 +2,7 @@
   "expo": {
     "sdkVersion": "27.0.0",
     "name": "PMotionApp",
-    // "icon": "./img/appLogo.png",
+    "icon": "./img/PerpetualMotionLeafIcon_v1.png",
     "version": "0.1.0",
     // "displayName": "PMotionApp", // this was automatically added, but not used in expo
     "slug": "PMotionApp",

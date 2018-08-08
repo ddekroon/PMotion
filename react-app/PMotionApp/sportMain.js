@@ -14,9 +14,6 @@ import { getSportName, getSportLogo, getReadySet, getSportColour } from './sport
 
 export default class SportMain extends Component {
 
-    _onPressButton() {
-        Alert.alert('Button pressed!')
-    };
     static navigationOptions = {
 
         title: 'Perpetual Motion Mobile',
