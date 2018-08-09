@@ -24,8 +24,8 @@ export default class Index extends Component {
     };
 
     state = {
-        isLoadingComplete: false,
         isSplashReady: false,
+        isAppReady: false,
     };
 
     render() {
@@ -33,25 +33,23 @@ export default class Index extends Component {
             return (
                 <AppLoading
                     startAsync={this._cacheSplashResourcesAsync}
-                    OnFinish={() => this.setState({ isSplashReady: true })}
+                    onFinish={() => this.setState({ isSplashReady: true })}
                     onError={console.warn}
                     autoHideSplash={false}
                 />
             );
-        }
+          }
 
-        if (!this.state.isLoadingComplete) {
+          if (!this.state.isAppReady) {
             return (
-                <View style={{flex: 1}}>
+                <View style={{ flex: 1 }}>
                     <Image
                         source={require('./img/splash.png')}
                         onLoad={this._cacheResourcesAsync}
                     />
                 </View>
             );
-        }
-
-        SplashScreen.hide();
+          }
 
         console.disableYellowBox = true; // Change to false for debugging
         const { navigate } = this.props.navigation;
@@ -142,7 +140,7 @@ export default class Index extends Component {
 
     _cacheResourcesAsync = async () => {
         SplashScreen.hide();
-        console.warn("the rest");
+        // console.warn("the rest");
         const images = [
             require('./img/ultimate_0.png'),
             require('./img/volleyball_0.png'),
@@ -159,7 +157,7 @@ export default class Index extends Component {
         });
 
         await Promise.all(cacheImages);
-        this.setState({ isLoadingComplete: true });
+        this.setState({ isAppReady: true });
     }
 
     _handleLoadingError = (error) => {
