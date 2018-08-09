@@ -1,7 +1,7 @@
 {
   "expo": {
-    "sdkVersion": "27.0.0",
-    "name": "PMotionApp",
+    "sdkVersion": "29.0.0",
+    "name": "PM Sports",
     "icon": "./img/PerpetualMotionLeafIcon_v1.png",
     "version": "0.2.0",
     // "displayName": "PMotionApp", // this was automatically added, but not used in expo
@@ -10,7 +10,7 @@
     "orientation": "portrait",
     "splash": {
       "image": "./img/splash.png",
-      "backgroundColor": "#de1219",
+      "backgroundColor": "#000",
       "resizeMode": "contain",
     },
     "ios": {
