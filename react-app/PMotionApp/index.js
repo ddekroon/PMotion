@@ -10,6 +10,7 @@ import {
     WebView
 } from 'react-native';
 import App from './App.js';
+import { AppLoading, Asset, SplashScreen } from 'expo';
 import styles from './styles.js';
 
 export default class Index extends Component {
@@ -21,9 +22,40 @@ export default class Index extends Component {
         },
         headerTintColor: '#fff',
     };
+
+    state = {
+        isLoadingComplete: false,
+        isSplashReady: false,
+    };
+
     render() {
+        if (!this.state.isSplashReady) {
+            return (
+                <AppLoading
+                    startAsync={this._cacheSplashResourcesAsync}
+                    OnFinish={() => this.setState({ isSplashReady: true })}
+                    onError={console.warn}
+                    autoHideSplash={false}
+                />
+            );
+        }
+
+        if (!this.state.isLoadingComplete) {
+            return (
+                <View style={{flex: 1}}>
+                    <Image
+                        source={require('./img/splash.png')}
+                        onLoad={this._cacheResourcesAsync}
+                    />
+                </View>
+            );
+        }
+
+        SplashScreen.hide();
+
         console.disableYellowBox = true; // Change to false for debugging
         const { navigate } = this.props.navigation;
+
         return (
             <View style={styles.container}>
                 <View style={styles.logoContainer}>
@@ -101,9 +133,36 @@ export default class Index extends Component {
             </View>
         );
     }
-}
 
-const titleConfig = {
-            title: 'Perpetual Motion Mobile',
-            style: {color: '#fff'}
-};
+    _cacheSplashResourcesAsync = async () => {
+        const splashImg = require('./img/splash.png');
+        // console.warn("splash");
+        return Asset.fromModule(splashImg).downloadAsync();
+    }
+
+    _cacheResourcesAsync = async () => {
+        SplashScreen.hide();
+        console.warn("the rest");
+        const images = [
+            require('./img/ultimate_0.png'),
+            require('./img/volleyball_0.png'),
+            require('./img/football_0.png'),
+            require('./img/soccer_0.png'),
+            require('./img/ready-set-play-ultimate.png'),
+            require('./img/ready-set-play-volleyball.png'),
+            require('./img/ready-set-play-football.png'),
+            require('./img/ready-set-play-soccer.png'),
+        ];
+
+        const cacheImages = images.map((image) => {
+            return Asset.fromModule(image).downloadAsync();
+        });
+
+        await Promise.all(cacheImages);
+        this.setState({ isLoadingComplete: true });
+    }
+
+    _handleLoadingError = (error) => {
+        console.warn(error);
+    };
+}

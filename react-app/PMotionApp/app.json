@@ -3,13 +3,18 @@
     "sdkVersion": "27.0.0",
     "name": "PMotionApp",
     "icon": "./img/PerpetualMotionLeafIcon_v1.png",
-    "version": "0.1.0",
+    "version": "0.2.0",
     // "displayName": "PMotionApp", // this was automatically added, but not used in expo
     "slug": "PMotionApp",
     "privacy": "unlisted",
     "orientation": "portrait",
+    "splash": {
+      "image": "./img/splash.png",
+      "backgroundColor": "#de1219",
+      "resizeMode": "contain",
+    },
     "ios": {
-    	"bundleIdentifier": "com.perpetualmotion.PMotionApp"
+    	"bundleIdentifier": "com.perpetualmotion.PMotionApp",
     },
     "android": {
     	"package": "com.perpetualmotion.PMotionApp",

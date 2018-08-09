@@ -25,7 +25,6 @@ export default class Schedule extends Component {
 		const { navigate } = this.props.navigation;
 		const sportID = this.props.navigation.state.params.sportID;
         // const isLoaded = this.state.loaded;
-
         let sportName = getSportName(sportID);
 
 		return (

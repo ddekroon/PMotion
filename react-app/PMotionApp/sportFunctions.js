@@ -1,6 +1,6 @@
 import { Alert } from 'react-native';
 
-export const getSportName = (sportID)=> {
+export const getSportName = (sportID) => {
     let sportName;
     // console.warn("Finding sportName for sportID: " + sportID);
 
@@ -25,7 +25,7 @@ export const getSportName = (sportID)=> {
     return sportName;
 };
 
-export const getSportLogo = (sportID)=> {
+export const getSportLogo = (sportID) => {
 	let sportLogo;
 
 	switch(sportID) {
@@ -49,7 +49,7 @@ export const getSportLogo = (sportID)=> {
     return sportLogo;
 };
 
-export const getReadySet = (sportID)=> {
+export const getReadySet = (sportID) => {
 	let readySet;
 
 	switch(sportID) {
@@ -73,7 +73,7 @@ export const getReadySet = (sportID)=> {
     return readySet;
 };
 
-export const getSportColour = (sportID)=> {
+export const getSportColour = (sportID) => {
 	let sportColour;
 
 	switch(sportID) {
@@ -97,7 +97,7 @@ export const getSportColour = (sportID)=> {
     return sportColour;
 };
 
-export const showConnectionAlert = ()=> {
+export const showConnectionAlert = () => {
     Alert.alert(
         'Connection Error',
         "Could not load page, please check internet connection",
