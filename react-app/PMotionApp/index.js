@@ -135,32 +135,13 @@ export default class Index extends Component {
     }
 
     _cacheSplashResourcesAsync = async () => {
-        // const splashImg = require('./img/splash.png');
-
-        return Promise.all([
-            Asset.loadAsync([
-                require('./img/splash.png'),
-            ]),
-        ]);
+        const splashImg = require('./img/splash.png');
         // console.warn("splash");
-        // return Asset.fromModule(splashImg).downloadAsync();
-    };
+        return Asset.fromModule(splashImg).downloadAsync();
+    }
 
     _cacheResourcesAsync = async () => {
-        return Promise.all([
-            Asset.loadAsync([
-                require('./img/ultimate_0.png'),
-                require('./img/volleyball_0.png'),
-                require('./img/football_0.png'),
-                require('./img/soccer_0.png'),
-                // require('./img/ready-set-play-ultimate.png'),
-                // require('./img/ready-set-play-volleyball.png'),
-                // require('./img/ready-set-play-football.png'),
-                // require('./img/ready-set-play-soccer.png'),
-            ]),
-        ]);
-
-        /* SplashScreen.hide();
+        SplashScreen.hide();
         console.warn("the rest");
         const images = [
             require('./img/ultimate_0.png'),
@@ -177,11 +158,11 @@ export default class Index extends Component {
             return Asset.fromModule(image).downloadAsync();
         });
 
-        await Promise.all(cacheImages);*/
+        await Promise.all(cacheImages);
         this.setState({ isLoadingComplete: true });
-    };
+    }
 
-    _handleLoadingError = error => {
+    _handleLoadingError = (error) => {
         console.warn(error);
     };
 }
