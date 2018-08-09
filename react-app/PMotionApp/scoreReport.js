@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, WebView } from 'react-native';
+import { View, WebView } from 'react-native';
+import { showConnectionAlert } from './sportFunctions.js';
 import styles from './styles.js';
 
 export default class ScoreReporter extends Component {
@@ -32,9 +33,7 @@ export default class ScoreReporter extends Component {
                         source={{uri: 'http://data.perpetualmotion.org/web-app/score-reporter/' + sportID}}
                         renderError={ ()=> {
                                 return(
-                                    <View style={styles.offlineErrorView}>
-                                        <Text style={styles.offlineErrorText}>Error occurred while loading the page... Please check your internet connection</Text>
-                                    </View>
+                                    showConnectionAlert()
                                     );
                             }
                         }

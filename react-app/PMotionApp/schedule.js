@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import { Alert, Button, StyleSheet, Text, View, WebView } from 'react-native';
+import { View, WebView } from 'react-native';
+import { getSportName, showConnectionAlert } from './sportFunctions.js';
 import styles from './styles.js';
-import { getSportName } from './sportFunctions.js';
 
 export default class Schedule extends Component {
 
@@ -36,9 +36,7 @@ export default class Schedule extends Component {
                         source={{uri: 'http://perpetualmotion.org/' + sportName + '/schedules-standings#'}}
                         renderError={ ()=> {
                                 return(
-                                    <View style={styles.offlineErrorView}>
-                                        <Text style={styles.offlineErrorText}>Error occurred while loading the page... Please check your internet connection</Text>
-                                    </View>
+                                    showConnectionAlert()
                                     );
                             }
                         }

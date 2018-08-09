@@ -22,6 +22,7 @@ export default class Index extends Component {
         headerTintColor: '#fff',
     };
     render() {
+        console.disableYellowBox = true; // Change to false for debugging
         const { navigate } = this.props.navigation;
         return (
             <View style={styles.container}>
