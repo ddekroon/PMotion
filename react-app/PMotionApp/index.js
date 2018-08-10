@@ -38,20 +38,22 @@ export default class Index extends Component {
                     autoHideSplash={false}
                 />
             );
-          }
+        }
 
-          if (!this.state.isAppReady) {
+        if (!this.state.isAppReady) {
+            // return this._cacheResourcesAsync();
             return (
-                <View style={{ flex: 1 }}>
+                <View style={{flex: 1, justifyContent: 'center', backgroundColor: '#fff'}}>
                     <Image
                         source={require('./img/splash.png')}
+                        style={{resizeMode: 'contain', width: '100%'}}
                         onLoad={this._cacheResourcesAsync}
                     />
                 </View>
             );
-          }
+        }
 
-        console.disableYellowBox = true; // Change to false for debugging
+        // console.disableYellowBox = true; // Change to false for debugging
         const { navigate } = this.props.navigation;
 
         return (
