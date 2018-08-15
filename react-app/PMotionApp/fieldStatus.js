@@ -5,12 +5,14 @@ import styles from './styles.js';
 
 export default class FieldStatus extends Component {
 
-	static navigationOptions = {
-        title: 'Perpetual Motion Sports',
-        headerStyle: {
-            backgroundColor: '#de1219',
-        },
-        headerTintColor: '#fff',
+	static navigationOptions = ({ navigation }) => {
+        return {
+            title: 'Perpetual Motion Sports',
+            headerStyle: {
+                backgroundColor: navigation.getParam('headerColour'),
+            },
+            headerTintColor: '#fff',
+        };
     };
 
     constructor(props) {

@@ -27,6 +27,7 @@ export default class SportMain extends Component {
     render() {
         const { navigate } = this.props.navigation;
         var sportID = this.props.navigation.state.params.sportID;
+        var headerColour = this.props.navigation.state.params.headerColour;
         var sportName = getSportName(sportID);
         var sportLogo = getSportLogo(sportID);
         var readySetPlay = getReadySet(sportID);
@@ -53,7 +54,7 @@ export default class SportMain extends Component {
                             <TouchableHighlight
                                 style={[styles.button, {backgroundColor: sportColour}]}
                                 onPress={() =>
-                                    navigate('Scores', {sportID: sportID})
+                                    navigate('Scores', {sportID: sportID, headerColour: headerColour})
                                 }
                             >
                                 <Text style={styles.buttonText}>REPORT SCORES</Text>
@@ -66,7 +67,7 @@ export default class SportMain extends Component {
                             <TouchableHighlight
                                 style={[styles.button, {backgroundColor: sportColour}]}
                                 onPress={() =>
-                                    navigate('Schedule', {sportID: sportID})
+                                    navigate('Schedule', {sportID: sportID, headerColour: headerColour})
                                 }
                             >
                                 <Text style={styles.buttonText}>VIEW SCHEDULES</Text>
@@ -79,7 +80,7 @@ export default class SportMain extends Component {
                             <TouchableHighlight
                                 style={[styles.button, {backgroundColor: sportColour}]}
                                 onPress={() =>
-                                    navigate('FieldStatus')
+                                    navigate('FieldStatus', {headerColour: headerColour})
                                 }
                             >
                                 <Text style={styles.buttonText}>FIELD STATUS</Text>

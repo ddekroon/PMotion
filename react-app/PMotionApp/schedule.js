@@ -5,21 +5,16 @@ import styles from './styles.js';
 
 export default class Schedule extends Component {
 
-	static navigationOptions = {
-        title: 'Perpetual Motion Sports',
-        headerStyle: {
-            backgroundColor: '#de1219',
-        },
-        headerTintColor: '#fff',
+	static navigationOptions = ({ navigation }) => {
+        return {
+            title: 'Perpetual Motion Sports',
+            headerStyle: {
+                backgroundColor: navigation.getParam('headerColour'),
+            },
+            headerTintColor: '#fff',
+        };
     };
 
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            // loaded: false,
-        }
-    }
 
 	render() {
 		const { navigate } = this.props.navigation;
