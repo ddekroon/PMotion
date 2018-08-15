@@ -1,8 +1,8 @@
 {
   "expoServerPort": 19000,
   "packagerPort": 19001,
-  "packagerPid": 129188,
-  "expoServerNgrokUrl": "https://3b-54p.kconrad53.pmotionapp.exp.direct",
-  "packagerNgrokUrl": "https://packager.3b-54p.kconrad53.pmotionapp.exp.direct",
-  "ngrokPid": 172152
+  "packagerPid": 6964,
+  "expoServerNgrokUrl": null,
+  "packagerNgrokUrl": null,
+  "ngrokPid": null
 }

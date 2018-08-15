@@ -3,6 +3,7 @@ import {
     Alert, 
     Button,
     Image,
+    Linking,
     StyleSheet, 
     TouchableHighlight, 
     Text, 
@@ -11,22 +12,25 @@ import {
 } from 'react-native';
 import App from './App.js';
 import { AppLoading, Asset, SplashScreen } from 'expo';
+import { _onPressImage, getSportColour } from './sportFunctions.js';
 import styles from './styles.js';
 
 export default class Index extends Component {
 
-    static navigationOptions = {
-        title: 'Perpetual Motion Mobile',
-        headerStyle: {
-            backgroundColor: '#de1219',
-        },
-        headerTintColor: '#fff',
+    static navigationOptions = ({ navigation }) => {
+        return {
+            title: 'Perpetual Motion Sports',
+            headerStyle: {
+                backgroundColor: '#de1219',
+            },
+            headerTintColor: '#fff',
+        };
     };
 
     state = {
         isSplashReady: false,
         isAppReady: false,
-    };
+    }
 
     render() {
         if (!this.state.isSplashReady) {
@@ -53,16 +57,23 @@ export default class Index extends Component {
             );
         }
 
-        // console.disableYellowBox = true; // Change to false for debugging
         const { navigate } = this.props.navigation;
 
         return (
             <View style={styles.container}>
                 <View style={styles.logoContainer}>
-                    <Image 
-                        style={styles.mainLogo}
-                        source={require('./img/Perpetualmotionlogo2.png')} 
-                    />
+                    <TouchableHighlight
+                        style={styles.clickableLogo}
+                        underlayColor='#fff'
+                        onPress={() =>
+                            _onPressImage('http://www.perpetualmotion.org')
+                        }
+                    >
+                        <Image 
+                            style={styles.mainLogo}
+                            source={require('./img/Perpetualmotionlogo2.png')} 
+                        />
+                    </TouchableHighlight>
                 </View>
 
                 <View style={styles.mainContent}>
@@ -71,7 +82,7 @@ export default class Index extends Component {
                             <TouchableHighlight
                                 style={[styles.sportButton, {borderBottomColor: '#C3121C'}]}
                                 onPress={() =>
-                                    navigate('Sports', {sportID: 1})
+                                    navigate('Sports', {sportID: 1, headerColour: getSportColour(1)})
                                 }
                             >
                                 <Image 
@@ -85,7 +96,7 @@ export default class Index extends Component {
                             <TouchableHighlight
                                 style={[styles.sportButton, {borderBottomColor: '#0066CC'}]}
                                 onPress={() =>
-                                    navigate('Sports', {sportID: 2})
+                                    navigate('Sports', {sportID: 2, headerColour: getSportColour(2)})
                                 }
                             >
                                 <Image 
@@ -101,7 +112,7 @@ export default class Index extends Component {
                             <TouchableHighlight
                                 style={[styles.sportButton, {borderBottomColor: '#0a790a'}]}
                                 onPress={() =>
-                                    navigate('Sports', {sportID: 3})
+                                    navigate('Sports', {sportID: 3, headerColour: getSportColour(3)})
                                 }
                             >
                                 <Image 
@@ -115,7 +126,7 @@ export default class Index extends Component {
                             <TouchableHighlight
                                 style={[styles.sportButton, {borderBottomColor: '#474F54'}]}
                                 onPress={() =>
-                                    navigate('Sports', {sportID: 4})
+                                    navigate('Sports', {sportID: 4, headerColour: getSportColour(4)})
                                 }
                             >
                                 <Image 
@@ -144,6 +155,7 @@ export default class Index extends Component {
         SplashScreen.hide();
         // console.warn("the rest");
         const images = [
+            require('./img/Perpetualmotionlogo2.png'),
             require('./img/ultimate_0.png'),
             require('./img/volleyball_0.png'),
             require('./img/football_0.png'),

@@ -1,4 +1,4 @@
-import { Alert } from 'react-native';
+import { Alert, Linking } from 'react-native';
 
 export const getSportName = (sportID) => {
     let sportName;
@@ -102,4 +102,8 @@ export const showConnectionAlert = () => {
         'Connection Error',
         "Could not load page, please check internet connection",
         )
+};
+
+export function _onPressImage(url) {
+    Linking.openURL(url);
 };

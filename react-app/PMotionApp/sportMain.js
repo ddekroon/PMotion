@@ -14,13 +14,14 @@ import { getSportName, getSportLogo, getReadySet, getSportColour } from './sport
 
 export default class SportMain extends Component {
 
-    static navigationOptions = {
-
-        title: 'Perpetual Motion Mobile',
-        headerStyle: {
-            backgroundColor: '#de1219', 
-        },
-        headerTintColor: '#fff',
+    static navigationOptions = ({ navigation }) => {
+        return {
+            title: 'Perpetual Motion Sports',
+            headerStyle: {
+                backgroundColor: navigation.getParam('headerColour'),
+            },
+            headerTintColor: '#fff',
+        };
     };
 
     render() {
@@ -50,7 +51,7 @@ export default class SportMain extends Component {
                     <View style={styles.contentRow}>
                         <View style={styles.buttonContainerSingle}>
                             <TouchableHighlight
-                                style={styles.button}
+                                style={[styles.button, {backgroundColor: sportColour}]}
                                 onPress={() =>
                                     navigate('Scores', {sportID: sportID})
                                 }
@@ -63,7 +64,7 @@ export default class SportMain extends Component {
                     <View style={styles.contentRow}>
                         <View style={styles.buttonContainerSingle}>
                             <TouchableHighlight
-                                style={styles.button}
+                                style={[styles.button, {backgroundColor: sportColour}]}
                                 onPress={() =>
                                     navigate('Schedule', {sportID: sportID})
                                 }
@@ -76,7 +77,7 @@ export default class SportMain extends Component {
                     <View style={styles.contentRow}>
                         <View style={styles.buttonContainerSingle}>
                             <TouchableHighlight
-                                style={styles.button}
+                                style={[styles.button, {backgroundColor: sportColour}]}
                                 onPress={() =>
                                     navigate('FieldStatus')
                                 }

@@ -6,7 +6,7 @@ import styles from './styles.js';
 export default class Schedule extends Component {
 
 	static navigationOptions = {
-        title: 'Perpetual Motion Mobile',
+        title: 'Perpetual Motion Sports',
         headerStyle: {
             backgroundColor: '#de1219',
         },

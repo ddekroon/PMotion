@@ -6,7 +6,7 @@ import styles from './styles.js';
 export default class ScoreReporter extends Component {
 
 	static navigationOptions = {
-        title: 'Perpetual Motion Mobile',
+        title: 'Perpetual Motion Sports',
         headerStyle: {
             backgroundColor: '#de1219',
         },

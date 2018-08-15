@@ -3,7 +3,7 @@
     "sdkVersion": "29.0.0",
     "name": "PM Sports",
     "icon": "./img/PerpetualMotionLeafIcon_v1.png",
-    "version": "0.3.1",
+    "version": "0.4.0",
     // "displayName": "PMotionApp", // this was automatically added, but not used in expo
     "slug": "PMotion",
     "privacy": "unlisted",
