@@ -7,7 +7,7 @@ export default class ScoreReporter extends Component {
 
 	static navigationOptions = ({ navigation }) => {
         return {
-            title: 'Perpetual Motion Sports',
+            title: 'Perpetual Motion Sports App',
             headerStyle: {
                 backgroundColor: navigation.getParam('headerColour'),
             },

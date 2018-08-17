@@ -19,7 +19,7 @@ export default class Index extends Component {
 
     static navigationOptions = ({ navigation }) => {
         return {
-            title: 'Perpetual Motion Sports',
+            title: 'Perpetual Motion Sports App',
             headerStyle: {
                 backgroundColor: '#de1219',
             },
@@ -81,6 +81,7 @@ export default class Index extends Component {
                         <View style={styles.buttonContainer}>
                             <TouchableHighlight
                                 style={[styles.sportButton, {borderBottomColor: '#C3121C'}]}
+                                underlayColor='#fff'
                                 onPress={() =>
                                     navigate('Sports', {sportID: 1, headerColour: getSportColour(1)})
                                 }
@@ -95,6 +96,7 @@ export default class Index extends Component {
                         <View style={styles.buttonContainer}>
                             <TouchableHighlight
                                 style={[styles.sportButton, {borderBottomColor: '#0066CC'}]}
+                                underlayColor='#fff'
                                 onPress={() =>
                                     navigate('Sports', {sportID: 2, headerColour: getSportColour(2)})
                                 }
@@ -111,6 +113,7 @@ export default class Index extends Component {
                         <View style={styles.buttonContainer}>
                             <TouchableHighlight
                                 style={[styles.sportButton, {borderBottomColor: '#0a790a'}]}
+                                underlayColor='#fff'
                                 onPress={() =>
                                     navigate('Sports', {sportID: 3, headerColour: getSportColour(3)})
                                 }
@@ -125,6 +128,7 @@ export default class Index extends Component {
                         <View style={styles.buttonContainer}>
                             <TouchableHighlight
                                 style={[styles.sportButton, {borderBottomColor: '#474F54'}]}
+                                underlayColor='#fff'
                                 onPress={() =>
                                     navigate('Sports', {sportID: 4, headerColour: getSportColour(4)})
                                 }

@@ -38,7 +38,7 @@ export default StyleSheet.create({
         fontSize: 40,
         // fontWeight: 'bold', // Can't use this with custom font
         alignItems: 'center',
-        // fontFamily: 'JockeyOne-Regular', // Custom font may require setup on XCode and Android Studio - may not need this custom font if I replace titles/headers with images+logos
+        // fontFamily: 'JockeyOne-Regular', // Custom font, not being used
     },
     mainContent: {
     	height: '70%',
@@ -83,7 +83,7 @@ export default StyleSheet.create({
     buttonText: {
         color: '#fff',
         fontWeight: 'bold',
-        fontSize: 15,
+        fontSize: 18,
     },
     buttonContainer: {
     	width: '50%',

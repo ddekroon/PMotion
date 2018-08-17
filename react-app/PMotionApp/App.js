@@ -9,7 +9,7 @@ import Schedule from './schedule.js';
 import SportMain from './sportMain.js';
 import styles from './styles.js';
 
-// The app will need to request internet permissions on devices. I know how to do for android in Android Studio, but idk if it's needed for iOS too
+// The app may(?) need to request internet permissions on devices. I know how to do for android in Android Studio, but idk if it's needed for iOS too
 
 const App = createStackNavigator({
     Home: { screen: Index },

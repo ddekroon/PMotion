@@ -1,9 +1,9 @@
 {
   "expo": {
     "sdkVersion": "29.0.0",
-    "name": "PM Sports",
+    "name": "Perpatual Motion",
     "icon": "./img/PerpetualMotionLeafIcon_v1.png",
-    "version": "0.4.0",
+    "version": "0.4.2",
     // "displayName": "PMotionApp", // this was automatically added, but not used in expo
     "slug": "PMotion",
     "privacy": "unlisted",
@@ -18,6 +18,7 @@
     },
     "android": {
     	"package": "com.perpetualmotion.PMotionApp",
+      "versionCode": 1,
     },
   }
 }

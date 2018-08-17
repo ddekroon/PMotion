@@ -1,6 +1,6 @@
 {
-  "name": "PMotion",
-  "version": "0.4.0",
+  "name": "PMotionApp",
+  "version": "0.4.2",
   "private": true,
   "devDependencies": {
     "react-native-scripts": "1.14.0",
