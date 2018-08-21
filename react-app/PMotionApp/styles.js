@@ -85,6 +85,7 @@ export default StyleSheet.create({
     buttonText: {
         color: '#fff',
         fontWeight: 'bold',
+        fontFamily: 'Arial',
         fontSize: 20,
     },
     buttonContainer: {

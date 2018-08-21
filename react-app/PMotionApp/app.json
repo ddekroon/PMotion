@@ -1,11 +1,11 @@
 {
   "expo": {
     "sdkVersion": "29.0.0",
-    "name": "Perpatual Motion",
+    "name": "Perpetual Motion",
     "icon": "./img/PerpetualMotionLeafIcon_v1.png",
     "version": "0.4.2",
     // "displayName": "PMotionApp", // this was automatically added, but not used in expo
-    "slug": "PMotion",
+    "slug": "PMotionApp",
     "privacy": "unlisted",
     "orientation": "portrait",
     "splash": {
