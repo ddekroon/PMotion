@@ -17,16 +17,18 @@ export default StyleSheet.create({
     },
     mainLogo: {
         resizeMode: 'contain',
-        width: '100%',
+        width: '90%',
     },
     subLogo: {
         width: '100%',
         height: '20%',
+        alignItems: 'center',
     },
     clickableLogo: {
         width: '100%',
         height: '100%', 
         justifyContent: 'center',
+        alignItems: 'center',
     },
     header: {
     	height: '30%',
@@ -83,7 +85,7 @@ export default StyleSheet.create({
     buttonText: {
         color: '#fff',
         fontWeight: 'bold',
-        fontSize: 18,
+        fontSize: 20,
     },
     buttonContainer: {
     	width: '50%',
