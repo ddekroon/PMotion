@@ -45,7 +45,6 @@ export default class Index extends Component {
         }
 
         if (!this.state.isAppReady) {
-            // return this._cacheResourcesAsync();
             return (
                 <View style={{flex: 1, justifyContent: 'center', backgroundColor: '#fff'}}>
                     <Image
@@ -58,6 +57,8 @@ export default class Index extends Component {
         }
 
         const { navigate } = this.props.navigation;
+        var today = new Date();
+        var curYear = today.getFullYear();
 
         return (
             <View style={styles.container}>
@@ -143,7 +144,7 @@ export default class Index extends Component {
                 </View>
 
                 <View style={styles.footer}>
-                    <Text style={styles.mainFooter}>{'\u00A9'} 2002-2018, Perpetual Motion Sports & Entertainment Inc.</Text>
+                    <Text style={styles.mainFooter}>{'\u00A9'} 2002-{curYear}, Perpetual Motion Sports & Entertainment Inc.</Text>
                 </View>
             </View>
         );
@@ -151,13 +152,11 @@ export default class Index extends Component {
 
     _cacheSplashResourcesAsync = async () => {
         const splashImg = require('./img/splash.png');
-        // console.warn("splash");
         return Asset.fromModule(splashImg).downloadAsync();
     }
 
     _cacheResourcesAsync = async () => {
         SplashScreen.hide();
-        // console.warn("the rest");
         const images = [
             require('./img/Perpetualmotionlogo2.png'),
             require('./img/ultimate_0.png'),

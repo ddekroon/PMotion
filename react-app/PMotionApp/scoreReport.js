@@ -18,7 +18,6 @@ export default class ScoreReporter extends Component {
 	render() {
 		const { navigate } = this.props.navigation;
 		const sportID = this.props.navigation.state.params.sportID;
-        // const isLoaded = this.state.loaded;
 
 		return (
 			<View style={{flex: 1}}>

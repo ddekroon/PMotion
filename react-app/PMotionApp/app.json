@@ -3,7 +3,7 @@
     "sdkVersion": "29.0.0",
     "name": "Perpetual Motion",
     "icon": "./img/PerpetualMotionLeafIcon_v1.png",
-    "version": "0.4.2",
+    "version": "0.4.3",
     // "displayName": "PMotionApp", // this was automatically added, but not used in expo
     "slug": "PMotionApp",
     "privacy": "unlisted",

@@ -31,7 +31,7 @@ export default class SportMain extends Component {
         var sportName = getSportName(sportID);
         var sportLogo = getSportLogo(sportID);
         var readySetPlay = getReadySet(sportID);
-        var sportColour = getSportColour(sportID); // Find out how to change nav bar to sport's colour
+        var sportColour = getSportColour(sportID);
 
         return (
             <View style={styles.container}>

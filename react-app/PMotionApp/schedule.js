@@ -19,14 +19,12 @@ export default class Schedule extends Component {
 	render() {
 		const { navigate } = this.props.navigation;
 		const sportID = this.props.navigation.state.params.sportID;
-        // const isLoaded = this.state.loaded;
         let sportName = getSportName(sportID);
 
 		return (
 			<View style={{flex: 1}}>
                 <View style={styles.webStyle}>
-                    <WebView 
-                        // source={{uri: 'http://data.perpetualmotion.org/allSports/schedule.php?leagueID=1610'}}
+                    <WebView
                         source={{uri: 'http://perpetualmotion.org/' + sportName + '/schedules-standings#'}}
                         renderError={ ()=> {
                                 return(
