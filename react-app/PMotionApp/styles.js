@@ -92,7 +92,7 @@ export default StyleSheet.create({
     	height:'100%',
     	justifyContent: 'center',
     	alignItems: 'center',
-        borderRadius: 4,
+        borderRadius: 8,
     	// flex: 1,
     	backgroundColor: '#272727',
     	padding: '2%',
