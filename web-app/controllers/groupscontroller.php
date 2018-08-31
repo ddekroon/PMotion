@@ -83,10 +83,11 @@ class Controllers_GroupsController extends Controllers_Controller {
 			$curIndiv->setHowHeardOtherText(''); // Same note as previous
 
 			if($i == 0) {
-				$capIndiv = $curIndiv; // May not work correctly here
+				$capIndiv = $curIndiv;
 			}
 
-			$playerName = $curPlayer->getFirstName(); //DD: Needs to be put into a var before getting passed to empty() function
+			$playerName = $curPlayer->getFirstName();
+
 			if(!empty($playerName)) {
 				$curPlayer->saveOrUpdate();
 
