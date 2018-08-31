@@ -303,8 +303,20 @@ class Models_League extends Models_Generic implements Models_Interface, JsonSeri
 	function getRegistrationFormattedNameGroup() {
 		$leagueName = $this->getName();
 
-		$leagueName .= $this->getIsFullTeams() ? ' - ** Full - Waiting List **' : '';
-		$leagueName .= " - " . $this->getDayString() . " (Player Fee: $" . number_format($this->getIndividualRegistrationFee(), 2) . ')';
+		$isFullText = '';
+
+		if (($this->getIsFullIndividualMales()) && (!($this->getIsFullIndividualFemales()))) {
+			$isFullText .= ' - ** Females Needed **';
+		}
+		else if (($this->getIsFullIndividualFemales()) && (!($this->getIsFullIndividualMales()))) {
+			$isFullText .= ' - ** Males Needed **';
+		}
+		else if ($this->getIsFullTeams() && $this->getIsFullIndividualMales() && $this->getIsFullIndividualFemales()) {
+			$isFullText .= ' - ** Full - Waiting List **';
+		}
+
+		// $leagueName .= $this->getIsFullTeams() ? ' - ** Full - Waiting List **' : ''; // Moved to if statement above
+		$leagueName .= $isFullText . " - " . $this->getDayString() . " (Player Fee: $" . number_format($this->getIndividualRegistrationFee(), 2) . ')';
 		
 		return $leagueName;
 	}

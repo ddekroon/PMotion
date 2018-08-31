@@ -86,7 +86,7 @@ class Controllers_RegistrationController extends Controllers_Controller {
 
 		$subject = 'Registration Confirmation - ' . (sizeof($groupMembers) > 1 ? 'Small Group' : 'Individual') . ' - ' . $leagueChoice->getRegistrationFormattedNameGroup();
 		
-		$adminSubject = 'Reg - ' . ($isComment ? 'Com - ' : '') . (sizeof($groupMembers) > 1 ? 'Small Group' : 'Individual') . ' - ' . $leagueChoice->getRegistrationFormattedNameGroup();
+		$adminSubject = 'Reg - ' . $leagueChoice->getSport()->getName() . ' - ' . (sizeof($groupMembers) > 1 ? 'Group' : 'Indiv') . ' - ' . $leagueChoice->getRegistrationFormattedNameGroup() . ' - ' . ($isComment ? 'Com' : '');
 
 		$regEmailTemplate = Includes_EmailTypes::groupRegistered();
 		
