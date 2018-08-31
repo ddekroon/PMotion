@@ -23,6 +23,14 @@
 			]
 		);
 	})->setName('bad-request');
+
+	$app->get('/appDevice', function (Request $request, Response $response) {
+		return $this->view->render($response, "appDevice.phtml", [
+				"request" => $request,
+				"router" => $this->router
+			]
+		);
+	})->setName('appDevice')->add($defaultTemplate);
 	
 	//Login
 	$app->get('/login', function (Request $request, Response $response) {
