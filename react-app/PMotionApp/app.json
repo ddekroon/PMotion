@@ -1,0 +1,26 @@
+{
+  "expo": {
+    "sdkVersion": "29.0.0",
+    "name": "Perpetual Motion",
+    "icon": "./img/PerpetualMotionLeafIcon_v1.png",
+    "version": "1.0.0",
+    // "displayName": "PMotionApp", // this was automatically added, but not used in expo
+    "slug": "PMotionApp",
+    "privacy": "unlisted",
+    "orientation": "portrait",
+    "splash": {
+      "image": "./img/splash.png",
+      "backgroundColor": "#fff",
+      "resizeMode": "contain",
+    },
+    "ios": {
+    	"bundleIdentifier": "com.perpetualmotion.PMotionApp",
+      "buildNumber": "1.0.0",
+    },
+    "android": {
+    	"package": "com.perpetualmotion.PMotionApp",
+      "versionCode": 1,
+      "permissions": [],
+    },
+  }
+}
