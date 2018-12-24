@@ -39,6 +39,8 @@ class Models_League extends Models_Generic implements Models_Interface, JsonSeri
 	private $season;
 	private $sport;
 	private $teams;
+	private $fenceTeams;
+	private $freeAgents;
 	private $dateInStandings;
 	private $dateInScoreReporter;
 	
@@ -107,10 +109,10 @@ class Models_League extends Models_Generic implements Models_Interface, JsonSeri
 		$this->scheduleLink = $data['league_schedule_link'];
 		$this->isSplit = $data['league_is_split'] > 0;
 		$this->splitWeek = $data['league_split_week'];
-		$this->isFullIndividualMales = $data['league_full_individual_males'];
-		$this->isFullIndividualFemales = $data['league_full_individual_females'];
-		$this->isFullTeams = $data['league_full_teams'];
-		$this->isShowStaticSchedule = $data['league_show_static_schedule'];
+		$this->isFullIndividualMales = $data['league_full_individual_males'] > 0;
+		$this->isFullIndividualFemales = $data['league_full_individual_females'] > 0;
+		$this->isFullTeams = $data['league_full_teams'] > 0;
+		$this->isShowStaticSchedule = $data['league_show_static_schedule'] > 0;
 	}
 	
 	public function getSeason() {
@@ -131,22 +133,71 @@ class Models_League extends Models_Generic implements Models_Interface, JsonSeri
 	
 	public function getTeams() {
 		
-		if($this->teams == null) {
-			$this->teams = [];
-		}
-		
 		if($this->teams == null && $this->getId() != null && $this->db != null) {
 			$sql = "SELECT * FROM " . Includes_DBTableNames::teamsTable . " WHERE team_league_id = " . $this->getId()
 					. " AND team_finalized = 1 AND team_num_in_league > 0 AND team_dropped_out = 0";
 
 			$stmt = $this->db->query($sql);
 
+			$this->teams = [];
+
 			while(($row = $stmt->fetch()) != false) {
 				$this->teams[] = Models_Team::withRow($this->db, $this->logger, $row);
 			}
 		}
+
+		if($this->teams == null) {
+			$this->teams = [];
+		}
 		
 		return $this->teams;
+	}
+
+	public function getFenceTeams() {
+		
+		if($this->fenceTeams == null && $this->getId() != null && $this->db != null) {
+			$sql = "SELECT * FROM " . Includes_DBTableNames::teamsTable . " WHERE team_league_id = " . $this->getId()
+					. " AND team_finalized = 0 AND team_num_in_league = 0";
+
+			$stmt = $this->db->query($sql);
+
+			$this->fenceTeams = [];
+
+			while(($row = $stmt->fetch()) != false) {
+				$this->fenceTeams[] = Models_Team::withRow($this->db, $this->logger, $row);
+			}
+		}
+
+		if($this->fenceTeams == null) {
+			$this->fenceTeams = [];
+		}
+		
+		return $this->fenceTeams;
+	}
+
+	public function getFreeAgents() {
+		
+		if($this->freeAgents == null && $this->getId() != null && $this->db != null) {
+			$sql = "SELECT * FROM " . Includes_DBTableNames::individualsTable . " as individuals"
+					. " INNER JOIN " . Includes_DBTableNames::playersTable . " as players ON players.player_id = individuals.individual_player_id "
+					. " WHERE individual_preferred_league_id = " . $this->getId() . " AND player_team_id is NULL "
+					. " AND individual_finalized = 1 ORDER BY individual_small_group_id ASC, player_id ASC";
+
+			$stmt = $this->db->query($sql);
+
+			$this->freeAgents = [];
+
+			while(($row = $stmt->fetch()) != false) {
+				$this->freeAgents[] = Models_Individual::withRow($this->db, $this->logger, $row);
+			}
+		}
+
+		if($this->freeAgents == null) {
+			$this->freeAgents = [];
+		}
+
+		return $this->freeAgents;
+
 	}
 	
 	public function getDayString() {

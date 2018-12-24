@@ -90,8 +90,8 @@ class Models_Team extends Models_Generic implements Models_Interface, JsonSerial
 		$this->finalPosition = $data['team_final_position'];
 		$this->finalSpiritPosition = $data['team_final_spirit_position'];
 		$this->picName = $data['team_pic_name'];
-		$this->isConvenor = $data['team_is_convenor'];
-		$this->isDroppedOut = $data['team_dropped_out'];
+		$this->isConvenor = $data['team_is_convenor'] > 0;
+		$this->isDroppedOut = $data['team_dropped_out'] > 0;
 		$this->isLateEmailAllowed = $data['team_late_email_allowed'];
 		
 		$this->submittedWins = array_key_exists('team_submitted_wins', $data) ? $data['team_submitted_wins'] : 0;
@@ -185,6 +185,14 @@ class Models_Team extends Models_Generic implements Models_Interface, JsonSerial
 		return null;
 	}
 	
+	function getTeamHasIndividuals() {
+		foreach($this->getPlayers() as $curPlayer) {
+			if($curPlayer->getIsIndividual()) return true;
+		}
+
+		return false;
+	}
+
 	function getRegistrationComment() {
 		
 		if(($this->registrationComment == null || $this->registrationComment->getId() == null) && $this->db != null && $this->getId() != null) {

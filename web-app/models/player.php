@@ -64,7 +64,7 @@ class Models_Player extends Models_Generic implements Models_Interface, JsonSeri
 		$this->gender = $data['player_sex'];
 		$this->phoneNumber = $data['player_phone'];
 		$this->skillLevel = $data['player_skill'];
-		$this->isIndividual = $data['player_is_individual'];
+		$this->isIndividual = $data['player_is_individual'] > 0;
 		$this->note = $data['player_note'];
 		$this->howHeardMethod = $data['player_hear_method'];
 		$this->howHeardOtherText = $data['player_hear_other_text'];

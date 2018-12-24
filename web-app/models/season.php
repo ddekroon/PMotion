@@ -12,6 +12,8 @@ class Models_Season extends Models_Generic implements Models_Interface, JsonSeri
 	protected $registrationDueBy;
 	protected $registrationOpenUntil;
 	protected $registrationBySport;
+
+	protected $leagues;
     		
 	public static function withID($db, $logger, $id) {
 		$instance = new self();
@@ -58,6 +60,26 @@ class Models_Season extends Models_Generic implements Models_Interface, JsonSeri
 		$this->registrationDueBy = strtotime($data['season_registration_due_by']);
 		$this->registrationOpenUntil = strtotime($data['season_registration_up_until']);
 		$this->registrationBySport = $data['season_registration_by_sport'] > 0;
+	}
+
+	public function getLeagues() {
+		
+		if($this->leagues == null && $this->getId() != null && $this->db != null) {
+			$sql = "SELECT * FROM " . Includes_DBTableNames::leaguesTable . " WHERE league_season_id = " . $this->getId()
+					. " ORDER BY league_day_number ASC, league_name ASC";
+
+			$stmt = $this->db->query($sql);
+
+			while(($row = $stmt->fetch()) != false) {
+				$this->leagues[] = Models_League::withRow($this->db, $this->logger, $row);
+			}
+		}
+
+		if($this->leagues == null) {
+			$this->leagues = [];
+		}
+		
+		return $this->leagues;
 	}
 	
 	function getId() {

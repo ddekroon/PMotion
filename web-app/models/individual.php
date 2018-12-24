@@ -14,6 +14,8 @@ class Models_Individual extends Models_Generic implements Models_Interface, Json
 	protected $howHeardMethod;
 	protected $howHeardOtherText;
 
+	private $player;
+
 	public static function withID($db, $logger, $id) {
 		$instance = new self();
         $instance->loadByID($db, $logger, $id);
@@ -63,6 +65,24 @@ class Models_Individual extends Models_Generic implements Models_Interface, Json
 		$this->paymentMethod = $data['individual_payment_method'];
 		$this->howHeardMethod = $data['individual_hear_method'];
 		$this->howHeardOtherText = $data['individual_hear_other_text'];
+	}
+
+	public function getPlayer() {
+		if($this->player == null && $this->getPlayerID() != null && $this->db != null) {
+			
+			$sql = "SELECT * FROM " . Includes_DBTableNames::playersTable . " WHERE player_id = " . $this->getPlayerID();
+			$stmt = $this->db->query($sql);
+
+			if(($row = $stmt->fetch()) != false) {
+				$this->player = Models_Player::withRow($this->db, $this->logger, $row);
+			}
+		}
+		
+		if($this->player == null) {
+			$this->player = Models_Player::withID($this->db, $this->logger, -1);
+		}
+		
+		return $this->player;
 	}
 
 	function getPlayerID() {

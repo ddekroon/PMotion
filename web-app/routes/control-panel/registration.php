@@ -5,31 +5,36 @@
 
 	$app->group('/control-panel/registration', function () use ($app) {
 
-		$app->get('/configuration', function (Request $request, Response $response) {
+		$app->get('/home[/{sportID}[/{leagueID}]]', function (Request $request, Response $response) {
 
-			$propController = new Controllers_PropertiesController($this->db, $this->logger);
+			$sport = Models_Sport::withID($this->db, $this->logger, $request->getAttribute('sportID'));
+			$league = Models_League::withID($this->db, $this->logger, $request->getAttribute('leagueID'));
 
-			return $this->view->render($response, "control-panel/registration/configuration.phtml", [
+			$seasonsController = new Controllers_SeasonsController($this->db, $this->logger);
+			$sportsController = new Controllers_SportsController($this->db, $this->logger);
+			$leaguesController = new Controllers_LeaguesController($this->db, $this->logger);
+
+			$seasonsRegistration = $seasonsController->getSeasonsAvailableForRegistration();
+			$seasonsScoreReporter = $seasonsController->getSeasonsAvailableForScoreReporter();
+			
+			$seasons = array_merge($seasonsRegistration, $seasonsScoreReporter);
+
+			//print_r($seasons);
+			$this->logger->debug($seasons[0]->getName());
+
+
+			return $this->view->render($response, "control-panel/registration/index.phtml", [
 					"request" => $request,
 					"router" => $this->router,
 					"db" => $this->db,
 					"logger" => $this->logger,
-					"propController" => $propController
+					"curSport" => $sport,
+					"curLeague" => $league,
+					"allSports" => $sportsController->getSports(),
+					"seasons" => $seasons
 				]
 			);
-		})->setName('config');
-
-		$app->get('/configEdit/{propID}', function (Request $request, Response $response) {
-
-			$prop = Models_Property::withID($this->db, $this->logger, (int)$request->getAttribute('propID'));
-
-			return $this->view->render($response, "control-panel/registration/configEdit.phtml", [
-					"request" => $request,
-					"response" => $response,
-					"prop" => $prop
-				]
-			);
-		})->setName('configEdit');
+		})->setName('registration-control-panel');
 		
 	})->add($controlPanel)->add($authenticate);
 	

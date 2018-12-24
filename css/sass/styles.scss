@@ -293,7 +293,7 @@ legend {
 	&.sport-panel-1 {
 		border-bottom-color:#C3121C;
 
-		&:hover {
+		&:hover, &.selected {
 			background:rgba(#C3121C, 0.05);
 		}
 	}
@@ -301,7 +301,7 @@ legend {
 	&.sport-panel-2 {
 		border-bottom-color:#0066CC;
 
-		&:hover {
+		&:hover, &.selected {
 			background:rgba(#0066CC, 0.05);
 		}
 	}
@@ -309,7 +309,7 @@ legend {
 	&.sport-panel-3 {
 		border-bottom-color:#0A790A;
 
-		&:hover {
+		&:hover, &.selected {
 			background:rgba(#0A790A, 0.05);
 		}
 	}
@@ -317,7 +317,7 @@ legend {
 	&.sport-panel-4 {
 		border-bottom-color:#474F54;
 
-		&:hover {
+		&:hover, &.selected {
 			background:rgba(#474F54, 0.05);
 		}
 	}

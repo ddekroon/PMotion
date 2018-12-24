@@ -1,0 +1,186 @@
+<?php 
+/*****************************************
+File: index.phtml
+Creator: Derek Dekroon
+Created: December 23/2018
+Registration control panel
+******************************************/
+?>
+
+<h1>
+	Registration Control Panel
+	<span class="f-small"><?php echo isset($curLeague) && $curLeague->getId() != null ? ' - ' . $curLeague->getFormattedName() : "" ?></span>
+</h1>
+
+<?php 
+	print $this->fetch('control-panel/league-selector.phtml', [
+		"router" => $router,
+		"request" => $request,
+		"baseUrlName" => 'registration-control-panel',
+		"sports" => $allSports,
+		"seasons" => $seasons,
+		"activeSport" => $curSport,
+		"activeLeague" => $curLeague,
+		"includeSeasons" => false,
+		"showFullLabels" => true
+	]);
+?>
+
+<div class="form-group row no-flex">
+	<div class="col-xs-6">
+		<h3>Teams</h3>
+		<table id="RegistrationLeagueTeamsTable" class="table table-sortable">			
+			<thead>
+				<tr>
+					<th></th>
+					<th></th>
+					<th>
+						Team
+					</th>
+					<th title="Is Paid, Delete"></th>
+				</tr>
+			</thead>
+			<tbody>
+				<?php foreach($curLeague->getTeams() as $curTeam) { ?>
+					<tr class="droppable team">
+						<td><span class="glyphicon glyphicon-menu-hamburger"></span></td>
+						<td>
+							<?php print $curTeam->getNumInLeague() ?>
+						</td><td>
+							<a <?php echo $curTeam->getTeamHasIndividuals() ? "style='font-weight:700;'" : '' ?>
+								href='/control/Teams/editTeam.php?sportID=<?php echo $curSport->getId() ?>&leagueID=<?php echo $curLeague->getId() ?>&teamID=<?php echo $curTeam->getId() ?>'>
+								<?php echo $curTeam->getName() ?>
+							</a> 
+							<small>
+								<?php echo $curTeam->getIsDroppedOut() ? ' - Dropout' : '' ?>
+								<?php echo $curTeam->getIsConvenor() ? ' - Convenor' : '' ?>
+							</small>
+						</td><td>
+							<div class="float-right btn-group">
+								<button class="btn btn-default btn-xs <?php echo $curTeam->getIsPaid() ? 'btn-primary' : '' ?>">
+									<span class="glyphicon glyphicon-piggy-bank"></span>
+								</button>
+								<button class="btn btn-default btn-xs">
+									<span class="glyphicon glyphicon-remove"></span>
+								</button>
+							</div>
+						</td>
+					</tr>
+				<?php } ?>
+			</tbody>
+		</table>
+	</div>
+	<div class="col-xs-6">
+		<h3>Free Agents</h3>
+		<table>
+			<thead>
+				<tr>
+					<td>
+						#
+					</td><td>
+						Name
+					</td><td>
+						Gender
+					</td><td>
+						Note
+					</td><td>
+						Grp
+					</td><td>
+						Del
+					</td>
+				</tr> 
+			</thead>
+			<tbody>
+				<?php $freeAgentCounter = 1; ?>
+				<?php foreach($curLeague->getFreeAgents() as $curFreeAgent) { ?>
+					<tr class="draggable freeAgent">
+						<td>
+							<?php echo $freeAgentCounter++; ?>
+						</td>
+						<td>
+							<a href='/control/Players/updatePlayer.php?sportID=<?php echo $curSport->getId() ?>&leagueID=<?php echo $curLeague->getId() ?>&teamID=0&playerID=<?php echo $curFreeAgent->getPlayerID() ?>'>
+								<?php echo $curFreeAgent->getPlayer()->getFirstName() . ' ' . $curFreeAgent->getPlayer()->getLastName() ?>
+							</a>
+						</td>
+						<td>
+							<?php echo $curFreeAgent->getPlayer()->getGender() ?>
+						</td>
+						<td>
+							<textarea name='agentNote'><?php echo $curFreeAgent->getPlayer()->getNote() ?></textarea>
+						</td>
+						<td>
+							<?php echo $curFreeAgent->getGroupId(); ?>
+						</td><td>
+							<button class="btn btn-default btn-xs" onClick="deleteAgent(<?php echo $curFreeAgent->getId() ?>)">
+								<span class="glyphicon glyphicon-remove"></span>
+							</button>
+						</td>
+					</tr>
+				<?php } ?>
+			</tbody>
+		</table>
+	</div>
+</div>
+
+<div class="teamsOnTheFence">
+	<h3>Teams on the Fence</h3>
+	
+	<?php if(sizeof($curLeague->getFenceTeams()) > 0) { ?>
+		<table class='table'>
+			<thead>
+				<tr>
+					<td></td>
+					<td>Name</td>
+					<td>Captain</td>
+					<td>Email</td>
+					<td></td>
+				</tr>
+			</thead>
+			<tbody>
+				<?php $fenceTeamsCounter = 1; ?>
+				<?php foreach($curLeague->getFenceTeams() as $curFenceTeam) { ?>
+					<tr>
+						<td>
+							<?php echo $fenceTeamsCounter++; ?>
+						</td><td>
+							<a href='/control/Teams/editTeam.php?sportID=<?php echo $curSport->getId() ?>&leagueID=<?php echo $curLeague->getId() ?>&teamID=<?php echo $curFenceTeam->getId() ?>'>
+								<?php echo $curFenceTeam->getName() ?>
+							</a>
+						</td><td>
+							<?php echo $curFenceTeam->getCaptain()->getFirstName() . ' ' . $curFenceTeam->getCaptain()->getLastName() ?>
+						</td><td>
+							<?php print "<a target='_blank' href='mailto:" . $curFenceTeam->getCaptain()->getEmail() . "'>" . $curFenceTeam->getCaptain()->getEmail() . '</a>'; ?>
+						</td><td>
+							<button class='btn btn-default btn-xs' onClick='deleteFenceTeam(<?php echo $curFenceTeam->getId() ?>)'><span class='glyphicon glyphicon-remove'></span> Delete</span></button>
+						</td>
+					</tr>
+				<?php } ?>
+			</tbody>
+		</table>
+		<div class="buttonset">
+			<button type="button" class="btn btn-primary" onclick="return checkAdd()">Add Selected Teams to League</button>
+		</div>
+	<?php } else { ?>
+		<p>No teams to show</p>
+	<?php } ?> 			
+</div>
+
+<script>
+	$(function() {
+		$("#RegistrationLeagueTeams").sortable();
+
+		$(".draggable").draggable();
+		$(".droppable").droppable({
+			drop: function(event, ui) {
+				console.log(ui);
+				console.log(event);
+			}
+				/*
+			$(this)
+				.addClass( "ui-state-highlight" )
+				.find( "p" )
+				.html( "Dropped!" );
+			*/
+		});
+	});
+</script>
