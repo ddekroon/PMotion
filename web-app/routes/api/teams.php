@@ -51,6 +51,46 @@
 		});
 	
 	})->add($authenticate);
+
+	$app->group('/api/teams', function () use ($app) {
+		$app->delete('/{teamID}', function (Request $request, Response $response) {
+
+			$teamID = (int)$request->getAttribute('teamID');
+
+			$teamsController = new Controllers_TeamsController($this->db, $this->logger);
+
+			$team = Models_Team::withID($this->db, $this->logger, $teamID);
+
+			if($team != null) {
+				$teamsController->removeTeam($team);
+				$response = $response->withStatus(200, "Team deleted");
+			} else {
+				$response = $response->withStatus(400, "Invalid team ID");
+			}
+
+			return $response;
+		});
+
+		$app->post('/deregister/{teamID}', function (Request $request, Response $response) {
+
+			$teamID = (int)$request->getAttribute('teamID');
+
+			$teamsController = new Controllers_TeamsController($this->db, $this->logger);
+
+			$team = Models_Team::withID($this->db, $this->logger, $teamID);
+
+			if($team != null) {
+				$team->setNumInLeague(0);
+				$team->setIsFinalized(false);
+				$team->update();
+				$response = $response->withStatus(200, "Team deregistered");
+			} else {
+				$response = $response->withStatus(400, "Invalid team ID");
+			}
+
+			return $response;
+		});
+	})->add($authenticateAdmin);
 	
 ?>
 

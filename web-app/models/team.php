@@ -83,7 +83,7 @@ class Models_Team extends Models_Generic implements Models_Interface, JsonSerial
 		$this->ties = $data['team_ties'];
 		$this->mostRecentWeekSubmitted = $data['team_most_recent_week_submitted'];
 		$this->dateCreated = new DateTime($data['team_created']);
-		$this->isFinalized = $data['team_finalized'];
+		$this->isFinalized = $data['team_finalized'] > 0;
 		$this->isPaid = $data['team_paid'];
 		$this->isDeleted = $data['team_deleted'];
 		$this->paymentMethod = $data['team_payment_method'];

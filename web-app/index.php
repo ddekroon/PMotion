@@ -118,6 +118,31 @@ $authenticate = function ($request, $response, $next) {
 	return $response;
 };
 
+$authenticateAdmin = function ($request, $response, $next) {
+		
+	session_start();
+	
+	$login = new Controllers_AuthController($this->db, $this->logger);
+	
+	if($login->shouldAuthenticate($request)) { //authenticated
+		$curUser = Models_User::withID($this->db, $this->logger, $_SESSION[Controllers_AuthController::SESSION_USER_ID]);
+
+		if($curUser->access == Includes_Accesslevel::ADMIN) {
+			$response = $next($request, $response);
+		} else {
+			$response = $response->withStatus(403, 'You do not have permission to access this content');
+		}
+	} else {
+		session_unset();
+		session_destroy();
+		
+		$response = $response->withRedirect($this->router->pathFor('login') . 
+				"?redirect=" . $request->getUri()->getBasePath() . '/' . $request->getUri()->getPath(), 303);
+	}
+		
+	return $response;
+};
+
 $defaultTemplate = function ($request, $response, $next) {
 	$response = $this->view->render($response, 'template/default-header.phtml', [
 		"router" => $this->router,
@@ -199,5 +224,4 @@ include('routes/control-panel/standings.php');
 include('routes/control-panel/registration.php');
 
 $app->run();
-
 ?>
