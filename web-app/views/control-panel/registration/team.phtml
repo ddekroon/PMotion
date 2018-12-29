@@ -8,23 +8,96 @@ Registration control panel
 ?>
 
 <h1>
-	Registration Control Panel
-	<span class="f-small"><?php echo isset($curLeague) && $curLeague->getId() != null ? ' - ' . $curLeague->getFormattedName() : "" ?></span>
+	Edit Team
+	<span class="f-small"><?php echo isset($curTeam) ? ' - ' . $curTeam->getName() : "" ?></span>
 </h1>
 
 <?php 
 	print $this->fetch('control-panel/league-selector.phtml', [
 		"router" => $router,
 		"request" => $request,
-		"baseUrlName" => 'cp-registration',
+		"baseUrlName" => 'cp-edit-team',
 		"sports" => $allSports,
 		"seasons" => $seasons,
+		"teams" => $curLeague->getTeams(),
+		"activeTeam" => $curTeam,
 		"activeSport" => $curSport,
 		"activeLeague" => $curLeague,
 		"includeSeasons" => false,
+		"includeTeams" => true,
 		"showFullLabels" => true
 	]);
 ?>
+
+<fieldset>
+	<legend>
+		Team Configurations
+		<a style="float:right" class="f-small" href="<?php echo $router->pathFor('cp-registration', ['sportID' => $curSport->getId(), 'leagueID' => $curLeague->getId() ]) ?>">
+			League Page
+		</a>
+	</legend>
+	<form id="EditTeamConfig">
+		<div class="row">
+			<div class="col-sm-6 col-xs-12">
+				<div class="row form-group">
+					<div class="col-xs-4">
+						<label for="EditTeamName">Name</label>
+					</div>
+					<div class="col-xs-8">
+						<input class="form-control" type="text" id="EditTeamName" name="teamName" value="<?php echo $curTeam->getName() ?>" />
+					</div>
+				</div>
+			</div>
+			<div class="col-sm-6 col-xs-12">
+				<div class="row form-group">
+					<div class="col-xs-4">
+						<label for="EditTeamLeague">League</label>
+					</div>
+					<div class="col-xs-8">
+					<?php 
+						print $this->fetch('common/league-selector.phtml', [
+							"seasons" => $seasons,
+							"sport" => $curSport,
+							"activeLeague" => $curLeague,
+							"id" => "EditTeamLeague",
+							"name" => "leagueID"
+						]);
+					?>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-sm-6 col-xs-12">
+				<div class="row form-group">
+					<div class="col-xs-4">
+						<label for="EditTeamWeek">Week in Score Reporter</label>
+					</div>
+					<div class="col-xs-8">
+						<input class="form-control" type="number" id="EditTeamWeek" min="0" max="49" 
+							name="teamWeekInScoreReporter" value="<?php echo $curTeam->getMostRecentWeekSubmitted() ?>" />
+					</div>
+				</div>
+			</div>
+			<div class="col-sm-6 col-xs-12">
+				<div class="row form-group">
+					<div class="col-xs-4">
+						<label for="EditTeamDroppedOut">Dropped Out</label>
+					</div>
+					<div class="col-xs-8">
+						<select class="form-control" name="teamDroppedOut" id="EditTeamDroppedOut">
+							<option value="1" <?php echo $curTeam->getIsDroppedOut() ? "selected='selected'" : "" ?>>Yes</option>
+							<option value="0" <?php echo !$curTeam->getIsDroppedOut() ? "selected='selected'" : "" ?>>No</option>
+						</select>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="buttonset">
+			<button class="btn btn-primary" type="submit">Update</button>
+		</div>
+	</form>
+</fieldset>
 
 <div class="form-group row no-flex">
 	<div class="col-xs-6">
@@ -48,7 +121,7 @@ Registration control panel
 							<?php print $curTeam->getNumInLeague() ?>
 						</td><td>
 							<a <?php echo $curTeam->getTeamHasIndividuals() ? "style='font-weight:700;'" : '' ?>
-								href='<?php echo $router->pathFor('cp-edit-team', ['sportID' => $curSport->getId(), 'leagueID' => $curLeague->getId(),  'teamID' => $curTeam->getId()]) ?>'>
+								href='/control/Teams/editTeam.php?sportID=<?php echo $curSport->getId() ?>&leagueID=<?php echo $curLeague->getId() ?>&teamID=<?php echo $curTeam->getId() ?>'>
 								<?php echo $curTeam->getName() ?>
 							</a> 
 							<small>

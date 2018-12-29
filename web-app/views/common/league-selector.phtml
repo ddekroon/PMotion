@@ -1,0 +1,43 @@
+<select class='form-control' id="<?php echo $id ?>" name='<?php echo $name ?>'>
+	<option value='' readonly='readonly'>-- Select --</option>
+	<?php
+		foreach($seasons as $curSeason) {
+			if(sizeof($seasons) > 1) {
+				echo "<optgroup label='" . $curSeason->getName() . ' - ' . $curSeason->getYear() . "'>";
+			}
+
+			foreach($curSeason->getLeagues() as $curLeague) {
+
+				if(isset($sport) && $curLeague->getSport()->getId() != $sport->getId()) {
+					continue;
+				}
+
+				$fullFilter = '';
+				$selectedFilter = isset($activeLeague) && $curLeague->getId() == $activeLeague->getId() 
+					? "selected='selected'" : '';
+
+				if(isset($showFullLabels) && $showFullLabels) {
+					$fullMales = $curLeague->getIsFullIndividualMales();
+					$fullFemales = $curLeague->getIsFullIndividualFemales();
+					$fullTeams = $curLeague->getIsFullTeams();
+
+					if($fullMales || $fullFemales || $fullTeams) {
+						$fullFilter = '- Full (';
+						$fullFilter .= $fullTeams ? 'T' : '';
+						$fullFilter .= $fullMales ? 'M' : '';
+						$fullFilter .= $fullFemales ? 'F' : '';
+						$fullFilter .= ')';
+					}
+				}
+				
+				echo "<option " . $selectedFilter . " value='" . $curLeague->getId() . "'>";
+				echo $curLeague->getName() . ' ' . $fullFilter . ' - ' . $curLeague->getDayString();
+				echo '</option>';
+			}
+
+			if(sizeof($seasons) > 1) {
+				echo "</optgroup>";
+			}
+		}	
+	?>
+</select>

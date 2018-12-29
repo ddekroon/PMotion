@@ -34,7 +34,37 @@
 					"seasons" => $seasons
 				]
 			);
-		})->setName('registration-control-panel');
+		})->setName('cp-registration');
+
+		$app->get('/team[/{sportID}[/{leagueID}[/{teamID}]]]', function (Request $request, Response $response) {
+
+			$sport = Models_Sport::withID($this->db, $this->logger, $request->getAttribute('sportID'));
+			$league = Models_League::withID($this->db, $this->logger, $request->getAttribute('leagueID'));
+			$team = Models_Team::withID($this->db, $this->logger, $request->getAttribute('teamID'));
+
+			$seasonsController = new Controllers_SeasonsController($this->db, $this->logger);
+			$sportsController = new Controllers_SportsController($this->db, $this->logger);
+			//$leaguesController = new Controllers_LeaguesController($this->db, $this->logger);
+			//$teamsController = new Controllers_TeamsController($this->db, $this->logger);
+
+			$seasonsRegistration = $seasonsController->getSeasonsAvailableForRegistration();
+			$seasonsScoreReporter = $seasonsController->getSeasonsAvailableForScoreReporter();
+			
+			$seasons = array_merge($seasonsRegistration, $seasonsScoreReporter);
+
+			return $this->view->render($response, "control-panel/registration/team.phtml", [
+					"request" => $request,
+					"router" => $this->router,
+					"db" => $this->db,
+					"logger" => $this->logger,
+					"curSport" => $sport,
+					"curLeague" => $league,
+					"allSports" => $sportsController->getSports(),
+					"seasons" => $seasons,
+					"curTeam" => $team
+				]
+			);
+		})->setName('cp-edit-team');
 		
 	})->add($controlPanel)->add($authenticate);
 	
