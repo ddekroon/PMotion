@@ -63,15 +63,17 @@
 
 			if($team != null) {
 				$teamsController->removeTeam($team);
-				$response = $response->withStatus(200, "Team deleted");
+				$response = $response->withStatus(200);
+				$response->getBody()->write("Team deleted");
 			} else {
-				$response = $response->withStatus(400, "Invalid team ID");
+				$response = $response->withStatus(400);
+				$response->getBody()->write("Invalid team ID");
 			}
 
 			return $response;
-		});
+		})->setName("team-delete");
 
-		$app->post('/deregister/{teamID}', function (Request $request, Response $response) {
+		$app->post('/register/{teamID}', function (Request $request, Response $response) {
 
 			$teamID = (int)$request->getAttribute('teamID');
 
@@ -80,16 +82,70 @@
 			$team = Models_Team::withID($this->db, $this->logger, $teamID);
 
 			if($team != null) {
-				$team->setNumInLeague(0);
-				$team->setIsFinalized(false);
+				$league = $team->getLeague();
+				$teams = $league->getTeams();
+
+				$team->setNumInLeague(sizeof($teams) + 1);
+				$team->setIsFinalized(true);
 				$team->update();
-				$response = $response->withStatus(200, "Team deregistered");
+
+				$response = $response->withStatus(200);
+				$response->getBody()->write("Team registered");
 			} else {
-				$response = $response->withStatus(400, "Invalid team ID");
+				$response = $response->withStatus(400);
+				$response->getBody()->write("Invalid team ID");
 			}
 
 			return $response;
-		});
+		})->setName("team-register");
+
+		$app->post('/deregister/{teamID}', function (Request $request, Response $response) {
+
+			$teamID = (int)$request->getAttribute('teamID');
+			$team = Models_Team::withID($this->db, $this->logger, $teamID);
+
+			if($team != null) {
+				$curTeamNum = $team->getNumInLeague();
+				$team->setNumInLeague(0);
+				$team->setIsFinalized(false);
+				$team->update();
+
+				$league = $team->getLeague();
+				$teams = $league->getTeams();
+
+				for($i = 0; $i < sizeof($teams); $i++) {
+					$teams[$i]->setNumInLeague($i + 1);
+					$teams[$i]->update();
+				}
+
+				$response = $response->withStatus(200);
+				$response->getBody()->write("Team deregistered");
+			} else {
+				$response = $response->withStatus(400);
+				$response->getBody()->write("Invalid team ID");
+			}
+
+			return $response;
+		})->setName("team-deregister");
+
+		$app->post('/togglePaid/{teamID}', function (Request $request, Response $response) {
+
+			$teamID = (int)$request->getAttribute('teamID');
+			$team = Models_Team::withID($this->db, $this->logger, $teamID);
+
+			if($team != null && $team->getId() > 0) {
+				$team->setIsPaid(!$team->getIsPaid());
+				$team->update();
+				$response = $response->withStatus(200);
+				$response->getBody()->write("Team marked " . ($team->getIsPaid() ? "paid" : "NOT paid"));
+			} else {
+				$response = $response->withStatus(400);
+				$response->getBody()->write("Invalid team ID");
+			}
+
+			return $response;
+		})->setName("team-toggle-paid");
+
 	})->add($authenticateAdmin);
 	
 ?>

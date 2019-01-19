@@ -144,54 +144,13 @@ Registration control panel
 		</table>
 	</div>
 	<div class="col-xs-6">
-		<h3>Free Agents</h3>
-		<table>
-			<thead>
-				<tr>
-					<td>
-						#
-					</td><td>
-						Name
-					</td><td>
-						Gender
-					</td><td>
-						Note
-					</td><td>
-						Grp
-					</td><td>
-						Del
-					</td>
-				</tr> 
-			</thead>
-			<tbody>
-				<?php $freeAgentCounter = 1; ?>
-				<?php foreach($curLeague->getFreeAgents() as $curFreeAgent) { ?>
-					<tr class="draggable freeAgent">
-						<td>
-							<?php echo $freeAgentCounter++; ?>
-						</td>
-						<td>
-							<a href='/control/Players/updatePlayer.php?sportID=<?php echo $curSport->getId() ?>&leagueID=<?php echo $curLeague->getId() ?>&teamID=0&playerID=<?php echo $curFreeAgent->getPlayerID() ?>'>
-								<?php echo $curFreeAgent->getPlayer()->getFirstName() . ' ' . $curFreeAgent->getPlayer()->getLastName() ?>
-							</a>
-						</td>
-						<td>
-							<?php echo $curFreeAgent->getPlayer()->getGender() ?>
-						</td>
-						<td>
-							<textarea name='agentNote'><?php echo $curFreeAgent->getPlayer()->getNote() ?></textarea>
-						</td>
-						<td>
-							<?php echo $curFreeAgent->getGroupId(); ?>
-						</td><td>
-							<button class="btn btn-default btn-xs" onClick="deleteAgent(<?php echo $curFreeAgent->getId() ?>)">
-								<span class="glyphicon glyphicon-remove"></span>
-							</button>
-						</td>
-					</tr>
-				<?php } ?>
-			</tbody>
-		</table>
+		<?php 
+			print $this->fetch('control-panel/registration/components/leagueFreeAgents.phtml', [
+				"router" => $router,
+				"request" => $request,
+				"league" => $curLeague
+			]); 
+		?>
 	</div>
 </div>
 

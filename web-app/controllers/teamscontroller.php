@@ -10,11 +10,11 @@ class Controllers_TeamsController extends Controllers_Controller {
 			if($league->getIsPracticeGames()) { //league has practice, include the practice team
 				$sql = "SELECT team.* FROM " . Includes_DBTableNames::teamsTable . " as team "
 						. "WHERE ((team.team_league_id = $leagueID AND team.team_num_in_league > 0) OR team.team_id = 1) AND team.team_dropped_out = 0 "
-						. "ORDER BY team.team_num_in_league";
+						. "ORDER BY team.team_num_in_league ASC";
 			} else {
 				$sql = "SELECT team.* FROM " . Includes_DBTableNames::teamsTable . " as team "
 						. "WHERE team.team_league_id = $leagueID AND team.team_num_in_league > 0 AND team.team_dropped_out = 0 "
-						. "ORDER BY team.team_num_in_league";
+						. "ORDER BY team.team_num_in_league ASC";
 			}
 			
 			$stmt = $this->db->query($sql);

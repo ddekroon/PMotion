@@ -30,37 +30,26 @@ Registration control panel
 	<div class="col-xs-6">
 		<h3>Teams</h3>
 		<table id="RegistrationLeagueTeamsTable" class="table table-sortable">			
-			<thead>
-				<tr>
-					<th></th>
-					<th></th>
-					<th>
-						Team
-					</th>
-					<th title="Is Paid, Delete"></th>
-				</tr>
-			</thead>
 			<tbody>
 				<?php foreach($curLeague->getTeams() as $curTeam) { ?>
-					<tr class="droppable team">
+					<tr class="droppable team" data-team-id="<?php echo $curTeam->getId() ?>">
 						<td><span class="glyphicon glyphicon-menu-hamburger"></span></td>
 						<td>
 							<?php print $curTeam->getNumInLeague() ?>
 						</td><td>
 							<a <?php echo $curTeam->getTeamHasIndividuals() ? "style='font-weight:700;'" : '' ?>
 								href='<?php echo $router->pathFor('cp-edit-team', ['sportID' => $curSport->getId(), 'leagueID' => $curLeague->getId(),  'teamID' => $curTeam->getId()]) ?>'>
-								<?php echo $curTeam->getName() ?>
-							</a> 
+								<?php echo $curTeam->getName() ?></a> 
 							<small>
 								<?php echo $curTeam->getIsDroppedOut() ? ' - Dropout' : '' ?>
 								<?php echo $curTeam->getIsConvenor() ? ' - Convenor' : '' ?>
 							</small>
 						</td><td>
 							<div class="float-right btn-group">
-								<button class="btn btn-default btn-xs <?php echo $curTeam->getIsPaid() ? 'btn-primary' : '' ?>">
+								<button class="btn btn-default btn-xs<?php echo $curTeam->getIsPaid() ? ' active' : '' ?>" onClick="togglePaid(this, <?php echo $curTeam->getId() ?>);">
 									<span class="glyphicon glyphicon-piggy-bank"></span>
 								</button>
-								<button class="btn btn-default btn-xs">
+								<button class="btn btn-default btn-xs" onClick="deregisterTeam(this, <?php echo $curTeam->getId() ?>, function() { location.reload(); });">
 									<span class="glyphicon glyphicon-remove"></span>
 								</button>
 							</div>
@@ -71,54 +60,13 @@ Registration control panel
 		</table>
 	</div>
 	<div class="col-xs-6">
-		<h3>Free Agents</h3>
-		<table>
-			<thead>
-				<tr>
-					<td>
-						#
-					</td><td>
-						Name
-					</td><td>
-						Gender
-					</td><td>
-						Note
-					</td><td>
-						Grp
-					</td><td>
-						Del
-					</td>
-				</tr> 
-			</thead>
-			<tbody>
-				<?php $freeAgentCounter = 1; ?>
-				<?php foreach($curLeague->getFreeAgents() as $curFreeAgent) { ?>
-					<tr class="draggable freeAgent">
-						<td>
-							<?php echo $freeAgentCounter++; ?>
-						</td>
-						<td>
-							<a href='/control/Players/updatePlayer.php?sportID=<?php echo $curSport->getId() ?>&leagueID=<?php echo $curLeague->getId() ?>&teamID=0&playerID=<?php echo $curFreeAgent->getPlayerID() ?>'>
-								<?php echo $curFreeAgent->getPlayer()->getFirstName() . ' ' . $curFreeAgent->getPlayer()->getLastName() ?>
-							</a>
-						</td>
-						<td>
-							<?php echo $curFreeAgent->getPlayer()->getGender() ?>
-						</td>
-						<td>
-							<textarea name='agentNote'><?php echo $curFreeAgent->getPlayer()->getNote() ?></textarea>
-						</td>
-						<td>
-							<?php echo $curFreeAgent->getGroupId(); ?>
-						</td><td>
-							<button class="btn btn-default btn-xs" onClick="deleteAgent(<?php echo $curFreeAgent->getId() ?>)">
-								<span class="glyphicon glyphicon-remove"></span>
-							</button>
-						</td>
-					</tr>
-				<?php } ?>
-			</tbody>
-		</table>
+		<?php 
+			print $this->fetch('control-panel/registration/components/leagueFreeAgents.phtml', [
+				"router" => $router,
+				"request" => $request,
+				"league" => $curLeague
+			]); 
+		?>
 	</div>
 </div>
 
@@ -139,11 +87,11 @@ Registration control panel
 			<tbody>
 				<?php $fenceTeamsCounter = 1; ?>
 				<?php foreach($curLeague->getFenceTeams() as $curFenceTeam) { ?>
-					<tr>
+					<tr class="team">
 						<td>
 							<?php echo $fenceTeamsCounter++; ?>
 						</td><td>
-							<a href='/control/Teams/editTeam.php?sportID=<?php echo $curSport->getId() ?>&leagueID=<?php echo $curLeague->getId() ?>&teamID=<?php echo $curFenceTeam->getId() ?>'>
+							<a href="<?php echo $router->pathFor('cp-edit-team', ['sportID' => $curSport->getId(), 'leagueID' => $curLeague->getId(), 'teamID' => $curFenceTeam->getId() ]) ?>">
 								<?php echo $curFenceTeam->getName() ?>
 							</a>
 						</td><td>
@@ -151,15 +99,15 @@ Registration control panel
 						</td><td>
 							<?php print "<a target='_blank' href='mailto:" . $curFenceTeam->getCaptain()->getEmail() . "'>" . $curFenceTeam->getCaptain()->getEmail() . '</a>'; ?>
 						</td><td>
-							<button class='btn btn-default btn-xs' onClick='deleteFenceTeam(<?php echo $curFenceTeam->getId() ?>)'><span class='glyphicon glyphicon-remove'></span> Delete</span></button>
+							<div class="float-right btn-group">
+								<button class='btn btn-default btn-xs' onClick='registerTeam(this, <?php echo $curFenceTeam->getId() ?>, function() { location.reload(); })'><span class='glyphicon glyphicon-plus-sign'></span> Register</span></button>
+								<button class='btn btn-default btn-xs' onClick='deleteTeam(this, <?php echo $curFenceTeam->getId() ?>)'><span class='glyphicon glyphicon-remove'></span> Delete</span></button>
+							</div>
 						</td>
 					</tr>
 				<?php } ?>
 			</tbody>
 		</table>
-		<div class="buttonset">
-			<button type="button" class="btn btn-primary" onclick="return checkAdd()">Add Selected Teams to League</button>
-		</div>
 	<?php } else { ?>
 		<p>No teams to show</p>
 	<?php } ?> 			
@@ -169,18 +117,45 @@ Registration control panel
 	$(function() {
 		$("#RegistrationLeagueTeams").sortable();
 
-		$(".draggable").draggable();
+		$(".draggable").draggable({ 
+			revert: true,
+			handle: ".handle",
+			zIndex: 1000,
+			start: function(event, ui) {
+				$(".droppable").addClass("dragging");
+			},
+			stop: function(event, ui) {
+				$(".droppable").removeClass("dragging");
+			}
+		});
+
 		$(".droppable").droppable({
 			drop: function(event, ui) {
-				console.log(ui);
-				console.log(event);
+				var fa = $(ui.draggable);
+				var team = $(this);
+				var playerId = fa.data("player-id");
+				var groupId = fa.data("group-id");
+				var teamId = team.data("team-id");
+
+				var successCallback = function() {
+					ui.draggable.remove();
+					team.find("a").css("font-weight", 700);
+				}
+
+				if(groupId > 0) {
+					addGroupToTeam(groupId, teamId, successCallback);
+				} else {
+					addPlayerToTeam(playerId, teamId, successCallback);
+				}
+			},
+			over: function(event, ui) {
+				$(this).addClass("over");
+			},
+			out: function(event, ui) {
+				$(this).removeClass("over");
 			}
-				/*
-			$(this)
-				.addClass( "ui-state-highlight" )
-				.find( "p" )
-				.html( "Dropped!" );
-			*/
 		});
 	});
+
+	
 </script>

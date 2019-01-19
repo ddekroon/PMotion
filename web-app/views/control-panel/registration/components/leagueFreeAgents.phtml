@@ -1,0 +1,41 @@
+<h3>Free Agents</h3>
+<div class="freeAgentsList list-group">
+    <?php for($i = 0; $i < sizeof($league->getFreeAgents()); $i++) { ?>
+        <?php $curFreeAgent = $league->getFreeAgents()[$i]; ?>
+        <div class="draggable panel freeAgent" data-player-id="<?php echo $curFreeAgent->getPlayer()->getId() ?>" data-group-id="<?php echo $curFreeAgent->getGroupId() ?>">
+            <div class="list-group-item">
+                <div class="handle"></div>
+                <div class="content" style="margin-right:30px;">
+                    <a href='/control/Players/updatePlayer.php?sportID=<?php echo $league->getSport()->getId() ?>&leagueID=<?php echo $league->getId() ?>&teamID=0&playerID=<?php echo $curFreeAgent->getPlayerID() ?>'>
+                        <?php echo $curFreeAgent->getPlayer()->getFirstName() . ' ' . $curFreeAgent->getPlayer()->getLastName() ?></a>
+                    (<?php echo $curFreeAgent->getPlayer()->getGender() ?>)
+                    <?php if(strlen($curFreeAgent->getPlayer()->getNote()) > 0) { ?>
+                        <em class="note f-small"> - <?php echo $curFreeAgent->getPlayer()->getNote() ?></em>
+                    <?php } ?>
+                </div>
+                <div class="actions">
+                    <button class="btn btn-default btn-xs" onClick="deleteAgent(<?php echo $curFreeAgent->getId() ?>)">
+                        <span class="glyphicon glyphicon-remove"></span>
+                    </button>
+                </div>
+            </div>
+            <?php if($curFreeAgent->getGroupId() > 0) { ?>
+                <?php for($j = $i + 1; $j < sizeof($league->getFreeAgents()) && $league->getFreeAgents()[$j]->getGroupId() == $curFreeAgent->getGroupId(); $j++, $i++) { ?>
+                    <?php $curSubFreeAgent = $league->getFreeAgents()[$j]; ?>
+                    <div class="sub-list-group-item list-group-item">
+                        <div class="content" style="margin-right:30px;margin-left:0;">
+                        <a href='/control/Players/updatePlayer.php?sportID=<?php echo $league->getSport()->getId() ?>&leagueID=<?php echo $league->getId() ?>&teamID=0&playerID=<?php echo $curSubFreeAgent->getPlayerID() ?>'>
+                            <?php echo $curSubFreeAgent->getPlayer()->getFirstName() . ' ' . $curSubFreeAgent->getPlayer()->getLastName() ?></a>
+                        (<?php echo $curSubFreeAgent->getPlayer()->getGender() ?>)
+                        </div>
+                        <div class="actions">
+                            <button class="btn btn-default btn-xs" onClick="deleteAgent(<?php echo $curSubFreeAgent->getId() ?>)">
+                                <span class="glyphicon glyphicon-remove"></span>
+                            </button>
+                        </div>
+                    </div>
+                <?php } ?>
+            <?php } ?>
+        </div>
+    <?php } ?>
+</div>

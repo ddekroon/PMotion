@@ -705,16 +705,16 @@ class Models_Team extends Models_Generic implements Models_Interface, JsonSerial
 					$this->getLosses(), 
 					$this->getTies(), 
 					$this->getMostRecentWeekSubmitted(), 
-					$this->getIsFinalized(), 
-					$this->getIsPaid(), 
-					$this->getIsDeleted(), 
+					$this->getIsFinalized() ? 1 : 0, 
+					$this->getIsPaid() ? 1 : 0, 
+					$this->getIsDeleted() ? 1 : 0, 
 					$this->getPaymentMethod(), 
 					$this->getFinalPosition(), 
 					$this->getFinalSpiritPosition(), 
 					$this->getPicName(), 
-					$this->getIsConvenor(), 
-					$this->getIsDroppedOut(), 
-					$this->getIsLateEmailAllowed(),
+					$this->getIsConvenor() ? 1 : 0, 
+					$this->getIsDroppedOut() ? 1 : 0, 
+					$this->getIsLateEmailAllowed() ? 1 : 0,
 					$this->getId()
 				)
 			); 

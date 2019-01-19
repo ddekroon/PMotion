@@ -59,6 +59,10 @@ Login/**
 allSports/**
 *.orig
 react-app/**
+package-lock.json
+.DS_Store
+logs/**
+.vscode/**
 
 # Kyle's temp folder for copies
 Pastes/**

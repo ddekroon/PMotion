@@ -135,7 +135,8 @@ class Models_League extends Models_Generic implements Models_Interface, JsonSeri
 		
 		if($this->teams == null && $this->getId() != null && $this->db != null) {
 			$sql = "SELECT * FROM " . Includes_DBTableNames::teamsTable . " WHERE team_league_id = " . $this->getId()
-					. " AND team_finalized = 1 AND team_num_in_league > 0 AND team_dropped_out = 0";
+					. " AND team_finalized = 1 AND team_num_in_league > 0 AND team_dropped_out = 0"
+					. " ORDER BY team_num_in_league ASC";
 
 			$stmt = $this->db->query($sql);
 
@@ -157,7 +158,7 @@ class Models_League extends Models_Generic implements Models_Interface, JsonSeri
 		
 		if($this->fenceTeams == null && $this->getId() != null && $this->db != null) {
 			$sql = "SELECT * FROM " . Includes_DBTableNames::teamsTable . " WHERE team_league_id = " . $this->getId()
-					. " AND team_finalized = 0 AND team_num_in_league = 0";
+					. " AND team_finalized = 0 AND team_num_in_league = 0 AND team_deleted = 0";
 
 			$stmt = $this->db->query($sql);
 

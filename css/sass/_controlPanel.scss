@@ -336,4 +336,61 @@ body#ControlPanel {
 	.msg.info {border:2px solid #B8E2FB; background-color:#E8F6FF;}
 	.msg.done {border:2px solid #BBDF8D; background-color:#EAF7D9;}
 	.msg.error {border:2px solid #FFAEAE; background-color:#FEEBEB;}
+
+	.list-group-item {
+		overflow:hidden;
+
+		&.sub-list-group-item {
+			margin-left:29px;
+			font-size:$f-small;
+		}
+
+		.handle, .actions {
+			position:absolute;
+			top:-1px;
+			bottom:-1px;
+			left:-1px;
+		}
+
+		.handle {
+			width:30px;
+			border-radius:3px 0 0 3px;
+			background:$c-accent;
+			color:white;
+			cursor: move;
+
+			&:before {
+				font-family:$f-glyph;
+				content:"\e068";
+				@include positionCenter();
+			}
+		}
+
+		.content {
+			margin-left:30px;
+		}
+
+		.actions {
+			left:auto;
+			right:-1px;
+			@include flexbox();
+
+			button, .btn, a {
+				border-radius:0;
+				margin-left:-1px;
+			}
+		}
+	}
+
+	.droppable.dragging {
+		border:1px dashed $c-primary;
+		background: rgba($c-primary, .1);
+		padding:20px;
+		min-height:70px;
+
+		&.over {
+			border-color:$c-accent;
+			background: rgba($c-accent, .2);
+		}
+	}
 }

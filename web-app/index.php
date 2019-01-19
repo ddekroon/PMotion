@@ -127,7 +127,7 @@ $authenticateAdmin = function ($request, $response, $next) {
 	if($login->shouldAuthenticate($request)) { //authenticated
 		$curUser = Models_User::withID($this->db, $this->logger, $_SESSION[Controllers_AuthController::SESSION_USER_ID]);
 
-		if($curUser->access == Includes_Accesslevel::ADMIN) {
+		if($curUser->getAccess() == Includes_Accesslevel::ADMIN) {
 			$response = $next($request, $response);
 		} else {
 			$response = $response->withStatus(403, 'You do not have permission to access this content');
@@ -212,6 +212,7 @@ $controlPanel =  function ($request, $response, $next) {
 
 include('routes/api/sports.php');
 include('routes/api/teams.php');
+include('routes/api/players.php');
 include('routes/default.php');
 include('routes/score-reporter.php');
 include('routes/dashboard.php');
