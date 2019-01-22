@@ -21,7 +21,7 @@
 
 			$player = Models_Player::withID($this->db, $this->logger, $playerID);
 
-			if($player != null) {
+			if($player != null && $player->getId() > 0) {
 				$playersController->deletePlayer($player);
 				$response = $response->withStatus(200);
 				$response->getBody()->write("Player deleted");
@@ -40,14 +40,14 @@
 			$player = Models_Player::withID($this->db, $this->logger, $playerID);
 			$team = Models_Team::withID($this->db, $this->logger, $teamID);
 
-			if($player != null && $player->getId() > 0 && $team != null && $team->getId() > 0) {
-				$player->setTeamId($teamID);
+			if($player != null && $player->getId() > 0) {
+				$player->setTeamId($team != null && $team->getId() > 0 ? $teamID : null);
 				$player->update();
 				$response = $response->withStatus(200);
 				$response->getBody()->write("Player added to team");
 			} else {
 				$response = $response->withStatus(400);
-				$response->getBody()->write("Couldn't add player to team, invalid player or team given.");
+				$response->getBody()->write("Couldn't add player to team, invalid player given.");
 			}
 
 			return $response;
@@ -63,9 +63,9 @@
 			$players = $playersController->getPlayersInGroup($groupID);
 			$team = Models_Team::withID($this->db, $this->logger, $teamID);
 
-			if(isset($players) && sizeof($players) > 0 && $team != null && $team->getId() > 0) {
+			if(isset($players) && sizeof($players) > 0) {
 				foreach($players as $curPlayer) {
-					$curPlayer->setTeamId($teamID);
+					$curPlayer->setTeamId($team != null && $team->getId() > 0 ? $teamID : null);
 					$curPlayer->update();
 				}
 				
@@ -73,7 +73,32 @@
 				$response->getBody()->write("Player added to team");
 			} else {
 				$response = $response->withStatus(400);
-				$response->getBody()->write("Couldn't add player to team, invalid player or team given.");
+				$response->getBody()->write("Couldn't add group to team, invalid player given.");
+			}
+
+			return $response;
+		})->setName("player-add-to-team");
+
+		$app->post('/removePlayerFromGroup/{playerID}', function (Request $request, Response $response) {
+
+			$playerID = (int)$request->getAttribute('playerID');
+			$player = Models_Player::withID($this->db, $this->logger, $playerID);
+
+			$this->logger->debug($player->getId());
+			$this->logger->debug($player->getIsIndividual());
+			$this->logger->debug($player->getIndividual()->getId());
+			
+
+			if($player != null && $player->getId() > 0 && $player->getIsIndividual() && $player->getIndividual() != null) {
+				$ind = Models_Individual::withID($this->db, $this->logger, $player->getIndividual()->getId());
+				$ind->setGroupId(0);
+				$ind->update();
+
+				$response = $response->withStatus(200);
+				$response->getBody()->write("Player removed from group");
+			} else {
+				$response = $response->withStatus(400);
+				$response->getBody()->write("Couldn't remove player from group, invalid player given.");
 			}
 
 			return $response;

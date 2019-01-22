@@ -128,7 +128,7 @@
 			return $response;
 		})->setName("team-deregister");
 
-		$app->post('/togglePaid/{teamID}', function (Request $request, Response $response) {
+		$app->post('/toggle-paid/{teamID}', function (Request $request, Response $response) {
 
 			$teamID = (int)$request->getAttribute('teamID');
 			$team = Models_Team::withID($this->db, $this->logger, $teamID);
@@ -145,6 +145,68 @@
 
 			return $response;
 		})->setName("team-toggle-paid");
+
+		$app->post('/quick-update/{teamID}', function (Request $request, Response $response) {
+
+			$teamID = (int)$request->getAttribute('teamID');
+			$team = Models_Team::withID($this->db, $this->logger, $teamID);
+
+			if($team != null && $team->getId() > 0) {
+
+				$allPostVars = $request->getParsedBody();
+
+				$team->setName($allPostVars['teamName']);
+				$team->setLeagueId($allPostVars['leagueID']);
+				$team->setMostRecentWeekSubmitted($allPostVars['teamWeekInScoreReporter']);
+				$team->setIsDroppedOut($allPostVars['teamDroppedOut'] > 0);
+
+				$team->update();
+				$response = $response->withStatus(200);
+				$response->getBody()->write("Team updated");
+			} else {
+				$response = $response->withStatus(400);
+				$response->getBody()->write("Invalid team given");
+			}
+
+			return $response;
+		})->setName("team-quick-update");
+
+		$app->post('/quick-add-submit/{leagueID}', function (Request $request, Response $response) {
+
+			$leagueID = (int)$request->getAttribute('leagueID');
+			$league = Models_League::withID($this->db, $this->logger, $leagueID);
+
+			$allPostVars = $request->getParsedBody();
+			$teamName = $allPostVars['teamName'];
+
+			if($league != null && $league->getId() > 0 && $teamName != null && strlen($teamName) > 0) {
+
+				$teamNumInLeague = sizeof($league->getTeams()) + 1;
+				if($teamNumInLeague < 10) {
+					$picName = $leagueID.'-0'.$teamNumInLeague;
+				} else {
+					$picName = $leagueID.'-'.$teamNumInLeague;
+				}
+				
+				$team = Models_Team::withID($this->db, $this->logger, -1);
+				$team->setLeagueId($league->getId());
+				$team->setName($allPostVars['teamName']);
+				$team->setNumInLeague($teamNumInLeague);
+				$team->setDateCreated(new DateTime());
+				$team->setIsFinalized(true);
+				$team->getPaymentMethod(5);
+				$team->setPicName($picName);
+
+				$team->save();
+				$response = $response->withStatus(200);
+				$response->getBody()->write("Team created");
+			} else {
+				$response = $response->withStatus(400);
+				$response->getBody()->write("Invalid team name or league");
+			}
+
+			return $response;
+		})->setName("team-quick-add");
 
 	})->add($authenticateAdmin);
 	

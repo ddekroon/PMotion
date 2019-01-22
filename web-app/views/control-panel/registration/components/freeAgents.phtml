@@ -1,0 +1,72 @@
+<?php
+    $freeAgents = [];
+    $leagueId = -1;
+    $sportId = -1;
+
+    if(isset($league) && $league->getId() > 0) {
+        $freeAgents = $league->getFreeAgents();
+        $leagueId = $league->getId();
+        $sportId = $league->getSport()->getId();
+    } else if(isset($team) && $team->getId() > 0) {
+        foreach($team->getIndividuals() as $player) {
+            $freeAgents[] = $player->getIndividual();
+        }
+
+        $leagueId = $team->getLeague()->getId();
+        $sportId = $team->getLeague()->getSport()->getId();
+    }
+?>
+
+<div class="freeAgentsList list-group">
+    <?php for($i = 0; $i < sizeof($freeAgents); $i++) { ?>
+        <?php $curFreeAgent = $freeAgents[$i]; ?>
+        <div class="draggable form-group freeAgent" data-player-id="<?php echo $curFreeAgent->getPlayer()->getId() ?>" data-group-id="<?php echo $curFreeAgent->getGroupId() ?>">
+            <div class="list-group-item player">
+                <div class="handle"></div>
+                <div class="content" style="margin-right:50px;">
+                    <?php echo $curFreeAgent->getPlayer()->getIsCaptain() ? "<strong>C</strong>" : "" ?>
+                    <a href='/control/Players/updatePlayer.php?sportID=<?php echo $sportId ?>&leagueID=<?php echo $leagueId ?>&teamID=0&playerID=<?php echo $curFreeAgent->getPlayerID() ?>'>
+                        <?php echo $curFreeAgent->getPlayer()->getFirstName() . ' ' . $curFreeAgent->getPlayer()->getLastName() ?></a>
+                    (<?php echo $curFreeAgent->getPlayer()->getGender() ?>)
+                    <em class="note f-small">
+                        - Player Skill: <?php echo $curFreeAgent->getPlayer()->getSkillLevel() ?>
+                        <?php if(strlen($curFreeAgent->getPlayer()->getNote()) > 0) { ?><br /><?php echo $curFreeAgent->getPlayer()->getNote() ?><?php } ?>
+                    </em>
+                </div>
+                <div class="actions">
+                    <?php if($curFreeAgent->getGroupId() > 0) { ?>
+                        <button title="Remove from Group" class="btn btn-default btn-xs" onClick="removePlayerFromGroup(this, <?php echo $curFreeAgent->getId() ?>, function() { location.reload(); })">
+                            <span class="glyphicon glyphicon-minus-sign"></span>
+                        </button>
+                    <?php } ?>
+                    <button title="Delete" class="btn btn-default btn-xs" onClick="deletePlayer(this, <?php echo $curFreeAgent->getPlayerId() ?>)">
+                        <span class="glyphicon glyphicon-trash"></span>
+                    </button>
+                </div>
+            </div>
+            <?php if($curFreeAgent->getGroupId() > 0) { ?>
+                <?php for($j = $i + 1; $j < sizeof($freeAgents) && $freeAgents[$j]->getGroupId() == $curFreeAgent->getGroupId(); $j++, $i++) { ?>
+                    <?php $curSubFreeAgent = $freeAgents[$j]; ?>
+                    <div class="sub-list-group-item list-group-item player">
+                        <div class="content" style="margin-right:50px;margin-left:0;">
+                            <a href='/control/Players/updatePlayer.php?sportID=<?php echo $sportId ?>&leagueID=<?php echo $leagueId ?>&teamID=0&playerID=<?php echo $curSubFreeAgent->getPlayerID() ?>'>
+                                <?php echo $curSubFreeAgent->getPlayer()->getFirstName() . ' ' . $curSubFreeAgent->getPlayer()->getLastName() ?></a>
+                            (<?php echo $curSubFreeAgent->getPlayer()->getGender() ?>)
+                            <em class="note f-small">
+                                - Player Skill: <?php echo $curFreeAgent->getPlayer()->getSkillLevel() ?>
+                            </em>
+                        </div>
+                        <div class="actions">
+                            <button title="Remove from Group" class="btn btn-default btn-xs" onClick="removePlayerFromGroup(this, <?php echo $curSubFreeAgent->getPlayerId() ?>, function() { location.reload(); })">
+                                <span class="glyphicon glyphicon-minus-sign"></span>
+                            </button>
+                            <button class="btn btn-default btn-xs" onClick="deletePlayer(this, <?php echo $curSubFreeAgent->getPlayerId() ?>)">
+                                <span class="glyphicon glyphicon-trash"></span>
+                            </button>
+                        </div>
+                    </div>
+                <?php } ?>
+            <?php } ?>
+        </div>
+    <?php } ?>
+</div>

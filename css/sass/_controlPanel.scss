@@ -37,6 +37,11 @@ body#ControlPanel {
 		padding:15px;
 		margin-top:0;
 		border-radius:3px;
+
+		.btn-title-link {
+			margin:0 10px;
+			text-decoration:none;
+		}
 	}
 	
 	h2 {
@@ -392,5 +397,50 @@ body#ControlPanel {
 			border-color:$c-accent;
 			background: rgba($c-accent, .2);
 		}
+	}
+
+	.modal.pm-modal {
+		@include bp (min-width, 768px) { 
+			.modal-dialog {
+				margin:0;
+				top:0;
+				right:0;
+				bottom:0;
+				width:60%;
+				position:fixed;
+				overflow:auto;
+			
+				.modal-content {
+					@include flexbox();
+					flex-direction:column;
+					position:absolute;
+					left:0;
+					right:0;
+					top:0;
+					bottom:0;
+					border-radius:0;
+					border:none;
+					min-height:100%;
+				}
+
+				.modal-header {
+					padding:10px 15px;
+				}
+
+				.modal-body {
+					height:100%;
+					overflow:auto;
+				}
+			}
+		}
+	}
+}
+
+.print {
+	page-break-after:always;
+	width:100%;
+	
+	&:last-child {
+		page-break-after:auto;
 	}
 }

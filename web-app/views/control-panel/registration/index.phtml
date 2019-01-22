@@ -10,6 +10,14 @@ Registration control panel
 <h1>
 	Registration Control Panel
 	<span class="f-small"><?php echo isset($curLeague) && $curLeague->getId() != null ? ' - ' . $curLeague->getFormattedName() : "" ?></span>
+	<div class="float-right">
+		<a class="btn-title-link" target="_blank" title="Print Individual Teams" href="<?php echo $router->pathFor('cp-print-individuals-teams', ['leagueID' => $curLeague->getId()]) ?>">
+			<span class="glyphicon glyphicon-print"></span>
+		</a>
+		<a class="btn-title-link" target="_blank" title="excel code" href="<?php echo $router->pathFor('cp-league-excel-code', ['leagueID' => $curLeague->getId()]) ?>">
+			<span class="glyphicon glyphicon-th"></span>
+		</a>
+	</div>
 </h1>
 
 <?php 
@@ -28,7 +36,12 @@ Registration control panel
 
 <div class="form-group row no-flex">
 	<div class="col-xs-6">
-		<h3>Teams</h3>
+		<h3 class="clearfix">
+			Teams
+			<button class="btn btn-primary btn-xs float-right" onClick="quickAddTeam(<?php echo $curLeague->getId() ?>)">
+				<span class="glyphicon glyphicon-plus-sign"></span> Quick add
+			</button>
+		</h3>
 		<table id="RegistrationLeagueTeamsTable" class="table table-sortable">			
 			<tbody>
 				<?php foreach($curLeague->getTeams() as $curTeam) { ?>
@@ -60,8 +73,9 @@ Registration control panel
 		</table>
 	</div>
 	<div class="col-xs-6">
+		<h3>Free Agents</h3>
 		<?php 
-			print $this->fetch('control-panel/registration/components/leagueFreeAgents.phtml', [
+			print $this->fetch('control-panel/registration/components/freeAgents.phtml', [
 				"router" => $router,
 				"request" => $request,
 				"league" => $curLeague
@@ -101,7 +115,7 @@ Registration control panel
 						</td><td>
 							<div class="float-right btn-group">
 								<button class='btn btn-default btn-xs' onClick='registerTeam(this, <?php echo $curFenceTeam->getId() ?>, function() { location.reload(); })'><span class='glyphicon glyphicon-plus-sign'></span> Register</span></button>
-								<button class='btn btn-default btn-xs' onClick='deleteTeam(this, <?php echo $curFenceTeam->getId() ?>)'><span class='glyphicon glyphicon-remove'></span> Delete</span></button>
+								<button class='btn btn-default btn-xs' onClick='deleteTeam(this, <?php echo $curFenceTeam->getId() ?>)'><span class='glyphicon glyphicon-trash'></span> Delete</span></button>
 							</div>
 						</td>
 					</tr>

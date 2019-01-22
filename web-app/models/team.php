@@ -169,6 +169,36 @@ class Models_Team extends Models_Generic implements Models_Interface, JsonSerial
 		
 		return $this->players;
 	}
+
+	function getAllPlayers() {
+		
+		$players = [];
+		
+		$sql = "SELECT * FROM " . Includes_DBTableNames::playersTable . " WHERE player_team_id = " . $this->getId() . " ORDER BY player_id ASC";
+		$stmt = $this->db->query($sql);
+
+		while(($row = $stmt->fetch()) != false) {
+			$players[] = Models_Player::withRow($this->db, $this->logger, $row);
+		}
+		
+		return $players;
+	}
+
+	function getIndividuals() {
+		
+		$players = [];
+		
+		$sql = "SELECT players.* FROM " . Includes_DBTableNames::playersTable . " players"
+			. " INNER JOIN " . Includes_DBTableNames::individualsTable . " ind ON ind.individual_player_id = players.player_id"
+			. " WHERE player_team_id = " . $this->getId() . " ORDER BY ind.individual_small_group_id DESC, players.player_id ASC";
+		$stmt = $this->db->query($sql);
+
+		while(($row = $stmt->fetch()) != false) {
+			$players[] = Models_Player::withRow($this->db, $this->logger, $row);
+		}
+		
+		return $players;
+	}
 	
 	function setPlayers(array $players) {
 		$this->players = $players;

@@ -59,7 +59,7 @@ class Models_Individual extends Models_Generic implements Models_Interface, Json
 		$this->phoneNumber = $data['individual_phone'];
 		$this->preferredLeagueID = $data['individual_preferred_league_id'];
 		$this->dateCreated = new DateTime($data['individual_created']);
-		$this->isFinalized = $data['individual_finalized'];
+		$this->isFinalized = $data['individual_finalized'] > 0;
 		$this->managedByID = $data['individual_managed_by_user_id'];
 		$this->groupID = $data['individual_small_group_id'];
 		$this->paymentMethod = $data['individual_payment_method'];
@@ -83,6 +83,10 @@ class Models_Individual extends Models_Generic implements Models_Interface, Json
 		}
 		
 		return $this->player;
+	}
+
+	public function setPlayer($player) {
+		$this->player = $player;
 	}
 
 	function getPlayerID() {
@@ -165,6 +169,14 @@ class Models_Individual extends Models_Generic implements Models_Interface, Json
 		$this->howHeardOtherText = $howHeardOtherText;
 	}
 
+	public function saveOrUpdate() {
+		if($this->getId() == null) {
+			$this->save();
+		} else {
+			$this->update();
+		}
+	}
+
 	public function save() {
 		
 		 if(empty($this->getPlayerID())) {
@@ -193,11 +205,53 @@ class Models_Individual extends Models_Generic implements Models_Interface, Json
 					$this->getManagedByID(),
 					$this->getGroupID(), 
 					$this->getPaymentMethod(), 
-					$this->getHowHeardMethod(), // FIND OUT WHERE TEAMS/PLAYERS SET THIS
+					$this->getHowHeardMethod(),
 					$this->getHowHeardOtherText()
 				)
 			); 
 			$this->setId($this->db->lastInsertId());
+			$this->db->commit(); 
+			
+		} catch (Exception $ex) {
+			$this->db->rollback();
+			$this->logger->log($ex->getMessage()); 
+		}
+	}
+
+	public function update() {
+		try {			
+			$stmt = $this->db->prepare("UPDATE " . Includes_DBTableNames::individualsTable . " SET "
+				. "
+					individual_player_id = ?, 
+					individual_phone = ?, 
+					individual_preferred_league_id = ?, 
+					individual_created = ?, 
+					individual_finalized = ?, 
+					individual_managed_by_user_id = ?, 
+					individual_small_group_id = ?, 
+					individual_payment_method = ?, 
+					individual_hear_method = ?, 
+					individual_hear_other_text = ?
+				WHERE individual_id = ?
+				"
+			);
+			
+			$this->db->beginTransaction(); 
+			$stmt->execute(
+				array(
+					$this->getPlayerID(), 
+					$this->getPhoneNumber(), 
+					$this->getPreferredLeagueID(), 
+					$this->getDateCreated() != null ? $this->getDateCreated()->format('Y-m-d H:i:s') : null, 
+					$this->getIsFinalized() ? 1 : 0, 
+					$this->getManagedByID(),
+					$this->getGroupID(), 
+					$this->getPaymentMethod(), 
+					$this->getHowHeardMethod(),
+					$this->getHowHeardOtherText(),
+					$this->getId()
+				)
+			); 
 			$this->db->commit(); 
 			
 		} catch (Exception $ex) {

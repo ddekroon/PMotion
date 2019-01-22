@@ -37,7 +37,7 @@ function togglePaid(clicked, teamId) {
     $(clicked).attr("disabled", "disabled");
     var paid = $(clicked).hasClass("active");
 
-    $.post(baseUrl + "/api/teams/togglePaid/" + teamId, function(data) {
+    $.post(baseUrl + "/api/teams/toggle-paid/" + teamId, function(data) {
         if(paid) {
             notify("Team marked NOT paid", "success");
             $(clicked).removeClass("active");
@@ -103,7 +103,7 @@ function registerTeam(clicked, teamId, callback) {
 }
 
 function deleteTeam(clicked, teamId) {
-    customConfirm("Are you sure you want to delete this team? This cannot be undone.",
+    pmConfirm("Are you sure you want to delete this team? This cannot be undone.",
     function() {
         $(clicked).attr("disabled", "disabled");
 
@@ -129,13 +129,13 @@ function deleteTeam(clicked, teamId) {
 }
 
 function addPlayerToTeam(playerId, teamId, callback) {
-    if(playerId == null || playerId <= 0 || teamId == null || teamId <= 0) {
-        notify("Invalid team or player", "danger");
+    if(playerId == null || playerId <= 0) {
+        notify("Invalid player", "danger");
         return;
     }
 
     $.post(baseUrl + "/api/players/addPlayerToTeam/" + playerId + "/" + teamId, function(data) {
-        notify("Team registered", "success");
+        notify("Player " + (teamId > 0 ? "added to" : "removed from") + " team", "success");
 
         if(typeof(callback) === "function") {
             callback();
@@ -148,12 +148,12 @@ function addPlayerToTeam(playerId, teamId, callback) {
 
 function addGroupToTeam(groupId, teamId, callback) {
     if(groupId == null || groupId <= 0 || teamId == null || teamId <= 0) {
-        notify("Invalid team or player", "danger");
+        notify("Invalid group", "danger");
         return;
     }
 
     $.post(baseUrl + "/api/players/addGroupToTeam/" + groupId + "/" + teamId, function(data) {
-        notify("Team registered", "success");
+        notify("Group " + (teamId > 0 ? "added to" : "removed from") + " team", "success");
 
         if(typeof(callback) === "function") {
             callback();
@@ -162,4 +162,108 @@ function addGroupToTeam(groupId, teamId, callback) {
     .fail(function(response, textStatus, errorThrown) {
         notify("Error adding group to team", "danger");
     });
+}
+
+function deletePlayer(clicked, playerId) {
+    pmConfirm("Are you sure you want to delete this player? This cannot be undone.",
+    function() {
+        $(clicked).attr("disabled", "disabled");
+
+        $.ajax(
+            baseUrl + "/api/players/" + playerId, 
+            {
+                dataType: "text",
+                type: "delete"
+            }
+        )
+        .done(function(data, textStatus, response) {
+            notify("Player deleted", "success");
+            $(clicked).closest(".player").detach();
+        })
+        .fail(function(response, textStatus, errorThrown) {
+            notify("Error deleting player", "danger");
+            $(clicked).removeAttr("disabled");
+        });
+    },
+    function() {
+        //cancel, do nothing.
+    });
+}
+
+function removePlayerFromGroup(clicked, playerId, callback) {
+    pmConfirm("Are you sure you want to remove this player from their group? This cannot be undone.",
+    function() {
+        $(clicked).attr("disabled", "disabled");
+
+        $.ajax(
+            baseUrl + "/api/players/removePlayerFromGroup/" + playerId, 
+            {
+                dataType: "text",
+                type: "post"
+            }
+        )
+        .done(function(data, textStatus, response) {
+            notify("Player removed from group", "success");
+            if(typeof(callback) === "function") {
+                callback();
+            }
+        })
+        .fail(function(response, textStatus, errorThrown) {
+            notify("Error removing player from group", "danger");
+            $(clicked).removeAttr("disabled");
+        });
+    },
+    function() {
+        //cancel, do nothing.
+    });
+}
+
+function quickAddTeam(leagueId) {
+
+    var id = "AddTeam";
+    var title = "Add Team";
+    var buttons = [];
+
+    var save = $('<button type="button" class="btn btn-primary"><span class="glyphicon glyphicon-ok"></span> Add</button>');
+    var cancel = $('<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>');
+
+    save.click(function() {
+        $("#" + id).find("form").submit();
+    })
+
+    buttons.push(save);
+    buttons.push(cancel);
+
+    var onLoaded = function() {
+
+        var form = $("#" + id).find("form");
+
+        form.validate({
+			ignore: [], //Important for game results validation
+			errorElement: "div",
+			rules: {
+				teamName: {
+					required: true
+                }
+            }
+        });
+
+        form.ajaxForm({
+			method:"POST",
+            dataType:"text",
+            beforeSubmit:function () {
+				return form.valid(); // TRUE when form is valid, FALSE will cancel submit
+			},
+			success:function(resp) {
+				notify("Team Created", "success");
+                $("#" + id).modal("hide");
+                location.reload();
+			},
+			error:function(resp) {
+				notify("Error connecting to server.", "danger");
+			}
+		});
+    }
+
+    pmModal(baseUrl + "/control-panel/registration/team-quick-add/" + leagueId, id, title, buttons, onLoaded);
 }
