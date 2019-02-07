@@ -47,13 +47,13 @@ Program that tells the user of any potential issues with the score submissions/s
 					<?php $numTeamsWithUnbalancedSubmissions = $numTeamsWithUnbalancedSubmissions + 1; ?>
 					<tr>
 						<td><?php print $curTeam->getId(); ?></td>
-						<td><?php print "<a target='_blank' href='../Search/teamPage.php?teamID=" . $curTeam->getId() . "'>" . $curTeam->getName() . "</a>"; ?></td>
+						<td><?php print "<a target='_blank' href='/control/Search/teamPage.php?teamID=" . $curTeam->getId() . "'>" . $curTeam->getName() . "</a>"; ?></td>
 						<td>
 							<?php $body = "Hey, I was looking through our standings and noticed an issue with your score submissions on DATE. You submitted SCORE, while your opponent TEAM submitted SCORE. I cant be sure exactly what happened but any ideas you might have as to why this error has came up would be appreciated. Thanks,";
 							print "<a target='_blank' href='mailto:" . $curTeam->getCaptain()->getEmail() . "?subject=Score Submissions Issue&body=$body'>" . $curTeam->getCaptain()->getEmail() . '</a>'; ?>
 						</td>
 						<td>
-							<?php print "<a target='_blank' href='../Standings/editSubmissions.php?sportID=" . $curTeam->getLeague()->getSportId() . "&leagueID=" . $curTeam->getLeagueId() . "'>" . $curTeam->getLeague()->getFormattedName() . "</a>" ?>
+							<?php print "<a target='_blank' href='/control/Standings/editSubmissions.php?sportID=" . $curTeam->getLeague()->getSportId() . "&leagueID=" . $curTeam->getLeagueId() . "'>" . $curTeam->getLeague()->getFormattedName() . "</a>" ?>
 						</td>
 						<td class="text-right"><?php print $curTeam->getSubmittedWins() ?></td>
 						<td class="text-right"><?php print $curTeam->getSubmittedLosses() ?></td>
@@ -102,13 +102,13 @@ Program that tells the user of any potential issues with the score submissions/s
 				<?php if($submittedGames != $standingsTotal) { ?>
 					<tr>
 						<td><?php print $curTeam->getId(); ?></td>
-						<td><?php print "<a target='_blank' href='../Search/teamPage.php?teamID=" . $curTeam->getId() . "'>" . $curTeam->getName() . "</a>"; ?></td>
+						<td><?php print "<a target='_blank' href='/control/Search/teamPage.php?teamID=" . $curTeam->getId() . "'>" . $curTeam->getName() . "</a>"; ?></td>
 						<td>
 							<?php $body = "Hey, I was looking through our standings and noticed an issue with your score submissions on DATE. You submitted SCORE, while your opponent TEAM submitted SCORE. I cant be sure exactly what happened but any ideas you might have as to why this error has came up would be appreciated. Thanks,";
 							print "<a target='_blank' href='mailto:" . $curTeam->getCaptain()->getEmail() . "?subject=Score Submissions Issue&body=$body'>" . $curTeam->getCaptain()->getEmail() . '</a>'; ?>
 						</td>
 						<td>
-							<?php print "<a target='_blank' href='../Standings/editSubmissions.php?sportID=" . $curTeam->getLeague()->getSportId() . "&leagueID=" . $curTeam->getLeagueId() . "'>" . $curTeam->getLeague()->getFormattedName() . "</a>" ?>
+							<?php print "<a target='_blank' href='/control/Standings/editSubmissions.php?sportID=" . $curTeam->getLeague()->getSportId() . "&leagueID=" . $curTeam->getLeagueId() . "'>" . $curTeam->getLeague()->getFormattedName() . "</a>" ?>
 						</td>
 						<td class="text-right"><?php print $curTeam->getSubmittedWins() ?></td>
 						<td class="text-right"><?php print $curTeam->getSubmittedLosses() ?></td>
@@ -154,13 +154,13 @@ Program that tells the user of any potential issues with the score submissions/s
 					$curTeam->getMostRecentWeekSubmitted() == $curTeam->getLeague()->getWeekInScoreReporter())) { ?>
 					<tr>
 						<td><?php print $curTeam->getId(); ?></td>
-						<td><?php print "<a target='_blank' href='../Search/teamPage.php?teamID=" . $curTeam->getId() . "'>" . $curTeam->getName() . "</a>"; ?></td>
+						<td><?php print "<a target='_blank' href='/control/Search/teamPage.php?teamID=" . $curTeam->getId() . "'>" . $curTeam->getName() . "</a>"; ?></td>
 						<td>
 							<?php $body = "Hey, I was looking through our standings and noticed an issue with your score submissions on DATE. You submitted SCORE, while your opponent TEAM submitted SCORE. I cant be sure exactly what happened but any ideas you might have as to why this error has came up would be appreciated. Thanks,";
 							print "<a target='_blank' href='mailto:" . $curTeam->getCaptain()->getEmail() . "?subject=Score Submissions Issue&body=$body'>" . $curTeam->getCaptain()->getEmail() . '</a>'; ?>
 						</td>
 						<td>
-							<?php print "<a target='_blank' href='../Standings/editSubmissions.php?sportID=" . $curTeam->getLeague()->getSportId() . "&leagueID=" . $curTeam->getLeagueId() . "'>" . $curTeam->getLeague()->getFormattedName() . "</a>" ?>
+							<?php print "<a target='_blank' href='/control/Standings/editSubmissions.php?sportID=" . $curTeam->getLeague()->getSportId() . "&leagueID=" . $curTeam->getLeagueId() . "'>" . $curTeam->getLeague()->getFormattedName() . "</a>" ?>
 						</td>
 						<td class="text-right"><?php print $curTeam->getSubmittedWins() ?></td>
 						<td class="text-right"><?php print $curTeam->getSubmittedLosses() ?></td>
