@@ -66,6 +66,12 @@
 					<div class="block">
 						<div class="menu">
 							<ul>
+								<li class="has-sub"><a href="<?php echo $router->pathFor("cp-registration"); ?>">New Control Panel</a>
+									<ul>
+										<li class="last"><a href="<?php echo $router->pathFor("cp-registration"); ?>">Registration Control Panel</a></li>
+										<li class="last"><a href="<?php echo $router->pathFor("cp-unbalanced-standings"); ?>">Unbalanced Standings</a></li>
+									</ul>
+								</li>
 								<li class="has-sub"><a href="/control/Registration/editByLeague.php">Registration</a>
 									<ul>
 										<li class="last"><a href="/control/Registration/editByLeague.php">Registration Control Panel</a></li>
@@ -75,7 +81,7 @@
 								</li>
 								<li class="has-sub"><a href="/control/Standings/unbalancedStandings.php">Standings</a>
 									<ul>
-										<li class="last"><a href="/web-app/control-panel/standings/unbalanced-standings">Unbalanced Standings</a></li>
+										<li class="last"><a href="/control/Standings/unbalancedStandings.php">Unbalanced Standings</a></li>
 										<li class="last"><a href="/control/Standings/editSubmissions.php">Edit Score Submissions</a></li>
 										<li class="last"><a href="/control/Standings/closeLeagueWeek.php">Close Standings for a League Week</a></li>
 										<li class="last"><a href="/control/Standings/tieBreak.php">Tie Breaker</a></li>

@@ -1,0 +1,65 @@
+<?php
+    $sport = $curLeague->getSport();
+?>
+
+<html>
+	<head>
+    	<title><?php echo $curLeague->getName() ?> - Individual Teams - Perpertual Motion</title>
+        <link rel="stylesheet" type="text/css" href="/css/stylesheets/styles.css"/>
+    </head>
+    <body>
+        <?php echo $curLeague->getFormattedName(); ?>
+        <?php echo sizeof($curLeague->getTeams()); ?>
+        <?php foreach($curLeague->getTeams() as $team) { ?>
+            <?php echo $team->getTeamHasIndividuals(); ?>
+            <?php if(!$team->getTeamHasIndividuals()) continue; ?>
+            <?php $teamPlayers = $team->getAllPlayers(); ?>
+        	<div class="print">
+                <div class="row">
+                    <div class="col-xs-4">
+                        <img src="<?php print $sport->getLogoLink() ?>" width="170" />
+                    </div>
+                    <div class="col-xs-8">
+                        <h1>Team List</h1>
+                        <p>
+                            <?php print $team->getName(); ?><br />
+                            <?php echo $curLeague->getFormattedName() ?>
+                        </p>
+                    </div>
+                </div>
+                <br />      
+                <table class="table table-striped table-bordered">
+                    <thead>
+                        <tr>
+                            <th style="width:30%; text-align:center;">
+                                Players Name
+                            </th><th style="width:50%; text-align:center;">
+                                Email
+                            </th><th style="width:20%; text-align:center;">
+                                Phone Number
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php for($v = 0; $v < 15; $v++) { ?>
+                            <?php $curPlayer = $v < sizeof($teamPlayers) ? $teamPlayers[$v] : Models_Player::withID(null, null, -1); ?>
+                            <tr>
+                                <td>
+                                    <?php 
+                                        echo ($v + 1) . ') ' 
+                                            . ($curPlayer->getIsIndividual() ? "<strong>" : "")
+                                            . $curPlayer->getFirstName() . ' ' . $curPlayer->getLastName()
+                                            . ($curPlayer->getIsIndividual()? "</strong>" : "");
+                                    ?>
+                                </td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        <?php } ?>
+                    </tbody>
+                </table>
+                <em>Please feel free to add your email and phone number so you can be in contact with each other.</em>
+            </div>
+        <?php } ?>
+    </body>
+</html>

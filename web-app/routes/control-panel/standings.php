@@ -20,7 +20,7 @@
 				"user" => $user,
 				"teams" => $teamsController->getUnbalancedStandingsTeamData()
 			]);
-		})->setName('edit-profile');
+		})->setName('cp-unbalanced-standings');
 		
 	})->add($controlPanel)->add($authenticate);
 	

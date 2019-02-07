@@ -16,6 +16,7 @@ class Models_Player extends Models_Generic implements Models_Interface, JsonSeri
 	
 	private $team;
 	private $registrationComment;
+	private $individual;
 
 	public static function withID($db, $logger, $id) {
 		$instance = new self();
@@ -64,7 +65,7 @@ class Models_Player extends Models_Generic implements Models_Interface, JsonSeri
 		$this->gender = $data['player_sex'];
 		$this->phoneNumber = $data['player_phone'];
 		$this->skillLevel = $data['player_skill'];
-		$this->isIndividual = $data['player_is_individual'];
+		$this->isIndividual = $data['player_is_individual'] > 0;
 		$this->note = $data['player_note'];
 		$this->howHeardMethod = $data['player_hear_method'];
 		$this->howHeardOtherText = $data['player_hear_other_text'];
@@ -93,6 +94,24 @@ class Models_Player extends Models_Generic implements Models_Interface, JsonSeri
 		}
 
 		return $this->registrationComment;
+	}
+
+	function getIndividual() {
+		if($this->individual == null && $this->db != null) {
+			$sql = "SELECT * FROM " . Includes_DBTableNames::individualsTable . " WHERE individual_player_id = " . $this->getId() . " LIMIT 1";
+
+			$stmt = $this->db->query($sql);
+
+			if(($row = $stmt->fetch()) != false) {
+				$individual = new Models_Individual();
+				$individual->fill($row);
+				$individual->setPlayer($this);
+				$this->individual = $individual;
+			}
+
+		}
+		
+		return $this->individual;
 	}
 
 	function getTeamId() {

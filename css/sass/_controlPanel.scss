@@ -19,6 +19,7 @@
 body#ControlPanel {
 	background-color:#eaeaea;
 	color:#303030;
+	font-size:$f-small;
 	
 	.controlPanelHeader {
 		padding:15px;
@@ -37,6 +38,16 @@ body#ControlPanel {
 		padding:15px;
 		margin-top:0;
 		border-radius:3px;
+
+		.btn-title-link {
+			margin:0 0 0 10px;
+			text-decoration:none;
+			color:white;
+
+			&:hover, &:focus {
+				color:$c-light-gray;
+			}
+		}
 	}
 	
 	h2 {
@@ -51,7 +62,7 @@ body#ControlPanel {
 		border:2px solid #cfcfcf; 
 		vertical-align:top; 
 		width:100%;
-		font-size:0.8em;
+		font-size:$f-small;
 		
 		&, thead, tbody, tr, th, td {
 			border:none;
@@ -336,4 +347,110 @@ body#ControlPanel {
 	.msg.info {border:2px solid #B8E2FB; background-color:#E8F6FF;}
 	.msg.done {border:2px solid #BBDF8D; background-color:#EAF7D9;}
 	.msg.error {border:2px solid #FFAEAE; background-color:#FEEBEB;}
+
+	.list-group-item {
+		overflow:hidden;
+
+		&.sub-list-group-item {
+			margin-left:29px;
+			font-size:$f-small;
+		}
+
+		.handle, .actions {
+			position:absolute;
+			top:-1px;
+			bottom:-1px;
+			left:-1px;
+		}
+
+		.handle {
+			width:30px;
+			border-radius:3px 0 0 3px;
+			background:$c-accent;
+			color:white;
+			cursor: move;
+
+			&:before {
+				font-family:$f-glyph;
+				content:"\e068";
+				@include positionCenter();
+			}
+		}
+
+		.content {
+			margin-left:30px;
+		}
+
+		.actions {
+			left:auto;
+			right:-1px;
+			@include flexbox();
+
+			button, .btn, a {
+				border-radius:0;
+				margin-left:-1px;
+			}
+		}
+	}
+
+	.droppable.dragging {
+		border:1px dashed $c-primary;
+		background: rgba($c-primary, .1);
+		padding:20px;
+		min-height:70px;
+
+		&.over {
+			border-color:$c-accent;
+			background: rgba($c-accent, .2);
+		}
+	}
+
+	.modal.pm-modal {
+		@include bp (min-width, 768px) { 
+			.modal-dialog {
+				margin:0;
+				top:0;
+				right:0;
+				bottom:0;
+				width:60%;
+				position:fixed;
+				overflow:auto;
+			
+				.modal-content {
+					@include flexbox();
+					flex-direction:column;
+					position:absolute;
+					left:0;
+					right:0;
+					top:0;
+					bottom:0;
+					border-radius:0;
+					border:none;
+					min-height:100%;
+				}
+
+				.modal-header {
+					padding:10px 15px;
+				}
+
+				.modal-body {
+					height:100%;
+					overflow:auto;
+				}
+			}
+		}
+	}
+}
+
+.sortable-handle {
+	cursor: ns-resize;
+}
+
+.print {
+	page-break-after:always;
+	width:100%;
+	
+	&:last-child {
+		page-break-after:auto;
+	}
 }

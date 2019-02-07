@@ -152,8 +152,8 @@ $(function() {
 							loadData();
 						});
 					} else {
-						$("#Matches").html(resp);
 						$("#MatchesFieldset").slideDown(300, function() {
+							$("#Matches").html(resp);
 							loadData();
 						});
 					}

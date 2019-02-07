@@ -1,0 +1,105 @@
+<div class="clearfix form-group">
+	<button data-toggle="collapse" data-target="#control-panel-filters"
+			class='btn btn-primary pull-right <?php echo !isset($activeLeague) || $activeLeague->getId() == null ? " sr-only" : "" ?>'>
+		Toggle Filters
+	</button>
+</div>
+<div id="control-panel-filters" class="collapse<?php echo !isset($activeLeague) || $activeLeague->getId() == null ? " in" : "" ?>">
+	<div class="well">
+		<?php if(!isset($includSports) || $includeSports) { ?>
+			<div class="row form-group">
+				<div class="col-sm-2 col-xs-3">
+					<label>Sport</label>
+				</div>
+				<div class="col-sm-10 col-xs-9">
+					<div class="row logosTable">
+						<?php foreach($sports as $curSport) { ?>
+							<div class="col-sm-3 col-xs-6">
+								<a href='<?php echo $router->pathFor($baseUrlName, ['sportID' => $curSport->getId()]) ?>'>
+									<div class="sport-panel sport-panel-<?php echo $curSport->getId() ?> <?php echo $curSport->getId() == $activeSport->getId() ? "selected" : "" ?> square square-50">
+										<div class='position-center'>
+											<img src='/Logos/<?php echo $curSport->getBaseUrl() ?>_0.png' />
+										</div>
+									</div>
+								</a>
+							</div>
+						<?php } ?>
+					</div>
+				</div>
+			</div>
+		<?php } ?>
+
+		<?php if(!isset($includeLeagues) || $includeLeagues) { ?>
+			<div class="row form-group">
+				<div class="col-sm-2 col-xs-3">
+					<label for="LeagueSelector">League</label>
+				</div>
+				<div class="col-sm-10 col-xs-9">
+					<select class='form-control' id="LeagueSelector" name='leagueID' onchange="document.location = '<?php echo $router->pathFor($baseUrlName, ['sportID' => $curSport->getId()]) ?>/' + $(this).val();">
+						<option value='' readonly='readonly'>-- Select --</option>
+					<?php
+						foreach($seasons as $curSeason) {
+							if(sizeof($seasons) > 1) {
+								echo "<optgroup label='" . $curSeason->getName() . ' - ' . $curSeason->getYear() . "'>";
+							}
+
+							foreach($curSeason->getLeagues() as $curLeague) {
+
+								if($curLeague->getSport()->getId() != $activeSport->getId()) {
+									continue;
+								}
+
+								$fullFilter = '';
+								$selectedFilter = isset($activeLeague) && $curLeague->getId() == $activeLeague->getId() 
+									? "selected='selected'" : '';
+
+								if(isset($showFullLabels) && $showFullLabels) {
+									$fullMales = $curLeague->getIsFullIndividualMales();
+									$fullFemales = $curLeague->getIsFullIndividualFemales();
+									$fullTeams = $curLeague->getIsFullTeams();
+
+									if($fullMales || $fullFemales || $fullTeams) {
+										$fullFilter = '- Full (';
+										$fullFilter .= $fullTeams ? 'T' : '';
+										$fullFilter .= $fullMales ? 'M' : '';
+										$fullFilter .= $fullFemales ? 'F' : '';
+										$fullFilter .= ')';
+									}
+								}
+								
+								echo "<option " . $selectedFilter . " value='" . $curLeague->getId() . "'>";
+								echo $curLeague->getName() . ' ' . $fullFilter . ' - ' . $curLeague->getDayString();
+								echo '</option>';
+							}
+
+							if(sizeof($seasons) > 1) {
+								echo "</optgroup>";
+							}
+						}	
+					?>
+					</select>
+				</div>
+			</div>
+		<?php } ?>
+
+		<?php if(isset($includeTeams) && $includeTeams) { ?>
+			<div class="row form-group">
+				<div class="col-sm-2 col-xs-3">
+					<label for="TeamSelector">Team</label>
+				</div>
+				<div class="col-sm-10 col-xs-9">
+					<select class='form-control' id="TeamSelector" name='teamID' onchange="document.location = '<?php echo $router->pathFor($baseUrlName, ['sportID' => $activeSport->getId(), 'leagueID' => $activeLeague->getId()]) ?>/' + $(this).val();">
+						<option value='' readonly='readonly'>-- Select --</option>
+						<?php foreach($teams as $curTeam) { ?>
+							<option value='<?php echo $curTeam->getId() ?>' 
+								<?php echo $activeTeam->getId() == $curTeam->getId() ? "selected='selected'" : "" ?>
+							>
+								<?php echo $curTeam->getName() ?>
+							</option>
+						<?php } ?>
+					</select>
+				</div>
+			</div>
+		<?php } ?>
+	</div>
+</div>

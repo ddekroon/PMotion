@@ -83,15 +83,15 @@ class Models_Team extends Models_Generic implements Models_Interface, JsonSerial
 		$this->ties = $data['team_ties'];
 		$this->mostRecentWeekSubmitted = $data['team_most_recent_week_submitted'];
 		$this->dateCreated = new DateTime($data['team_created']);
-		$this->isFinalized = $data['team_finalized'];
+		$this->isFinalized = $data['team_finalized'] > 0;
 		$this->isPaid = $data['team_paid'];
 		$this->isDeleted = $data['team_deleted'];
 		$this->paymentMethod = $data['team_payment_method'];
 		$this->finalPosition = $data['team_final_position'];
 		$this->finalSpiritPosition = $data['team_final_spirit_position'];
 		$this->picName = $data['team_pic_name'];
-		$this->isConvenor = $data['team_is_convenor'];
-		$this->isDroppedOut = $data['team_dropped_out'];
+		$this->isConvenor = $data['team_is_convenor'] > 0;
+		$this->isDroppedOut = $data['team_dropped_out'] > 0;
 		$this->isLateEmailAllowed = $data['team_late_email_allowed'];
 		
 		$this->submittedWins = array_key_exists('team_submitted_wins', $data) ? $data['team_submitted_wins'] : 0;
@@ -169,6 +169,36 @@ class Models_Team extends Models_Generic implements Models_Interface, JsonSerial
 		
 		return $this->players;
 	}
+
+	function getAllPlayers() {
+		
+		$players = [];
+		
+		$sql = "SELECT * FROM " . Includes_DBTableNames::playersTable . " WHERE player_team_id = " . $this->getId() . " ORDER BY player_id ASC";
+		$stmt = $this->db->query($sql);
+
+		while(($row = $stmt->fetch()) != false) {
+			$players[] = Models_Player::withRow($this->db, $this->logger, $row);
+		}
+		
+		return $players;
+	}
+
+	function getIndividuals() {
+		
+		$players = [];
+		
+		$sql = "SELECT players.* FROM " . Includes_DBTableNames::playersTable . " players"
+			. " INNER JOIN " . Includes_DBTableNames::individualsTable . " ind ON ind.individual_player_id = players.player_id"
+			. " WHERE player_team_id = " . $this->getId() . " ORDER BY ind.individual_small_group_id DESC, players.player_id ASC";
+		$stmt = $this->db->query($sql);
+
+		while(($row = $stmt->fetch()) != false) {
+			$players[] = Models_Player::withRow($this->db, $this->logger, $row);
+		}
+		
+		return $players;
+	}
 	
 	function setPlayers(array $players) {
 		$this->players = $players;
@@ -185,6 +215,10 @@ class Models_Team extends Models_Generic implements Models_Interface, JsonSerial
 		return null;
 	}
 	
+	function getTeamHasIndividuals() {
+		return sizeof($this->getIndividuals()) > 0;
+	}
+
 	function getRegistrationComment() {
 		
 		if(($this->registrationComment == null || $this->registrationComment->getId() == null) && $this->db != null && $this->getId() != null) {
@@ -697,16 +731,16 @@ class Models_Team extends Models_Generic implements Models_Interface, JsonSerial
 					$this->getLosses(), 
 					$this->getTies(), 
 					$this->getMostRecentWeekSubmitted(), 
-					$this->getIsFinalized(), 
-					$this->getIsPaid(), 
-					$this->getIsDeleted(), 
+					$this->getIsFinalized() ? 1 : 0, 
+					$this->getIsPaid() ? 1 : 0, 
+					$this->getIsDeleted() ? 1 : 0, 
 					$this->getPaymentMethod(), 
 					$this->getFinalPosition(), 
 					$this->getFinalSpiritPosition(), 
 					$this->getPicName(), 
-					$this->getIsConvenor(), 
-					$this->getIsDroppedOut(), 
-					$this->getIsLateEmailAllowed(),
+					$this->getIsConvenor() ? 1 : 0, 
+					$this->getIsDroppedOut() ? 1 : 0, 
+					$this->getIsLateEmailAllowed() ? 1 : 0,
 					$this->getId()
 				)
 			); 

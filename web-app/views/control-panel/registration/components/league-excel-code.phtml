@@ -1,0 +1,35 @@
+<?php
+    $sport = $curLeague->getSport();
+    $teams = $curLeague->getTeams();
+?>
+
+<html>
+    <head>
+        <title>Teams Page</title>
+    </head>
+    <body>
+		<table>
+			<tr>
+				<th colspan="2" align='center'>
+					<?php print $sport->getName() . ' - ' . $curLeague->getName() ?>
+				</th>
+			</tr>
+			<tr>
+				<td colspan="2" align="center">
+					Team Name
+				</td>
+			</tr>
+			<?php
+			for($i = 0 ; $i < sizeof($teams) ; $i++) { ?>
+				<tr>
+					<td>
+						<?php print $i + 1; ?>
+					</td>
+					<td align="left">
+						<?php print $teams[$i]->getName(); ?>
+					</td>
+				</tr>
+			<?php } ?>
+		</table>
+    </body>
+</html>
