@@ -1,0 +1,56 @@
+<?php 
+/*****************************************
+File: add-player-form.phtml
+Creator: Derek Dekroon
+Created: February 2/2019
+Add player form - used for quick adding players and free agents
+******************************************/
+?>
+
+<form id="AddPlayerForm" action="<?php echo $postAction ?>" method="POST">
+	<div class="form-group row">
+		<div class="col-xs-4">
+			<label for="AddPlayerFirstName">First Name</label>
+		</div>
+		<div class="col-xs-8">
+			<input type='text' required="required" class='form-control' id='AddPlayerFirstName' value='' name="firstName" />
+		</div>
+	</div>
+	<div class="form-group row">
+		<div class="col-xs-4">
+			<label for="AddPlayerLastName">Last Name</label>
+		</div>
+		<div class="col-xs-8">
+			<input type='text' required="required" class='form-control' id='AddPlayerLastName' value='' name="lastName" />
+		</div>
+	</div>
+	<div class="form-group row">
+		<div class="col-xs-4">
+			<label for="AddPlayerEmail">Email</label>
+		</div>
+		<div class="col-xs-8">
+			<input type='text' class='form-control' id='AddPlayerEmail' value='' name="email" />
+		</div>
+	</div>
+	<div class="form-group row">
+		<div class="col-xs-4">
+			<label for="AddPlayerGender">Gender</label>
+		</div>
+		<div class="col-xs-8">
+		<?php $letterArray = array('M', 'F', ); ?>
+        	<select id='AddPlayerGender' required="required" class='form-control' name="gender">
+				<option value="" readonly></option>
+				<option value="M">Male</option>
+				<option value="F">Female</option>
+            </select>
+		</div>
+	</div>
+	<div class="form-group row">
+		<div class="col-xs-4">
+			<label for="AddPlayerNote">Note</label>
+		</div>
+		<div class="col-xs-8">
+			<textarea class='form-control' id='AddPlayerNote' name="note" ></textarea>
+		</div>
+	</div>
+</form>

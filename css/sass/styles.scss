@@ -51,6 +51,10 @@ a {
 	@include flexbox();
 	align-items:center;
 	@include prefix(flex-wrap, wrap);
+	
+	&:before, &:after {
+		width:0;
+	}
 }
 
 .flex {
@@ -186,6 +190,7 @@ form .error, .red {
 
 .ui-spinner {
 	overflow:visible;
+	display:block;
 
 	input {
 		width:100%;
@@ -194,28 +199,25 @@ form .error, .red {
 	}
 
 	.ui-spinner-button {
+		font-size:1em;
+
 		&, &:hover, &:focus, &:active, .ui-button-icon {
 			background-image:none;	
 		}
-	}
-
-	span.ui-icon {
-		font-family:$f-glyph;
-		font-size:10px;
-		background:none;
 
 		&:before {
+			font-family:$f-glyph;
+			font-size:10px;
 			@include positionCenter;
-			text-indent:0;
 		}
-	}
 
-	.ui-spinner-down .ui-icon:before {
-		content:"\e252";
-	}
-
-	.ui-spinner-up .ui-icon:before {
-		content:"\e253";
+		&.ui-spinner-down:before {
+			content:"\e252";
+		}
+	
+		&.ui-spinner-up:before {
+			content:"\e253";
+		}
 	}
 }
 

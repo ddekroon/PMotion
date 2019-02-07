@@ -10,14 +10,16 @@ Registration control panel
 <h1>
 	Registration Control Panel
 	<span class="f-small"><?php echo isset($curLeague) && $curLeague->getId() != null ? ' - ' . $curLeague->getFormattedName() : "" ?></span>
-	<div class="float-right">
-		<a class="btn-title-link" target="_blank" title="Print Individual Teams" href="<?php echo $router->pathFor('cp-print-individuals-teams', ['leagueID' => $curLeague->getId()]) ?>">
-			<span class="glyphicon glyphicon-print"></span>
-		</a>
-		<a class="btn-title-link" target="_blank" title="excel code" href="<?php echo $router->pathFor('cp-league-excel-code', ['leagueID' => $curLeague->getId()]) ?>">
-			<span class="glyphicon glyphicon-th"></span>
-		</a>
-	</div>
+	<?php if($curLeague->getId() > 0) { ?>
+		<div class="float-right">
+			<a class="btn-title-link" target="_blank" title="Print Individual Teams" href="<?php echo $router->pathFor('cp-print-individuals-teams', ['leagueID' => $curLeague->getId()]) ?>">
+				<span class="glyphicon glyphicon-print"></span>
+			</a>
+			<a class="btn-title-link" target="_blank" title="excel code" href="<?php echo $router->pathFor('cp-league-excel-code', ['leagueID' => $curLeague->getId()]) ?>">
+				<span class="glyphicon glyphicon-th"></span>
+			</a>
+		</div>
+	<?php } ?>
 </h1>
 
 <?php 
@@ -34,22 +36,29 @@ Registration control panel
 	]);
 ?>
 
+<?php 
+	if($curLeague->getId() <= 0) {
+		return;
+	} 
+?>
 <div class="form-group row no-flex">
 	<div class="col-xs-6">
-		<h3 class="clearfix">
-			Teams
-			<button class="btn btn-primary btn-xs float-right" onClick="quickAddTeam(<?php echo $curLeague->getId() ?>)">
-				<span class="glyphicon glyphicon-plus-sign"></span> Quick add
-			</button>
-		</h3>
-		<table id="RegistrationLeagueTeamsTable" class="table table-sortable">			
-			<tbody>
+		<table id="RegistrationLeagueTeamsTable" class="table table-sortable">
+			<thead>
+				<th colspan="4">
+				Teams	
+				<button class="btn btn-primary btn-xs float-right" onClick="quickAddTeam(<?php echo $curLeague->getId() ?>)">
+					<span class="glyphicon glyphicon-plus-sign"></span> Quick add
+				</button>
+				</th>
+			</thead>
+			<tbody id="SortableTeams">
 				<?php foreach($curLeague->getTeams() as $curTeam) { ?>
 					<tr class="droppable team" data-team-id="<?php echo $curTeam->getId() ?>">
-						<td><span class="glyphicon glyphicon-menu-hamburger"></span></td>
-						<td>
+						<td class="sortable-handle"><span class="glyphicon glyphicon-menu-hamburger"></span></td>
+						<td class="num-in-league">
 							<?php print $curTeam->getNumInLeague() ?>
-						</td><td>
+						</td><td style="width:100%;">
 							<a <?php echo $curTeam->getTeamHasIndividuals() ? "style='font-weight:700;'" : '' ?>
 								href='<?php echo $router->pathFor('cp-edit-team', ['sportID' => $curSport->getId(), 'leagueID' => $curLeague->getId(),  'teamID' => $curTeam->getId()]) ?>'>
 								<?php echo $curTeam->getName() ?></a> 
@@ -57,7 +66,7 @@ Registration control panel
 								<?php echo $curTeam->getIsDroppedOut() ? ' - Dropout' : '' ?>
 								<?php echo $curTeam->getIsConvenor() ? ' - Convenor' : '' ?>
 							</small>
-						</td><td>
+						</td><td style="min-width:65px;">
 							<div class="float-right btn-group">
 								<button class="btn btn-default btn-xs<?php echo $curTeam->getIsPaid() ? ' active' : '' ?>" onClick="togglePaid(this, <?php echo $curTeam->getId() ?>);">
 									<span class="glyphicon glyphicon-piggy-bank"></span>
@@ -73,14 +82,21 @@ Registration control panel
 		</table>
 	</div>
 	<div class="col-xs-6">
-		<h3>Free Agents</h3>
-		<?php 
-			print $this->fetch('control-panel/registration/components/freeAgents.phtml', [
-				"router" => $router,
-				"request" => $request,
-				"league" => $curLeague
-			]); 
-		?>
+		<div class="well well-sm">
+			<h3 class="clearfix" style="margin-top:10px;">
+				Free Agents
+				<button class="btn btn-primary btn-xs float-right" onClick="quickAddFreeAgentToLeague(<?php echo $curLeague->getId() ?>)">
+					<span class="glyphicon glyphicon-plus-sign"></span> Quick add
+				</button>
+			</h3>
+			<?php 
+				print $this->fetch('control-panel/registration/components/free-agents.phtml', [
+					"router" => $router,
+					"request" => $request,
+					"league" => $curLeague
+				]); 
+			?>
+		</div>
 	</div>
 </div>
 
@@ -129,7 +145,31 @@ Registration control panel
 
 <script>
 	$(function() {
-		$("#RegistrationLeagueTeams").sortable();
+		$("#SortableTeams").sortable({
+			handle: ".sortable-handle",
+			update: function(event, ui) {
+				event.stopPropagation();
+
+				$("#SortableTeams").sortable("disable");
+				var team = $(ui.item);
+				var teamId = team.data('team-id');
+				var newPosition = ui.item.index() + 1;
+
+				var successCallback = function() { 
+					$("#SortableTeams").sortable("enable"); 
+
+					$("#SortableTeams").find(".num-in-league").each(function(index) {
+						$(this).html(index + 1);
+					});
+				};
+				var failureCallback = function() { 
+					$("#SortableTeams").sortable("cancel"); 
+					$("#SortableTeams").sortable("enable"); 
+				};
+
+				updateTeamPositionInLeague(teamId, newPosition, successCallback, failureCallback);
+			}
+		});
 
 		$(".draggable").draggable({ 
 			revert: true,
@@ -146,6 +186,9 @@ Registration control panel
 		$(".droppable").droppable({
 			drop: function(event, ui) {
 				var fa = $(ui.draggable);
+
+				if(!fa.hasClass("freeAgent")) return; //It's possible the sorting drop method calls this, if so ignore.
+
 				var team = $(this);
 				var playerId = fa.data("player-id");
 				var groupId = fa.data("group-id");

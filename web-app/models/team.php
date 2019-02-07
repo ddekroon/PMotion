@@ -216,11 +216,7 @@ class Models_Team extends Models_Generic implements Models_Interface, JsonSerial
 	}
 	
 	function getTeamHasIndividuals() {
-		foreach($this->getPlayers() as $curPlayer) {
-			if($curPlayer->getIsIndividual()) return true;
-		}
-
-		return false;
+		return sizeof($this->getIndividuals()) > 0;
 	}
 
 	function getRegistrationComment() {

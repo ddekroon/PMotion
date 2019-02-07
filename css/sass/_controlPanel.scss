@@ -19,6 +19,7 @@
 body#ControlPanel {
 	background-color:#eaeaea;
 	color:#303030;
+	font-size:$f-small;
 	
 	.controlPanelHeader {
 		padding:15px;
@@ -39,8 +40,13 @@ body#ControlPanel {
 		border-radius:3px;
 
 		.btn-title-link {
-			margin:0 10px;
+			margin:0 0 0 10px;
 			text-decoration:none;
+			color:white;
+
+			&:hover, &:focus {
+				color:$c-light-gray;
+			}
 		}
 	}
 	
@@ -56,7 +62,7 @@ body#ControlPanel {
 		border:2px solid #cfcfcf; 
 		vertical-align:top; 
 		width:100%;
-		font-size:0.8em;
+		font-size:$f-small;
 		
 		&, thead, tbody, tr, th, td {
 			border:none;
@@ -434,6 +440,10 @@ body#ControlPanel {
 			}
 		}
 	}
+}
+
+.sortable-handle {
+	cursor: ns-resize;
 }
 
 .print {

@@ -208,6 +208,45 @@
 			return $response;
 		})->setName("team-quick-add");
 
+		$app->post('/quick-add-player/{teamID}', function (Request $request, Response $response) {
+
+			$teamID = (int)$request->getAttribute('teamID');
+			$team = Models_Team::withID($this->db, $this->logger, $teamID);
+
+			$teamsController = new Controllers_TeamsController($this->db, $this->logger);
+
+			if($team != null && $team->getId() > 0 ) {
+				$teamsController->addPlayerToTeam($team, $request);
+				$response = $response->withStatus(200);
+				$response->getBody()->write("Player added to team");
+			} else {
+				$response = $response->withStatus(400);
+				$response->getBody()->write("Invalid team");
+			}
+
+			return $response;
+		})->setName("team-quick-add-player");
+
+		$app->post('/change-position-in-league/{teamID}/{newPosition}', function (Request $request, Response $response) {
+
+			$teamID = (int)$request->getAttribute('teamID');
+			$newPosition = (int)$request->getAttribute('newPosition');
+			$team = Models_Team::withID($this->db, $this->logger, $teamID);
+
+			$teamsController = new Controllers_TeamsController($this->db, $this->logger);
+
+			if($team != null && $team->getId() > 0) {
+				$teamsController->changeTeamPositionInLeague($team, $newPosition);
+				$response = $response->withStatus(200);
+				$response->getBody()->write("Team position updated");
+			} else {
+				$response = $response->withStatus(400);
+				$response->getBody()->write("Invalid team");
+			}
+
+			return $response;
+		})->setName("team-change-position-in-league");
+
 	})->add($authenticateAdmin);
 	
 ?>

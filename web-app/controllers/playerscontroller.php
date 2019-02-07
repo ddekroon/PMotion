@@ -38,4 +38,15 @@ class Controllers_PlayersController extends Controllers_Controller {
 		return $players;
 	}
 	
+	function updatePlayerFromRequest($player, $request) {
+		$allPostVars = $request->getParsedBody();
+		$player->setFirstName(array_key_exists('firstName', $allPostVars) ? $allPostVars['firstName'] : '');
+		$player->setLastName(array_key_exists('lastName', $allPostVars) ? $allPostVars['lastName'] : '');
+		$player->setEmail(array_key_exists('email', $allPostVars) ? $allPostVars['email'] : '');
+		$player->setPhoneNumber(array_key_exists('phoneNumber', $allPostVars) ? $allPostVars['phoneNumber'] : '');
+		$player->setGender(array_key_exists('gender', $allPostVars) ? $allPostVars['gender'] : '');
+		$player->setNote(array_key_exists('note', $allPostVars) ? $allPostVars['note'] : '');
+		$player->setIsCaptain(array_key_exists('isCaptain', $allPostVars));
+		$player->saveOrUpdate();
+	}
 }

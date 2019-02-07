@@ -1,0 +1,84 @@
+<?php 
+/*****************************************
+File: player.phtml
+Creator: Derek Dekroon
+Created: February 2/2019
+Edit player form
+******************************************/
+?>
+
+<form id="EditPlayerForm" action="<?php echo $router->pathFor("player-update", ['playerID' => $curPlayer->getId()]); ?>" method="POST">
+	<div class="form-group row">
+		<div class="col-xs-4">
+			<label for="EditPlayerFirstName">First Name</label>
+		</div>
+		<div class="col-xs-8">
+			<input type='text' class='form-control' id='EditPlayerFirstName' value='<?php print trim($curPlayer->getFirstName()) ?>' name="firstName" />
+		</div>
+	</div>
+	<div class="form-group row">
+		<div class="col-xs-4">
+			<label for="EditPlayerLastName">Last Name</label>
+		</div>
+		<div class="col-xs-8">
+			<input type='text' class='form-control' id='EditPlayerLastName' value='<?php print trim($curPlayer->getLastName()) ?>' name="lastName" />
+		</div>
+	</div>
+	<div class="form-group row">
+		<div class="col-xs-4">
+			<label for="EditPlayerEmail">Email</label>
+		</div>
+		<div class="col-xs-8">
+			<input type='text' class='form-control' id='EditPlayerEmail' value='<?php print trim($curPlayer->getEmail()) ?>' name="email" />
+		</div>
+	</div>
+	<div class="form-group row">
+		<div class="col-xs-4">
+			<label for="EditPlayerPhone">Phone Number</label>
+		</div>
+		<div class="col-xs-8">
+			<input type='text' class='form-control' id='EditPlayerPhone' value='<?php print trim($curPlayer->getPhoneNumber()) ?>' name="phoneNumber" />
+		</div>
+	</div>
+	<div class="form-group row">
+		<div class="col-xs-4">
+			<label for="EditPlayerGender">Gender</label>
+		</div>
+		<div class="col-xs-8">
+		<?php $letterArray = array('M', 'F', ); ?>
+        	<select id='EditPlayerGender' class='form-control' name="gender">
+				<option value="" readonly></option>
+				<option <?php echo $curPlayer->getGender() == "M" ? "selected='selected'" : "" ?> value="M">Male</option>
+				<option <?php echo $curPlayer->getGender() == "F" ? "selected='selected'" : "" ?> value="F">Female</option>
+            </select>
+		</div>
+	</div>
+	<div class="form-group row">
+		<div class="col-xs-4">
+			<label for="EditPlayerNote">Note</label>
+		</div>
+		<div class="col-xs-8">
+			<textarea class='form-control' id='EditPlayerNote' name="note" ><?php print trim($curPlayer->getNote()) ?></textarea>
+		</div>
+	</div>
+	<div class="form-group">
+		<input type="checkbox" <?php echo $curPlayer->getIsCaptain() ? "checked='checked'" : "" ?> id='EditPlayerIsCaptain' name='isCaptain' />
+		<label for="EditPlayerIsCaptain">Is Captain</label>
+	</div>
+</form>
+
+<script>
+	$(function() {
+		$("#EditPlayerForm").ajaxForm({
+			method:"POST",
+			dataType:"text",
+			success:function(resp) {
+				notify("Team Saved", "success");
+				location.reload();			
+			},
+			error:function(resp) {
+				notify("Error connecting to server.", "danger");
+			}
+		});
+	});
+</script>

@@ -33,6 +33,26 @@
 			return $response;
 		})->setName("player-delete");
 
+		$app->post('/update/{playerID}', function (Request $request, Response $response) {
+
+			$playerID = (int)$request->getAttribute('playerID');
+			$player = Models_Player::withID($this->db, $this->logger, $playerID);
+
+			if($player != null && $player->getId() > 0) {
+				$playersController = new Controllers_PlayersController($this->db, $this->logger);
+				$playersController->updatePlayerFromRequest($player, $request);
+
+				$response = $response->withStatus(200);
+				$response->getBody()->write("Player updated");
+			} else {
+				$response = $response->withStatus(400);
+				$response->getBody()->write("Invalid player ID");
+			}
+
+			return $response;
+		})->setName("player-update");
+
+
 		$app->post('/addPlayerToTeam/{playerID}/{teamID}', function (Request $request, Response $response) {
 
 			$playerID = (int)$request->getAttribute('playerID');

@@ -8,7 +8,10 @@
         <link rel="stylesheet" type="text/css" href="/css/stylesheets/styles.css"/>
     </head>
     <body>
-    	<?php foreach($curLeague->getTeams() as $team) { ?>
+        <?php echo $curLeague->getFormattedName(); ?>
+        <?php echo sizeof($curLeague->getTeams()); ?>
+        <?php foreach($curLeague->getTeams() as $team) { ?>
+            <?php echo $team->getTeamHasIndividuals(); ?>
             <?php if(!$team->getTeamHasIndividuals()) continue; ?>
             <?php $teamPlayers = $team->getAllPlayers(); ?>
         	<div class="print">

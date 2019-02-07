@@ -37,121 +37,137 @@ Registration control panel
 		</a>
 	</legend>
 	<form id="EditTeamConfig" method='post' action="<?php echo $router->pathFor('team-quick-update', ['teamID' => $curTeam->getId()] ) ?>">
-		<div class="row">
-			<div class="col-sm-6 col-xs-12">
-				<div class="row form-group">
-					<div class="col-xs-4">
-						<label for="EditTeamName">Name</label>
+		<div class="well">
+			<div class="row">
+				<div class="col-sm-6 col-xs-12">
+					<div class="row form-group">
+						<div class="col-xs-4">
+							<label for="EditTeamName">Name</label>
+						</div>
+						<div class="col-xs-8">
+							<input class="form-control" type="text" id="EditTeamName" name="teamName" value="<?php echo $curTeam->getName() ?>" />
+						</div>
 					</div>
-					<div class="col-xs-8">
-						<input class="form-control" type="text" id="EditTeamName" name="teamName" value="<?php echo $curTeam->getName() ?>" />
+				</div>
+				<div class="col-sm-6 col-xs-12">
+					<div class="row form-group">
+						<div class="col-xs-4">
+							<label for="EditTeamLeague">League</label>
+						</div>
+						<div class="col-xs-8">
+						<?php 
+							print $this->fetch('common/league-selector.phtml', [
+								"seasons" => $seasons,
+								"sport" => $curSport,
+								"activeLeague" => $curLeague,
+								"id" => "EditTeamLeague",
+								"name" => "leagueID"
+							]);
+						?>
+						</div>
 					</div>
 				</div>
 			</div>
-			<div class="col-sm-6 col-xs-12">
-				<div class="row form-group">
-					<div class="col-xs-4">
-						<label for="EditTeamLeague">League</label>
+			<div class="row">
+				<div class="col-sm-6 col-xs-12">
+					<div class="row form-group">
+						<div class="col-xs-4">
+							<label for="EditTeamWeek">Week in Score Reporter</label>
+						</div>
+						<div class="col-xs-8">
+							<input class="form-control" type="number" id="EditTeamWeek" min="0" max="49" 
+								name="teamWeekInScoreReporter" value="<?php echo $curTeam->getMostRecentWeekSubmitted() ?>" />
+						</div>
 					</div>
-					<div class="col-xs-8">
-					<?php 
-						print $this->fetch('common/league-selector.phtml', [
-							"seasons" => $seasons,
-							"sport" => $curSport,
-							"activeLeague" => $curLeague,
-							"id" => "EditTeamLeague",
-							"name" => "leagueID"
-						]);
-					?>
+				</div>
+				<div class="col-sm-6 col-xs-12">
+					<div class="row form-group">
+						<div class="col-xs-4">
+							<label for="EditTeamDroppedOut">Dropped Out</label>
+						</div>
+						<div class="col-xs-8">
+							<select class="form-control" name="teamDroppedOut" id="EditTeamDroppedOut">
+								<option value="1" <?php echo $curTeam->getIsDroppedOut() ? "selected='selected'" : "" ?>>Yes</option>
+								<option value="0" <?php echo !$curTeam->getIsDroppedOut() ? "selected='selected'" : "" ?>>No</option>
+							</select>
+						</div>
 					</div>
 				</div>
 			</div>
-		</div>
-		<div class="row">
-			<div class="col-sm-6 col-xs-12">
-				<div class="row form-group">
-					<div class="col-xs-4">
-						<label for="EditTeamWeek">Week in Score Reporter</label>
-					</div>
-					<div class="col-xs-8">
-						<input class="form-control" type="number" id="EditTeamWeek" min="0" max="49" 
-							name="teamWeekInScoreReporter" value="<?php echo $curTeam->getMostRecentWeekSubmitted() ?>" />
-					</div>
-				</div>
+			<div class="buttonset">
+				<button class="btn btn-primary" type="submit">Update</button>
 			</div>
-			<div class="col-sm-6 col-xs-12">
-				<div class="row form-group">
-					<div class="col-xs-4">
-						<label for="EditTeamDroppedOut">Dropped Out</label>
-					</div>
-					<div class="col-xs-8">
-						<select class="form-control" name="teamDroppedOut" id="EditTeamDroppedOut">
-							<option value="1" <?php echo $curTeam->getIsDroppedOut() ? "selected='selected'" : "" ?>>Yes</option>
-							<option value="0" <?php echo !$curTeam->getIsDroppedOut() ? "selected='selected'" : "" ?>>No</option>
-						</select>
-					</div>
-				</div>
-			</div>
-		</div>
-		<div class="buttonset">
-			<button class="btn btn-primary" type="submit">Update</button>
 		</div>
 	</form>
 </fieldset>
 
 <div class="form-group row no-flex">
 	<div class="col-xs-6">
-		<?php if($curTeam->getTeamHasIndividuals()) { ?>
-			<h3>Team Agents</h3>
+		<div class="well well-sm">
+			<h3 style="margin-top:10px;">Team Agents</h3>
 			<div class="droppable" data-team-id="<?php echo $curTeam->getId() ?>"></div>
 			<?php 
-				print $this->fetch('control-panel/registration/components/freeAgents.phtml', [
-					"router" => $router,
-					"request" => $request,
-					"team" => $curTeam
-				]); 
+				if($curTeam->getTeamHasIndividuals()) {
+					echo $this->fetch('control-panel/registration/components/free-agents.phtml', [
+						"router" => $router,
+						"request" => $request,
+						"team" => $curTeam
+					]); 
+				} else {
+					echo "<em>Team has no agents</em>";
+				}
 			?>
-		<?php } else { ?>
-			<div class="droppable" data-team-id="<?php echo $curTeam->getId() ?>"></div>
-		<?php } ?>
 
-		<h3>Team Players</h3>
-		<div class="list-group">
-			<?php foreach($curTeam->getAllPlayers() as $curPlayer) { ?>
-				<?php if($curPlayer->getIsIndividual()) continue; ?>
+			<h3 class="clearfix">
+				Team Players
+				<button class="btn btn-primary btn-xs float-right" onClick="quickAddPlayerToTeam(<?php echo $curTeam->getId() ?>)">
+					<span class="glyphicon glyphicon-plus-sign"></span> Quick add
+				</button>
+			</h3>
+			<div class="list-group">
+				<?php foreach($curTeam->getAllPlayers() as $curPlayer) { ?>
+					<?php if($curPlayer->getIsIndividual()) continue; ?>
 
-				<div class="player list-group-item">
-					<div class="content" style="margin:0 30px 0 0;">
-						<?php echo $curPlayer->getIsCaptain() ? "<strong>C</strong>" : "" ?>
-						<a href='/control/Players/updatePlayer.php?sportID=<?php echo $curLeague->getSport()->getId() ?>&leagueID=<?php echo $curLeague->getId() ?>&teamID=0&playerID=<?php echo $curPlayer->getId() ?>'>
-							<?php echo $curPlayer->getFirstName() . ' ' . $curPlayer->getLastName() ?></a>
-						(<?php echo $curPlayer->getGender() ?>)
-						
-						<em class="note f-small">
-							- Player Skill: <?php echo $curPlayer->getSkillLevel() ?>
-							<?php if(strlen($curPlayer->getNote()) > 0) { ?><br /><?php echo $curPlayer->getNote() ?><?php } ?>
-						</em>
-						
+					<div class="player list-group-item">
+						<div class="content" style="margin:0 30px 0 0;">
+							<?php echo $curPlayer->getIsCaptain() ? "<strong>C</strong>" : "" ?>
+							<a href="#" onclick="quickEditPlayer(<?php echo $curPlayer->getId() ?>); return false;">
+								<?php echo $curPlayer->getFirstName() . ' ' . $curPlayer->getLastName() ?></a>
+							(<?php echo $curPlayer->getGender() ?>)
+							
+							<em class="note f-small">
+								- Player Skill: <?php echo $curPlayer->getSkillLevel() ?>
+								<?php if(strlen($curPlayer->getNote()) > 0) { ?><br /><?php echo $curPlayer->getNote() ?><?php } ?>
+							</em>
+							
+						</div>
+						<div class="actions">
+							<button class="btn btn-default btn-xs" onClick="deletePlayer(<?php echo $curPlayer->getId() ?>)">
+								<span class="glyphicon glyphicon-trash"></span>
+							</button>
+						</div>
 					</div>
-					<div class="actions">
-						<button class="btn btn-default btn-xs" onClick="deletePlayer(<?php echo $curPlayer->getId() ?>)">
-							<span class="glyphicon glyphicon-remove"></span>
-						</button>
-					</div>
-				</div>
-			<?php } ?>
+				<?php } ?>
+			</div>
 		</div>
 	</div>
 	<div class="col-xs-6">
-		<h3>Free Agents</h3>
-		<div class="droppable" data-team-id="-1"></div>
-		<?php 
-			print $this->fetch('control-panel/registration/components/freeAgents.phtml', [
-				"router" => $router,
-				"request" => $request,
-				"league" => $curLeague
-			]); 
-		?>
+		<div class="well well-sm">
+			<h3 class="clearfix" style="margin-top:10px;">
+				Free Agents
+				<button class="btn btn-primary btn-xs float-right" onClick="quickAddFreeAgentToLeague(<?php echo $curLeague->getId() ?>)">
+					<span class="glyphicon glyphicon-plus-sign"></span> Quick add
+				</button>
+			</h3>
+			<div class="droppable" data-team-id="-1"></div>
+			<?php 
+				print $this->fetch('control-panel/registration/components/free-agents.phtml', [
+					"router" => $router,
+					"request" => $request,
+					"league" => $curLeague
+				]); 
+			?>
+		</div>
 	</div>
 </div>
 
@@ -186,6 +202,7 @@ Registration control panel
 			drop: function(event, ui) {
 				var fa = $(ui.draggable);
 				var team = $(this);
+
 				var playerId = fa.data("player-id");
 				var groupId = fa.data("group-id");
 				var teamId = team.data("team-id");

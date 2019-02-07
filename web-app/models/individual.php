@@ -4,15 +4,15 @@
 
 class Models_Individual extends Models_Generic implements Models_Interface, JsonSerializable {
 	protected $playerID;
-	protected $phoneNumber;
+	protected $phoneNumber = '';
 	protected $preferredLeagueID;
 	protected $dateCreated;
-	protected $isFinalized;
-	protected $managedByID;
-	protected $groupID;
-	protected $paymentMethod;
-	protected $howHeardMethod;
-	protected $howHeardOtherText;
+	protected $isFinalized = false;
+	protected $managedByID = null;
+	protected $groupID = 0;
+	protected $paymentMethod = 0;
+	protected $howHeardMethod = 0;
+	protected $howHeardOtherText = '';
 
 	private $player;
 

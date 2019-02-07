@@ -25,7 +25,7 @@
                 <div class="handle"></div>
                 <div class="content" style="margin-right:50px;">
                     <?php echo $curFreeAgent->getPlayer()->getIsCaptain() ? "<strong>C</strong>" : "" ?>
-                    <a href='/control/Players/updatePlayer.php?sportID=<?php echo $sportId ?>&leagueID=<?php echo $leagueId ?>&teamID=0&playerID=<?php echo $curFreeAgent->getPlayerID() ?>'>
+                    <a href="#" onclick="quickEditPlayer(<?php echo $curFreeAgent->getPlayerID() ?>); return false;">
                         <?php echo $curFreeAgent->getPlayer()->getFirstName() . ' ' . $curFreeAgent->getPlayer()->getLastName() ?></a>
                     (<?php echo $curFreeAgent->getPlayer()->getGender() ?>)
                     <em class="note f-small">
@@ -49,7 +49,7 @@
                     <?php $curSubFreeAgent = $freeAgents[$j]; ?>
                     <div class="sub-list-group-item list-group-item player">
                         <div class="content" style="margin-right:50px;margin-left:0;">
-                            <a href='/control/Players/updatePlayer.php?sportID=<?php echo $sportId ?>&leagueID=<?php echo $leagueId ?>&teamID=0&playerID=<?php echo $curSubFreeAgent->getPlayerID() ?>'>
+                            <a href="#" onclick="quickEditPlayer(<?php echo $curSubFreeAgent->getPlayerID() ?>); return false;">
                                 <?php echo $curSubFreeAgent->getPlayer()->getFirstName() . ' ' . $curSubFreeAgent->getPlayer()->getLastName() ?></a>
                             (<?php echo $curSubFreeAgent->getPlayer()->getGender() ?>)
                             <em class="note f-small">

@@ -75,28 +75,24 @@
 						<?php if($team->getLeague()->getIsAskForScores()) { ?>
 							<div class='row form-group'>
 								<div class='col-sm-9 col-xs-12 col-sm-offset-3'>
-									<div class="row">
-										<div class='col-xs-12'>
+									<div class='row'>
+										<div class='col-sm-6 col-xs-12 form-group'>
 											<div class='row'>
-												<div class='col-xs-6'>
-													<div class='row'>
-														<div class='col-xs-6 text-right'>
-															<label for='ScoreUs_<?php print $i ?>_<?php print $j ?>'>We Got</label>
-														</div>
-														<div class='col-xs-6'>
-															<input type='number' value='0' min='0' max='<?php print $team->getLeague()->getMaxPointsPerGame() ?>' name='scoreUs_<?php echo $i ?>_<?php echo $j ?>' id='ScoreUs_<?php print $i ?>_<?php print $j ?>' />
-														</div>
-													</div>
+												<div class='col-xs-6 text-right'>
+													<label for='ScoreUs_<?php print $i ?>_<?php print $j ?>'>We Got</label>
 												</div>
 												<div class='col-xs-6'>
-													<div class='row'>
-														<div class='col-xs-6 text-right'>
-															<label for='ScoreThem_<?php print $i ?>_<?php print $j ?>'>They Got</label>
-														</div>
-														<div class='col-xs-6'>
-															<input type='number' value='0' min='0' max='<?php print $team->getLeague()->getMaxPointsPerGame() ?>' name='scoreThem_<?php echo $i ?>_<?php echo $j ?>' id='ScoreThem_<?php print $i ?>_<?php print $j ?>'>
-														</div>
-													</div>
+													<input type='number' value='0' min='0' max='<?php print $team->getLeague()->getMaxPointsPerGame() ?>' name='scoreUs_<?php echo $i ?>_<?php echo $j ?>' id='ScoreUs_<?php print $i ?>_<?php print $j ?>' />
+												</div>
+											</div>
+										</div>
+										<div class='col-sm-6 col-xs-12 form-group'>
+											<div class='row'>
+												<div class='col-xs-6 text-right'>
+													<label for='ScoreThem_<?php print $i ?>_<?php print $j ?>'>They Got</label>
+												</div>
+												<div class='col-xs-6'>
+													<input type='number' value='0' min='0' max='<?php print $team->getLeague()->getMaxPointsPerGame() ?>' name='scoreThem_<?php echo $i ?>_<?php echo $j ?>' id='ScoreThem_<?php print $i ?>_<?php print $j ?>'>
 												</div>
 											</div>
 										</div>

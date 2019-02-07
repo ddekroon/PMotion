@@ -219,6 +219,33 @@
 
 		}
 
+		function addAgentToLeague($league, $request) {
+			$allPostVars = $request->getParsedBody();
+
+			$playersController = new Controllers_PlayersController($this->db, $this->logger);
+
+			$player = Models_Player::withRow($this->db, $this->logger, []);
+			$playersController->updatePlayerFromRequest($player, $request);
+			$player->setIsIndividual(true);
+
+			$player->save();
+
+			$indiv = Models_Individual::withRow($this->db, $this->logger, []);
+			$indiv->setPlayerID($player->getId());
+			$indiv->setPhoneNumber(array_key_exists('phoneNumber', $allPostVars) ? $allPostVars['phoneNumber'] : '');
+			$indiv->setPreferredLeagueID($league->getId());
+			$indiv->setIsFinalized(true);
+			$indiv->save();
+		}
+
+		function updateLeagueTeamOrder($league) {
+			$teams = $league->getTeams();
+
+			for($i = 1; $i <= sizeof($teams); $i++) {
+				$teams[$i - 1]->setNumInLeague($i);
+				$teams[$i - 1]->update();
+			}
+		}
 	}
 
 ?>

@@ -576,4 +576,52 @@ class Controllers_TeamsController extends Controllers_Controller {
 		
 		return $allTeams;
 	}
+
+	function addPlayerToTeam($team, $request) {
+		$playersController = new Controllers_PlayersController($this->db, $this->logger);
+
+		$player = Models_Player::withRow($this->db, $this->logger, []);
+		$playersController->updatePlayerFromRequest($player, $request);
+		$player->setTeamId($team->getId());
+		$player->save();
+	}
+
+	function changeTeamPositionInLeague($team, $newPosition) {
+		$leaguesController = new Controllers_LeaguesController($this->db, $this->logger);
+		$leaguesController->updateLeagueTeamOrder($team->getLeague());
+
+		$allTeams = $team->getLeague()->getTeams();
+
+		if($newPosition > sizeof($allTeams) || $newPosition <= 0) {
+			return;
+		}
+
+		$teamFromDb = Models_Team::withID($this->db, $this->logger, $team->getId());
+		$curPosition = $teamFromDb->getNumInLeague();
+
+		if($curPosition == $newPosition) return;
+
+		for($i = 1; $i <= sizeof($allTeams); $i++) {
+			$curTeam = $allTeams[$i - 1];
+
+			if($curPosition < $newPosition) { //Moving a team back
+				if($i > $curPosition && $i <= $newPosition) {
+					$curTeam->setNumInLeague($i - 1);
+					$curTeam->update();
+				}
+			} else { //Moving a team forward
+				if($i < $curPosition && $i >= $newPosition) {
+					$curTeam->setNumInLeague($i + 1);
+					$curTeam->update();
+				}
+			}
+		}
+
+		$team->setNumInLeague($newPosition);
+		$team->update();
+	}
+
+	static function compareTeamPosition($teamOne, $teamTwo) {
+		return $teamOne->getHeadToHeadDifferential($teamTwo);
+	}
 }

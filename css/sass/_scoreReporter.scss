@@ -31,9 +31,13 @@
 	}
 	
 	.ui-spinner {
-		.ui-button {
+		.ui-spinner-button {
+			background:$c-primary;
+			color:white;
+			border-color:$c-primary;
+
 			&:hover, &:focus {
-				background:$c-primary;
+				background:darken($c-primary, 10%);
 				color:white;
 				border-color:darken($c-primary, 10%);
 			}
