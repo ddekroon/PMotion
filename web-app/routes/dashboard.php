@@ -216,3 +216,4 @@
 		return $response;
 		
 	})->setName('submit-edit-profile')->add($authenticate);
+?>

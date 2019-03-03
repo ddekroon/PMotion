@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100">
+	<rect rx="3" ry="3" y="7" x="10" width="70" height="6" style="fill:rgb(255,255,255);stroke-width:3;stroke:rgb(255,255,255);" />
+	<line x1="10" y1="9" x2="10" y2="93" style="stroke:rgb(255,255,255);stroke-width:3;stroke-linecap:round;" />
+	<line x1="10" y1="93" x2="80" y2="93" style="stroke:rgb(255,255,255);stroke-width:3;stroke-linecap:round;" />
+	
+	<line x1="80" y1="9" x2="80" y2="30" style="stroke:rgb(255,255,255);stroke-width:3;stroke-linecap:round;" />
+	<line x1="80" y1="70" x2="80" y2="93" style="stroke:rgb(255,255,255);stroke-width:3;stroke-linecap:round;" />
+	
+	
+	<line x1="56" y1="68" x2="86" y2="36" style="stroke:rgb(255,255,255);stroke-width:3;stroke-linecap:round;" />
+	<line x1="63" y1="75" x2="93" y2="43" style="stroke:rgb(255,255,255);stroke-width:3;stroke-linecap:round;" />
+	<polygon points="56,69 62,75 54,77" style="fill:rgb(255,255,255);stroke:rgb(255,255,255);stroke-width:3;stroke-linecap:round;" />
+	<polygon points="86,36 93,43 88,48 81,41" style="fill:rgb(255,255,255);stroke:rgb(255,255,255);stroke-width:3;stroke-linecap:round;" />
+	
+	<circle cx="22" cy="30" r="3" style="fill:rgb(255,255,255);" />
+	<line x1="32" y1="30" x2="67" y2="30" style="stroke:rgb(255,255,255);stroke-width:3;stroke-linecap:round;" />
+	
+	<circle cx="22" cy="50" r="3" style="fill:rgb(255,255,255);" />
+	<line x1="32" y1="50" x2="57" y2="50" style="stroke:rgb(255,255,255);stroke-width:3;stroke-linecap:round;" />
+	
+	<circle cx="22" cy="70" r="3" style="fill:rgb(255,255,255);" />
+	<line x1="32" y1="70" x2="47" y2="70" style="stroke:rgb(255,255,255);stroke-width:3;stroke-linecap:round;" />
+	
+</svg>

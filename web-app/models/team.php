@@ -150,6 +150,17 @@ class Models_Team extends Models_Generic implements Models_Interface, JsonSerial
 		return $this->captain;
 	}
 
+	function getCaptainContactInfo() {
+		$captain = $this->getCaptain();
+
+		if($captain->getId() > 0) {
+			return $captain->getFirstName() . ' ' . $captain->getLastName()
+			. ' (<a href="' . $captain->getEmail() . '">' . $captain->getEmail() . '</a>)';
+		}
+		
+		return '';
+	}
+
 	function getPlayers() {
 		
 		if(($this->players == null || empty($this->players)) && $this->db != null && $this->getId() != null) {

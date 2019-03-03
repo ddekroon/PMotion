@@ -63,12 +63,13 @@ Registration control panel
 								href='<?php echo $router->pathFor('cp-edit-team', ['sportID' => $curSport->getId(), 'leagueID' => $curLeague->getId(),  'teamID' => $curTeam->getId()]) ?>'>
 								<?php echo $curTeam->getName() ?></a> 
 							<small>
+								<?php echo $curTeam->getCaptain()->getId() > 0 ? ' - ' . $curTeam->getCaptainContactInfo() : '' ?>
 								<?php echo $curTeam->getIsDroppedOut() ? ' - Dropout' : '' ?>
 								<?php echo $curTeam->getIsConvenor() ? ' - Convenor' : '' ?>
 							</small>
 						</td><td style="min-width:65px;">
 							<div class="float-right btn-group">
-								<button class="btn btn-default btn-xs<?php echo $curTeam->getIsPaid() ? ' active' : '' ?>" onClick="togglePaid(this, <?php echo $curTeam->getId() ?>);">
+								<button class="btn btn-default btn-xs<?php echo $curTeam->getIsPaid() ? ' active btn-primary' : '' ?>" onClick="togglePaid(this, <?php echo $curTeam->getId() ?>);">
 									<span class="glyphicon glyphicon-piggy-bank"></span>
 								</button>
 								<button class="btn btn-default btn-xs" onClick="deregisterTeam(this, <?php echo $curTeam->getId() ?>, function() { location.reload(); });">

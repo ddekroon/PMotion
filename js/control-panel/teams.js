@@ -10,10 +10,10 @@ function togglePaid(clicked, teamId) {
     $.post(baseUrl + "/api/teams/toggle-paid/" + teamId, function(data) {
         if(paid) {
             notify("Team marked NOT paid", "success");
-            $(clicked).removeClass("active");
+            $(clicked).removeClass("active").removeClass("btn-primary");
         } else {
             notify("Team marked paid", "success");
-            $(clicked).addClass("active");
+            $(clicked).addClass("active").addClass("btn-primary");
         }
         
         $(clicked).removeAttr("disabled");

@@ -35,4 +35,3 @@
 	})->add($authenticateAdmin);
 	
 ?>
-
