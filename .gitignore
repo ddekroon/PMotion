@@ -58,7 +58,6 @@ Registration/**
 Login/**
 allSports/**
 *.orig
-react-app/**
 package-lock.json
 .DS_Store
 logs/**
