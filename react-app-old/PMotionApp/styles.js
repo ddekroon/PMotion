@@ -4,6 +4,8 @@ export default StyleSheet.create({
 	container: {
         flex: 1,
         backgroundColor: '#fff',
+        paddingHorizontal:'2%',
+        paddingVertical:20
         // alignItems: 'center',
         // justifyContent: 'flex-start',
     },

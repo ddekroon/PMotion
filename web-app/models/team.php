@@ -155,7 +155,7 @@ class Models_Team extends Models_Generic implements Models_Interface, JsonSerial
 
 		if($captain->getId() > 0) {
 			return $captain->getFirstName() . ' ' . $captain->getLastName()
-			. ' (<a href="' . $captain->getEmail() . '">' . $captain->getEmail() . '</a>)';
+			. ' (<a href="mailto:' . $captain->getEmail() . '">' . $captain->getEmail() . '</a>)';
 		}
 		
 		return '';

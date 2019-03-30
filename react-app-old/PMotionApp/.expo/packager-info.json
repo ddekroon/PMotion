@@ -1,0 +1,9 @@
+{
+  "expoServerPort": 19000,
+  "expoServerNgrokUrl": "https://3b-54p.ddekroon.pmotionapp.exp.direct",
+  "packagerNgrokUrl": "https://packager.3b-54p.ddekroon.pmotionapp.exp.direct",
+  "ngrokPid": 15868,
+  "packagerPort": null,
+  "packagerPid": null,
+  "devToolsPort": 19002
+}
