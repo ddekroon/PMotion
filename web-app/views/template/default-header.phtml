@@ -4,7 +4,7 @@
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     	<title><?php isset($pageTitle) && $pageTitle != null ? $pageTitle : "Perpetual Motion" ?></title>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		
+
 		<?php print $this->fetch('template/header-includes.phtml', [
 			"router" => $router,
 			"request" => $request
@@ -12,4 +12,5 @@
 		
     </head>
     <body>
+		<?php print $this->fetch('template/header-pixel.phtml'); ?>
 		<div class="container-fluid">
