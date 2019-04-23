@@ -1,5 +1,5 @@
 import React from 'react';
-import { StatusBar, Platform } from 'react-native';
+import { StatusBar, Platform, View, Dimensions, Image, ImageBackground, StyleSheet, Content } from 'react-native';
 import { Font } from 'expo';
 import PropTypes from 'prop-types';
 import { Provider } from 'react-redux';
@@ -14,7 +14,7 @@ import Routes from './routes/index';
 import Loading from './components/Loading';
 
 // Hide StatusBar on Android as it overlaps tabs
-if (Platform.OS === 'android') StatusBar.setHidden(true);
+//if (Platform.OS === 'android') StatusBar.setHidden(false);
 
 export default class App extends React.Component {
   static propTypes = {
@@ -38,25 +38,47 @@ export default class App extends React.Component {
     const { loading } = this.state;
     const { store, persistor } = this.props;
 
+    let {height, width} = Dimensions.get('window');
+    console.log(height + " " + width);
+
     if (loading) return <Loading />;
 
     return (
       <Root>
-        <Provider store={store}>
-          <PersistGate
-            loading={<Loading />}
-            persistor={persistor}
-          >
-            <StyleProvider style={getTheme(theme)}>
-              <Router>
-                <Stack key="root">
-                  {Routes}
-                </Stack>
-              </Router>
-            </StyleProvider>
-          </PersistGate>
-        </Provider>
+        <StatusBar barStyle="default" hidden={false} translucent={true}/>
+        <View
+          style={{backgroundColor:'blue',width:width,height:height}}
+        >
+          <ImageBackground
+            source={require('../images/logo-grey.png')}
+            style={{width:'100%',height:'100%'}}>
+
+          <Provider store={store}>
+            <PersistGate
+              loading={<Loading />}
+              persistor={persistor}
+            >
+              <StyleProvider style={getTheme(theme)}>
+                <Router>
+                  <Stack key="root">
+                    {Routes}
+                  </Stack>
+                </Router>
+              </StyleProvider>
+            </PersistGate>
+          </Provider>
+          </ImageBackground>
+        </View>
+        
       </Root>
     );
   }
 }
+
+let styles = StyleSheet.create({
+  backgroundImage: {
+    position:'absolute',
+    width:83,
+    height:56
+  }
+});
