@@ -86,11 +86,11 @@ class Models_Season extends Models_Generic implements Models_Interface, JsonSeri
 		return $this->id;
 	}
 
-	function getName() {
+	public function getName() {
 		return $this->name;
 	}
 
-	function getYear() {
+	public function getYear() {
 		return $this->year;
 	}
 

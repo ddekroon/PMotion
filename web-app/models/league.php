@@ -322,11 +322,6 @@ class Models_League extends Models_Generic implements Models_Interface, JsonSeri
 		return $this->getWeekInScoreReporter() >= $this->getPlayoffWeek();
 	}
 	
-	public function jsonSerialize() {
-        $vars = get_object_vars($this);
-        return $vars;
-    }
-	
 	public function toString() {
 		return "Modules_League[id=$this->id]";
 	}
