@@ -123,15 +123,6 @@ class Models_Sport extends Models_Generic implements Models_Interface, JsonSeria
 		$this->logoLink = $logoLink;
 	}
 	
-	function jsonSerialize() {
-		return "{"
-				. "id:" . $this->getId() . ","
-				. "registrationDueDate:" . $this->getRegistrationDueDate() . ","
-				. "defaultPicLink:" . $this->getDefaultPicLink() . ","
-				. "logoLink:" . $this->getLogoLink()
-			. "}";
-	}
-	
 	function getIsDefaultAskForScores() {
 		return $this->isDefaultAskForScores;
 	}
