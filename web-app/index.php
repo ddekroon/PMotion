@@ -32,6 +32,7 @@ $config['displayErrorDetails'] = true;
 $config['addContentLengthHeader'] = false;
 $config['determineRouteBeforeAppMiddleware'] = true;
 $config['email_template_path'] = APP_PATH . 'templates';
+$config['root_path'] = ROOT;
 
 require_once('secrets.php');
 
@@ -225,6 +226,7 @@ include('routes/standings.php');
 include('routes/control-panel/default.php');
 include('routes/control-panel/standings.php');
 include('routes/control-panel/registration.php');
+include('routes/control-panel/players.php');
 
 $app->run();
 ?>
