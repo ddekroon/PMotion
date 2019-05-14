@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100">
+	<line x1="2" y1="79" x2="2" y2="48" style="stroke:rgb(255,255,255);stroke-width:3;stroke-linecap:round;" />
+	<line x1="3" y1="47" x2="33" y2="47" style="stroke:rgb(255,255,255);stroke-width:3;stroke-linecap:round;" />
+	
+	<line x1="34" y1="46" x2="34" y2="31" style="stroke:rgb(255,255,255);stroke-width:3;stroke-linecap:round;" />
+	<line x1="35" y1="30" x2="65" y2="30" style="stroke:rgb(255,255,255);stroke-width:3;stroke-linecap:round;" />
+	
+	<line x1="66" y1="31" x2="66" y2="49" style="stroke:rgb(255,255,255);stroke-width:3;stroke-linecap:round;" />
+	<line x1="67" y1="50" x2="97" y2="50" style="stroke:rgb(255,255,255);stroke-width:3;stroke-linecap:round;" />
+	
+	<line x1="98" y1="51" x2="98" y2="79" style="stroke:rgb(255,255,255);stroke-width:3;stroke-linecap:round;" />
+	<line x1="3" y1="80" x2="97" y2="80" style="stroke:rgb(255,255,255);stroke-width:3;stroke-linecap:round;" />
+</svg>
