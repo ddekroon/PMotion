@@ -1,0 +1,111 @@
+<?php 
+/*****************************************
+File: make-receipt.phtml
+Creator: Derek Dekroon
+Created: May 10/2019
+Form for receipt creation
+******************************************/
+?>
+
+<?php 
+	$minYear = date('Y') - 3;
+	$maxYear = date('Y') + 3;
+	
+?>
+
+<form name="makeReceipt" action="<?php echo $router->pathFor('cp-generate-receipt'); ?>" method="post">
+	<h1>Make a Receipt</h1>
+	<div class="form-group row">
+		<div class="col-xs-4 col-md-2">
+			<label for="ReceiptTo">To</label>
+		</div>
+		<div class="col-xs-8 col-md-10">
+			<input type='text' name="toName" class="form-control" value="" />
+		</div>
+	</div>
+	<div class="form-group row">
+		<div class="col-xs-4 col-md-2">
+			<label for="ReceiptDate">Date</label>
+		</div>
+		<div class="col-xs-8 col-md-10">
+			<input type='date' name="receiptDate" class="form-control" value="<?php echo date("Y-m-d"); ?>" />
+		</div>
+	</div>
+	<div class="row form-group">
+		<div class="col-xs-4 col-md-2">
+			<label>Reason</label>
+		</div>
+		<div class="col-xs-8 col-md-10">
+			<div class="row">
+				<div class="col-xs-4">
+					<label class="sr-only" for="ReceiptSport">Sport</label>
+					<select id="ReceiptSport" class="form-control" name="sportName">
+						<option value="">Sport</option>
+						<?php foreach($allSports as $curSport) { ?>
+							<option value="<?php echo $curSport->getName() ?>"><?php echo $curSport->getName() ?></option>
+						<?php } ?>
+					</select>
+				</div>
+				<div class="col-xs-8 text-center">
+					<div class="checkbox-inline">
+						<label for="SeasonSpring">
+							<input type="checkbox" name="seasonName[]" value='Spring' id="SeasonSpring" />
+							Spring
+						</label>
+					</div>
+					<div class="checkbox-inline">
+						<label for="SeasonSummer">
+							<input type="checkbox" name="seasonName[]" value='Summer' id="SeasonSummer" />
+							Summer
+						</label>
+					</div>
+					<div class="checkbox-inline">
+						<label for="SeasonFall">
+							<input type="checkbox" name="seasonName[]" value='Fall' id="SeasonFall" />
+							Fall
+						</label>
+					</div>
+					<div class="checkbox-inline">
+						<label for="SeasonWinterI">
+							<input type="checkbox" name="seasonName[]" value='Winter I' id="SeasonWinterI" />
+							Winter I
+						</label>
+					</div>
+					<div class="checkbox-inline">
+						<label for="SeasonWinterII">
+							<input type="checkbox" name="seasonName[]" value='Winter II' id="SeasonWinterII" />
+							Winter II
+						</label>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="text-center">
+		<p>OR</p>
+	</div>
+	<div class="row form-group">
+		<div class="col-xs-4 col-md-2">
+			<label for="ReceiptMiscFees">Alt Reason</label>
+		</div>
+		<div class="col-xs-8 col-md-10">
+			<input type='text' name="miscFees" class="form-control" id="ReceiptMiscFees" />
+		</div>
+	</div>
+	<div class="row form-group">
+		<div class="col-xs-4 col-md-2">
+			<label for="ReceiptMiscFees">Amount ($)</label>
+		</div>
+		<div class="col-xs-4 col-md-2">
+			<label for="ReceiptPaidInvoice" class="sr-only">Paid or Invoiced</label>
+			<select class="form-control" name="paidOrInvoiced">
+				<option value="Paid">Paid</option>
+				<option value="Invoiced">Invoiced</option>
+			</select>
+		</div>
+		<div class="col-xs-4 col-md-8">
+			<input type='number' name="totalPaid" value="" class="form-control" />
+		</div>
+	</div>
+	<input type="submit" name="inputData" class="btn btn-primary" value="Generate Receipt" />
+</form>
