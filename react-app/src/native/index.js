@@ -13,6 +13,8 @@ import theme from '../../native-base-theme/variables/commonColor';
 import Routes from './routes/index';
 import Loading from './components/Loading';
 
+import { getLookups } from '../actions/lookups';
+
 // Hide StatusBar on Android as it overlaps tabs
 //if (Platform.OS === 'android') StatusBar.setHidden(false);
 
@@ -31,7 +33,11 @@ export default class App extends React.Component {
       Ionicons: require('@expo/vector-icons/fonts/Ionicons.ttf'),
     });
 
-    this.setState({ loading: false });
+    await getLookups();
+
+    this.setState({ 
+      loading: false 
+    });
   }
 
   render() {
@@ -46,30 +52,27 @@ export default class App extends React.Component {
     return (
       <Root>
         <StatusBar barStyle="default" hidden={false} translucent={true}/>
-        <View
+        {/*<View
           style={{backgroundColor:'blue',width:width,height:height}}
         >
           <ImageBackground
             source={require('../images/logo-grey.png')}
-            style={{width:'100%',height:'100%'}}>
+          style={{width:'100%',height:'100%'}}>*/}
 
-          <Provider store={store}>
-            <PersistGate
-              loading={<Loading />}
-              persistor={persistor}
-            >
-              <StyleProvider style={getTheme(theme)}>
-                <Router>
-                  <Stack key="root">
-                    {Routes}
-                  </Stack>
-                </Router>
-              </StyleProvider>
-            </PersistGate>
-          </Provider>
-          </ImageBackground>
-        </View>
-        
+        <Provider store={store}>
+          <PersistGate
+            loading={<Loading />}
+            persistor={persistor}
+          >
+            <StyleProvider style={getTheme(theme)}>
+              <Router>
+                <Stack key="root">
+                  {Routes}
+                </Stack>
+              </Router>
+            </StyleProvider>
+          </PersistGate>
+        </Provider>
       </Root>
     );
   }
