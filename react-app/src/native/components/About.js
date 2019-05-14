@@ -4,7 +4,9 @@ import {
 } from 'native-base';
 import Spacer from './Spacer';
 
-const About = () => (
+const AboutView = ({
+  lookups
+}) => (
   <Container>
     <Content padder>
       <Spacer size={30} />
@@ -12,12 +14,9 @@ const About = () => (
         Heading 1
       </H1>
       <Spacer size={10} />
-      <Text>
-        Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo,
-        tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem
-        malesuada magna mollis euismod. Donec sed odio dui.
-        {' '}
-      </Text>
+      { lookups.sports.map((item, key)=>(
+         <Text key={key}> { item.name } </Text>)
+         )}
 
       <Spacer size={30} />
       <H2>
@@ -46,4 +45,4 @@ const About = () => (
   </Container>
 );
 
-export default About;
+export default AboutView;
