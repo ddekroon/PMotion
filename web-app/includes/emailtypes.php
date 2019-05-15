@@ -40,8 +40,8 @@ abstract class Includes_EmailTypes {
 				"Tournament Team Registered",
 				[
 					'dave@perpetualmotion.org',
-					'terry@perpetualmotion.org',
-					'nick@perpetualmotion.org'
+					'brayden@perpetualmotion.org',
+					'herman@perpetualmotion.org'
 				], 
 				"Tournament Team Registered", 
 				"email-tournament-team-registration", 
@@ -55,8 +55,8 @@ abstract class Includes_EmailTypes {
 				"Team Registered",
 				[
 					'dave@perpetualmotion.org',
-					'terry@perpetualmotion.org',
-					'nick@perpetualmotion.org',
+					'brayden@perpetualmotion.org',
+					'herman@perpetualmotion.org',
 					'derek@perpetualmotion.org'
 				], 
 				"Team Registered", 
@@ -71,8 +71,8 @@ abstract class Includes_EmailTypes {
 				"Team Deregistered",
 				[
 					'dave@perpetualmotion.org',
-					'terry@perpetualmotion.org',
-					'nick@perpetualmotion.org'
+					'brayden@perpetualmotion.org',
+					'herman@perpetualmotion.org'
 				], 
 				"Team Deregistered", 
 				"email-team-registration", 
@@ -86,8 +86,8 @@ abstract class Includes_EmailTypes {
 				"Group Registered",
 				[
 					'dave@perpetualmotion.org',
-					'terry@perpetualmotion.org',
-					'nick@perpetualmotion.org'
+					'brayden@perpetualmotion.org',
+					'herman@perpetualmotion.org'
 				], 
 				"Small Group Registered", 
 				"email-group-registration", 
