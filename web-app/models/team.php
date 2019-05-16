@@ -37,8 +37,9 @@ class Models_Team extends Models_Generic implements Models_Interface, JsonSerial
 	private $captain;
 	private $players;
 	private $registrationComment;
-	private $spiritAverage;
-	private $scheduledMatches;
+	protected $spiritAverage;
+	protected $scheduledMatches;
+	protected $scoreSubmissions;
 
 	public static function withID($db, $logger, $id) {
 		$instance = new self();
@@ -399,6 +400,31 @@ class Models_Team extends Models_Generic implements Models_Interface, JsonSerial
 		}
 		
 		return $this->scheduledMatches;
+	}
+
+	public function getScoreSubmissions() {
+		
+		if($this->scoreSubmissions == null && $this->db != null && $this->getId() != null) {
+			
+			$this->scoreSubmissions = [];
+			
+			$sql = "SELECT ss.* FROM "
+				. "(SELECT * FROM " . Includes_DBTableNames::scoreSubmissionsTable . " WHERE score_submission_team_id = " . $this->getId() . ") AS ss "
+				. "INNER JOIN " . Includes_DBTableNames::teamsTable . " teams ON teams.team_id = ss.score_submission_team_id "
+				. "INNER JOIN " . Includes_DBTableNames::datesTable . " dates ON dates.date_id = ss.score_submission_date_id "
+				. "WHERE ss.score_submission_ignored = 0 "
+				. "ORDER BY dates.date_week_number ASC;";
+
+			$stmt = $this->db->query($sql);
+
+			while(($row = $stmt->fetch()) != false) {
+				$curSS = Models_ScoreSubmission::withRow($this->db, $this->logger, $row);
+				$curSS->setOppTeam(Models_Team::withID($this->db, $this->logger, $curSS->getOppTeamId()));
+				$this->scoreSubmissions[] = $curSS;
+			}
+		}
+		
+		return $this->scoreSubmissions;
 	}
 	
 	function getIsPic() {

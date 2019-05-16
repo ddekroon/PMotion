@@ -38,7 +38,7 @@ class Models_League extends Models_Generic implements Models_Interface, JsonSeri
 	
 	private $season;
 	private $sport;
-	private $teams;
+	protected $teams;
 	private $fenceTeams;
 	private $freeAgents;
 	private $dateInStandings;
