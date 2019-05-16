@@ -40,6 +40,7 @@ class Models_Team extends Models_Generic implements Models_Interface, JsonSerial
 	protected $spiritAverage;
 	protected $scheduledMatches;
 	protected $scoreSubmissions;
+	protected $isPic;
 
 	public static function withID($db, $logger, $id) {
 		$instance = new self();
@@ -431,11 +432,13 @@ class Models_Team extends Models_Generic implements Models_Interface, JsonSerial
 		$ds = DIRECTORY_SEPARATOR;
 		
 		if(file_exists(realpath($_SERVER['DOCUMENT_ROOT']) . $ds . $this->getLeague()->getPicLink() . $ds . $this->getPicName() . '.JPG')) {
-			return true;
+			$this->isPic = true;
 		} else if(file_exists(realpath($_SERVER['DOCUMENT_ROOT']) . $ds . $this->getLeague()->getPicLink() . $ds . $this->getPicName() . '.jpg')) {
-			return true;
+			$this->isPic = true;
+		} else {
+			$this->isPic = false;
 		}
-		return false;
+		return $this->isPic;
 	}
 	
 	function getPic() {

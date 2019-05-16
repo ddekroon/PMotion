@@ -13,6 +13,7 @@
 				$team->getScheduledMatches();
 				$team->getScoreSubmissions();
 				$team->getSpiritAverage();
+				$team->getIsPic();
 			}
 
 			$response->getBody()->write(json_encode($team));
