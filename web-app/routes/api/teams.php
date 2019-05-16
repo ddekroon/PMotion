@@ -7,8 +7,16 @@
 		$app->get('/{teamID}', function (Request $request, Response $response) {
 
 			$teamID = (int)$request->getAttribute('teamID');
+			$team = Models_Team::withID($this->db, $this->logger, $teamID);
 
-			$response->getBody()->write(json_encode(Models_Team::withID($this->db, $this->logger, $teamID)));
+			if($team->getId() > 0) {
+				$team->getScheduledMatches();
+				$team->getScoreSubmissions();
+				$team->getSpiritAverage();
+				$team->getIsPic();
+			}
+
+			$response->getBody()->write(json_encode($team));
 
 			return $response;
 		});
@@ -16,18 +24,15 @@
 		$app->get('/teams-for-league/{leagueID}', function (Request $request, Response $response) {
 
 			$leagueID = (int)$request->getAttribute('leagueID');
-
 			$teamsController = new Controllers_TeamsController($this->db, $this->logger);
-
 			$response->getBody()->write(json_encode($teamsController->getTeams($leagueID)));
 
 			return $response;
 		});
-
+	});
+	
+	$app->group('/api/teams', function () use ($app) {
 		$app->get('/active-teams-for-user/{userID}', function (Request $request, Response $response) {
-
-			$this->logger->debug("Hi derek");
-
 			$userID = (int)$request->getAttribute('userID');
 
 			$teamsController = new Controllers_TeamsController($this->db, $this->logger);

@@ -18,7 +18,7 @@ class Models_ScoreSubmission extends Models_Generic implements Models_Interface,
 	private $spiritScore;
 	private $scoreSubmissionComment;
 	private $team;
-	private $oppTeam;
+	protected $oppTeam;
 	private $date;
 
 	public static function withID($db, $logger, $id) {
@@ -129,6 +129,10 @@ class Models_ScoreSubmission extends Models_Generic implements Models_Interface,
 		}
 		
 		return $this->oppTeam;
+	}
+
+	public function setOppTeam($oppTeam) {
+		$this->oppTeam = $oppTeam;
 	}
 	
 	public function getDate() {
