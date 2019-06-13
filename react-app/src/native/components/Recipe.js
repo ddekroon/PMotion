@@ -46,7 +46,7 @@ const RecipeView = ({
   return (
     <Container>
       <Content padder>
-        <Image source={{ uri: recipe.image }} style={{ height: 100, width: null, flex: 1 }} />
+        <Image source={{ uri: recipe.image }} style={{ height: 200, width: null, flex: 1 }} />
 
         <Spacer size={25} />
         <H3>

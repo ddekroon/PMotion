@@ -12,7 +12,7 @@ import Error from './Error';
 import Header from './Header';
 import Spacer from './Spacer';
 
-const RecipeListing = ({
+const RecipeListing = ({  
   error,
   loading,
   recipes,
