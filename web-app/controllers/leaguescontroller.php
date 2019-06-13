@@ -246,6 +246,23 @@
 				$teams[$i - 1]->update();
 			}
 		}
+
+		function updateCancelOptions($request) {
+			$allPostVars = $request->getParsedBody();
+
+			$leaguesToTurnCancelOptionOn = $allPostVars["leagues"];
+
+			foreach($leaguesToTurnCancelOptionOn as $curLeagueId) {
+				$curLeague = Models_League::withID($this->db, $this->logger, $curLeagueId);
+				$this->setLeagueWeekInScoreReporter($curLeague);
+				$curLeague->setIsShowCancelOption(true);
+				$curLeague->update();
+			}
+
+			$sql = "UPDATE " . Includes_DBTableNames::leaguesTable . " SET league_show_cancel_default_option = 0 "
+					. " WHERE league_id NOT IN (" . implode(',', $leaguesToTurnCancelOptionOn) . ')';
+			$this->db->query($sql);
+		}
 	}
 
 ?>

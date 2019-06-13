@@ -17,6 +17,7 @@ class Models_Sport extends Models_Generic implements Models_Interface, JsonSeria
 	protected $defaultPicLink;
 	protected $logoLink;
 	protected $numPlayerInputsForRegistration;
+	private $leagues;
 	
 	public static function withID($db, $logger, $id) {
 		$instance = new self();
@@ -209,6 +210,14 @@ class Models_Sport extends Models_Generic implements Models_Interface, JsonSeria
 
 	function setBaseUrl($baseUrl) {
 		$this->baseUrl = $baseUrl;
+	}
+
+	function setLeagues($leagues) {
+		$this->leagues = $leagues;
+	}
+
+	function getLeagues() {
+		return $this->leagues;
 	}
 		
 	function saveOrUpdate() {

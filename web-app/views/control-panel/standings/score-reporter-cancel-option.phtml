@@ -1,0 +1,65 @@
+<?php 
+/*****************************************
+File: score-reporter-cancel-option.php
+Creator: Derek Dekroon
+Created: June 12/2019
+Program used to enable the cancel option in leagues
+******************************************/
+?>
+
+<h1>Toggle League Cancel Option</h1>
+<form id="ToggleCancelOptionForm" method='POST' action='<?php echo $router->pathFor('cp-submit-score-reporter-cancel-option'); ?>'>
+	<div class="row" style="align-items:start;">
+		<?php foreach($sports as $curSport) { ?>
+			<div class="col-sm-6 col-xs-12">
+				<table class="table table-responsive">
+					<thead>
+						<tr>
+							<th><?php echo $curSport->getName(); ?></th>
+						</tr>
+					</thead>
+					<tbody>
+						<?php if(count($curSport->getLeagues()) > 0) { ?>
+							<?php foreach($curSport->getLeagues() as $curLeague) { ?>
+								<tr>
+									<td>
+										<input type='checkbox' name='leagues[]' value='<?php echo $curLeague->getId() ?>' 
+											id="League_<?php echo $curLeague->getId() ?>" 
+											<?php echo $curLeague->getIsShowCancelOption() ? "checked='checked'" : "" ?> />
+										<label for='League_<?php echo $curLeague->getId() ?>'>
+											<?php echo $curLeague->getName() . ' - ' . $curLeague->getDayString(); ?>
+										</label>
+									</td>
+								</tr>
+							<?php } ?>
+						<?php } else { ?>
+							<tr><td style="text-align:center;font-style:italic;">No leagues available</td></tr>
+						<?php } ?>
+					<tbody>
+				</table>
+			</div>
+		<?php } ?>
+	</div>
+	<hr />
+	<div class="clearfix">
+		<button class="btn btn-primary float-right" type="submit"><span class="glyphicon glyphicon-ok"></span> Submit</button>
+	</div>
+</form>
+<script>
+	$(function() {
+		$("#ToggleCancelOptionForm").ajaxForm({
+			method:"post",
+			dataType:"json",
+			success:function(resp) {
+				if(resp.status == 1) {
+					notify("Leagues Updated");				
+				} else {
+					notify(resp.errorMessage);
+				}
+			},
+			error:function(resp) {
+				notify("Error connecting to server.");
+			}
+		});
+	});
+</script>

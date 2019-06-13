@@ -97,7 +97,7 @@ class Models_League extends Models_Generic implements Models_Interface, JsonSeri
 		$this->numDaysSpiritHidden = $data['league_num_days_spirit_hidden'];
 		$this->weekInScoreReporter = $data['league_week_in_score_reporter'];
 		$this->weekInStandings = $data['league_week_in_standings'];
-		$this->isSortByWinPct = $data['league_sort_by_win_pct'];
+		$this->isSortByWinPct = $data['league_sort_by_win_pct'] > 0;
 		$this->isShowSpirit = $data['league_show_spirit'] > 0;
 		$this->isAllowIndividuals = $data['league_allows_individuals'] > 0;
 		$this->isAvailableForRegistration = $data['league_available_for_registration'] > 0;
@@ -648,11 +648,162 @@ class Models_League extends Models_Generic implements Models_Interface, JsonSeri
 		}
 	}
 	
-	function save() {
-		
+	public function save() {
+		try {
+						
+			$stmt = $this->db->prepare("INSERT INTO " . Includes_DBTableNames::leaguesTable . " "
+					. "(
+						league_name, league_season_id, league_sport_id, league_day_number, 
+						league_registration_fee, league_ask_for_scores, league_num_of_matches, 
+						league_num_of_games_per_match, league_has_ties, league_has_practice_games, 
+						league_max_points_per_game, league_show_cancel_default_option, league_send_late_email, 
+						league_hide_spirit_hour, league_show_spirit_hour, league_num_days_spirit_hidden, 
+						league_week_in_score_reporter, league_week_in_standings, league_sort_by_win_pct, league_show_spirit, 
+						league_allows_individuals, league_available_for_registration, league_num_teams_before_waiting, 
+						league_maximum_teams, league_playoff_week, league_individual_registration_fee, league_pic_link, 
+						league_schedule_link, league_is_split, league_split_week, league_full_individual_males, 
+						league_full_individual_females, league_full_teams, league_show_static_schedule
+					) "
+					. "VALUES "
+					. "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+			);
+			
+			$this->db->beginTransaction(); 
+			$stmt->execute(
+				array(
+					$this->getName(),
+					$this->getSeasonId(),
+					$this->getSportId(),
+					$this->getDayNumber(),
+					$this->getRegistrationFee(),
+					$this->getIsAskForScores() ? 1 : 0,
+					$this->getNumMatches(),
+					$this->getNumGamesPerMatch(),
+					$this->getIsTies() ? 1 : 0,
+					$this->getIsPracticeGames() ? 1 : 0,
+					$this->getMaxPointsPerGame(),
+					$this->getIsShowCancelOption() ? 1 : 0,
+					$this->getIsSendLateEmail() ? 1 : 0,
+					$this->getHideSpiritHour(),
+					$this->getShowSpiritHour(),
+					$this->getNumDaysSpiritHidden(),
+					$this->getWeekInScoreReporter(),
+					$this->getWeekInStandings(),
+					$this->getIsSortByWinPct() ? 1 : 0,
+					$this->getIsShowSpirit() ? 1 : 0,
+					$this->getIsAllowIndividuals() ? 1 : 0,
+					$this->getIsAvailableForRegistration() ? 1 : 0,
+					$this->getNumTeamsBeforeWaiting(),
+					$this->getMaximumTeams(),
+					$this->getPlayoffWeek(),
+					$this->getIndividualRegistrationFee(),
+					$this->getPicLink(),
+					$this->getScheduleLink(),
+					$this->getIsSplit() ? 1 : 0,
+					$this->getSplitWeek(),
+					$this->getIsFullIndividualMales() ? 1 : 0,
+					$this->getIsFullIndividualFemales() ? 1 : 0,
+					$this->getIsFullTeams() ? 1 : 0,
+					$this->getIsShowStaticSchedule() ? 1 : 0
+				)
+			); 
+			
+			$this->setId($this->db->lastInsertId());
+			$this->db->commit(); 
+			
+		} catch (Exception $ex) {
+			$this->db->rollback();
+			$this->logger->log($ex->getMessage()); 
+		}
 	}
 	
-	function update() {
-		
+	public function update() {
+		try {			
+			$stmt = $this->db->prepare("UPDATE " . Includes_DBTableNames::leaguesTable . " SET "
+					. "
+						league_name = ?,
+						league_season_id = ?,
+						league_sport_id = ?,
+						league_day_number = ?,
+						league_registration_fee = ?,
+						league_ask_for_scores = ?,
+						league_num_of_matches = ?, 
+						league_num_of_games_per_match = ?,
+						league_has_ties = ?,
+						league_has_practice_games = ?, 
+						league_max_points_per_game = ?,
+						league_show_cancel_default_option = ?,
+						league_send_late_email = ?, 
+						league_hide_spirit_hour = ?,
+						league_show_spirit_hour = ?,
+						league_num_days_spirit_hidden = ?, 
+						league_week_in_score_reporter = ?,
+						league_week_in_standings = ?,
+						league_sort_by_win_pct = ?,
+						league_show_spirit = ?, 
+						league_allows_individuals = ?,
+						league_available_for_registration = ?,
+						league_num_teams_before_waiting = ?, 
+						league_maximum_teams = ?,
+						league_playoff_week = ?,
+						league_individual_registration_fee = ?,
+						league_pic_link = ?, 
+						league_schedule_link = ?,
+						league_is_split = ?,
+						league_split_week = ?,
+						league_full_individual_males = ?, 
+						league_full_individual_females = ?,
+						league_full_teams = ?,
+						league_show_static_schedule = ?
+					WHERE league_id = ?
+					"
+			);
+			
+			$this->db->beginTransaction(); 
+			$stmt->execute(
+				array(
+					$this->getName(),
+					$this->getSeasonId(),
+					$this->getSportId(),
+					$this->getDayNumber(),
+					$this->getRegistrationFee(),
+					$this->getIsAskForScores() ? 1 : 0,
+					$this->getNumMatches(),
+					$this->getNumGamesPerMatch(),
+					$this->getIsTies() ? 1 : 0,
+					$this->getIsPracticeGames() ? 1 : 0,
+					$this->getMaxPointsPerGame(),
+					$this->getIsShowCancelOption() ? 1 : 0,
+					$this->getIsSendLateEmail() ? 1 : 0,
+					$this->getHideSpiritHour(),
+					$this->getShowSpiritHour(),
+					$this->getNumDaysSpiritHidden(),
+					$this->getWeekInScoreReporter(),
+					$this->getWeekInStandings(),
+					$this->getIsSortByWinPct() ? 1 : 0,
+					$this->getIsShowSpirit() ? 1 : 0,
+					$this->getIsAllowIndividuals() ? 1 : 0,
+					$this->getIsAvailableForRegistration() ? 1 : 0,
+					$this->getNumTeamsBeforeWaiting(),
+					$this->getMaximumTeams(),
+					$this->getPlayoffWeek(),
+					$this->getIndividualRegistrationFee(),
+					$this->getPicLink(),
+					$this->getScheduleLink(),
+					$this->getIsSplit() ? 1 : 0,
+					$this->getSplitWeek(),
+					$this->getIsFullIndividualMales() ? 1 : 0,
+					$this->getIsFullIndividualFemales() ? 1 : 0,
+					$this->getIsFullTeams() ? 1 : 0,
+					$this->getIsShowStaticSchedule() ? 1 : 0,
+					$this->getId()
+				)
+			); 
+			$this->db->commit(); 
+			
+		} catch (Exception $ex) {
+			$this->db->rollback();
+			$this->logger->log($ex->getMessage()); 
+		}
 	}
 }
