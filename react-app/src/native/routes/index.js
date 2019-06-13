@@ -27,8 +27,9 @@ import UpdateProfileComponent from '../components/UpdateProfile';
 import MemberContainer from '../../containers/Member';
 import ProfileComponent from '../components/Profile';
 
-import AboutContainer from '../../containers/About';
-import AboutComponent from '../components/About';
+import LeaguesContainer from '../../containers/Leagues';
+import LeaguesComponent from '../components/Leagues';
+
 
 const Index = (
   <Stack hideNavBar>
@@ -38,15 +39,15 @@ const Index = (
         swipeEnabled
         type="replace"
         showLabel={false}
-        {...DefaultProps.tabProps}
+        {...DefaultProps.tabProps}      
       >
         <Stack
           key="home"
           title={AppConfig.appName.toUpperCase()}
-          icon={() => <Icon name="planet" {...DefaultProps.icons} />}
+          icon={() => <Icon name="home" {...DefaultProps.icons} />}
           {...DefaultProps.navbarProps}
         >
-          <Scene key="home" component={AboutContainer} Layout={AboutComponent} />
+          <Scene key="home" component={LeaguesContainer} Layout={LeaguesComponent} />
         </Stack>
 
         <Stack
