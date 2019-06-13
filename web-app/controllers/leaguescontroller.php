@@ -260,7 +260,10 @@
 			}
 
 			$sql = "UPDATE " . Includes_DBTableNames::leaguesTable . " SET league_show_cancel_default_option = 0 "
-					. " WHERE league_id NOT IN (" . implode(',', $leaguesToTurnCancelOptionOn) . ')';
+					. (count($leaguesToTurnCancelOptionOn) > 0
+						? " WHERE league_id NOT IN (" . implode(',', $leaguesToTurnCancelOptionOn) . ')'
+						: ""
+					);
 			$this->db->query($sql);
 		}
 	}
