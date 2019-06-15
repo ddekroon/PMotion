@@ -107,14 +107,16 @@
 		return $response;
 	})->add($authenticate);
 	
-	//Generic get league teams
+	//Generic get league teams - used in score reporter
 	$app->get('/get-league-teams/{leagueID}', function(Request $request, Response $response) {
-		$leagueID = (int)$request->getAttribute('leagueID');
+		$league = Models_League::withID($this->db, $this->logger, (int)$request->getAttribute('leagueID'));
 
-		if($leagueID > 0) {
+		if($league->getId() > 0) {
 			$teamsController = new Controllers_TeamsController($this->db, $this->logger);
+			$leagues = [];
+			$leagues[] = $league;
 
-			$teams = $teamsController->getTeams($leagueID);
+			$teams = $teamsController->getTeams($leagues, null, null, $league->getIsPracticeGames());
 			$dataObj = array();
 			$dataObj["teams"] = array();
 

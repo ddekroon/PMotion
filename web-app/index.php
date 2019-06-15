@@ -227,6 +227,7 @@ include('routes/control-panel/default.php');
 include('routes/control-panel/standings.php');
 include('routes/control-panel/registration.php');
 include('routes/control-panel/players.php');
+include('routes/control-panel/teams.php');
 
 $app->run();
 ?>

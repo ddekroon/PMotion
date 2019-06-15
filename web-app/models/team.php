@@ -41,6 +41,7 @@ class Models_Team extends Models_Generic implements Models_Interface, JsonSerial
 	protected $scheduledMatches;
 	protected $scoreSubmissions;
 	protected $isPic;
+	private $isPastPrizeWinner;
 
 	public static function withID($db, $logger, $id) {
 		$instance = new self();
@@ -674,6 +675,14 @@ class Models_Team extends Models_Generic implements Models_Interface, JsonSerial
 
 	function setOppSubmittedTies($oppSubmittedTies) {
 		$this->oppSubmittedTies = $oppSubmittedTies;
+	}
+
+	function getIsPastPrizeWinner() {
+		return $this->isPastPrizeWinner;
+	}
+
+	function setIsPastPrizeWinner($isPastPrizeWinner) {
+		$this->isPastPrizeWinner = $isPastPrizeWinner;
 	}
 	
 	public function saveOrUpdate() {

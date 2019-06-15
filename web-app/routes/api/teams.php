@@ -23,9 +23,11 @@
 
 		$app->get('/teams-for-league/{leagueID}', function (Request $request, Response $response) {
 
-			$leagueID = (int)$request->getAttribute('leagueID');
+			$league = Models_League::withID($this->db, $this->logger, (int)$request->getAttribute('leagueID'));
+			$leagues = [];
+			$leagues[] = $league;
 			$teamsController = new Controllers_TeamsController($this->db, $this->logger);
-			$response->getBody()->write(json_encode($teamsController->getTeams($leagueID)));
+			$response->getBody()->write(json_encode($teamsController->getTeams($leagues, null, null, $league->getIsPracticeGames())));
 
 			return $response;
 		});

@@ -2,34 +2,71 @@
 
 class Controllers_TeamsController extends Controllers_Controller {
 		
-	function getTeams($leagueID) {
-		$league = Models_League::withID($this->db, $this->logger, $leagueID);
+	function getTeams($leagues, $sports, $seasons, $isPractice) {
 		
-		if(isset($league) && $league->getId() != null) {
-			
-			if($league->getIsPracticeGames()) { //league has practice, include the practice team
-				$sql = "SELECT team.* FROM " . Includes_DBTableNames::teamsTable . " as team "
-						. "WHERE ((team.team_league_id = $leagueID AND team.team_num_in_league > 0) OR team.team_id = 1) AND team.team_dropped_out = 0 "
-						. "ORDER BY team.team_num_in_league ASC";
-			} else {
-				$sql = "SELECT team.* FROM " . Includes_DBTableNames::teamsTable . " as team "
-						. "WHERE team.team_league_id = $leagueID AND team.team_num_in_league > 0 AND team.team_dropped_out = 0 "
-						. "ORDER BY team.team_num_in_league ASC";
-			}
-			
-			$stmt = $this->db->query($sql);
-			
-			$results = [];
+		$leaguesFilter = '';
+		$sportsFilter = '';
+		$seasonsFilter = '';
+		$practiceFilter = 'OR 1 = 0';
 
-			while($row = $stmt->fetch()) {
-				$results[] = Models_Team::withRow($this->db, $this->logger, $row);
+		if(isset($leagues) && sizeof($leagues) > 0) {
+			$leagueIDs = [];
+			foreach($leagues as $curLeague) {
+				if($curLeague->getId() > 0) {
+					$leagueIDs[] = $curLeague->getId();
+				}
 			}
 
-			return $results;
-			
+			if(sizeof($leagueIDs) > 0) {
+				$leaguesFilter .= ' AND league.league_id in (' . implode(',', $leagueIDs) . ')';
+			}
 		}
+
+		if(isset($sports) && sizeof($sports) > 0) {
+			$sportsIDs = [];
+			foreach($sports as $curSport) {
+				if($curSport->getId() > 0) {
+					$sportsIDs[] = $curSport->getId();
+				}
+			}
+
+			if(sizeof($sportsIDs) > 0) {
+				$sportsFilter .= ' AND league.league_sport_id in (' . implode(',', $sportsIDs) . ')';
+			}
+		}
+
+		if(isset($seasons) && sizeof($seasons) > 0) {
+			$seasonsIDs = [];
+			foreach($seasons as $curSeason) {
+				if($curSeason->getId() > 0) {
+					$seasonsIDs[] = $curSeason->getId();
+				}
+			}
+
+			if(sizeof($seasonsIDs) > 0) {
+				$seasonsFilter .= ' AND league.league_season_id in (' . implode(',', $seasonsIDs) . ')';
+			}
+		}
+			
+		if($isPractice) { //league has practice, include the practice team
+			$practiceFilter = ' OR team.team_id = 1';
+		}
+
+		$sql = "SELECT team.* FROM " . Includes_DBTableNames::teamsTable . " as team"
+			. " INNER JOIN " . Includes_DBTableNames::leaguesTable . " league"
+				. " ON league.league_id = team.team_league_id" . $leaguesFilter . $sportsFilter . $seasonsFilter
+			. " WHERE ((team.team_num_in_league > 0 AND team.team_dropped_out = 0) $practiceFilter) "
+			. " ORDER BY league.league_sport_id, league.league_season_id ASC, league.league_day_number ASC, team.team_num_in_league ASC";
+			
+		$stmt = $this->db->query($sql);
 		
-		return [];
+		$results = [];
+
+		while($row = $stmt->fetch()) {
+			$results[] = Models_Team::withRow($this->db, $this->logger, $row);
+		}
+
+		return $results;
 	}
 	
 	static function compareHeadToHead($teamOne, $teamTwo) {

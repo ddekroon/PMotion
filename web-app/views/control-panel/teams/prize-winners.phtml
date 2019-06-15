@@ -1,0 +1,100 @@
+<?php 
+/*****************************************
+File: prize-winners.phtml
+Creator: Derek Dekroon
+Created: June 14, 2019
+Prize winners control panel
+******************************************/
+
+	$teamsCount = 1;
+	$winningTeamsCount = 1;
+?>
+
+<h1>Prize Winners</h1>
+
+<?php 
+	print $this->fetch('control-panel/league-selector.phtml', [
+		"router" => $router,
+		"request" => $request,
+		"baseUrlName" => 'cp-prize-winners',
+		"baseUrlOptionsArray" => ['timeFrame' => $timeFrame],
+		"sports" => $allSports,
+		"seasons" => $seasons,
+		"activeSport" => $curSport,
+		"activeLeague" => $curLeague,
+		"includeSeasons" => false,
+		"showFullLabels" => true
+	]);
+?>
+
+<button class="btn btn-primary" onclick="return openManagePrizes()">Manage Prizes</button>
+
+<div class="form-group row no-flex">
+	<div class="col-xs-6">
+		<h2>Teams</h2>
+		<table id="PrizeWinnersTeamsTable" class="table table-sortable">
+			<thead>
+				<tr>
+					<th>#</th>
+					<th>Team Name</th>
+					<th>League</th>
+					<th>Captain Name</th>
+				</tr>
+			</thead>
+			<tbody>
+				<?php foreach($teams as $curTeam) { ?>
+					<tr class="team" data-team-id="<?php echo $curTeam->getId() ?>">
+						<td>
+							<?php echo $teamsCount++; ?>
+						</td><td>
+							<?php echo $curTeam->getName() ?>
+						</td><td>
+							<?php echo $curTeam->getLeague()->getName() . ' ' . $curTeam->getLeague()->getDayString() ?>
+						</td><td>
+							<a href='mailto:<?php echo $curTeam->getCaptain()->getEmail() ?>'>
+								<?php echo $curTeam->getCaptain()->getFirstName() . ' ' . $curTeam->getCaptain()->getLastName() ?>
+							</a>
+						</td>
+					</tr>
+				<?php } ?>
+			</tbody>
+		</table>
+	</div>
+	<div class="col-xs-6">
+		<h2>Current Winners</h2>
+		<table id="PrizeWinnersTeamsTable" class="table table-sortable">
+			<thead>
+				<tr>
+					<th>#</th>
+					<th>Team</th>
+					<th>League</th>
+					<th>Captain</th>
+					<th>Prize</th>
+				</tr>
+			</thead>
+			<tbody>
+				<?php foreach($teams as $curTeam) { ?>
+					<tr class="team" data-team-id="<?php echo $curTeam->getId() ?>">
+						<td>
+							<?php echo $winningTeamsCount++; ?>
+						</td><td>
+							<?php echo $curTeam->getName() ?>
+						</td><td>
+							<?php echo $curTeam->getLeague()->getFormattedName() ?>
+						</td><td>
+							<a href='mailto:<?php echo $curTeam->getCaptain()->getEmail() ?>'>
+								<?php echo $curTeam->getCaptain()->getFirstName() . ' ' . $curTeam->getCaptain()->getLastName() ?>
+							</a>
+						</td>
+						<td></td>
+					</tr>
+				<?php } ?>
+			</tbody>
+		</table>
+	</div>
+</div>
+
+<script>
+	$(function() {
+	});
+</script>
