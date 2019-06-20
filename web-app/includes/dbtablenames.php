@@ -13,6 +13,8 @@ abstract class Includes_DBTableNames {
 	const leaguesTable = 'leagues_dbtable';
 	const playersTable = 'players_dbtable';
 	const prizesTable = 'prizes';
+	const prizesAvailableTable = 'prizes_available_dbtable';
+	const prizesTimeframesTable = 'prizes_timeframes_dbtable';
 	const propertiesTable = 'properties_dbtable';
 	const registrationCommentsTable = 'registration_comments_dbtable';
 	const scheduledMatchesTable = 'scheduled_matches_dbtable';

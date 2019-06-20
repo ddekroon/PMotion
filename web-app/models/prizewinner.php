@@ -9,10 +9,13 @@ class Models_PrizeWinner extends Models_Generic implements Models_Interface, Jso
 	protected $isSent;
 	protected $teamId;
 	protected $userId;
-	protected $timeFrame;
+	protected $timeframeId;
+	protected $prizeAvailableId;
 	
 	private $team;
 	private $user;
+	private $prizeAvailable;
+	private $prizeTimeframe;
     		
 	public static function withID($db, $logger, $id) {
 		$instance = new self();
@@ -49,14 +52,15 @@ class Models_PrizeWinner extends Models_Generic implements Models_Interface, Jso
             $this->id = $data['prize_id'];
 		}
 
-		$this->$winnerName = $data['prize_winner_name'];
-		$this->$winnerEmail = $data['prize_winner_email'];
-		$this->$description = $data['prize_description'];
-		$this->$isShowName = $data['prize_show_name'] > 0;
-		$this->$isSent = $data['prize_sent'] > 0;
-		$this->$teamId = $data['prize_team_id'];
-		$this->$userId = $data['prize_team_user_id'];
-		$this->$timeFrame = $data['prize_time_frame'];
+		$this->winnerName = $data['prize_winner_name'];
+		$this->winnerEmail = $data['prize_winner_email'];
+		$this->description = $data['prize_description'];
+		$this->isShowName = $data['prize_show_name'] > 0;
+		$this->isSent = $data['prize_sent'] > 0;
+		$this->teamId = $data['prize_team_id'];
+		$this->userId = $data['prize_team_user_id'];
+		$this->timeframeId = $data['prize_time_frame'];
+		$this->prizeAvailableId = $data['prize_available_id'];
 	}
 	
 	function getTeam() {
@@ -69,10 +73,26 @@ class Models_PrizeWinner extends Models_Generic implements Models_Interface, Jso
 
 	function getUser() {
 		if($this->user == null && $this->db != null) {
-			$this->user = Models_Usert::withID($this->db, $this->logger, $this->getUserId());
+			$this->user = Models_User::withID($this->db, $this->logger, $this->getUserId());
 		}
 		
 		return $this->user;
+	}
+
+	function getPrizeAvailable() {
+		if($this->prizeAvailable == null && $this->db != null) {
+			$this->prizeAvailable = Models_PrizeAvailable::withID($this->db, $this->logger, $this->getPrizeAvailableId());
+		}
+		
+		return $this->prizeAvailable;
+	}
+
+	function getPrizeTimeframe() {
+		if($this->prizeTimeframe == null && $this->db != null) {
+			$this->prizeTimeframe = Models_PrizeTimeframe::withID($this->db, $this->logger, $this->getPrizeTimeframeId());
+		}
+		
+		return $this->prizeTimeframe;
 	}
 	
 	function setTeam($team) {
@@ -115,8 +135,8 @@ class Models_PrizeWinner extends Models_Generic implements Models_Interface, Jso
 		return $this->userId;
 	}
 
-	function getTimeFrame() {
-		return $this->timeFrame;
+	function getTimeframeId() {
+		return $this->timeframeId;
 	}
 
 	function setWinnerName($winnerName) {
@@ -147,8 +167,16 @@ class Models_PrizeWinner extends Models_Generic implements Models_Interface, Jso
 		$this->userId = $userId;
 	}
 
-	function setTimeFrame($timeFrame) {
-		$this->timeFrame = $timeFrame;
+	function setTimeframeId($timeframeId) {
+		$this->timeframeId = $timeframeId;
+	}
+
+	function getPrizeAvailableId() {
+		return $this->prizeAvailableId;
+	}
+
+	function setPrizeAvailableId($prizeAvailableId) {
+		$this->prizeAvailableId = $prizeAvailableId;
 	}
 	
 	function saveOrUpdate() {
@@ -164,10 +192,10 @@ class Models_PrizeWinner extends Models_Generic implements Models_Interface, Jso
 			$stmt = $this->db->prepare("INSERT INTO " . Includes_DBTableNames::prizesTable . " "
 					. "(
 						prize_winner_name, prize_winner_email, prize_description, prize_show_name, 
-						prize_sent, prize_team_id, prize_team_user_id, prize_time_frame
+						prize_sent, prize_team_id, prize_team_user_id, prize_time_frame, prize_available_id
 					) "
 					. "VALUES "
-					. "(?, ?, ?, ?, ?, ?, ?, ?)"
+					. "(?, ?, ?, ?, ?, ?, ?, ?, ?)"
 			);
 			
 			$this->db->beginTransaction(); 
@@ -180,7 +208,8 @@ class Models_PrizeWinner extends Models_Generic implements Models_Interface, Jso
 					$this->getIsSent() ? 1 : 0, 
 					$this->getTeamId(), 
 					$this->getUserId(), 
-					$this->getTimeFrame()
+					$this->getTimeframeId(),
+					$this->getPrizeAvailableId()
 				)
 			); 
 			
@@ -195,7 +224,7 @@ class Models_PrizeWinner extends Models_Generic implements Models_Interface, Jso
 	
 	public function update() {
 		try {			
-			$stmt = $this->db->prepare("UPDATE " . Includes_DBTableNames::teamsTable . " SET "
+			$stmt = $this->db->prepare("UPDATE " . Includes_DBTableNames::prizesTable . " SET "
 					. "
 						prize_winner_name = ?, 
 						prize_winner_email = ?, 
@@ -204,7 +233,8 @@ class Models_PrizeWinner extends Models_Generic implements Models_Interface, Jso
 						prize_sent = ?, 
 						prize_team_id = ?, 
 						prize_team_user_id = ?, 
-						prize_time_frame = ?
+						prize_time_frame = ?,
+						prize_available_id = ?
 					WHERE prize_id = ?
 					"
 			);
@@ -219,7 +249,8 @@ class Models_PrizeWinner extends Models_Generic implements Models_Interface, Jso
 					$this->getIsSent() ? 1 : 0, 
 					$this->getTeamId(), 
 					$this->getUserId(), 
-					$this->getTimeFrame(),
+					$this->getTimeframeId(),
+					$this->getPrizeAvailableId(),
 					$this->getId()
 				)
 			); 
