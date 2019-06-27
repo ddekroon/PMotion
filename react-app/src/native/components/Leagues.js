@@ -1,18 +1,81 @@
 import React from 'react';
-import { createAppContainer, createMaterialTopTabNavigator } from 'react-navigation';
+import { createAppContainer, createMaterialTopTabNavigator, createStackNavigator } from 'react-navigation';
 
-import FootballScreen from '../components/Football';
-import UltimateScreen from '../components/Ultimate';
-import SoccerScreen from '../components/Soccer';
-import VolleyballScreen from '../components/Volleyball';
-import { Container } from 'native-base';
+import FootballScreen from './sportTabs/Football';
+
+import SoccerScreen from './sportTabs/Soccer';
+
+import VolleyballScreen from './sportTabs/Volleyball';
+
+import UltimateScreen from './sportTabs/Ultimate';
+import B7Division from './ultimateLeagues/B7Division';
+import BDivision from './ultimateLeagues/BDivision';
+import CDivision from './ultimateLeagues/CDivision';
+import BCDivision from './ultimateLeagues/BCDivision';
+import C1B2Division from './ultimateLeagues/C1B2Division';
+import C2Division from './ultimateLeagues/C2Division';
+
+const divisionNavOptions = {
+  navigationOptions: () => ({
+    headerBackTitle: null,
+    headerTintColor: 'red',
+  }),
+}
+
+export const UltimateStack = value => createStackNavigator ({
+  //theres lots of optons we can style with here
+    Home: {
+      screen: props => <UltimateScreen {...value} {...props} />,
+      navigationOptions: () => ({
+        header: null,
+        headerBackTitle: null,
+      }),
+    },
+    B7Division: {
+      screen: B7Division,
+      ...divisionNavOptions,
+    },
+    BDivision: {
+      screen: BDivision,
+      ...divisionNavOptions,
+    },
+    CDivision: {
+      screen: CDivision,
+      ...divisionNavOptions,
+    },
+    BCDivision: {
+      screen: BCDivision,
+      ...divisionNavOptions,
+    },
+    C1B2Division: {
+      screen: C1B2Division,
+      ...divisionNavOptions,
+    },
+    C2Division: {
+      screen: C2Division,
+      ...divisionNavOptions,
+    }
+
+  });
+
+export const VolleyballStack = createStackNavigator({
+    Home: VolleyballScreen,
+  });
+
+export const FootballStack = createStackNavigator({
+  Home: FootballScreen,
+});
+
+export const SoccerStack = createStackNavigator({
+  Home: SoccerScreen,
+});
 
 const sportsNavigator = value => createMaterialTopTabNavigator(
   {
-    Ultimate: { screen: props => <UltimateScreen {...value} {...props} /> },
-    VolleyBall: VolleyballScreen,
-    Soccer: SoccerScreen,
-    Football: FootballScreen,
+    Ultimate: UltimateStack(value),
+    VolleyBall: VolleyballStack,
+    Soccer: SoccerStack,
+    Football: FootballStack,
   },
 
   {
@@ -37,12 +100,13 @@ const sportsNavigator = value => createMaterialTopTabNavigator(
 
 export default class Leagues extends React.Component {
   //state object
-  state = {
-    isShowingText: true,
-    currentSport: 1, //Ultimate
-    seasonsWithLeaguesBySport: { 1: [], 2: [], 3: [], 4: [] }
-  }
 
+    state = {
+      isShowingText: true,
+      currentSport: 1, //Ultimate
+      seasonsWithLeaguesBySport: { 1: [], 2: [], 3: [], 4: [] }
+    }
+  
   componentDidMount() {
 
     var localSeasonsWithLeaguesBySport = {};
