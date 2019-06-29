@@ -1,6 +1,7 @@
 import React from 'react';
 import { Scene, Tabs, Stack } from 'react-native-router-flux';
 import { Icon } from 'native-base';
+import { View, Text, Image } from 'react-native';
 
 import DefaultProps from '../constants/navigation';
 import AppConfig from '../../constants/config';
@@ -30,7 +31,6 @@ import ProfileComponent from '../components/Profile';
 import LeaguesContainer from '../../containers/Leagues';
 import LeaguesComponent from '../components/Leagues';
 
-
 const Index = (
   <Stack hideNavBar>
     <Scene hideNavBar>
@@ -39,30 +39,45 @@ const Index = (
         swipeEnabled
         type="replace"
         showLabel={false}
-        {...DefaultProps.tabProps}      
+        {...DefaultProps.tabProps}
       >
         <Stack
-          key="home"
-          title={AppConfig.appName.toUpperCase()}
-          icon={() => <Icon name="home" {...DefaultProps.icons} />}
+          key="leagues"
+          title='Leagues'
+          icon={() =>
+            <View style={{ flex: 1, flexDirection: 'column', alignItems: 'center', alignSelf: 'center', justifyContent: 'center' }}>
+              <Image style={{ width: 20, height: 20 }} source={require('../../images/icons/leagues.png')} />
+              <Text style={{ marginTop: 2, color: '#ffffff', fontSize: 11 }}>Leagues</Text>
+            </View>
+          }
           {...DefaultProps.navbarProps}
         >
           <Scene key="home" component={LeaguesContainer} Layout={LeaguesComponent} />
         </Stack>
 
         <Stack
-          key="recipes"
-          title="RECIPES"
-          icon={() => <Icon name="book" {...DefaultProps.icons} />}
+          key="reportScores"
+          title="Report Scores"
+          icon={() =>
+            <View style={{ flex: 1, flexDirection: 'column', alignItems: 'center', alignSelf: 'center', justifyContent: 'center' }}>
+              <Image style={{ height: 20, width: 27 }} source={require('../../images/icons/scores.png')} />
+              <Text style={{ marginTop: 2, color: '#ffffff', fontSize: 11 }}>Report Scores</Text>
+            </View>
+          }
           {...DefaultProps.navbarProps}
         >
           <Scene key="recipes" component={RecipesContainer} Layout={RecipesComponent} />
         </Stack>
 
         <Stack
-          key="profile"
-          title="PROFILE"
-          icon={() => <Icon name="contact" {...DefaultProps.icons} />}
+          key="registration"
+          title="Registration"
+          icon={() =>
+            <View style={{ flex: 1, flexDirection: 'column', alignItems: 'center', alignSelf: 'center', justifyContent: 'center' }}>
+              <Image style={{ width: 20, height: 20 }} source={require('../../images/icons/registration.png')} />
+              <Text style={{ marginTop: 2, color: '#ffffff', fontSize: 11 }}>Registration</Text>
+            </View>
+          }
           {...DefaultProps.navbarProps}
         >
           <Scene key="profileHome" component={MemberContainer} Layout={ProfileComponent} />

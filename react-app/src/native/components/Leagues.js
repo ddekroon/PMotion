@@ -1,41 +1,14 @@
 import React from 'react';
 import { createAppContainer, createMaterialTopTabNavigator, createStackNavigator } from 'react-navigation';
-
+import Loading from './Loading'
 import SportLeagueNav from '../components/SportLeagueNav';
-import LeagueOptionsNav from '../components/LeagueOptionsNav';
 
-const divisionNavOptions = {
-  navigationOptions: () => ({
-    headerBackTitle: null,
-    headerTintColor: 'red',
-  }),
-}
-
-const homeNavOptions = {
-  navigationOptions: () => ({
-    header: null,
-    headerBackTitle: null,
-  })
-}
-   
-export const sportStackNavigator = value => createStackNavigator ({
-  //theres lots of optons we can style with here
-    Home: {
-      screen: sportsTabs(value),
-      ...homeNavOptions
-    },
-    LeagueOptionsNav: {
-      screen: props => <LeagueOptionsNav {...value} {...props} />,
-      ...divisionNavOptions,
-    },
-  });
-
-const sportsTabs = value => createMaterialTopTabNavigator(
+const sportsNavigator = value => createMaterialTopTabNavigator(
   {
-    Ultimate: props => <SportLeagueNav {...value} {...props} />,
-    VolleyBall: props => <SportLeagueNav {...value} {...props} />,
-    Soccer: props => <SportLeagueNav {...value} {...props} />,
-    Football: props => <SportLeagueNav {...value} {...props} />,
+    Ultimate: props => <SportLeagueNav {...value} {...props} sportId='1' />,
+    VolleyBall: props => <SportLeagueNav {...value} {...props} sportId='2' />,
+    Soccer: props => <SportLeagueNav {...value} {...props} sportId='4' />,
+    Football: props => <SportLeagueNav {...value} {...props} sportId='3' />
   },
 
   {
@@ -60,15 +33,19 @@ const sportsTabs = value => createMaterialTopTabNavigator(
 
 export default class Leagues extends React.Component {
   //state object
+  constructor(props) {
+    super(props);
 
-    state = {
+    this.state = {
       isShowingText: true,
-      currentSport: 1, //Ultimate
+      sports: [],
+      loading: true,
       seasonsWithLeaguesBySport: { 1: [], 2: [], 3: [], 4: [] }
-    }
-  
-  componentDidMount() {
+    };
+  }
 
+  componentDidMount() {
+    this.state.sports = this.props.lookups.sports;
     var localSeasonsWithLeaguesBySport = {};
     var component = this;
 
@@ -103,17 +80,18 @@ export default class Leagues extends React.Component {
       localSeasonsWithLeaguesBySport[curSport.id] = seasonsForSport;
     });
 
-    component.state.seasonsWithLeaguesBySport = localSeasonsWithLeaguesBySport;
+    this.setState({
+      seasonsWithLeaguesBySport: localSeasonsWithLeaguesBySport,
+      loading: false
+    })
   }
 
   render() {
-    const SportsNavigator = createAppContainer(sportStackNavigator(this.state));
+    if (this.state.loading) return <Loading />;
+
+    const SportsNavigator = createAppContainer(sportsNavigator(this.state));
     return (
-      <SportsNavigator
-        onNavigationStateChange={(prevState, currentState) => {
-          this.state.currentSport = this.props.lookups.sports[currentState.index].id;
-        }}
-      />
+      <SportsNavigator />
     )
   }
 }
