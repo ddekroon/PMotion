@@ -3,4 +3,6 @@ export default {
   seasonsAvailableRegistration: [],
   seasonsAvailableScoreReporter: [],
   sports: [],
+  scoreReporterSeasons: [],
+  registrationSeasons: []
 };

@@ -11,7 +11,9 @@ export default function lookupReducer(state = initialState, action) {
           loading: false,
           seasonsAvailableRegistration: action.data.seasonsAvailableRegistration,
           seasonsAvailableScoreReporter: action.data.seasonsAvailableScoreReporter,
-          sports: action.data.sports
+          sports: action.data.sports,
+          scoreReporterSeasons: action.data.scoreReporterSeasons,
+          registrationSeasons: action.data.registrationSeasons
         };
       }
       return initialState;
