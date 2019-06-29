@@ -1,19 +1,8 @@
 import React from 'react';
 import { createAppContainer, createMaterialTopTabNavigator, createStackNavigator } from 'react-navigation';
 
-import FootballScreen from './sportTabs/Football';
-
-import SoccerScreen from './sportTabs/Soccer';
-
-import VolleyballScreen from './sportTabs/Volleyball';
-
-import UltimateScreen from './sportTabs/Ultimate';
-import B7Division from './ultimateLeagues/B7Division';
-import BDivision from './ultimateLeagues/BDivision';
-import CDivision from './ultimateLeagues/CDivision';
-import BCDivision from './ultimateLeagues/BCDivision';
-import C1B2Division from './ultimateLeagues/C1B2Division';
-import C2Division from './ultimateLeagues/C2Division';
+import SportLeagueNav from '../components/SportLeagueNav';
+import LeagueOptionsNav from '../components/LeagueOptionsNav';
 
 const divisionNavOptions = {
   navigationOptions: () => ({
@@ -22,60 +11,31 @@ const divisionNavOptions = {
   }),
 }
 
-export const UltimateStack = value => createStackNavigator ({
+const homeNavOptions = {
+  navigationOptions: () => ({
+    header: null,
+    headerBackTitle: null,
+  })
+}
+   
+export const sportStackNavigator = value => createStackNavigator ({
   //theres lots of optons we can style with here
     Home: {
-      screen: props => <UltimateScreen {...value} {...props} />,
-      navigationOptions: () => ({
-        header: null,
-        headerBackTitle: null,
-      }),
+      screen: sportsTabs(value),
+      ...homeNavOptions
     },
-    B7Division: {
-      screen: B7Division,
+    LeagueOptionsNav: {
+      screen: props => <LeagueOptionsNav {...value} {...props} />,
       ...divisionNavOptions,
     },
-    BDivision: {
-      screen: BDivision,
-      ...divisionNavOptions,
-    },
-    CDivision: {
-      screen: CDivision,
-      ...divisionNavOptions,
-    },
-    BCDivision: {
-      screen: BCDivision,
-      ...divisionNavOptions,
-    },
-    C1B2Division: {
-      screen: C1B2Division,
-      ...divisionNavOptions,
-    },
-    C2Division: {
-      screen: C2Division,
-      ...divisionNavOptions,
-    }
-
   });
 
-export const VolleyballStack = createStackNavigator({
-    Home: VolleyballScreen,
-  });
-
-export const FootballStack = createStackNavigator({
-  Home: FootballScreen,
-});
-
-export const SoccerStack = createStackNavigator({
-  Home: SoccerScreen,
-});
-
-const sportsNavigator = value => createMaterialTopTabNavigator(
+const sportsTabs = value => createMaterialTopTabNavigator(
   {
-    Ultimate: UltimateStack(value),
-    VolleyBall: VolleyballStack,
-    Soccer: SoccerStack,
-    Football: FootballStack,
+    Ultimate: props => <SportLeagueNav {...value} {...props} />,
+    VolleyBall: props => <SportLeagueNav {...value} {...props} />,
+    Soccer: props => <SportLeagueNav {...value} {...props} />,
+    Football: props => <SportLeagueNav {...value} {...props} />,
   },
 
   {
@@ -147,7 +107,7 @@ export default class Leagues extends React.Component {
   }
 
   render() {
-    const SportsNavigator = createAppContainer(sportsNavigator(this.state));
+    const SportsNavigator = createAppContainer(sportStackNavigator(this.state));
     return (
       <SportsNavigator
         onNavigationStateChange={(prevState, currentState) => {
@@ -157,3 +117,7 @@ export default class Leagues extends React.Component {
     )
   }
 }
+
+//this.setState({currentSport: this.props.lookups.sports[currentState.index].id});
+//this wont work right in the way it is set up right now, i have to change it for tabs instead of stack nav changes
+
