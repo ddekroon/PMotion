@@ -1,13 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {
-  Container, Content, Text, Form, Item, Label, Input, Button, Picker, Icon
+  Container, Content, Text, Form, Item, Label, Input, Button, Picker, Icon, Card, CardItem, Body
 } from 'native-base';
-import { Actions } from 'react-native-router-flux';
 import Loading from './Loading';
 import Messages from './Messages';
 import Spacer from './Spacer';
+import ScoreReporterMatch from './ScoreReporterMatch';
 import DateTimeHelpers from '../../utils/datetimehelpers';
+import LeagueHelpers from '../../utils/leaguehelpers';
 
 class ScoreReporter extends React.Component {
   static propTypes = {
@@ -31,13 +32,14 @@ class ScoreReporter extends React.Component {
       email: '',
       password: '',
       password2: '',
-      sportId: '',
-      leagueId: '',
-      isMultipleSeasons: false
+      sportId: '1',
+      leagueId: '1640',
+      matches: []
     };
 
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.updateMatchHandler = this.updateMatchHandler.bind(this);
   }
 
   calculateIsLeaguesToSelect = () => {
@@ -66,18 +68,28 @@ class ScoreReporter extends React.Component {
   handleSubmit = () => {
     const { onFormSubmit } = this.props;
     onFormSubmit(this.state)
-      .then(() => Actions.login())
+      .then(() => console.log("Form submitted"))
       .catch(e => console.log(`Error: ${e}`));
+  }
+
+  updateMatchHandler = (matchNum, obj) => {
+    var matches = this.state.matches;
+    matches[matchNum] = obj;
+
+    this.setState({
+      matches: matches
+    })
   }
 
   render() {
     const { loading, error } = this.props;
-    const { isMultipleSeasons } = this.state;
 
     if (loading) return <Loading />;
 
     var leaguePicker;
     var isLeagues = this.calculateIsLeaguesToSelect();
+    var curLeague = this.state.sportId != '' ? LeagueHelpers.getLeagueFromSeasons(this.props.seasons[this.state.sportId], this.state.leagueId) : null;
+    var isMultipleSeasons = this.state.sportId != '' ? this.props.seasons[this.state.sportId].length > 1 : false;
 
     if (this.state.sportId != '' && !isLeagues) {
       leaguePicker = <Item><Content padder><Text style={{ fontStyle: italic }}>No leagues to select</Text></Content></Item>;
@@ -113,68 +125,89 @@ class ScoreReporter extends React.Component {
       </Item>
     }
 
+    console.log(curLeague);
+
     return (
       <Container>
         <Content padder>
           {error && <Messages message={error} />}
 
           <Form>
-            <Item picker>
-              <Picker
-                note={false}
-                mode="dropdown"
-                iosIcon={<Icon name="arrow-down" />}
-                style={{ flex: 1 }}
-                selectedValue={this.state.sportId}
-                placeholder="Sport"
-                onValueChange={(val, index) => {
-                  this.handleChange('sportId', val)
-                  this.handleChange('leagueId', '')
-                }}
-              >
-                <Picker.Item key={0} label={'Sport'} value={''} />
-                {
-                  this.props.sports.map((curSport) => {
-                    return <Picker.Item key={curSport.id} label={curSport.name} value={curSport.id} />
-                  })
-                }
-              </Picker>
-            </Item>
+            <Card>
+              <CardItem>
+                <Body>
+                  <Item picker>
+                    <Picker
+                      note={false}
+                      mode="dropdown"
+                      iosIcon={<Icon name="arrow-down" />}
+                      style={{ flex: 1 }}
+                      selectedValue={this.state.sportId}
+                      placeholder="Sport"
+                      onValueChange={(val, index) => {
+                        this.handleChange('sportId', val)
+                        this.handleChange('leagueId', '')
+                      }}
+                    >
+                      <Picker.Item key={0} label={'Sport'} value={''} />
+                      {
+                        this.props.sports.map((curSport) => {
+                          return <Picker.Item key={curSport.id} label={curSport.name} value={curSport.id} />
+                        })
+                      }
+                    </Picker>
+                  </Item>
 
-            {leaguePicker}
+                  {leaguePicker}
+                </Body>
+              </CardItem>
+            </Card>
 
-            <Item fixedLabel>
-              <Label>
-                Team
-              </Label>
-              <Input
-                autoCapitalize="none"
-                keyboardType="email-address"
-                onChangeText={v => this.handleChange('email', v)}
-              />
-            </Item>
+            {
+              curLeague != null &&
+              <ScoreReporterMatch
+                matchNum={0}
+                updateMatchHandler={this.updateMatchHandler}
+                loading={loading} />
+              /*(new Array(curLeague.numMatches)).forEach((match, index) => {
+              console.log("Match index: " + index + ":" + typeof (index));
+            console.log(typeof (this.updateMatchHandler));
 
-            <Item fixedLabel>
-              <Label>
-                Password
-              </Label>
-              <Input secureTextEntry onChangeText={v => this.handleChange('password', v)} />
-            </Item>
+                return <ScoreReporterMatch
+              matchNum={index}
+              updateMatchHandler={this.updateMatchHandler}
+              loading={loading} />
+            })*/
+            }
 
-            <Item fixedLabel>
-              <Label>
-                Confirm Password
-              </Label>
-              <Input secureTextEntry onChangeText={v => this.handleChange('password2', v)} />
-            </Item>
+            <Card>
+              <CardItem>
+                <Body>
+                  <Item inlineLabel underline>
+                    <Label>
+                      Name
+                    </Label>
+                    <Input onChangeText={v => this.handleChange('name', v)} />
+                  </Item>
+                  <Item inlineLabel underline>
+                    <Label>
+                      Email
+                    </Label>
+                    <Input
+                      autoCapitalize="none"
+                      keyboardType="email-address"
+                      onChangeText={v => this.handleChange('email', v)}
+                    />
+                  </Item>
 
-            <Spacer size={20} />
+                  <Spacer size={20} />
 
-            <Button block onPress={this.handleSubmit}>
-              <Text>
-                Sign Up
-              </Text>
-            </Button>
+                  <Button block onPress={this.handleSubmit}>
+                    <Text>Submit Score</Text>
+                  </Button>
+                </Body>
+              </CardItem>
+            </Card>
           </Form>
         </Content>
       </Container >
