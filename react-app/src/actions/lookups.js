@@ -56,6 +56,11 @@ const parseSeasonsBySport = (sports, seasons) => {
         leagues: []
       }
 
+      if (curSeason.leagues == null) { //season doesn't have any leagues yet
+        seasonsForSport.push(season);
+        return true;
+      }
+
       var curSeasonAndSportLeagues = curSeason.leagues.filter(league => league.sportId == curSport.id);
       curSeasonAndSportLeagues.sort(function compare(a, b) {
         if (a.dayNumber < b.dayNumber) {

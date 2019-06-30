@@ -6,8 +6,8 @@ import {
 import { Actions } from 'react-native-router-flux';
 import Loading from './Loading';
 import Messages from './Messages';
-import Header from './Header';
 import Spacer from './Spacer';
+import DateTimeHelpers from '../../utils/datetimehelpers';
 
 class ScoreReporter extends React.Component {
   static propTypes = {
@@ -24,6 +24,7 @@ class ScoreReporter extends React.Component {
 
   constructor(props) {
     super(props);
+
     this.state = {
       firstName: '',
       lastName: '',
@@ -31,22 +32,34 @@ class ScoreReporter extends React.Component {
       password: '',
       password2: '',
       sportId: '',
-      leagueId: ''
+      leagueId: '',
+      isMultipleSeasons: false
     };
 
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
+  calculateIsLeaguesToSelect = () => {
+    if (this.props.seasons == null || this.state.sportId == '') {
+      return false;
+    }
+
+    var numLeagues = 0;
+    var seasonsWithLeagues = this.props.seasons[this.state.sportId].forEach((curSeason) => {
+      if (curSeason.leagues == null || numLeagues > 0) {
+        return true; //continue
+      }
+
+      numLeagues += curSeason.leagues.length;
+    });
+
+    return numLeagues > 0;
+  }
+
   handleChange = (name, val) => {
     this.setState({
       [name]: val,
-    });
-  }
-
-  onValueChange(value) {
-    this.setState({
-      sportId: value
     });
   }
 
@@ -59,8 +72,46 @@ class ScoreReporter extends React.Component {
 
   render() {
     const { loading, error } = this.props;
+    const { isMultipleSeasons } = this.state;
 
     if (loading) return <Loading />;
+
+    var leaguePicker;
+    var isLeagues = this.calculateIsLeaguesToSelect();
+
+    if (this.state.sportId != '' && !isLeagues) {
+      leaguePicker = <Item><Content padder><Text style={{ fontStyle: italic }}>No leagues to select</Text></Content></Item>;
+    } else if (isLeagues) {
+      leaguePicker = <Item picker>
+        <Picker
+          note={false}
+          mode="dropdown"
+          iosIcon={<Icon name="arrow-down" />}
+          style={{ flex: 1 }}
+          selectedValue={this.state.leagueId}
+          placeholder="League"
+          onValueChange={(val, index) => this.handleChange('leagueId', val)}
+        >
+          <Picker.Item key={0} label={'League'} value={''} />
+          {
+            this.props.seasons[this.state.sportId].map((curSeason) => {
+              if (curSeason.leagues == null) {
+                return;
+              }
+
+              return curSeason.leagues.map((curLeague) => {
+                var leagueName = curLeague.name + " - " + DateTimeHelpers.getDayString(curLeague.dayNumber);
+                if (isMultipleSeasons) {
+                  leagueName = leagueName + " - " + curSeason.name;
+                }
+
+                return <Picker.Item key={curLeague.id} label={leagueName} value={curLeague.id} />
+              });
+            })
+          }
+        </Picker>
+      </Item>
+    }
 
     return (
       <Container>
@@ -76,8 +127,12 @@ class ScoreReporter extends React.Component {
                 style={{ flex: 1 }}
                 selectedValue={this.state.sportId}
                 placeholder="Sport"
-                onValueChange={this.onValueChange.bind(this)}
+                onValueChange={(val, index) => {
+                  this.handleChange('sportId', val)
+                  this.handleChange('leagueId', '')
+                }}
               >
+                <Picker.Item key={0} label={'Sport'} value={''} />
                 {
                   this.props.sports.map((curSport) => {
                     return <Picker.Item key={curSport.id} label={curSport.name} value={curSport.id} />
@@ -86,23 +141,7 @@ class ScoreReporter extends React.Component {
               </Picker>
             </Item>
 
-            <Item fixedLabel>
-              <Picker
-                note={false}
-                mode="dropdown"
-                iosIcon={<Icon name="arrow-down" />}
-                style={{ flex: 1 }}
-                selectedValue={this.state.leagueId}
-                placeholder="Sport"
-                onValueChange={this.onValueChange.bind(this)}
-              >
-                {
-                  this.props.sports.map((curSport) => {
-                    return <Picker.Item key={curSport.id} label={curSport.name} value={curSport.id} />
-                  })
-                }
-              </Picker>
-            </Item>
+            {leaguePicker}
 
             <Item fixedLabel>
               <Label>
