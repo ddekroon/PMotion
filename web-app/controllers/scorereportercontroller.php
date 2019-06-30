@@ -285,54 +285,6 @@
 			}
 			return true;
 		}
-
-		//DD Feb 11, 2018: No longer using this function now that the email is templated.
-		//Formats a teams submission for an email and returns the text
-		/* public function printGameResults(array $submissions, $matchNum) {
-			
-			if($submissions == null || sizeof($submissions) <= $matchNum) {
-				return "";
-			}
-			
-			$league = $submissions[0]->getTeam()->getLeague();
-			
-			$contents = "Opposition:    " . $submissions[$matchNum]->getOppTeam()->getName() . "<br />";
-			
-			for($i = 0; $i < $league->getNumGamesPerMatch(); $i++) {
-				if(sizeof($submissions) <= $matchNum + $i) {
-					continue; //No submission for this game. Not sure how this is possible but hey, good to error check.
-				}
-				
-				$curSubmission = $submissions[$matchNum + $i];
-								
-				$contents .= 'Game ';
-				$contents .= $i + 1 . ':      We ' . $curSubmission->getResultsString();
-				
-				if($league->getIsAskForScores() || $league->getIsInPlayoffs()) {
-					$contents .= ' (Us:' . $curSubmission->getScoreUs() . ' Them: ' . $curSubmission->getScoreThem() . ')';
-				}
-				
-				$contents .= '<br />';
-			}
-			
-			$spiritScoreVal = 0;
-			$spiritScore = $submissions[$matchNum]->getSpiritScore();
-			
-			if($spiritScore != null) {
-				$spiritScoreVal = $spiritScore->getValue();
-			}
-			
-			if($spiritScoreVal == 0) {
-				$spiritScoreString = 'N/A';
-			} else {
-				$spiritScoreString = number_format((float)$spiritScoreVal, 1, '.', '');
-			}
-			
-			$contents .= '<br />Spirit Score ' . $spiritScoreString;
-			$contents .= '<br /><br />';
-			
-			return $contents;	
-		} */
 		
 		public function updateStandingsFromSubmissions(Models_Team $team, array $scoreSubmissions) {
 			foreach($scoreSubmissions as $submission) {

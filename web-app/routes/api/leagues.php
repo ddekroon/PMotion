@@ -6,12 +6,16 @@
 	$app->group('/api/leagues', function () use ($app) {
 		$app->get('/{leagueID}', function (Request $request, Response $response) {
 
+			$scheduledMatchesController = new Controllers_ScheduledMatchesController($this->db, $this->logger);
+
 			$leagueID = (int)$request->getAttribute('leagueID');
 			$league = Models_League::withID($this->db, $this->logger, $leagueID);
 
 			if($league->getId() > 0) {
 				$league->getTeams();
 			}
+
+			$league->setScheduledMatches($scheduledMatchesController->getLeagueScheduledMatchesForCurrentWeek($league));
 
 			$response->getBody()->write(json_encode($league));
 
