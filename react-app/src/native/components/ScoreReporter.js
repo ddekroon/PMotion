@@ -125,8 +125,6 @@ class ScoreReporter extends React.Component {
       </Item>
     }
 
-    console.log(curLeague);
-
     return (
       <Container>
         <Content padder>
@@ -149,7 +147,7 @@ class ScoreReporter extends React.Component {
                         this.handleChange('leagueId', '')
                       }}
                     >
-                      <Picker.Item key={0} label={'Sport'} value={''} />
+                      <Picker.Item key={0} label='Sport' value='' />
                       {
                         this.props.sports.map((curSport) => {
                           return <Picker.Item key={curSport.id} label={curSport.name} value={curSport.id} />
@@ -165,19 +163,13 @@ class ScoreReporter extends React.Component {
 
             {
               curLeague != null &&
-              <ScoreReporterMatch
-                matchNum={0}
-                updateMatchHandler={this.updateMatchHandler}
-                loading={loading} />
-              /*(new Array(curLeague.numMatches)).forEach((match, index) => {
-              console.log("Match index: " + index + ":" + typeof (index));
-            console.log(typeof (this.updateMatchHandler));
-
+              Array.apply(null, new Array(parseInt(curLeague.numMatches, 10))).map((e, index) => {
                 return <ScoreReporterMatch
-              matchNum={index}
-              updateMatchHandler={this.updateMatchHandler}
-              loading={loading} />
-            })*/
+                  league={curLeague}
+                  matchNum={index}
+                  updateMatchHandler={this.updateMatchHandler}
+                  loading={loading} />
+              })
             }
 
             <Card>
