@@ -17,9 +17,9 @@
 
 			$league->setScheduledMatches($scheduledMatchesController->getLeagueScheduledMatchesForCurrentWeek($league));
 
-			$response->getBody()->write(json_encode($league));
-
-			return $response;
+			return $response->withStatus(200)
+				->withHeader('Content-Type', 'application/json')
+				->write(json_encode($league));
 		});
 	});
 

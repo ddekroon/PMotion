@@ -16,9 +16,9 @@
 				$team->getIsPic();
 			}
 
-			$response->getBody()->write(json_encode($team));
-
-			return $response;
+			return $response->withStatus(200)
+				->withHeader('Content-Type', 'application/json')
+				->write(json_encode($team));
 		});
 
 		$app->get('/teams-for-league/{leagueID}', function (Request $request, Response $response) {

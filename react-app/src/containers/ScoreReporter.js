@@ -2,35 +2,45 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
-import { submitScores } from '../actions/scoreReporter';
+import { submitScores, updateScoreSubmission } from '../actions/scoreSubmission';
+import { fetchLeague } from '../actions/leagues';
 
 class ScoreReporter extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      errorMessage: null,
-      lookups: {}
+      errorMessage: null
     }
   }
+
   static propTypes = {
     Layout: PropTypes.func.isRequired,
-    onFormSubmit: PropTypes.func.isRequired,
     isLoading: PropTypes.bool.isRequired,
-    lookups: PropTypes.object.isRequired
+    lookups: PropTypes.object.isRequired,
+    leagues: PropTypes.object.isRequired,
+    scoreSubmission: PropTypes.object.isRequired,
+    updateScoreSubmission: PropTypes.func.isRequired,
+    onFormSubmit: PropTypes.func.isRequired,
+    getLeague: PropTypes.func.isRequired
   }
 
-  onFormSubmit = (data) => {
+  /*onFormSubmit = (data) => {
     const { onFormSubmit } = this.props;
     return onFormSubmit(data)
       .catch((err) => { this.setState({ errorMessage: err }); throw err; });
-  }
+  }*/
 
   render = () => {
     const {
       Layout,
       isLoading,
-      lookups
+      lookups,
+      getLeague,
+      leagues,
+      onFormSubmit,
+      scoreSubmission,
+      updateScoreSubmission
     } = this.props;
 
     const { errorMessage } = this.state;
@@ -41,20 +51,27 @@ class ScoreReporter extends Component {
         error={errorMessage}
         sports={lookups.sports}
         seasons={lookups.scoreReporterSeasons}
-        onFormSubmit={this.onFormSubmit}
+        onFormSubmit={onFormSubmit}
+        getLeague={getLeague}
+        leagues={leagues}
+        scoreSubmission={scoreSubmission}
+        updateScoreSubmission={updateScoreSubmission}
       />
     );
   }
 }
 
 const mapStateToProps = state => ({
-  member: state.member || {},
+  leagues: state.leagues || {},
   isLoading: state.status.loading || false,
   lookups: state.lookups || {},
+  scoreSubmission: state.scoreSubmission || {}
 });
 
 const mapDispatchToProps = {
+  updateScoreSubmission: updateScoreSubmission,
   onFormSubmit: submitScores,
+  getLeague: fetchLeague
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(ScoreReporter);

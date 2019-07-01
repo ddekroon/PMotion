@@ -84,7 +84,7 @@ class ScoreReporterMatch extends React.Component {
 					<Picker.Item key={0} label={label} value='' />
 					{
 						Array.apply(null, { length: maxPoints }).map((element, index) => {
-							return <Picker.Item key={index} label={index.toString()} value={index} />
+							return <Picker.Item key={index + 1} label={index.toString()} value={index} />
 						})
 					}
 				</Picker>
@@ -107,7 +107,7 @@ class ScoreReporterMatch extends React.Component {
 						{
 							Array.apply(null, new Array(parseInt(league.numGamesPerMatch, 10))).map((e, gameIndex) => {
 								var gameString = "Result " + (league.numGamesPerMatch > 1 ? (gameIndex + 1) : '');
-								return <Item picker>
+								return <Item key={gameIndex} picker>
 									<Picker
 										note={false}
 										mode="dropdown"
@@ -161,16 +161,16 @@ class ScoreReporterMatch extends React.Component {
 									this.handleChange('spiritScore', val)
 								}}
 							>
-								<Picker.Item key={0} label="Spirit Score" value='' />
-								<Picker.Item key={1} label="1" value={1} />
-								<Picker.Item key={2} label="1.5" value={1.5} />
-								<Picker.Item key={3} label="2" value={2} />
-								<Picker.Item key={4} label="2.5" value={2.5} />
-								<Picker.Item key={5} label="3" value={3} />
-								<Picker.Item key={6} label="3.5" value={3.5} />
-								<Picker.Item key={7} label="4" value={4} />
-								<Picker.Item key={8} label="4.5" value={4.5} />
-								<Picker.Item key={9} label="5" value={5} />
+								<Picker.Item label="Spirit Score" value='' />
+								<Picker.Item label="1" value={1} />
+								<Picker.Item label="1.5" value={1.5} />
+								<Picker.Item label="2" value={2} />
+								<Picker.Item label="2.5" value={2.5} />
+								<Picker.Item label="3" value={3} />
+								<Picker.Item label="3.5" value={3.5} />
+								<Picker.Item label="4" value={4} />
+								<Picker.Item label="4.5" value={4.5} />
+								<Picker.Item label="5" value={5} />
 							</Picker>
 						</Item>
 

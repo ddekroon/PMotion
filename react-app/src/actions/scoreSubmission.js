@@ -2,6 +2,13 @@ import ErrorMessages from '../constants/errors';
 import statusMessage from './status';
 import { Firebase, FirebaseRef } from '../lib/firebase';
 
+export function updateScoreSubmission(newScoreSubmission) {
+  return {
+    type: 'SCORE_SUBMISSION_UPDATE',
+    scoreSubmission: newScoreSubmission
+  };
+}
+
 /**
  * Submit score to the server
  */

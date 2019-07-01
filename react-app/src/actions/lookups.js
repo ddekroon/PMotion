@@ -2,9 +2,9 @@
   * Get lookups
   */
 export function getLookups(dispatch) {
-  console.log("Get lookups from api and store them in the store");
-
   return function (dispatch) {
+
+    console.log("Get lookups from api and store them in the store");
     return fetch('http://data.perpetualmotion.org/web-app/api/lookups')
       .then((response) => response.json())
       .then((responseJson) => {
@@ -43,7 +43,7 @@ const parseSeasonsBySport = (sports, seasons) => {
     return [];
   }
 
-  var localSeasonsWithLeaguesBySport = [];
+  var localSeasonsWithLeaguesBySport = {};
 
   sports.forEach(function (curSport, index) {
 

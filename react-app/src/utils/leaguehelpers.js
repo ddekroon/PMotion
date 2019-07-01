@@ -15,5 +15,9 @@ export default {
 		})
 
 		return league;
+	},
+
+	isValidLeagueId: (leagueId) => {
+		return !isNaN(leagueId) && parseInt(leagueId, 10) > 0;
 	}
 };
