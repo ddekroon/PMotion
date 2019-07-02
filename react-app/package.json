@@ -41,6 +41,7 @@
     "react-helmet": "^5.2.0",
     "react-native": "https://github.com/expo/react-native/archive/sdk-32.0.0.tar.gz",
     "react-native-router-flux": "4.0.6",
+    "react-navigation": "^3.11.0",
     "react-redux": "^6.0.0",
     "react-router-dom": "^4.2.2",
     "react-timer-mixin": "^0.13.4",

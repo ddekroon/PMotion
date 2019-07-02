@@ -35,8 +35,8 @@ export default class App extends React.Component {
 
     await getLookups();
 
-    this.setState({ 
-      loading: false 
+    this.setState({
+      loading: false
     });
   }
 
@@ -44,14 +44,14 @@ export default class App extends React.Component {
     const { loading } = this.state;
     const { store, persistor } = this.props;
 
-    let {height, width} = Dimensions.get('window');
-    console.log(height + " " + width);
+    let { height, width } = Dimensions.get('window');
+    //console.log(height + " " + width);
 
     if (loading) return <Loading />;
 
     return (
       <Root>
-        <StatusBar barStyle="default" hidden={false} translucent={true}/>
+        <StatusBar barStyle="default" hidden={false} translucent={true} />
         {/*<View
           style={{backgroundColor:'blue',width:width,height:height}}
         >
@@ -80,8 +80,8 @@ export default class App extends React.Component {
 
 let styles = StyleSheet.create({
   backgroundImage: {
-    position:'absolute',
-    width:83,
-    height:56
+    position: 'absolute',
+    width: 83,
+    height: 56
   }
 });
