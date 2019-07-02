@@ -7,5 +7,12 @@ export default {
     Tied: { text: 'We Tied', val: '3' },
     Cancelled: { text: 'Cancelled', val: '4' },
     Practice: { text: 'Practice', val: '5' },
+  },
+
+  messageTypes: {
+    None: 'none',
+    Alert: 'alert',
+    Error: 'error',
+    Success: 'success'
   }
 };

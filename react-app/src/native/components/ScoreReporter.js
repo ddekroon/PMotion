@@ -1,15 +1,17 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { KeyboardAvoidingView } from 'react-native';
 import {
-  Container, Content, Text, Form, Item, Label, Input, Button, Picker, Icon, Card, CardItem, Body
+  Content, Text, Form, Item, Label, Input, Button, Picker, Icon, Card, CardItem, Body
 } from 'native-base';
 import Loading from './Loading';
-import Messages from './Messages';
 import Spacer from './Spacer';
 import TeamPicker from './common/TeamPicker';
 import ScoreReporterMatch from './ScoreReporterMatch';
 import DateTimeHelpers from '../../utils/datetimehelpers';
-import LeagueHelpers from '../../utils/leaguehelpers';
+import ValidationHelpers from '../../utils/validationhelpers';
+import ToastHelpers from '../../utils/toasthelpers';
+import Enums from '../../constants/enums';
 
 class ScoreReporter extends React.Component {
   static propTypes = {
@@ -21,7 +23,9 @@ class ScoreReporter extends React.Component {
     sports: PropTypes.array.isRequired,
     seasons: PropTypes.object.isRequired,
     scoreSubmission: PropTypes.object.isRequired,
-    updateScoreSubmission: PropTypes.func.isRequired
+    updateScoreSubmission: PropTypes.func.isRequired,
+    resetMatches: PropTypes.func.isRequired,
+    resetSubmission: PropTypes.func.isRequired
   }
 
   static defaultProps = {
@@ -53,51 +57,97 @@ class ScoreReporter extends React.Component {
   }
 
   handleSubmit = () => {
-    /*const { onFormSubmit } = this.props;
+    const { onFormSubmit } = this.props;
     onFormSubmit()
-      .then(() => console.log("Form submitted"))
-      .catch(e => console.log(`Error: ${e}`));*/
-    console.log("handle submit");
+      .catch(e => {
+        ToastHelpers.showToast(Enums.messageTypes.Error, e.message);
+        console.log(`Error: ${e.message}`)
+      });
   }
 
   handleChange = (name, val) => {
-    var newSubmission = this.props.scoreSubmission;
-    newSubmission[name] = val;
+    const { scoreSubmission } = this.props;
 
-    this.props.updateScoreSubmission(newSubmission);
+    var newSubmission = {
+      ...scoreSubmission,
+      [name]: val
+    };
+
+    if (name == 'sportId') {
+      newSubmission['leagueId'] = '';
+      newSubmission['teamId'] = '';
+    }
 
     // Get the league via the API and store it into the store under store.leagues
     if (name == 'leagueId') {
+      newSubmission['teamId'] = '';
       this.props.getLeague(val);
+    }
+
+    if (name == 'teamId' && val != '') {
+      const { leagues } = this.props;
+      var league = leagues[newSubmission.leagueId];
+
+      if (league.scheduledMatches == null || league.scheduledMatches.length == 0) {
+        return;
+      }
+
+      var teamMatches = league.scheduledMatches.filter((curMatch) => curMatch.teamOneId == val || curMatch.teamTwoId == val);
+
+      for (var i = 0; i < Math.min(parseInt(league.numMatches, 10), teamMatches.length); i++) {
+        if (teamMatches[i].teamOneId == val) {
+          newSubmission.matches[i].oppTeamId = teamMatches[i].teamTwoId;
+        } else {
+          newSubmission.matches[i].oppTeamId = teamMatches[i].teamOneId;
+        }
+      }
+    }
+
+    this.props.updateScoreSubmission(newSubmission);
+
+    // Pending sport, league, or team have been udpated the matches need to be reset
+    // Needs to happen after first update score submission or else the matches udpate will get lost with the overall submission update
+    if (name == 'sportId' || name == 'leagueId' || name == 'teamId') {
+      this.props.resetMatches();
     }
   }
 
   updateMatchHandler = (matchNum, obj) => {
-    //var { scoreSubmission } = this.props;
-    //scoreSubmission.matches[matchNum] = obj;
 
-    console.log("Update Match: " + matchNum + " - " + obj);
+    var { scoreSubmission } = this.props;
 
-    //this.props.updateScoreSubmission(scoreSubmission);
+    var newMatchResults = scoreSubmission.matches.map((match, index) => {
+      if (index != matchNum) {
+        return match
+      }
+
+      return obj
+    })
+
+    var newSubmissions = {
+      ...scoreSubmission,
+      matches: newMatchResults
+    }
+
+    this.props.updateScoreSubmission(newSubmissions);
   }
 
   render() {
-    const { loading, error, scoreSubmission, seasons, leagues } = this.props;
+    const { loading, error, scoreSubmission, seasons, leagues, resetSubmission } = this.props;
 
     if (loading) return <Loading />;
+
+    console.log("Render score reporter: " + JSON.stringify(scoreSubmission.matches[0]))
 
     var leaguePicker;
     var isLeagues = this.calculateIsLeaguesToSelect();
     var league = leagues[scoreSubmission.leagueId];
     var isMultipleSeasons = scoreSubmission.sportId != '' ? seasons[scoreSubmission.sportId].length > 1 : false;
 
-    console.log("Score submission teamID: " + scoreSubmission.teamId);
-
-
     if (scoreSubmission.sportId != '' && !isLeagues) {
       leaguePicker = <Item><Content padder><Text style={{ fontStyle: italic }}>No leagues to select</Text></Content></Item>;
     } else if (isLeagues) {
-      leaguePicker = <Item picker>
+      leaguePicker = <Item picker error={scoreSubmission.leagueId == ''}>
         <Picker
           note={false}
           mode="dropdown"
@@ -107,7 +157,6 @@ class ScoreReporter extends React.Component {
           placeholder="League"
           onValueChange={(val, index) => {
             this.handleChange('leagueId', val)
-            this.handleChange('teamId', '')
           }}
         >
           <Picker.Item key={0} label={'League'} value={''} />
@@ -132,99 +181,111 @@ class ScoreReporter extends React.Component {
     }
 
     return (
-      <Container>
+      <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding" enabled>
         <Content padder>
-          {error && <Messages message={error} />}
+          {!scoreSubmission.submitted &&
+            <Form>
+              <Card>
+                <CardItem>
+                  <Body>
+                    <Item picker error={scoreSubmission.sportId == ''}>
+                      <Picker
+                        note={false}
+                        mode="dropdown"
+                        iosIcon={<Icon name="arrow-down" />}
+                        style={{ flex: 1 }}
+                        selectedValue={scoreSubmission.sportId}
+                        placeholder="Sport"
+                        onValueChange={(val, index) => {
+                          this.handleChange('sportId', val)
+                        }}
+                      >
+                        <Picker.Item key={0} label='Sport' value='' />
+                        {
+                          this.props.sports.map((curSport) => {
+                            return <Picker.Item key={curSport.id} label={curSport.name} value={curSport.id} />
+                          })
+                        }
+                      </Picker>
+                    </Item>
 
-          <Form>
+                    {leaguePicker}
+
+                    {
+                      league != null &&
+                      <TeamPicker
+                        loading={league.isFetching}
+                        teams={league.teams != null ? league.teams : []}
+                        curTeamId={scoreSubmission.teamId}
+                        onTeamUpdated={(val) => this.handleChange('teamId', val)}
+                      />
+                    }
+                  </Body>
+                </CardItem>
+              </Card>
+
+              {
+                league != null && !league.isFetching && scoreSubmission.teamId != '' &&
+                Array.apply(null, new Array(parseInt(league.numMatches, 10))).map((e, index) => {
+                  return <ScoreReporterMatch
+                    key={index}
+                    curTeamId={scoreSubmission.teamId}
+                    league={league}
+                    matchNum={index}
+                    updateMatchHandler={this.updateMatchHandler}
+                    matchSubmission={scoreSubmission.matches[index]} />
+                })
+              }
+
+              <Card>
+                <CardItem>
+                  <Body>
+                    <Item inlineLabel underline error={scoreSubmission.teamId != '' && scoreSubmission.name.length < 3}>
+                      <Label>
+                        Name
+                    </Label>
+                      <Input
+                        onChangeText={v => this.handleChange('name', v)}
+                        value={scoreSubmission.name}
+                      />
+                    </Item>
+                    <Item inlineLabel underline error={scoreSubmission.teamId != '' && !ValidationHelpers.isValidEmail(scoreSubmission.email)}>
+                      <Label>
+                        Email
+                    </Label>
+                      <Input
+                        autoCapitalize="none"
+                        keyboardType="email-address"
+                        onChangeText={v => this.handleChange('email', v)}
+                        value={scoreSubmission.email}
+                      />
+                    </Item>
+
+                    <Spacer size={20} />
+
+                    <Button block onPress={this.handleSubmit} disabled={scoreSubmission.submitting}>
+                      <Text>{scoreSubmission.submitting ? 'Submitting...' : 'Submit Score'}</Text>
+                    </Button>
+                  </Body>
+                </CardItem>
+              </Card>
+            </Form>
+          }
+
+          {
+            scoreSubmission.submitted &&
             <Card>
               <CardItem>
                 <Body>
-                  <Item picker>
-                    <Picker
-                      note={false}
-                      mode="dropdown"
-                      iosIcon={<Icon name="arrow-down" />}
-                      style={{ flex: 1 }}
-                      selectedValue={scoreSubmission.sportId}
-                      placeholder="Sport"
-                      onValueChange={(val, index) => {
-                        this.handleChange('sportId', val)
-                        this.handleChange('leagueId', '')
-                        this.handleChange('teamId', '')
-                      }}
-                    >
-                      <Picker.Item key={0} label='Sport' value='' />
-                      {
-                        this.props.sports.map((curSport) => {
-                          return <Picker.Item key={curSport.id} label={curSport.name} value={curSport.id} />
-                        })
-                      }
-                    </Picker>
-                  </Item>
-
-                  {leaguePicker}
-
-                  {
-                    league != null &&
-                    <TeamPicker
-                      loading={league.isFetching}
-                      teams={league.teams != null ? league.teams : []}
-                      curTeamId={scoreSubmission.teamId}
-                      onTeamUpdated={(val) => this.handleChange('teamId', val)}
-                    />
-                  }
-                </Body>
-              </CardItem>
-            </Card>
-
-            {
-              league != null && !league.isFetching && scoreSubmission.teamId != '' &&
-              Array.apply(null, new Array(parseInt(league.numMatches, 10))).map((e, index) => {
-                return <ScoreReporterMatch
-                  key={index}
-                  league={league}
-                  matchNum={index}
-                  updateMatchHandler={this.updateMatchHandler}
-                  loading={loading} />
-              })
-            }
-
-            <Card>
-              <CardItem>
-                <Body>
-                  <Item inlineLabel underline>
-                    <Label>
-                      Name
-                    </Label>
-                    <Input
-                      onChangeText={v => this.handleChange('name', v)}
-                      value={scoreSubmission.name}
-                    />
-                  </Item>
-                  <Item inlineLabel underline>
-                    <Label>
-                      Email
-                    </Label>
-                    <Input
-                      autoCapitalize="none"
-                      keyboardType="email-address"
-                      onChangeText={v => this.handleChange('email', v)}
-                      value={scoreSubmission.email}
-                    />
-                  </Item>
-
+                  <Text>Your score submission has been received.</Text>
                   <Spacer size={20} />
-
-                  <Button block onPress={this.handleSubmit}>
-                    <Text>Submit Score</Text>
-                  </Button>
+                  <Button block onPress={() => resetSubmission()}><Text>Submit another score</Text></Button>
                 </Body>
               </CardItem>
             </Card>
-          </Form>
+          }
         </Content>
-      </Container >
+      </KeyboardAvoidingView >
     );
   }
 }

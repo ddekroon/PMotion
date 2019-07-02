@@ -21,4 +21,7 @@ export default {
 
   // Locale
   localeDoesNotExist: 'Sorry, we do not support that local',
+
+  // Generic server error
+  errorSendingToServer: 'Error sending to server'
 };

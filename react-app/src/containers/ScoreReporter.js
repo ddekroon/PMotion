@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
-import { submitScores, updateScoreSubmission } from '../actions/scoreSubmission';
+import { submitScoreSubmission, updateScoreSubmission, resetMatches, resetSubmission } from '../actions/scoreSubmission';
 import { fetchLeague } from '../actions/leagues';
 
 class ScoreReporter extends Component {
@@ -22,14 +22,16 @@ class ScoreReporter extends Component {
     scoreSubmission: PropTypes.object.isRequired,
     updateScoreSubmission: PropTypes.func.isRequired,
     onFormSubmit: PropTypes.func.isRequired,
-    getLeague: PropTypes.func.isRequired
+    getLeague: PropTypes.func.isRequired,
+    resetMatches: PropTypes.func.isRequired,
+    resetSubmission: PropTypes.func.isRequired
   }
 
-  /*onFormSubmit = (data) => {
+  onFormSubmit = () => {
     const { onFormSubmit } = this.props;
-    return onFormSubmit(data)
+    return submitScoreSubmission()
       .catch((err) => { this.setState({ errorMessage: err }); throw err; });
-  }*/
+  }
 
   render = () => {
     const {
@@ -40,7 +42,9 @@ class ScoreReporter extends Component {
       leagues,
       onFormSubmit,
       scoreSubmission,
-      updateScoreSubmission
+      updateScoreSubmission,
+      resetMatches,
+      resetSubmission
     } = this.props;
 
     const { errorMessage } = this.state;
@@ -56,6 +60,8 @@ class ScoreReporter extends Component {
         leagues={leagues}
         scoreSubmission={scoreSubmission}
         updateScoreSubmission={updateScoreSubmission}
+        resetMatches={resetMatches}
+        resetSubmission={resetSubmission}
       />
     );
   }
@@ -70,8 +76,10 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = {
   updateScoreSubmission: updateScoreSubmission,
-  onFormSubmit: submitScores,
-  getLeague: fetchLeague
+  onFormSubmit: submitScoreSubmission,
+  getLeague: fetchLeague,
+  resetMatches: resetMatches,
+  resetSubmission: resetSubmission
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(ScoreReporter);

@@ -21,8 +21,6 @@ export default class sportLeagueNav extends React.Component {
 
         const sport = SportHelpers.getSportById(sports, sportId);
 
-        console.log(sportId + " " + sport);
-
         const seasonsView = seasons.map((curSeason) => {
             var leagues = curSeason.leagues.map((league, leagueIndex) =>
                 <ListItem key={league.id} onPress={() => this.props.navigation.navigate('LeagueOptionsNav')}>

@@ -4,19 +4,24 @@ import {
   Content, Text, Item, Picker, Icon
 } from 'native-base';
 import Loading from '../Loading';
+import ValidationHelpers from '../../../utils/validationhelpers'
 
 class TeamPicker extends React.Component {
   static propTypes = {
     isValid: PropTypes.bool,
     loading: PropTypes.bool.isRequired,
+    label: PropTypes.string,
     teams: PropTypes.array.isRequired,
     curTeamId: PropTypes.string,
+    excludeTeamId: PropTypes.string,
     onTeamUpdated: PropTypes.func.isRequired,
   }
 
   static defaultProps = {
     isValid: true,
-    curTeamId: 0
+    curTeamId: '',
+    excludeTeamId: '',
+    label: 'Team'
   }
 
   constructor(props) {
@@ -24,12 +29,12 @@ class TeamPicker extends React.Component {
   }
 
   render() {
-    const { isValid, loading, teams, curTeamId, onTeamUpdated } = this.props;
+    const { isValid, label, loading, teams, curTeamId, onTeamUpdated, excludeTeamId } = this.props;
 
     var isTeams = !loading && teams != null && teams.length > 0;
 
     return (
-      <Item picker={isTeams}>
+      <Item picker={isTeams} error={isTeams && !ValidationHelpers.isValidId(curTeamId)}>
         {
           !loading && isTeams &&
           <Picker
@@ -38,14 +43,15 @@ class TeamPicker extends React.Component {
             iosIcon={<Icon name="arrow-down" />}
             style={{ flex: 1 }}
             selectedValue={curTeamId}
-            placeholder="Team"
+            placeholder={label}
             onValueChange={(val, index) => onTeamUpdated(val)}
           >
-            <Picker.Item key={0} label={'Team'} value={''} />
+            <Picker.Item key={0} label={label} value={''} />
             {
-              teams.map((curTeam) => {
-                return <Picker.Item key={curTeam.id} label={curTeam.name} value={curTeam.id} />
-              })
+              teams.filter((curTeam) => curTeam.id != excludeTeamId)
+                .map((curTeam) => {
+                  return <Picker.Item key={curTeam.id} label={curTeam.name} value={curTeam.id} />
+                })
             }
           </Picker>
         }

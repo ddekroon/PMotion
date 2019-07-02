@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { createAppContainer, createMaterialTopTabNavigator, createStackNavigator } from 'react-navigation';
 import Loading from './Loading'
 import SportLeagueNav from '../components/SportLeagueNav';
-import { Text } from 'native-base';
 
 const sportsNavigator = (sports, seasonsBySport) => createMaterialTopTabNavigator(
   {
@@ -47,8 +46,6 @@ const sportsNavigator = (sports, seasonsBySport) => createMaterialTopTabNavigato
   },
 );
 
-//const AppIndex = createAppContainer(sportsNavigator)
-
 export default class Leagues extends React.Component {
   static propTypes = {
     lookups: PropTypes.object.isRequired
@@ -60,8 +57,6 @@ export default class Leagues extends React.Component {
 
   render() {
     const { loading, sports, scoreReporterSeasons } = this.props.lookups;
-
-    console.log("Leagues page loading: " + loading);
 
     if (loading) return <Loading />;
 

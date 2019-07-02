@@ -1,6 +1,8 @@
 import Enums from '../constants/enums';
 
 export default {
+  submitting: false,
+  submitted: false,
   sportId: '',
   leagueId: '',
   teamId: '',
@@ -10,12 +12,12 @@ export default {
       oppTeamId: '',
       results: [
         {
-          result: Enums.matchResult.Error,
+          result: Enums.matchResult.Error.val,
           scoreUs: '',
           scoreThem: ''
         },
         {
-          result: Enums.matchResult.Error,
+          result: Enums.matchResult.Error.val,
           scoreUs: '',
           scoreThem: ''
         }
@@ -27,12 +29,12 @@ export default {
       oppTeamId: '',
       results: [
         {
-          result: Enums.matchResult.Error,
+          result: Enums.matchResult.Error.val,
           scoreUs: '',
           scoreThem: ''
         },
         {
-          result: Enums.matchResult.Error,
+          result: Enums.matchResult.Error.val,
           scoreUs: '',
           scoreThem: ''
         }
