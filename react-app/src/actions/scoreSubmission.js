@@ -58,6 +58,7 @@ export function submitScoreSubmission() {
         })
       })
       .catch((err) => {
+        console.log(err);
         ToastHelpers.showToast(Enums.messageTypes.Error, ErrorMessages.errorSendingToServer);
 
         dispatch({
@@ -68,7 +69,6 @@ export function submitScoreSubmission() {
 }
 
 function isScoreSubmissionValid(scoreSubmission, leagues) {
-  console.log(scoreSubmission);
 
   if (!ValidationHelpers.isValidId(scoreSubmission.sportId)
     || !ValidationHelpers.isValidId(scoreSubmission.leagueId)

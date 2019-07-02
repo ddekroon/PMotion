@@ -108,9 +108,14 @@
 			}
 			
 			$ignoreSubmission = $this->checkSubmissionExists($team, $activeDate);
-						
+			
 			$submissions = $this->createSubmissionsFromRequest($request, $league, $team, $ignoreSubmission);
 
+			$this->saveSubmissions($submissions, $league, $team, $ignoreSubmission);
+		}
+
+		function saveSubmissions($submissions, $league, $team, $ignoreSubmission) {
+			
 			if(!is_array($submissions) || count($submissions) == 0) {
 				throw new Error("Internal error. Couldn't create submissions from the data given. Please contact the site admin if this issue persists.");
 			}
@@ -298,6 +303,77 @@
 			}
 			
 			$team->update();
+		}
+
+		public function parseScoreSubmissionFromJson($scoreSubmissionJson, $league, $team, $ignoreSubmission, $activeDate) {
+			
+			$submissions = array();
+
+			$gameNum = 0;
+			
+			for ($i = 0; $i < $league->getNumMatches(); $i++) {
+				$curMatch = $scoreSubmissionJson['matches'][$i];
+								
+				$spiritScore = new Models_SpiritScore();
+				$spiritScore->setDb($this->db);
+				$spiritScore->setLogger($this->logger);
+				$spiritScore->setEditedValue($curMatch['spiritScore']);
+				$spiritScore->setIsAdminAddition(false);
+				$spiritScore->setIsDontShow(false);
+				$spiritScore->setIsIgnored($ignoreSubmission);
+				$spiritScore->setValue($curMatch['spiritScore']);
+				
+				$comment = new Models_ScoreSubmissionComment();
+				$comment->setDb($this->db);
+				$comment->setLogger($this->logger);
+				$comment->setComment($curMatch['comment']);
+				
+				$oppTeamId = $curMatch['oppTeamId'];
+				
+				for ($j = 0; $j < $league->getNumGamesPerMatch(); $j++) {
+					$curGame = $curMatch['results'][$j];
+					
+					$gameSubmission = new Models_ScoreSubmission();
+					$gameSubmission->setDb($this->db);
+					$gameSubmission->setLogger($this->logger);
+				
+					$gameSubmission->setDate($activeDate);
+					$gameSubmission->setTeamId($team->getId());
+					$gameSubmission->setOppTeamId($oppTeamId);
+					
+					if($j == 0) { //Only attach spirit, comment to the first score submission. Stupid system but legacy and I don't want to change it.
+						$gameSubmission->setSpiritScore($spiritScore);
+						
+						if(strlen($comment->getComment()) > 2) {
+							$gameSubmission->setScoreSubmissionComment($comment);
+						}
+					}
+					
+					$gameSubmission->setDateStamp(new DateTime());
+					$gameSubmission->setIsIgnored($ignoreSubmission);
+					$gameSubmission->setIsPhantom(false);
+					$gameSubmission->setIsDontShow(false);
+										
+					$gameSubmission->setResult($curGame['result']);
+					
+					if($league->getIsAskForScores()) {
+						$gameSubmission->setScoreUs($curGame['scoreUs']);
+						$gameSubmission->setScoreThem($curGame['scoreThem']);
+					} else {
+						$gameSubmission->setScoreUs(0);
+						$gameSubmission->setScoreThem(0);
+					}
+					
+					$gameSubmission->setSubmitterName($scoreSubmissionJson['name']);
+					$gameSubmission->setSubmitterEmail($scoreSubmissionJson['email']);					
+
+					$submissions[] = $gameSubmission;
+					
+					$gameNum++;
+				}
+			}
+				
+			return $submissions;
 		}
 	}
 

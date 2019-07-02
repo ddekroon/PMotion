@@ -137,8 +137,6 @@ class ScoreReporter extends React.Component {
 
     if (loading) return <Loading />;
 
-    console.log("Render score reporter: " + JSON.stringify(scoreSubmission.matches[0]))
-
     var leaguePicker;
     var isLeagues = this.calculateIsLeaguesToSelect();
     var league = leagues[scoreSubmission.leagueId];
