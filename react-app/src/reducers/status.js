@@ -1,8 +1,8 @@
+import Enums from '../constants/enums'
+
 export const initialState = {
-  loading: false,
-  info: null,
-  error: null,
-  success: null,
+  type: Enums.messageTypes.None,
+  message: ''
 };
 
 export default function appReducer(state = initialState, action) {
@@ -10,10 +10,7 @@ export default function appReducer(state = initialState, action) {
     case 'STATUS_REPLACE': {
       return {
         ...state,
-        loading: action.loading || false,
-        info: action.info || null,
-        error: action.error || null,
-        success: action.success || null,
+        message: action.message || initialState
       };
     }
     default:

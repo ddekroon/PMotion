@@ -1,26 +1,30 @@
+import Enums from '../constants/enums'
+
 /**
-  * Show Error
+  * Show Message - currently not used anywhere
   */
-export default function (dispatch, type, val) {
+export default function (dispatch, type, message) {
   return new Promise((resolve, reject) => {
     // Validate types
-    const allowed = ['error', 'success', 'info', 'loading'];
+    const allowed = Object.values(Enums.messageTypes).filter((curType) => curType != Enums.messageTypes.None);
+
     if (!allowed.includes(type)) {
-      return reject('Type should be one of success, error or info');
+      return reject('Type should be one of: ' + allowed.join(', '));
     }
 
     // Set some defaults for convenience
-    let message = val;
-    if (!val) {
+    if (!message) {
       if (type === 'success') message = 'Success';
       if (type === 'error') message = 'Sorry, an error occurred';
       if (type === 'info') message = 'Something is happening...';
-      if (type === 'loading' && val !== false) message = true;
     }
 
     return resolve(dispatch({
       type: 'STATUS_REPLACE',
-      [type]: message,
+      message: {
+        type: type,
+        message: message
+      }
     }));
   });
 }

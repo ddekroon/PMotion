@@ -6,6 +6,8 @@
 	$app->group('/api/leagues', function () use ($app) {
 		$app->get('/{leagueID}', function (Request $request, Response $response) {
 
+			$scheduledMatchesController = new Controllers_ScheduledMatchesController($this->db, $this->logger);
+
 			$leagueID = (int)$request->getAttribute('leagueID');
 			$league = Models_League::withID($this->db, $this->logger, $leagueID);
 
@@ -13,9 +15,11 @@
 				$league->getTeams();
 			}
 
-			$response->getBody()->write(json_encode($league));
+			$league->setScheduledMatches($scheduledMatchesController->getLeagueScheduledMatchesForCurrentWeek($league));
 
-			return $response;
+			return $response->withStatus(200)
+				->withHeader('Content-Type', 'application/json')
+				->write(json_encode($league));
 		});
 	});
 

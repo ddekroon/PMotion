@@ -215,6 +215,7 @@ include('routes/api/sports.php');
 include('routes/api/teams.php');
 include('routes/api/players.php');
 include('routes/api/leagues.php');
+include('routes/api/score-submission.php');
 include('routes/api/lookups.php');
 include('routes/default.php');
 include('routes/score-reporter.php');

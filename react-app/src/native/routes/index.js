@@ -31,6 +31,9 @@ import ProfileComponent from '../components/Profile';
 import LeaguesContainer from '../../containers/Leagues';
 import LeaguesComponent from '../components/Leagues';
 
+import ScoreReporterContainer from '../../containers/ScoreReporter';
+import ScoreReporterComponent from '../components/ScoreReporter';
+
 const Index = (
   <Stack hideNavBar>
     <Scene hideNavBar>
@@ -52,7 +55,7 @@ const Index = (
           }
           {...DefaultProps.navbarProps}
         >
-          <Scene key="home" component={LeaguesContainer} Layout={LeaguesComponent} />
+          <Scene key="leagues" component={LeaguesContainer} Layout={LeaguesComponent} />
         </Stack>
 
         <Stack
@@ -66,7 +69,7 @@ const Index = (
           }
           {...DefaultProps.navbarProps}
         >
-          <Scene key="recipes" component={RecipesContainer} Layout={RecipesComponent} />
+          <Scene key="reportScores" component={ScoreReporterContainer} Layout={ScoreReporterComponent} />
         </Stack>
 
         <Stack
@@ -80,7 +83,7 @@ const Index = (
           }
           {...DefaultProps.navbarProps}
         >
-          <Scene key="profileHome" component={MemberContainer} Layout={ProfileComponent} />
+          <Scene key="registration" component={MemberContainer} Layout={ProfileComponent} />
           <Scene
             back
             key="signUp"
@@ -121,6 +124,15 @@ const Index = (
             component={UpdateProfileContainer}
             Layout={UpdateProfileComponent}
           />
+        </Stack>
+
+        <Stack
+          key="recipes"
+          title="RECIPES"
+          icon={() => <Icon name="book" {...DefaultProps.icons} />}
+          {...DefaultProps.navbarProps}
+        >
+          <Scene key="recipes" component={RecipesContainer} Layout={RecipesComponent} />
         </Stack>
       </Tabs>
     </Scene>

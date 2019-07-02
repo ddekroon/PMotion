@@ -1,35 +1,25 @@
 import React from 'react'
+import PropTypes from 'prop-types';
 import { H1, Container, Content, Text, Body, List, ListItem, Left, Icon, Right } from 'native-base';
 import Spacer from './Spacer';
 import Loading from './Loading';
+import SportHelpers from '../../utils/sporthelpers'
 
 export default class sportLeagueNav extends React.Component {
+    static propTypes = {
+        seasons: PropTypes.array.isRequired,
+        sportId: PropTypes.string.isRequired,
+        sports: PropTypes.array.isRequired
+    }
 
     constructor(props) {
         super(props);
-
-        this.state = {
-            sport: {},
-            loading: true
-        };
-    }
-
-    componentDidMount() {
-        let component = this;
-        let curSport = this.props.sports.find(curSport => {
-            return curSport.id == component.props.sportId
-        });
-
-        this.setState({
-            sport: curSport,
-            loading: false
-        });
     }
 
     render() {
-        if (this.state.loading) return <Loading />;
+        const { sportId, seasons, sports } = this.props;
 
-        const seasons = Object.values(this.props.seasonsWithLeaguesBySport[this.state.sport.id]);
+        const sport = SportHelpers.getSportById(sports, sportId);
 
         const seasonsView = seasons.map((curSeason) => {
             var leagues = curSeason.leagues.map((league, leagueIndex) =>
@@ -57,7 +47,7 @@ export default class sportLeagueNav extends React.Component {
         return (
             <Container>
                 <Content padder>
-                    <H1>{this.state.sport.name}</H1>
+                    <H1>{sport.name}</H1>
                     <Spacer />
                     {seasonsView}
                 </Content>

@@ -13,7 +13,7 @@ class Models_League extends Models_Generic implements Models_Interface, JsonSeri
 	protected $isPracticeGames;
 	protected $maxPointsPerGame;
 	protected $isShowCancelOption;
-	protected $isSendLateEmail;
+	private   $isSendLateEmail;
 	protected $hideSpiritHour;
 	protected $showSpiritHour;
 	protected $numDaysSpiritHidden;
@@ -29,8 +29,8 @@ class Models_League extends Models_Generic implements Models_Interface, JsonSeri
 	protected $individualRegistrationFee;
 	protected $picLink;
 	protected $scheduleLink;
-	protected $isSplit;
-	protected $splitWeek;
+	private   $isSplit;
+	private   $splitWeek;
 	protected $isFullIndividualMales;
 	protected $isFullIndividualFemales;
 	protected $isFullTeams;
@@ -41,8 +41,11 @@ class Models_League extends Models_Generic implements Models_Interface, JsonSeri
 	protected $teams;
 	private $fenceTeams;
 	private $freeAgents;
-	private $dateInStandings;
-	private $dateInScoreReporter;
+	protected $dateInStandings;
+	protected $dateInScoreReporter;
+
+	/* API use only */
+	protected $scheduledMatches;
 	
 	public static function withID($db, $logger, $id) {
 		$instance = new self();
@@ -500,6 +503,10 @@ class Models_League extends Models_Generic implements Models_Interface, JsonSeri
 		return $this->isShowStaticSchedule;
 	}
 
+	function getScheduledMatches() {
+		return $this->scheduledMatches;
+	}
+
 	function setId($id) {
 		$this->id = $id;
 	}
@@ -638,6 +645,10 @@ class Models_League extends Models_Generic implements Models_Interface, JsonSeri
 
 	function setIsShowStaticSchedule($isShowStaticSchedule) {
 		$this->isShowStaticSchedule = $isShowStaticSchedule;
+	}
+
+	function setScheduledMatches($scheduledMatches) {
+		$this->scheduledMatches = $scheduledMatches;
 	}
 	
 	function saveOrUpdate() {
