@@ -92,13 +92,18 @@ class ScoreReporter extends React.Component {
         return;
       }
 
-      var teamMatches = league.scheduledMatches.filter((curMatch) => curMatch.teamOneId == val || curMatch.teamTwoId == val);
+      if (league.dateInScoreReporter != null && league.dateInScoreReporter.id != null) {
+        var teamMatches = league.scheduledMatches.filter((curMatch) => {
+          return curMatch.dateId == league.dateInScoreReporter.id
+            && (curMatch.teamOneId == val || curMatch.teamTwoId == val)
+        });
 
-      for (var i = 0; i < Math.min(parseInt(league.numMatches, 10), teamMatches.length); i++) {
-        if (teamMatches[i].teamOneId == val) {
-          newSubmission.matches[i].oppTeamId = teamMatches[i].teamTwoId;
-        } else {
-          newSubmission.matches[i].oppTeamId = teamMatches[i].teamOneId;
+        for (var i = 0; i < Math.min(parseInt(league.numMatches, 10), teamMatches.length); i++) {
+          if (teamMatches[i].teamOneId == val) {
+            newSubmission.matches[i].oppTeamId = teamMatches[i].teamTwoId;
+          } else {
+            newSubmission.matches[i].oppTeamId = teamMatches[i].teamOneId;
+          }
         }
       }
     }
