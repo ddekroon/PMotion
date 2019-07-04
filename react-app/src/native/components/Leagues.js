@@ -1,30 +1,30 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { createAppContainer, createMaterialTopTabNavigator, createStackNavigator } from 'react-navigation';
+import { createAppContainer, createMaterialTopTabNavigator} from 'react-navigation';
 import Loading from './Loading'
-import SportLeagueNav from '../components/SportLeagueNav';
+import SportLeagues from '../components/SportLeagues';
 
 const sportsNavigator = (sports, seasonsBySport) => createMaterialTopTabNavigator(
   {
-    Ultimate: props => <SportLeagueNav
+    Ultimate: props => <SportLeagues
       sports={sports}
       seasons={seasonsBySport['1']}
       sportId='1'
     />,
-    VolleyBall: props => <SportLeagueNav
+    VolleyBall: props => <SportLeagues
       sports={sports}
       seasons={seasonsBySport['2']}
       sportId='2'
     />,
-    Soccer: props => <SportLeagueNav
+    Soccer: props => <SportLeagues
       sports={sports}
       seasons={seasonsBySport['4']}
       sportId='4'
     />,
-    Football: props => <SportLeagueNav
+    Football: props => <SportLeagues
       sports={sports}
       seasons={seasonsBySport['3']}
-      sportId='3'
+      sportId='3' 
     />
   },
 
@@ -67,6 +67,4 @@ export default class Leagues extends React.Component {
   }
 }
 
-//this.setState({currentSport: this.props.lookups.sports[currentState.index].id});
-//this wont work right in the way it is set up right now, i have to change it for tabs instead of stack nav changes
 

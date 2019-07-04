@@ -28,10 +28,12 @@ class Leagues extends Component {
   }
 }
 
+//read data from store
 const mapStateToProps = state => ({
   lookups: state.lookups || {},
 });
 
+//map actions to components
 const mapDispatchToProps = {
   fetchData: getLookups,
 };

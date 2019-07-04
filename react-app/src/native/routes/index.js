@@ -34,6 +34,9 @@ import LeaguesComponent from '../components/Leagues';
 import ScoreReporterContainer from '../../containers/ScoreReporter';
 import ScoreReporterComponent from '../components/ScoreReporter';
 
+import LeaguePage from '../components/LeaguePage';
+import Standings from '../components/Standings';
+
 const Index = (
   <Stack hideNavBar>
     <Scene hideNavBar>
@@ -55,7 +58,12 @@ const Index = (
           }
           {...DefaultProps.navbarProps}
         >
-          <Scene key="leagues" component={LeaguesContainer} Layout={LeaguesComponent} />
+          <Scene key="leagues" component={LeaguesContainer} Layout={LeaguesComponent} initial/>
+
+          <Scene key="leaguePage" component={LeaguePage} title="LeaguePage" {...DefaultProps.navbarProps} back />
+
+          <Scene key="standings" component={Standings} title="Standings" {...DefaultProps.navbarProps} back />
+          
         </Stack>
 
         <Stack

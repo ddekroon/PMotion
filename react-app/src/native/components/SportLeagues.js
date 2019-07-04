@@ -3,9 +3,10 @@ import PropTypes from 'prop-types';
 import { H1, Container, Content, Text, Body, List, ListItem, Left, Icon, Right } from 'native-base';
 import Spacer from './Spacer';
 import Loading from './Loading';
-import SportHelpers from '../../utils/sporthelpers'
+import SportHelpers from '../../utils/sporthelpers';
+import { Actions } from 'react-native-router-flux';
 
-export default class sportLeagueNav extends React.Component {
+export default class SportLeagues extends React.Component {
     static propTypes = {
         seasons: PropTypes.array.isRequired,
         sportId: PropTypes.string.isRequired,
@@ -23,7 +24,7 @@ export default class sportLeagueNav extends React.Component {
 
         const seasonsView = seasons.map((curSeason) => {
             var leagues = curSeason.leagues.map((league, leagueIndex) =>
-                <ListItem key={league.id} onPress={() => this.props.navigation.navigate('LeagueOptionsNav')}>
+                <ListItem key={league.id} onPress={() => Actions.leaguePage({leagueId: league.id, leagueName: league.name})}>
                     <Body>
                         <Text key={league.id}>{league.name}</Text>
                     </Body>
