@@ -62,6 +62,7 @@ package-lock.json
 .DS_Store
 logs/**
 .vscode/**
+*/yarn.lock
 
 # Kyle's temp folder for copies
 Pastes/**
