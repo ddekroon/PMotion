@@ -24,8 +24,6 @@ export default class App extends React.Component {
     persistor: PropTypes.shape({}).isRequired,
   }
 
-  state = { loading: true }
-
   async componentWillMount() {
     await Font.loadAsync({
       Roboto: require('native-base/Fonts/Roboto.ttf'),
@@ -34,20 +32,14 @@ export default class App extends React.Component {
     });
 
     await getLookups();
-
-    this.setState({
-      loading: false
-    });
   }
 
   render() {
-    const { loading } = this.state;
     const { store, persistor } = this.props;
 
     let { height, width } = Dimensions.get('window');
     //console.log(height + " " + width);
 
-    if (loading) return <Loading />;
 
     return (
       <Root>
