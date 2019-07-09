@@ -11,19 +11,20 @@ export default class Standings extends React.Component {
         super(props);
     }
 
+
     render() {
 
-        const { loading, standings, leagueName } = this.props;
+        const { loading, league, leagueName } = this.props;
 
-        const flexArr = [1, 7, 1, 1, 1, 1];
+        const flexArr = [1, 8, 1, 1, 1, 1, 2];
         const tableInfo = {
-            header: ['', 'Team', 'W', 'L', 'T', 'Pts'],
+            header: ['', 'Team', 'W', 'L', 'T', 'P', 'Spirit'],
             data: [],
         }
 
-        standings.map((team, i) => {
+        league.standings.map((team, i) => {
             var points = parseInt(team.ties) + (parseInt(team.wins) * 2);
-            tableInfo.data.push([(i + 1), team.name, team.wins, team.losses, team.ties, points]);
+            tableInfo.data.push([(i + 1), team.name, team.wins, team.losses, team.ties, points, parseFloat(team.spiritAverage).toFixed(2)]);
         });
 
         if (loading) return <Loading />

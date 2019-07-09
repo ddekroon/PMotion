@@ -8,13 +8,15 @@ import { createAppContainer, createMaterialTopTabNavigator} from 'react-navigati
 import Standings from '../components/Standings';
 import Schedule from '../components/Schedule';
 
-const leagueNavigator = (standings, leagueName) => createMaterialTopTabNavigator(
+const leagueNavigator = (league, leagueName) => createMaterialTopTabNavigator(
     {
       Standings: props => <Standings
-        standings={standings}
+        league={league}
         leagueName={leagueName}
       />,
       Schedule: props => <Schedule
+      league={league}
+      leagueName={leagueName}
       />,
     },
   
@@ -51,13 +53,13 @@ class LeaguePage extends React.Component {
         if(loading) return <Loading />; 
 
         const league = leagues[leagueId];
-        //const LeagueNavigator = createAppContainer(leagueNavigator(league.standings, leagueName));
+        const LeagueNavigator = createAppContainer(leagueNavigator(league, leagueName));
         return (
           // <LeagueNavigator />\
           <Container>
           {
             league != null && !league.isFetching &&
-            <Content><Text>{JSON.stringify(league.standings, null,2)}</Text></Content>
+            <LeagueNavigator/>
           }
           </Container>
         );
