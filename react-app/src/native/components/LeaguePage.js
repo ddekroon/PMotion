@@ -1,11 +1,41 @@
 import React from 'react';
 import { H1, Container, Content, Text, Body, List, ListItem, Left, Icon, Right} from 'native-base';
 import PropTypes from 'prop-types';
-import Spacer from './Spacer';
 import { connect } from 'react-redux';
 import { fetchLeague } from '../../actions/leagues';
 import Loading from './Loading';
-import { Actions } from 'react-native-router-flux';
+import { createAppContainer, createMaterialTopTabNavigator} from 'react-navigation';
+import Standings from '../components/Standings';
+import Schedule from '../components/Schedule';
+
+const leagueNavigator = (standings, leagueName) => createMaterialTopTabNavigator(
+    {
+      Standings: props => <Standings
+        standings={standings}
+        leagueName={leagueName}
+      />,
+      Schedule: props => <Schedule
+      />,
+    },
+  
+    {
+      tabBarOptions: {
+        activeTintColor: 'white',
+        inactiveTintColor: 'gray',
+        style: {
+          backgroundColor: '#303030'
+        },
+        indicatorStyle: {
+          borderBottomColor: 'red',
+          borderBottomWidth: 3,
+        },
+        labelStyle: {
+          fontSize: 9
+        },
+      }
+    },
+  );
+
 
 class LeaguePage extends React.Component { 
 
@@ -16,63 +46,21 @@ class LeaguePage extends React.Component {
  
     render() {
 
-        const { leagues, loading, leagueId, leagueName } = this.props;
-
-        let league = leagues[leagueId];
+        const { leagues, loading, leagueId, leagueName} = this.props;
 
         if(loading) return <Loading />; 
 
+        const league = leagues[leagueId];
+        //const LeagueNavigator = createAppContainer(leagueNavigator(league.standings, leagueName));
         return (
-            <Container>
-                <Content padder>
-                    <Spacer/>
-                    <H1>{leagueName}</H1>
-                    <Spacer/>
-                    <List>
-                        <ListItem icon>
-                            <Left>
-                                <Icon name="calendar" />
-                            </Left>
-                            <Body>
-                                <Text>Schedule</Text>
-                            </Body>
-                            <Right>
-                                <Icon name = "arrow-forward"/>
-                            </Right>
-                        </ListItem>
-                    </List>
-
-                    <List>
-                        <ListItem icon onPress={()=> Actions.standings({standings: league.standings, leagueName: leagueName})}>
-                            <Left>
-                                <Icon name="podium" />
-                            </Left>
-                            <Body>
-                                <Text>Standings</Text>
-                            </Body>
-                            <Right>
-                                <Icon name = "arrow-forward"/>
-                            </Right>
-                        </ListItem>
-                    </List>
-
-                    <List>
-                        <ListItem icon>
-                            <Left>
-                                <Icon name="people" />
-                            </Left>
-                            <Body>
-                                <Text>Team Pages</Text>
-                            </Body>
-                            <Right>
-                                <Icon name = "arrow-forward"/>
-                            </Right>
-                        </ListItem>
-                    </List>
-                </Content>
-            </Container>
+          // <LeagueNavigator />\
+          <Container>
+          {
+            league != null && !league.isFetching &&
+            <Content><Text>{JSON.stringify(league.standings, null,2)}</Text></Content>
+          }
+          </Container>
         );
-        
     }
 }
 
@@ -86,5 +74,5 @@ const mapStateToProps = state => ({
   
 export default connect(mapStateToProps, mapDispatchToProps)(LeaguePage);
 
-
+/*calendar, podium, people*/
 

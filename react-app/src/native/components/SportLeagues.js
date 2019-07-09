@@ -13,6 +13,22 @@ export default class SportLeagues extends React.Component {
         sports: PropTypes.array.isRequired
     }
 
+    getDay = (dayNum) => {
+        if(dayNum === 1){
+            return 'Monday';
+        }else if(dayNum === 2){
+            return 'Tuesday';
+        }else if(dayNum === 3){
+            return 'Wednesday';
+        }else if(dayNum === 4){
+            return 'Thursday';
+        }else if(dayNum === 7){
+            return 'Sunday';
+        }else{
+            return null;
+        }
+    }
+
     constructor(props) {
         super(props);
     }
@@ -24,9 +40,9 @@ export default class SportLeagues extends React.Component {
 
         const seasonsView = seasons.map((curSeason) => {
             var leagues = curSeason.leagues.map((league, leagueIndex) =>
-                <ListItem key={league.id} onPress={() => Actions.leaguePage({leagueId: league.id, leagueName: league.name})}>
+                <ListItem key={league.id} onPress={() => Actions.leaguePage({leagueId: league.id, leagueName: league.name + ' - ' + this.getDay(parseInt(league.dayNumber))})}>
                     <Body>
-                        <Text key={league.id}>{league.name}</Text>
+                        <Text key={league.id}>{league.name} - {this.getDay(parseInt(league.dayNumber))}</Text>
                     </Body>
                     <Right>
                         <Icon name="arrow-forward" />
@@ -57,3 +73,4 @@ export default class SportLeagues extends React.Component {
     }
 }
 
+//<Text>{JSON.stringify(this.props.seasons, null, 2)}</Text>
