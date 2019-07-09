@@ -34,8 +34,6 @@ import LeaguesComponent from '../components/Leagues';
 import ScoreReporterContainer from '../../containers/ScoreReporter';
 import ScoreReporterComponent from '../components/ScoreReporter';
 
-import Colors from '../../../native-base-theme/variables/commonColor';
-
 const Index = (
   <Stack hideNavBar>
     <Scene hideNavBar>
@@ -61,11 +59,7 @@ const Index = (
             key="leagues"
             component={LeaguesContainer}
             Layout={LeaguesComponent}
-            renderTitle={() =>
-              <View style={{ flex: 1, backgroundColor: Colors.brandPrimary, flexDirection: 'column', alignItems: 'center', alignSelf: 'center', justifyContent: 'center' }}>
-                <Image style={{ width: 180, height: 64, margin: 'auto' }} source={require('../../images/header-logo.png')} />
-              </View>
-            }
+            {...DefaultProps.screenProps}
           />
         </Stack>
 
@@ -80,7 +74,12 @@ const Index = (
           }
           {...DefaultProps.navbarProps}
         >
-          <Scene key="reportScores" component={ScoreReporterContainer} Layout={ScoreReporterComponent} />
+          <Scene
+            key="reportScores"
+            component={ScoreReporterContainer}
+            Layout={ScoreReporterComponent}
+            {...DefaultProps.screenProps}
+          />
         </Stack>
 
         <Stack
@@ -94,7 +93,12 @@ const Index = (
           }
           {...DefaultProps.navbarProps}
         >
-          <Scene key="registration" component={MemberContainer} Layout={ProfileComponent} />
+          <Scene
+            key="registration"
+            component={MemberContainer}
+            Layout={ProfileComponent}
+            {...DefaultProps.screenProps}
+          />
           <Scene
             back
             key="signUp"
@@ -102,6 +106,7 @@ const Index = (
             {...DefaultProps.navbarProps}
             component={SignUpContainer}
             Layout={SignUpComponent}
+            {...DefaultProps.screenProps}
           />
           <Scene
             back
@@ -110,6 +115,7 @@ const Index = (
             {...DefaultProps.navbarProps}
             component={LoginContainer}
             Layout={LoginComponent}
+            {...DefaultProps.screenProps}
           />
           <Scene
             back
@@ -118,6 +124,7 @@ const Index = (
             {...DefaultProps.navbarProps}
             component={ForgotPasswordContainer}
             Layout={ForgotPasswordComponent}
+            {...DefaultProps.screenProps}
           />
           <Scene
             back
@@ -126,6 +133,7 @@ const Index = (
             {...DefaultProps.navbarProps}
             component={LocaleContainer}
             Layout={LocaleComponent}
+            {...DefaultProps.screenProps}
           />
           <Scene
             back
@@ -134,6 +142,7 @@ const Index = (
             {...DefaultProps.navbarProps}
             component={UpdateProfileContainer}
             Layout={UpdateProfileComponent}
+            {...DefaultProps.screenProps}
           />
         </Stack>
 
@@ -143,7 +152,12 @@ const Index = (
           icon={() => <Icon name="book" {...DefaultProps.icons} />}
           {...DefaultProps.navbarProps}
         >
-          <Scene key="recipes" component={RecipesContainer} Layout={RecipesComponent} />
+          <Scene
+            key="recipes"
+            component={RecipesContainer}
+            Layout={RecipesComponent}
+            {...DefaultProps.screenProps}
+          />
         </Stack>
       </Tabs>
     </Scene>
@@ -156,6 +170,7 @@ const Index = (
       {...DefaultProps.navbarProps}
       component={RecipesContainer}
       Layout={RecipeViewComponent}
+      {...DefaultProps.screenProps}
     />
   </Stack>
 );

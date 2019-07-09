@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { KeyboardAvoidingView } from 'react-native';
 import {
-  Content, Text, Form, Item, Label, Input, Button, Picker, Icon, Card, CardItem, Body
+  Content, Text, Form, Item, Label, Input, Button, Picker, Icon, Card, CardItem, Body, Header
 } from 'native-base';
 import Loading from './Loading';
 import Spacer from './Spacer';

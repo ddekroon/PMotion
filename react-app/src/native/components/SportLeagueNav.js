@@ -1,9 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types';
-import { H1, Container, Content, Text, Body, List, ListItem, Left, Icon, Right } from 'native-base';
+import { Container, Content, Text, View, List, ListItem, Icon, Right, Card, CardItem } from 'native-base';
 import Spacer from './Spacer';
-import Loading from './Loading';
 import SportHelpers from '../../utils/sporthelpers'
+import DateTimeHelpers from '../../utils/datetimehelpers'
 
 export default class sportLeagueNav extends React.Component {
     static propTypes = {
@@ -24,19 +24,27 @@ export default class sportLeagueNav extends React.Component {
         const seasonsView = seasons.map((curSeason) => {
             var leagues = curSeason.leagues.map((league, leagueIndex) =>
                 <ListItem key={league.id} onPress={() => this.props.navigation.navigate('LeagueOptionsNav')}>
-                    <Body>
-                        <Text key={league.id}>{league.name}</Text>
-                    </Body>
+                    <View style={{flex:1}}>
+                        <Text key={league.id}>{league.name} {DateTimeHelpers.getDayString(league.dayNumber)}</Text>
+                    </View>
                     <Right>
                         <Icon name="arrow-forward" />
                     </Right>
                 </ListItem>
-
             )
+
+            var seasonTitle = [];
+
+            if (seasons.length > 1) {
+                seasonTitle = [
+                    <Text>{curSeason.name} {curSeason.year}</Text>,
+                    <Spacer></Spacer>
+                ]
+            }
+
             return (
-                <Content key={curSeason.name}>
-                    <Text>{curSeason.name} {curSeason.year}</Text>
-                    <Spacer />
+                <Content key={curSeason.name} style={{ flex: 1 }}>
+                    {seasonTitle}
                     <List>
                         {leagues}
                     </List>
@@ -47,9 +55,11 @@ export default class sportLeagueNav extends React.Component {
         return (
             <Container>
                 <Content padder>
-                    <H1>{sport.name}</H1>
-                    <Spacer />
-                    {seasonsView}
+                    <Card>
+                        <CardItem>
+                            {seasonsView}
+                        </CardItem>
+                    </Card>
                 </Content>
             </Container>
         );
