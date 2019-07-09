@@ -74,5 +74,5 @@ const mapStateToProps = state => ({
   
 export default connect(mapStateToProps, mapDispatchToProps)(LeaguePage);
 
-/*calendar, podium, people*/
+/*calendar, podium, people */
 
