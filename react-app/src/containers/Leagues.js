@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
 import { getLookups } from '../actions/lookups';
+import { fetchLeague } from '../actions/leagues';
+
 
 class Leagues extends Component {
   static propTypes = {
@@ -14,6 +16,13 @@ class Leagues extends Component {
       seasonsAvailableScoreReporter: PropTypes.array.isRequired,
       sports: PropTypes.array.isRequired
     }).isRequired,
+    leagues: PropTypes.object.isRequired,
+    leagueId: PropTypes.string,
+    getLeague: PropTypes.func.isRequired
+  }
+
+  static defaultProps = {
+    leagueId: null
   }
 
   componentDidMount = () => {
@@ -22,20 +31,27 @@ class Leagues extends Component {
   }
 
   render = () => {
-    const { Layout, lookups } = this.props;
+    const { Layout, lookups, leagues, leagueId, getLeague } = this.props;
 
-    return <Layout lookups={lookups} />;
+    return <Layout
+      lookups={lookups}
+      leagues={leagues}
+      leagueId={leagueId}
+      getLeague={getLeague}
+    />;
   }
 }
 
 //read data from store
 const mapStateToProps = state => ({
   lookups: state.lookups || {},
+  leagues: state.leagues || {}
 });
 
 //map actions to components
 const mapDispatchToProps = {
   fetchData: getLookups,
+  getLeague: fetchLeague
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Leagues);

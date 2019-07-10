@@ -174,13 +174,15 @@ const Index = (
       Layout={RecipeViewComponent}
       {...DefaultProps.screenProps}
     />
-    
+
     <Scene
-        back
-        key="league" 
-        component={LeaguePage} 
-        {...DefaultProps.navbarProps}
-        {...DefaultProps.screenProps}
+      back
+      clone
+      key="league"
+      title=""
+      {...DefaultProps.navbarProps}
+      component={LeaguesContainer}
+      Layout={LeaguePage}
     />
 
   </Stack>

@@ -5,6 +5,7 @@ import Spacer from './Spacer';
 import SportHelpers from '../../utils/sporthelpers';
 import { Actions } from 'react-native-router-flux';
 import DateTimeHelpers from '../../utils/datetimehelpers'
+import leaguehelpers from '../../utils/leaguehelpers';
 
 export default class SportLeagues extends React.Component {
     static propTypes = {
@@ -24,9 +25,9 @@ export default class SportLeagues extends React.Component {
 
         const seasonsView = seasons.map((curSeason) => {
             var leagues = curSeason.leagues.map((league, leagueIndex) =>
-                <ListItem key={league.id} onPress={() => Actions.leaguePage({leagueId: league.id, leagueName: league.name + ' - ' + this.getDay(parseInt(league.dayNumber))})}>
-                    <View style={{flex:1}}>
-                        <Text key={league.id}>{league.name} {DateTimeHelpers.getDayString(league.dayNumber)}</Text>
+                <ListItem key={league.id} onPress={() => Actions.league({ leagueId: league.id, title: leaguehelpers.getFormattedLeagueName(league) })}>
+                    <View style={{ flex: 1 }}>
+                        <Text key={league.id}>{leaguehelpers.getFormattedLeagueName(league)}</Text>
                     </View>
                     <Right>
                         <Icon name="arrow-forward" />

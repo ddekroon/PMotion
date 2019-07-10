@@ -1,8 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { createAppContainer, createMaterialTopTabNavigator} from 'react-navigation';
+import { createAppContainer, createMaterialTopTabNavigator } from 'react-navigation';
 import Loading from './Loading'
 import SportLeagues from '../components/SportLeagues';
+import NavigationProps from '../constants/navigation';
 
 const sportsNavigator = (sports, seasonsBySport) => createMaterialTopTabNavigator(
   {
@@ -24,35 +25,13 @@ const sportsNavigator = (sports, seasonsBySport) => createMaterialTopTabNavigato
     Football: props => <SportLeagues
       sports={sports}
       seasons={seasonsBySport['3']}
-      sportId='3' 
+      sportId='3'
     />
   },
 
   {
-    tabBarOptions: {
-      activeTintColor: 'white',
-      inactiveTintColor: 'gray',
-      style: {
-        backgroundColor: '#303030'
-      },
-      tabStyle: {
-        paddingTop: 12,
-        paddingBottom: 12,
-        paddingLeft: 2,
-        paddingRight: 2
-      },
-      indicatorStyle: {
-        borderBottomColor: 'red',
-        borderBottomWidth: 3,
-      },
-      labelStyle: {
-        fontSize: 10,
-        fontWeight: '600',
-        letterSpacing: 1,
-        margin: 0
-      },
-    }
-  },
+    ...NavigationProps.tabConfig
+  }
 );
 
 export default class Leagues extends React.Component {
@@ -62,6 +41,10 @@ export default class Leagues extends React.Component {
 
   constructor(props) {
     super(props);
+  }
+
+  componentWillUnmount() {
+    console.log("Unmounting leagues component");
   }
 
   render() {

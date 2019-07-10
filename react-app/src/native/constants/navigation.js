@@ -13,7 +13,10 @@ export default {
       elevation: 0,
       height: 52
     },
-    backButtonTintColor: Colors.inverseTextColor,
+    titleStyle: {
+      color: Colors.inverseTextColor
+    },
+    backButtonTintColor: Colors.inverseTextColor
   },
   screenProps: {
     renderTitle: (props) => {
@@ -39,4 +42,30 @@ export default {
   icons: {
     style: { color: 'white', height: 30, width: 30 },
   },
+
+  tabConfig: {
+    tabBarOptions: {
+      activeTintColor: 'white',
+      inactiveTintColor: 'gray',
+      style: {
+        backgroundColor: '#303030'
+      },
+      tabStyle: {
+        paddingTop: 12,
+        paddingBottom: 12,
+        paddingLeft: 2,
+        paddingRight: 2
+      },
+      indicatorStyle: {
+        borderBottomColor: 'red',
+        borderBottomWidth: 3,
+      },
+      labelStyle: {
+        fontSize: 10,
+        fontWeight: '600',
+        letterSpacing: 1,
+        margin: 0
+      },
+    }
+  }
 };

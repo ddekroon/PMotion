@@ -1,3 +1,5 @@
+import DateTimeHelpers from './datetimehelpers'
+
 export default {
 	getLeagueFromSeasons: (seasons, leagueId) => {
 		var league = null;
@@ -19,5 +21,13 @@ export default {
 
 	isValidLeagueId: (leagueId) => {
 		return !isNaN(leagueId) && parseInt(leagueId, 10) > 0;
+	},
+
+	getFormattedLeagueName: (league) => {
+		if (league == null) {
+			return '';
+		}
+
+		return league.name + ' ' + DateTimeHelpers.getDayString(league.dayNumber);
 	}
 };

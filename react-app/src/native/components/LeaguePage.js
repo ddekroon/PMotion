@@ -1,79 +1,68 @@
 import React from 'react';
-import { H1, Container, Content, Text, Body, List, ListItem, Left, Icon, Right} from 'native-base';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { fetchLeague } from '../../actions/leagues';
 import Loading from './Loading';
-import { createAppContainer, createMaterialTopTabNavigator} from 'react-navigation';
+import { createAppContainer, createMaterialTopTabNavigator } from 'react-navigation';
 import Standings from '../components/Standings';
 import Schedule from '../components/Schedule';
+import NavigationProps from '../constants/navigation';
 
-const leagueNavigator = (league, leagueName) => createMaterialTopTabNavigator(
-    {
-      Standings: props => <Standings
-        league={league}
-        leagueName={leagueName}
-      />,
-      Schedule: props => <Schedule
+
+const leagueNavigator = (league) => createMaterialTopTabNavigator(
+  {
+    Standings: props => <Standings
       league={league}
-      leagueName={leagueName}
-      />,
-    },
-  
-    {
-      tabBarOptions: {
-        activeTintColor: 'white',
-        inactiveTintColor: 'gray',
-        style: {
-          backgroundColor: '#303030'
-        },
-        indicatorStyle: {
-          borderBottomColor: 'red',
-          borderBottomWidth: 3,
-        },
-        labelStyle: {
-          fontSize: 9
-        },
-      }
-    },
-  );
+    />,
+    Schedule: props => <Schedule
+      league={league}
+    />,
+  },
+  {
+    ...NavigationProps.tabConfig
+  }
+);
 
 
-class LeaguePage extends React.Component { 
+class LeaguePage extends React.Component {
+  static propTypes = {
+    leagues: PropTypes.object.isRequired,
+    leagueId: PropTypes.string,
+    getLeague: PropTypes.func.isRequired
+  }
 
-    constructor(props){
-        super(props);
-        this.props.getLeague(this.props.leagueId);
-    }
- 
-    render() {
+  static defaultProps = {
+    leagueId: null
+  }
 
-        const { leagues, loading, leagueId, leagueName} = this.props;
+  constructor(props) {
+    super(props);
+    props.getLeague(this.props.leagueId);
+  }
 
-        if(loading) return <Loading />; 
+  render() {
+    const { leagues, leagueId } = this.props;
 
-        const league = leagues[leagueId];
-        const LeagueNavigator = createAppContainer(leagueNavigator(league, leagueName));
-        return (
-          // <LeagueNavigator />\
-          <Container>
-          {
-            league != null && !league.isFetching &&
-            <LeagueNavigator/>
-          }
-          </Container>
-        );
-    }
+    const league = leagues[leagueId];
+
+    if (league == null || league.isFetching) return <Loading />;
+
+
+    const LeagueNavigator = createAppContainer(leagueNavigator(league));
+    return (
+      <LeagueNavigator />
+    )
+  }
 }
 
 const mapStateToProps = state => ({
-    leagues: state.leagues || {},
-  });
-  
-  const mapDispatchToProps = {
-    getLeague: fetchLeague,
-  };
-  
+  leagues: state.leagues || {},
+});
+
+const mapDispatchToProps = {
+  getLeague: fetchLeague,
+};
+
 export default connect(mapStateToProps, mapDispatchToProps)(LeaguePage);
 
 /*calendar, podium, people */
