@@ -19,6 +19,28 @@
 				return null;
 			}
 		}
+
+		public function getFilteredDates($sportId, $seasonId, $dayNumber) {
+
+			if($sportId == null || $seasonId == null || $dayNumber == null) {
+				return [];
+			}
+
+			$sql = "SELECT * FROM " . Includes_DBTableNames::datesTable
+					. " WHERE date_sport_id = " . $sportId . " AND date_season_id = " . $seasonId 
+					. " AND date_day_number = " . $dayNumber
+					. " ORDER BY date_week_number ASC";
+
+			$stmt = $this->db->query($sql);
+
+			$results = [];
+
+			while($row = $stmt->fetch()) {
+				$results[] = Models_Date::withRow($this->db, $this->logger, $row);
+			}
+
+			return $results;
+		}
 	}
 
 ?>

@@ -8,6 +8,7 @@
 
 			$scheduledMatchesController = new Controllers_ScheduledMatchesController($this->db, $this->logger);
 			$leagueController = new Controllers_LeaguesController($this->db, $this->logger);
+			$datesController = new Controllers_DatesController($this->db, $this->logger);
 
 			$leagueID = (int)$request->getAttribute('leagueID');
 			$league = Models_League::withID($this->db, $this->logger, $leagueID);
@@ -36,8 +37,7 @@
 
 			$league->setScheduledMatches($scheduledMatchesController->getLeagueScheduledMatches($league, false));
 			$league->setStandings($teamsForStandings);
-			$league->getDateInScoreReporter();
-			$league->getDateInStandings();
+			$league->setDates($datesController->getFilteredDates($league->getSportId(), $league->getSeasonId(), $league->getDayNumber()));
 
 			return $response->withStatus(200)
 				->withHeader('Content-Type', 'application/json')

@@ -8,6 +8,7 @@
 		$sportsController = new Controllers_SportsController($this->db, $this->logger);
 		$leaguesConteroller = new Controllers_LeaguesController($this->db, $this->logger);
 		$seasonsController = new Controllers_SeasonsController($this->db, $this->logger);
+		$venuesController = new Controllers_VenuesController($this->db, $this->logger);
 
 		$returnObj = array();
 
@@ -21,6 +22,8 @@
 		}
 
 		$returnObj["seasonsAvailableScoreReporter"] = $seasonsAvailableScoreReporter;
+
+		$returnObj["venues"] = $venuesController->getAllVenuesAsHashmap();
 
 		return $response->withStatus(200)
         	->withHeader('Content-Type', 'application/json')
