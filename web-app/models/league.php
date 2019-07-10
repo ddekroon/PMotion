@@ -46,6 +46,7 @@ class Models_League extends Models_Generic implements Models_Interface, JsonSeri
 
 	/* API use only */
 	protected $scheduledMatches;
+	protected $standings;
 	
 	public static function withID($db, $logger, $id) {
 		$instance = new self();
@@ -507,6 +508,10 @@ class Models_League extends Models_Generic implements Models_Interface, JsonSeri
 		return $this->scheduledMatches;
 	}
 
+	function getStandings() {
+		return $this->standings;
+	}
+
 	function setId($id) {
 		$this->id = $id;
 	}
@@ -649,6 +654,10 @@ class Models_League extends Models_Generic implements Models_Interface, JsonSeri
 
 	function setScheduledMatches($scheduledMatches) {
 		$this->scheduledMatches = $scheduledMatches;
+	}
+
+	function setStandings($standings) {
+		$this->standings = $standings;
 	}
 	
 	function saveOrUpdate() {

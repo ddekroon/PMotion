@@ -7,6 +7,7 @@
 		$app->get('/{leagueID}', function (Request $request, Response $response) {
 
 			$scheduledMatchesController = new Controllers_ScheduledMatchesController($this->db, $this->logger);
+			$leagueController = new Controllers_LeaguesController($this->db, $this->logger);
 
 			$leagueID = (int)$request->getAttribute('leagueID');
 			$league = Models_League::withID($this->db, $this->logger, $leagueID);
@@ -15,7 +16,28 @@
 				$league->getTeams();
 			}
 
-			$league->setScheduledMatches($scheduledMatchesController->getLeagueScheduledMatchesForCurrentWeek($league));
+			$teamsForStandings = $league->getTeams();
+
+			if($league->getWeekInStandings() < 50) { // active league
+				if (!$league->getIsSortByWinPct()) {
+					usort($teamsForStandings, array("Controllers_TeamsController", "comparePoints"));
+				} else {
+					usort($teamsForStandings, array("Controllers_TeamsController", "comparePercent"));
+				}
+			} else {
+				usort($teamsForStandings, array("Controllers_TeamsController", "comparePosition"));
+			}
+
+			if(!$leagueController->checkHideSpirit($league)) {
+				foreach($teamsForStandings as $curTeam) {
+					$curTeam->getSpiritAverage();
+				}
+			}
+
+			$league->setScheduledMatches($scheduledMatchesController->getLeagueScheduledMatches($league, false));
+			$league->setStandings($teamsForStandings);
+			$league->getDateInScoreReporter();
+			$league->getDateInStandings();
 
 			return $response->withStatus(200)
 				->withHeader('Content-Type', 'application/json')

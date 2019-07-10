@@ -35,12 +35,21 @@ const sportsNavigator = (sports, seasonsBySport) => createMaterialTopTabNavigato
       style: {
         backgroundColor: '#303030'
       },
+      tabStyle: {
+        paddingTop: 12,
+        paddingBottom: 12,
+        paddingLeft: 2,
+        paddingRight: 2
+      },
       indicatorStyle: {
         borderBottomColor: 'red',
         borderBottomWidth: 3,
       },
       labelStyle: {
-        fontSize: 9
+        fontSize: 10,
+        fontWeight: '600',
+        letterSpacing: 1,
+        margin: 0
       },
     }
   },
