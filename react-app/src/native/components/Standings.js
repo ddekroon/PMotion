@@ -11,10 +11,9 @@ export default class Standings extends React.Component {
         super(props);
     }
 
-
     render() {
 
-        const { loading, league, leagueName } = this.props;
+        const { league, leagueName } = this.props;
 
         const flexArr = [1, 8, 1, 1, 1, 1, 2];
         const tableInfo = {
@@ -27,7 +26,7 @@ export default class Standings extends React.Component {
             tableInfo.data.push([(i + 1), team.name, team.wins, team.losses, team.ties, points, parseFloat(team.spiritAverage).toFixed(2)]);
         });
 
-        if (loading) return <Loading />
+        if (league == null || league.isFetching) return <Loading />
 
         return (
             <Container>
@@ -46,6 +45,7 @@ export default class Standings extends React.Component {
                                 />
                                 {
                                     tableInfo.data.map((rowData, index) => (
+                                        
                                         <Row
                                             key={index}
                                             flexArr={flexArr}
@@ -67,7 +67,8 @@ export default class Standings extends React.Component {
 const styles = StyleSheet.create({
     container: { flex: 1, backgroundColor: 'yellow' },
     header: { padding: 2, borderBottomWidth: 2, borderBottomColor: 'black' },
-    headerText: { fontWeight: "bold" },
+    headerText: { fontWeight: "bold"},
     text: {},
+    statText: {textAlign: 'center'},
     row: { padding: 2 }
 });

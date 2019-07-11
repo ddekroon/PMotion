@@ -24,7 +24,7 @@ export default class Schedule extends React.Component {
 
     render(){
 
-        const {loading, league, leagueName} = this.props;
+        const {league, leagueName, lookups} = this.props;
 
         const flexArr = [2, 7];
         const teamTable = {
@@ -36,7 +36,7 @@ export default class Schedule extends React.Component {
             teamTable.data.push([team.numInLeague, team.name]);
         });
 
-        if (loading) return <Loading/>
+        if (league == null || league.isFetching)  return <Loading/>
 
         return (
             <Container>
@@ -70,7 +70,7 @@ export default class Schedule extends React.Component {
 
                 {
                     league != null && !league.isFetching &&
-                    <Content><Text>{JSON.stringify(league, null, 2)}</Text></Content>
+                    <Content><Text>{JSON.stringify(lookups, null, 2)}</Text></Content>
                 }
 
             </Content>

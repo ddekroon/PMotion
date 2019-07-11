@@ -54,7 +54,7 @@ export default class Leagues extends React.Component {
 
     const SportsNavigator = createAppContainer(sportsNavigator(sports, scoreReporterSeasons));
     return (
-      <SportsNavigator />
+      <SportsNavigator detached={true}/>
     )
   }
 }
