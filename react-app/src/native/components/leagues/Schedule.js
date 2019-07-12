@@ -5,10 +5,9 @@ import { StyleSheet } from 'react-native';
 
 import Loading from '../common/Loading';
 
-
 export default class Schedule extends React.Component {
 
-    constructor(props) {
+    constructor(props){
         super(props);
     }
 
@@ -23,9 +22,9 @@ export default class Schedule extends React.Component {
     //numInLeague
     //id
 
-    render() {
+    render(){
 
-        const { loading, league, leagueName } = this.props;
+        const {league, leagueName, lookups} = this.props;
 
         const flexArr = [2, 7];
         const teamTable = {
@@ -37,44 +36,44 @@ export default class Schedule extends React.Component {
             teamTable.data.push([team.numInLeague, team.name]);
         });
 
-        if (loading) return <Loading />
+        if (league == null || league.isFetching)  return <Loading/>
 
         return (
             <Container>
-                <Content padder>
-                    <Card>
-                        <CardItem header>
-                            <Text>{leagueName}</Text>
-                        </CardItem>
-                        <CardItem cardBody style={{ padding: 10 }}>
-                            <Table style={{ flex: 1, marginBottom: 10 }} borderStyle={{ borderWidth: 0, borderColor: "transparent" }}>
-                                <Row
-                                    flexArr={flexArr}
-                                    data={teamTable.header}
-                                    style={styles.header}
-                                    textStyle={styles.headerText}
-                                />
-                                {
-                                    teamTable.data.map((rowData, index) => (
-                                        <Row
-                                            key={index}
-                                            flexArr={flexArr}
-                                            data={rowData}
-                                            style={[styles.row, index % 2 == 1 && { backgroundColor: '#e6e6e6' }]}
-                                            textStyle={styles.text}
-                                        />
-                                    ))
-                                }
-                            </Table>
-                        </CardItem>
-                    </Card>
+            <Content padder>
+                <Card>
+                    <CardItem header>
+                        <Text>{leagueName}</Text>
+                    </CardItem>
+                    <CardItem cardBody style={{ padding: 10 }}>
+                        <Table style={{ flex: 1, marginBottom: 10 }} borderStyle={{ borderWidth: 0, borderColor: "transparent" }}>
+                            <Row
+                                flexArr={flexArr}
+                                data={teamTable.header}
+                                style={styles.header}
+                                textStyle={styles.headerText}
+                            />
+                            {
+                                teamTable.data.map((rowData, index) => (
+                                    <Row
+                                        key={index}
+                                        flexArr={flexArr}
+                                        data={rowData}
+                                        style={[styles.row, index % 2 == 1 && { backgroundColor: '#e6e6e6' }]}
+                                        textStyle={styles.text}
+                                    />
+                                ))
+                            }
+                        </Table>
+                    </CardItem>
+                </Card>
 
-                    {
-                        league != null && !league.isFetching &&
-                        <Content><Text>{JSON.stringify(league, null, 2)}</Text></Content>
-                    }
+                {
+                    league != null && !league.isFetching &&
+                    <Content><Text>{JSON.stringify(lookups, null, 2)}</Text></Content>
+                }
 
-                </Content>
+            </Content>
             </Container>
         );
     }
