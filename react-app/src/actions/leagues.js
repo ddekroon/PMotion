@@ -43,8 +43,6 @@ function shouldFetchLeague(state, leagueId) {
     return false;
   }
 
-  return true;
-  /*
   const league = state.leagues[leagueId]
   if (!league) {
     return true
@@ -52,5 +50,5 @@ function shouldFetchLeague(state, leagueId) {
     return false
   } else {
     return league.didInvalidate
-  }*/
+  }
 }

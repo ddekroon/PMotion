@@ -3,10 +3,10 @@ import PropTypes from 'prop-types';
 import {
   Container, Content, Text, Body, ListItem, Form, Item, Label, Input, CheckBox, Button, View,
 } from 'native-base';
-import Messages from './Messages';
-import Loading from './Loading';
-import Header from './Header';
-import Spacer from './Spacer';
+import Messages from '../common/Messages';
+import Loading from '../common/Loading';
+import Header from '../common/Header';
+import Spacer from '../common/Spacer';
 
 class UpdateProfile extends React.Component {
   static propTypes = {
@@ -114,17 +114,17 @@ class UpdateProfile extends React.Component {
 
             {changeEmail
               && (
-              <Item stackedLabel>
-                <Label>
-                  Email
+                <Item stackedLabel>
+                  <Label>
+                    Email
                 </Label>
-                <Input
-                  autoCapitalize="none"
-                  value={email}
-                  keyboardType="email-address"
-                  onChangeText={v => this.handleChange('email', v)}
-                />
-              </Item>
+                  <Input
+                    autoCapitalize="none"
+                    value={email}
+                    keyboardType="email-address"
+                    onChangeText={v => this.handleChange('email', v)}
+                  />
+                </Item>
               )
             }
 
@@ -142,21 +142,21 @@ class UpdateProfile extends React.Component {
 
             {changePassword
               && (
-              <View padder>
-                <Item stackedLabel>
-                  <Label>
-                    Password
+                <View padder>
+                  <Item stackedLabel>
+                    <Label>
+                      Password
                   </Label>
-                  <Input secureTextEntry onChangeText={v => this.handleChange('password', v)} />
-                </Item>
+                    <Input secureTextEntry onChangeText={v => this.handleChange('password', v)} />
+                  </Item>
 
-                <Item stackedLabel last>
-                  <Label>
-                    Confirm Password
+                  <Item stackedLabel last>
+                    <Label>
+                      Confirm Password
                   </Label>
-                  <Input secureTextEntry onChangeText={v => this.handleChange('password2', v)} />
-                </Item>
-              </View>
+                    <Input secureTextEntry onChangeText={v => this.handleChange('password2', v)} />
+                  </Item>
+                </View>
               )
             }
 

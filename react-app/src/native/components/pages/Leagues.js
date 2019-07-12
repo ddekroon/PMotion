@@ -1,9 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { createAppContainer, createMaterialTopTabNavigator } from 'react-navigation';
-import Loading from './Loading'
-import SportLeagues from '../components/SportLeagues';
-import NavigationProps from '../constants/navigation';
+import Loading from '../common/Loading'
+import SportLeagues from '../leagues/LeaguesList';
+import NavigationProps from '../../constants/navigation';
 
 const sportsNavigator = (sports, seasonsBySport) => createMaterialTopTabNavigator(
   {

@@ -5,7 +5,7 @@ import {
   Container, Content, List, ListItem, Body, Left, Text, Icon,
 } from 'native-base';
 import { Actions } from 'react-native-router-flux';
-import Header from './Header';
+import Header from '../common/Header';
 
 const Profile = ({ member, logout }) => (
   <Container>
@@ -85,16 +85,6 @@ const Profile = ({ member, logout }) => (
             </View>
           )
         }
-        <ListItem onPress={Actions.locale} icon>
-          <Left>
-            <Icon name="ios-flag" />
-          </Left>
-          <Body>
-            <Text>
-              Change Language
-            </Text>
-          </Body>
-        </ListItem>
       </List>
     </Content>
   </Container>

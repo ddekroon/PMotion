@@ -1,11 +1,11 @@
 import React from 'react'
 import PropTypes from 'prop-types';
-import { Container, Content, Text, View, List, ListItem, Icon, Right, Card, CardItem } from 'native-base';
-import Spacer from './Spacer';
-import SportHelpers from '../../utils/sporthelpers';
 import { Actions } from 'react-native-router-flux';
-import DateTimeHelpers from '../../utils/datetimehelpers'
-import leaguehelpers from '../../utils/leaguehelpers';
+import { Container, Content, Text, View, List, ListItem, Icon, Right, Card, CardItem } from 'native-base';
+
+import Spacer from '../common/Spacer';
+import SportHelpers from '../../../utils/sporthelpers';
+import LeagueHelpers from '../../../utils/leaguehelpers';
 
 export default class SportLeagues extends React.Component {
     static propTypes = {
@@ -25,9 +25,9 @@ export default class SportLeagues extends React.Component {
 
         const seasonsView = seasons.map((curSeason) => {
             var leagues = curSeason.leagues.map((league, leagueIndex) =>
-                <ListItem key={league.id} onPress={() => Actions.league({ leagueId: league.id, title: leaguehelpers.getFormattedLeagueName(league) })}>
+                <ListItem key={league.id} onPress={() => Actions.league({ leagueId: league.id, title: LeagueHelpers.getFormattedLeagueName(league) })}>
                     <View style={{ flex: 1 }}>
-                        <Text key={league.id}>{leaguehelpers.getFormattedLeagueName(league)}</Text>
+                        <Text key={league.id}>{LeagueHelpers.getFormattedLeagueName(league)}</Text>
                     </View>
                     <Right>
                         <Icon name="arrow-forward" />

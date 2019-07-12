@@ -1,40 +1,30 @@
 import React from 'react';
 import { Scene, Tabs, Stack } from 'react-native-router-flux';
-import { Icon } from 'native-base';
 import { View, Text, Image } from 'react-native';
 
 import DefaultProps from '../constants/navigation';
-import AppConfig from '../../constants/config';
-
-import RecipesContainer from '../../containers/Recipes';
-import RecipesComponent from '../components/Recipes';
-import RecipeViewComponent from '../components/Recipe';
 
 import SignUpContainer from '../../containers/SignUp';
-import SignUpComponent from '../components/SignUp';
+import SignUpComponent from '../components/pages/SignUp';
 
 import LoginContainer from '../../containers/Login';
-import LoginComponent from '../components/Login';
+import LoginComponent from '../components/pages/Login';
 
 import ForgotPasswordContainer from '../../containers/ForgotPassword';
-import ForgotPasswordComponent from '../components/ForgotPassword';
-
-import LocaleContainer from '../../containers/Locale';
-import LocaleComponent from '../components/Locale';
+import ForgotPasswordComponent from '../components/pages/ForgotPassword';
 
 import UpdateProfileContainer from '../../containers/UpdateProfile';
-import UpdateProfileComponent from '../components/UpdateProfile';
+import UpdateProfileComponent from '../components/pages/UpdateProfile';
 
 import MemberContainer from '../../containers/Member';
-import ProfileComponent from '../components/Profile';
+import ProfileComponent from '../components/pages/Profile';
 
 import LeaguesContainer from '../../containers/Leagues';
-import LeaguesComponent from '../components/Leagues';
+import LeaguesComponent from '../components/pages/Leagues';
+import LeaguePage from '../components/leagues/League';
 
 import ScoreReporterContainer from '../../containers/ScoreReporter';
-import ScoreReporterComponent from '../components/ScoreReporter';
-
-import LeaguePage from '../components/LeaguePage';
+import ScoreReporterComponent from '../components/pages/ScoreReporter';
 
 const Index = (
   <Stack hideNavBar>
@@ -130,15 +120,6 @@ const Index = (
           />
           <Scene
             back
-            key="locale"
-            title="CHANGE LANGUAGE"
-            {...DefaultProps.navbarProps}
-            component={LocaleContainer}
-            Layout={LocaleComponent}
-            {...DefaultProps.screenProps}
-          />
-          <Scene
-            back
             key="updateProfile"
             title="UPDATE PROFILE"
             {...DefaultProps.navbarProps}
@@ -147,33 +128,8 @@ const Index = (
             {...DefaultProps.screenProps}
           />
         </Stack>
-
-        <Stack
-          key="recipes"
-          title="RECIPES"
-          icon={() => <Icon name="book" {...DefaultProps.icons} />}
-          {...DefaultProps.navbarProps}
-        >
-          <Scene
-            key="recipes"
-            component={RecipesContainer}
-            Layout={RecipesComponent}
-            {...DefaultProps.screenProps}
-          />
-        </Stack>
       </Tabs>
     </Scene>
-
-    <Scene
-      back
-      clone
-      key="recipe"
-      title="RECIPE"
-      {...DefaultProps.navbarProps}
-      component={RecipesContainer}
-      Layout={RecipeViewComponent}
-      {...DefaultProps.screenProps}
-    />
 
     <Scene
       back

@@ -4,10 +4,10 @@ import {
 	Item, Label, Input, Picker, Textarea, Card, CardItem, Body, Text, Badge, Icon
 } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
-import TeamPicker from './common/TeamPicker'
-import Enums from '../../constants/enums'
-import Messages from './Messages';
-import ValidationHelpers from '../../utils/validationhelpers';
+import TeamPicker from '../common/TeamPicker'
+import Enums from '../../../constants/enums'
+import Messages from '../common/Messages';
+import ValidationHelpers from '../../../utils/validationhelpers';
 
 class ScoreReporterMatch extends React.Component {
 	static propTypes = {

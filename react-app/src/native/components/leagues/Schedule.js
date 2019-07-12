@@ -1,30 +1,40 @@
 import React from 'react';
-import { Container, Content, Text, Body, Card, CardItem, View } from 'native-base';
-import PropTypes from 'prop-types';
-import Loading from './Loading';
+import { Container, Content, Text, Body, Card, CardItem, View, H1 } from 'native-base';
 import { Table, Row, Rows } from 'react-native-table-component';
 import { StyleSheet } from 'react-native';
 
-export default class Standings extends React.Component {
+import Loading from '../common/Loading';
+
+
+export default class Schedule extends React.Component {
 
     constructor(props) {
         super(props);
     }
 
+    //scheduledMatches array
+    //teamOneId
+    //feildId
+    //matchTime
+    //dateId
+
+
+    //teams
+    //numInLeague
+    //id
 
     render() {
 
         const { loading, league, leagueName } = this.props;
 
-        const flexArr = [1, 8, 1, 1, 1, 1, 2];
-        const tableInfo = {
-            header: ['', 'Team', 'W', 'L', 'T', 'P', 'Spirit'],
+        const flexArr = [2, 7];
+        const teamTable = {
+            header: ['Team #', 'Name'],
             data: [],
         }
 
-        league.standings.map((team, i) => {
-            var points = parseInt(team.ties) + (parseInt(team.wins) * 2);
-            tableInfo.data.push([(i + 1), team.name, team.wins, team.losses, team.ties, points, parseFloat(team.spiritAverage).toFixed(2)]);
+        league.teams.map((team, i) => {
+            teamTable.data.push([team.numInLeague, team.name]);
         });
 
         if (loading) return <Loading />
@@ -40,12 +50,12 @@ export default class Standings extends React.Component {
                             <Table style={{ flex: 1, marginBottom: 10 }} borderStyle={{ borderWidth: 0, borderColor: "transparent" }}>
                                 <Row
                                     flexArr={flexArr}
-                                    data={tableInfo.header}
+                                    data={teamTable.header}
                                     style={styles.header}
                                     textStyle={styles.headerText}
                                 />
                                 {
-                                    tableInfo.data.map((rowData, index) => (
+                                    teamTable.data.map((rowData, index) => (
                                         <Row
                                             key={index}
                                             flexArr={flexArr}
@@ -58,6 +68,12 @@ export default class Standings extends React.Component {
                             </Table>
                         </CardItem>
                     </Card>
+
+                    {
+                        league != null && !league.isFetching &&
+                        <Content><Text>{JSON.stringify(league, null, 2)}</Text></Content>
+                    }
+
                 </Content>
             </Container>
         );

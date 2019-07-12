@@ -4,14 +4,14 @@ import { KeyboardAvoidingView } from 'react-native';
 import {
   Content, Text, Form, Item, Label, Input, Button, Picker, Icon, Card, CardItem, Body, Header
 } from 'native-base';
-import Loading from './Loading';
-import Spacer from './Spacer';
-import TeamPicker from './common/TeamPicker';
-import ScoreReporterMatch from './ScoreReporterMatch';
-import DateTimeHelpers from '../../utils/datetimehelpers';
-import ValidationHelpers from '../../utils/validationhelpers';
-import ToastHelpers from '../../utils/toasthelpers';
-import Enums from '../../constants/enums';
+import Loading from '../common/Loading';
+import Spacer from '../common/Spacer';
+import TeamPicker from '../common/TeamPicker';
+import ScoreReporterMatch from '../scorereporter/Match';
+import DateTimeHelpers from '../../../utils/datetimehelpers';
+import ValidationHelpers from '../../../utils/validationhelpers';
+import ToastHelpers from '../../../utils/toasthelpers';
+import Enums from '../../../constants/enums';
 
 class ScoreReporter extends React.Component {
   static propTypes = {

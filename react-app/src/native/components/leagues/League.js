@@ -1,12 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { fetchLeague } from '../../actions/leagues';
-import Loading from './Loading';
 import { createAppContainer, createMaterialTopTabNavigator } from 'react-navigation';
-import Standings from '../components/Standings';
-import Schedule from '../components/Schedule';
-import NavigationProps from '../constants/navigation';
+import { fetchLeague } from '../../../actions/leagues';
+
+import Loading from '../common/Loading';
+import Standings from './Standings';
+import Schedule from './Schedule';
+import NavigationProps from '../../constants/navigation';
 
 
 const leagueNavigator = (league) => createMaterialTopTabNavigator(

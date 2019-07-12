@@ -4,11 +4,10 @@ import {
   Container, Content, Form, Item, Label, Input, Text, Button, View,
 } from 'native-base';
 import { Actions } from 'react-native-router-flux';
-import Loading from './Loading';
-import Messages from './Messages';
-import { translate } from '../../i18n';
-import Header from './Header';
-import Spacer from './Spacer';
+import Loading from '../common/Loading';
+import Messages from '../common/Messages';
+import Header from '../common/Header';
+import Spacer from '../common/Spacer';
 
 class Login extends React.Component {
   static propTypes = {
@@ -72,15 +71,13 @@ class Login extends React.Component {
               title="Welcome back"
               content="Please use your email and password to login."
             />
-            { success ? <Messages type="success" message={success} /> : null }
-            { error ? <Messages message={error} /> : null }
+            {success ? <Messages type="success" message={success} /> : null}
+            {error ? <Messages message={error} /> : null}
           </View>
 
           <Form>
             <Item stackedLabel>
-              <Label>
-                {translate('Email', locale)}
-              </Label>
+              <Label>Email</Label>
               <Input
                 autoCapitalize="none"
                 value={email}
@@ -89,9 +86,7 @@ class Login extends React.Component {
               />
             </Item>
             <Item stackedLabel>
-              <Label>
-                {translate('Password', locale)}
-              </Label>
+              <Label>Password</Label>
               <Input
                 secureTextEntry
                 onChangeText={v => this.handleChange('password', v)}
@@ -102,9 +97,7 @@ class Login extends React.Component {
 
             <View padder>
               <Button block onPress={this.handleSubmit}>
-                <Text>
-                  {translate('Login', locale)}
-                </Text>
+                <Text>Login</Text>
               </Button>
             </View>
           </Form>
