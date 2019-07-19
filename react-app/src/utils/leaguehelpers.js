@@ -33,29 +33,36 @@ export default {
 
 	getDate: (league, dateId) => {
 		//dateId: league.scheduledMatches.dateId
-		if(league == null || dateId === ''){
+		var getdate = {};
+
+		if(league === null || dateId === ''){
 			return null;
 		}
 
 		league.dates.forEach((date) => {
 			if(date.id === dateId){
-				return date;
+				getdate = date;
 			}
 		});
+
+		return getdate;
 	},
 
 	getNumInLeague: (league, teamId) => {
 		//teamId: league.scheduledMatches.teamOneId
-		if(league === null || dateId === ''){
+		var teamNum = '';
+
+		if(league === null || teamId === ''){
 			return '';
 		}
 
 		league.teams.forEach((team) => {
 			if(team.id === teamId){
-				return team.numInLeague;
+				teamNum = team.numInLeague;
 			}
 		});
 
+		return teamNum;
 	},
 
 	getVenueName: (lookups, fieldId) => {
@@ -74,10 +81,48 @@ export default {
 
 	convertMatchTime: (time) => {
 		//This is just for the schedules bc theyre always at night
+		//we can change it later..
 		let newTime = (parseInt(time) - 1200).toString();
 		return newTime.substr(0,1) +':' + newTime.substr(1,2) + 'pm';
 	},
 
-	
+	getMatchTimes: (league, dateId) => {
+
+		if(league === null || dateId === ''){
+			return null;
+		}
+
+		let matchTimes = [];
+
+		league.scheduledMatches.forEach((match) =>{
+			if(match.dateId === dateId){
+				matchTimes.push(match.matchTime);
+			}
+		});
+
+		return matchTimes;
+
+	},
+
+	getMatches: (league, dateId) => {
+		if(league == null || dateId == ''){
+			return null;
+		}
+
+		let matches = [];
+
+		league.scheduledMatches.forEach((match) =>{
+			if(match.dateId === dateId){
+				matches.push({
+					venue: 'Location #',
+					time: match.matchTime,
+					team1: match.teamOneId,
+					team2: match.teamTwoId,
+				});
+			}
+		});
+
+		return matches;
+	},
 
 };
