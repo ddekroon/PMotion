@@ -76,7 +76,6 @@ const buildLeagueSchedule = (league) => {
       let matches = LeagueHelpers.getMatches(league, match.dateId);
 
       let week = {
-          week: date.weekNumber,
           date: date,
           matchTimes: matchTimes,
           matches: matches

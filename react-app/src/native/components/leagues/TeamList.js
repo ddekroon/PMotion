@@ -1,6 +1,6 @@
 import React from 'react';
-import { Content, Text, Card, CardItem} from 'native-base';
-import { Table, Row, Rows } from 'react-native-table-component';
+import { Text, Card, CardItem} from 'native-base';
+import { Table, Row } from 'react-native-table-component';
 import { StyleSheet } from 'react-native';
 import Loading from '../common/Loading';
 
@@ -27,40 +27,32 @@ export default class Schedule extends React.Component {
         if (league == null || league.isFetching) return <Loading />
 
         return (
-            <Content padder>
-                <Card>
-                    <CardItem header>
-                        <Text>{leagueName}</Text>
-                    </CardItem>
-                    <CardItem cardBody style={{ padding: 10 }}>
-                        <Table style={{ flex: 1, marginBottom: 10 }} borderStyle={{ borderWidth: 0, borderColor: "transparent" }}>
-                            <Row
-                                flexArr={flexArr}
-                                data={teamTable.header}
-                                style={styles.header}
-                                textStyle={styles.headerText}
-                            />
-                            {
-                                teamTable.data.map((rowData, index) => (
-                                    <Row
-                                        key={index}
-                                        flexArr={flexArr}
-                                        data={rowData}
-                                        style={[styles.row, index % 2 == 1 && { backgroundColor: '#e6e6e6' }]}
-                                        textStyle={styles.text}
-                                    />
-                                ))
-                            }
-                        </Table>
-                    </CardItem>
-                </Card>
-
-                {
-                    league != null && !league.isFetching &&
-                    <Content><Text>{JSON.stringify(league.leagueSchedule, null, 2)}</Text></Content>
-                }
-
-            </Content>
+            <Card>
+                <CardItem header>
+                    <Text>{leagueName}</Text>
+                </CardItem>
+                <CardItem cardBody style={{ padding: 10 }}>
+                    <Table style={{ flex: 1, marginBottom: 10 }} borderStyle={{ borderWidth: 0, borderColor: "transparent" }}>
+                        <Row
+                            flexArr={flexArr}
+                            data={teamTable.header}
+                            style={styles.header}
+                            textStyle={styles.headerText}
+                        />
+                        {
+                            teamTable.data.map((rowData, index) => (
+                                <Row
+                                    key={index}
+                                    flexArr={flexArr}
+                                    data={rowData}
+                                    style={[styles.row, index % 2 == 1 && { backgroundColor: '#e6e6e6' }]}
+                                    textStyle={styles.text}
+                                />
+                            ))
+                        }
+                    </Table>
+                </CardItem>
+            </Card>
         );
     }
 }
@@ -72,3 +64,11 @@ const styles = StyleSheet.create({
     text: {},
     row: { padding: 2 }
 });
+
+/**
+ * 
+ *  {
+                    league != null && !league.isFetching &&
+                    <Content><Text>{JSON.stringify(league.leagueSchedule, null, 2)}</Text></Content>
+                }
+ */
