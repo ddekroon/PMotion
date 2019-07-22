@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import {
   Content, Text, Item, Picker, Icon
 } from 'native-base';
-import Loading from '../Loading';
+import Loading from './Loading';
 import ValidationHelpers from '../../../utils/validationhelpers'
 
 class TeamPicker extends React.Component {
