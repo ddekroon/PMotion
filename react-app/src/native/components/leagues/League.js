@@ -10,14 +10,13 @@ import Schedule from './Schedule';
 import NavigationProps from '../../constants/navigation';
 
 
-const leagueNavigator = (league, lookups) => createMaterialTopTabNavigator(
+const leagueNavigator = (league) => createMaterialTopTabNavigator(
   {
     Standings: props => <Standings
       league={league}
     />,
     Schedule: props => <Schedule
       league={league}
-      lookups={lookups}
     />,
   },
   {
@@ -44,12 +43,12 @@ class LeaguePage extends React.Component {
 
   render() {
 
-    const { leagues, leagueId, lookups } = this.props;
+    const { leagues, leagueId } = this.props;
     const league = leagues[leagueId];
 
     if (league == null || league.isFetching) return <Loading />;
 
-    const LeagueNavigator = createAppContainer(leagueNavigator(league, lookups));
+    const LeagueNavigator = createAppContainer(leagueNavigator(league));
     return (
       <LeagueNavigator detached={true}/>
     )
@@ -58,7 +57,6 @@ class LeaguePage extends React.Component {
 
 const mapStateToProps = state => ({
   leagues: state.leagues || {},
-  lookups: state.lookups || {},
 });
 
 const mapDispatchToProps = {

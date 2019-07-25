@@ -1,10 +1,15 @@
 import React from 'react';
-import { Text, Card, CardItem} from 'native-base';
+import { Text, Card, CardItem } from 'native-base';
 import { Table, Row } from 'react-native-table-component';
 import { StyleSheet } from 'react-native';
 import Loading from '../common/Loading';
+import LeagueHelpers from '../../../utils/leaguehelpers';
+import PropTypes from 'prop-types';
 
 export default class Schedule extends React.Component {
+    static propTypes = {
+        league: PropTypes.object.isRequired,
+    }
 
     constructor(props) {
         super(props);
@@ -12,7 +17,7 @@ export default class Schedule extends React.Component {
 
     render() {
 
-        const { league, leagueName, lookups } = this.props;
+        const { league } = this.props;
 
         const flexArr = [2, 7];
         const teamTable = {
@@ -29,10 +34,10 @@ export default class Schedule extends React.Component {
         return (
             <Card>
                 <CardItem header>
-                    <Text>{leagueName}</Text>
+                    <Text>{LeagueHelpers.getFormattedLeagueName(league)}</Text>
                 </CardItem>
                 <CardItem cardBody style={{ padding: 10 }}>
-                    <Table style={{ flex: 1, marginBottom: 10 }} borderStyle={{ borderWidth: 0, borderColor: "transparent" }}>
+                    <Table style={styles.table} borderStyle={styles.tableborderstyle}>
                         <Row
                             flexArr={flexArr}
                             data={teamTable.header}
@@ -62,13 +67,11 @@ const styles = StyleSheet.create({
     header: { padding: 2, borderBottomWidth: 2, borderBottomColor: 'black' },
     headerText: { fontWeight: "bold" },
     text: {},
-    row: { padding: 2 }
+    row: { padding: 2 },
+    table: { flex: 1, marginBottom: 10 },
+    tableborderstyle: { borderWidth: 0, borderColor: "transparent" },
+
 });
 
-/**
- * 
- *  {
-                    league != null && !league.isFetching &&
-                    <Content><Text>{JSON.stringify(league.leagueSchedule, null, 2)}</Text></Content>
-                }
- */
+
+

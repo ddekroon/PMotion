@@ -45,6 +45,8 @@ export default {
 			}
 		});
 
+		//return leagues.dates.filter((date) => {date.id === dateId});
+
 		return getdate;
 	},
 
@@ -62,21 +64,26 @@ export default {
 			}
 		});
 
+		//return leagues.teams.filter((team) => {team.id === teamId});
+
 		return teamNum;
 	},
 
 	getVenueName: (lookups, fieldId) => {
 		//fieldId: league.scheduledMatches.fieldId
+		var venueName;
+
 		if(lookups === null || fieldId === ''){
 			return '';
 		}
 
 		lookups.venues.forEach((venue) => {
 			if(venue.id === fieldId){
-				return venue.name;
+				venueName = venue.name;
 			}
 		});
-		
+
+		return venueName;
 	},
 
 	convertMatchTime: (time) => {
@@ -100,6 +107,8 @@ export default {
 			}
 		});
 
+		matchTimes.sort((a,b) => a - b);
+
 		return matchTimes;
 
 	},
@@ -114,13 +123,15 @@ export default {
 		league.scheduledMatches.forEach((match) =>{
 			if(match.dateId === dateId){
 				matches.push({
-					venue: 'Location #',
+					venue: match.fieldId,
 					time: match.matchTime,
 					team1: match.teamOneId,
 					team2: match.teamTwoId,
 				});
 			}
 		});
+
+		matches.sort((a, b) => a.time - b.time);
 
 		return matches;
 	},

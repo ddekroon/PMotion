@@ -20,8 +20,7 @@ export function fetchLeague(leagueId) {
         )
         .then(json => {
 
-          let leagueSchedule = buildLeagueSchedule(json);
-          json['leagueSchedule'] = leagueSchedule;
+          json['leagueSchedule'] = buildLeagueSchedule(json);
 
           dispatch({
             type: 'RECEIVE_LEAGUE',
@@ -59,31 +58,28 @@ function shouldFetchLeague(state, leagueId) {
 
 const buildLeagueSchedule = (league) => {
 
-  if(typeof(league) === 'undefined' || league == null){
+  if (typeof (league) === 'undefined' || league == null) {
     return [];
   }
 
-  const scheduleWeeks = [];
+  var scheduleWeeks = [];
   let prevWeek = '';
 
   league.scheduledMatches.forEach((match, i) => {
 
     let date = LeagueHelpers.getDate(league, match.dateId);
 
-    if(prevWeek != date.weekNumber){
-
-      let matchTimes = LeagueHelpers.getMatchTimes(league, match.dateId);
-      let matches = LeagueHelpers.getMatches(league, match.dateId);
+    if (prevWeek != date.weekNumber) {
 
       let week = {
-          date: date,
-          matchTimes: matchTimes,
-          matches: matches
+        date: date,
+        matchTimes: LeagueHelpers.getMatchTimes(league, match.dateId),
+        matches: LeagueHelpers.getMatches(league, match.dateId),
       };
 
       prevWeek = date.weekNumber;
       scheduleWeeks.push(week);
-  }
+    }
 
   });
 
