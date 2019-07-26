@@ -22,7 +22,7 @@ class ScheduleWeek extends React.Component {
 
         const { schedule, league, lookups} = this.props;
 
-        const flexArr = [4, 2, 2, 2];
+        const flexArr = [4, 3, 2, 3];
         const weekTable = {
             header: ['Field', 'Dark', '', 'White'],
             data: [],
@@ -31,7 +31,7 @@ class ScheduleWeek extends React.Component {
         Object.keys(schedule.times).forEach((time) => {
             weekTable.data.push([LeagueHelpers.convertMatchTime(schedule.times[time].time), '', '', '']);
             schedule.times[time].matches.forEach((match) => {
-                weekTable.data.push([lookups.venues[match.venue].name,  LeagueHelpers.getNumInLeague(league, match.team1), 'vs', LeagueHelpers.getNumInLeague(league, match.team2)]);
+                weekTable.data.push([lookups.venues[match.venue].name,  LeagueHelpers.getTeamName(league, match.team1), 'vs', LeagueHelpers.getTeamName(league, match.team2)]);
             });
         })
 
@@ -57,7 +57,7 @@ class ScheduleWeek extends React.Component {
                                     flexArr={flexArr}
                                     data={rowData}
                                     style={[styles.row, index % 2 == 1 && { backgroundColor: '#e6e6e6' }]}
-                                    textStyle={[styles.text, rowData[2] === '' && {fontWeight: 'bold'} ]}
+                                    textStyle={[styles.text, rowData[2] === '' && {fontWeight: 'bold', fontSize: 20}]}
                                 />
                             ))
                         }

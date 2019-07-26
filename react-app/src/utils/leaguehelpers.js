@@ -69,6 +69,25 @@ export default {
 		return teamNum;
 	},
 
+	getTeamName: (league, teamId) => {
+		//teamId: league.scheduledMatches.teamOneId
+		var teamName = '';
+
+		if(league === null || teamId === ''){
+			return '';
+		}
+
+		league.teams.forEach((team) => {
+			if(team.id === teamId){
+				teamName = team.name;
+			}
+		});
+
+		//return leagues.teams.filter((team) => {team.id === teamId});
+
+		return teamName;
+	},
+
 	convertMatchTime: (time) => {
 		//This is just for the schedules bc theyre always at night
 		//we can change it later..
@@ -109,7 +128,6 @@ export default {
 				});
 			}
 		});
-
 		
 		Object.keys(times).forEach((time) => {
 			times[time].matches.sort((a,b) => parseInt(a.venue) - parseInt(b.venue));
