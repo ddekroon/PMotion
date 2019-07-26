@@ -40,7 +40,7 @@ export default class Standings extends React.Component {
                         <CardItem header>
                             <Text>{LeagueHelpers.getFormattedLeagueName(league)}</Text>
                         </CardItem>
-                        <CardItem cardBody style={{ padding: 10 }}>
+                        <CardItem cardBody style={styles.cardItem}>
                             <Table style={styles.table} borderStyle={styles.tableborderstyle}>
                                 <Row
                                     flexArr={flexArr}
@@ -78,4 +78,5 @@ const styles = StyleSheet.create({
     row: { padding: 2 },
     table: { flex: 1, marginBottom: 10 },
     tableborderstyle: { borderWidth: 0, borderColor: "transparent" },
+    cardItem: {padding: 10}
 });

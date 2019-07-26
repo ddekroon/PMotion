@@ -18,16 +18,9 @@ class ScheduleWeek extends React.Component {
         super(props);
     }
 
-    /**
-     * need to sort games by the location
-     * add locations names to schedule
-     * add bold to the times - change the schedule object
-     * add names to schedule 
-     */
-
     render() {
 
-        const { schedule, league, lookups } = this.props;
+        const { schedule, league, lookups} = this.props;
 
         const flexArr = [4, 2, 2, 2];
         const weekTable = {
@@ -35,15 +28,12 @@ class ScheduleWeek extends React.Component {
             data: [],
         }
 
-        //week1: { date: {}, matchTimes: [], matches: [{venue, time, team1, team2}]},
-        let prevTime = '';
-        schedule.matches.forEach((match) => {
-            if (prevTime != match.time) {
-                weekTable.data.push([LeagueHelpers.convertMatchTime(match.time), '', '', '']);
-            }
-            weekTable.data.push([match.venue, LeagueHelpers.getNumInLeague(league, match.team1), 'vs', LeagueHelpers.getNumInLeague(league, match.team2)]);
-            prevTime = match.time;
-        });
+        Object.keys(schedule.times).forEach((time) => {
+            weekTable.data.push([LeagueHelpers.convertMatchTime(schedule.times[time].time), '', '', '']);
+            schedule.times[time].matches.forEach((match) => {
+                weekTable.data.push([lookups.venues[match.venue].name,  LeagueHelpers.getNumInLeague(league, match.team1), 'vs', LeagueHelpers.getNumInLeague(league, match.team2)]);
+            });
+        })
 
         if (league == null || league.isFetching) return <Loading />
 
@@ -52,7 +42,7 @@ class ScheduleWeek extends React.Component {
                 <CardItem header>
                     <Text>{schedule.date.description} - Week {schedule.date.weekNumber}</Text>
                 </CardItem>
-                <CardItem cardBody style={{ padding: 10 }}>
+                <CardItem cardBody style={styles.cardItem}>
                     <Table style={styles.table} borderStyle={styles.tableborderstyle}>
                         <Row
                             flexArr={flexArr}
@@ -67,7 +57,7 @@ class ScheduleWeek extends React.Component {
                                     flexArr={flexArr}
                                     data={rowData}
                                     style={[styles.row, index % 2 == 1 && { backgroundColor: '#e6e6e6' }]}
-                                    textStyle={styles.text}
+                                    textStyle={[styles.text, rowData[2] === '' && {fontWeight: 'bold'} ]}
                                 />
                             ))
                         }
@@ -86,6 +76,7 @@ const styles = StyleSheet.create({
     row: { padding: 2 },
     table: { flex: 1, marginBottom: 10 },
     tableborderstyle: { borderWidth: 0, borderColor: "transparent" },
+    cardItem: {padding: 10},
 });
 
 const mapStateToProps = state => ({
@@ -93,3 +84,5 @@ const mapStateToProps = state => ({
   });
   
 export default connect(mapStateToProps)(ScheduleWeek);
+
+

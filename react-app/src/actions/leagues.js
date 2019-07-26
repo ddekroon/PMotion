@@ -63,7 +63,7 @@ const buildLeagueSchedule = (league) => {
   }
 
   var scheduleWeeks = [];
-  let prevWeek = '';
+  var prevWeek = '';
 
   league.scheduledMatches.forEach((match, i) => {
 
@@ -73,8 +73,7 @@ const buildLeagueSchedule = (league) => {
 
       let week = {
         date: date,
-        matchTimes: LeagueHelpers.getMatchTimes(league, match.dateId),
-        matches: LeagueHelpers.getMatches(league, match.dateId),
+        times: LeagueHelpers.getMatchTimes(league, match.dateId),
       };
 
       prevWeek = date.weekNumber;

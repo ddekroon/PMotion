@@ -69,23 +69,6 @@ export default {
 		return teamNum;
 	},
 
-	getVenueName: (lookups, fieldId) => {
-		//fieldId: league.scheduledMatches.fieldId
-		var venueName;
-
-		if(lookups === null || fieldId === ''){
-			return '';
-		}
-
-		lookups.venues.forEach((venue) => {
-			if(venue.id === fieldId){
-				venueName = venue.name;
-			}
-		});
-
-		return venueName;
-	},
-
 	convertMatchTime: (time) => {
 		//This is just for the schedules bc theyre always at night
 		//we can change it later..
@@ -99,41 +82,40 @@ export default {
 			return null;
 		}
 
-		let matchTimes = [];
+		let times = {};
+		var key = '';
+		var prevKey = '';
 
 		league.scheduledMatches.forEach((match) =>{
 			if(match.dateId === dateId){
-				matchTimes.push(match.matchTime);
+				key = match.matchTime;
+
+				if(key != prevKey){
+					times[key] = {
+						time: match.matchTime,
+						matches: [],
+					};
+				}
+				prevKey = match.matchTime;
 			}
 		});
 
-		matchTimes.sort((a,b) => a - b);
-
-		return matchTimes;
-
-	},
-
-	getMatches: (league, dateId) => {
-		if(league == null || dateId == ''){
-			return null;
-		}
-
-		let matches = [];
-
-		league.scheduledMatches.forEach((match) =>{
+		league.scheduledMatches.forEach((match) => {
 			if(match.dateId === dateId){
-				matches.push({
+				times[match.matchTime].matches.push({
 					venue: match.fieldId,
-					time: match.matchTime,
 					team1: match.teamOneId,
 					team2: match.teamTwoId,
 				});
 			}
 		});
 
-		matches.sort((a, b) => a.time - b.time);
-
-		return matches;
+		
+		Object.keys(times).forEach((time) => {
+			times[time].matches.sort((a,b) => parseInt(a.venue) - parseInt(b.venue));
+		});
+		
+		return times;
 	},
 
 };
