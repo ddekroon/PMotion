@@ -20,7 +20,7 @@ export function fetchLeague(leagueId) {
         )
         .then(json => {
 
-          json['leagueSchedule'] = buildLeagueSchedule(json);
+          json['leagueSchedule'] = buildLeagueSchedule(json, getState().lookups.venues);
 
           dispatch({
             type: 'RECEIVE_LEAGUE',
@@ -56,7 +56,7 @@ function shouldFetchLeague(state, leagueId) {
   }
 }
 
-const buildLeagueSchedule = (league) => {
+const buildLeagueSchedule = (league, venues) => {
 
   if (typeof (league) === 'undefined' || league == null) {
     return [];
@@ -73,7 +73,7 @@ const buildLeagueSchedule = (league) => {
 
       let week = {
         date: date,
-        times: LeagueHelpers.getMatchTimes(league, match.dateId),
+        times: LeagueHelpers.getMatchTimes(league, venues, match.dateId),
       };
 
       prevWeek = date.weekNumber;

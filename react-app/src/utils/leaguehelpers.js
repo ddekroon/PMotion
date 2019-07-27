@@ -95,7 +95,7 @@ export default {
 		return newTime.substr(0,1) +':' + newTime.substr(1,2) + 'pm';
 	},
 
-	getMatchTimes: (league, dateId) => {
+	getMatchTimes: (league, venues, dateId) => {
 
 		if(league === null || dateId === ''){
 			return null;
@@ -122,7 +122,7 @@ export default {
 		league.scheduledMatches.forEach((match) => {
 			if(match.dateId === dateId){
 				times[match.matchTime].matches.push({
-					venue: match.fieldId,
+					venue: venues[match.fieldId].name,
 					team1: match.teamOneId,
 					team2: match.teamTwoId,
 				});
@@ -130,7 +130,11 @@ export default {
 		});
 		
 		Object.keys(times).forEach((time) => {
-			times[time].matches.sort((a,b) => parseInt(a.venue) - parseInt(b.venue));
+			times[time].matches.sort((a,b) => {
+				if(a.venue < b.venue) return -1;
+				if(a.venue > b.venue) return 1;
+				return 0;
+			});
 		});
 		
 		return times;

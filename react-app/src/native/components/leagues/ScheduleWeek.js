@@ -22,7 +22,7 @@ class ScheduleWeek extends React.Component {
 
         const { schedule, league, lookups} = this.props;
 
-        const flexArr = [4, 3, 2, 3];
+        const flexArr = [6, 5, 2, 5];
         const weekTable = {
             header: ['Field', 'Dark', '', 'White'],
             data: [],
@@ -31,7 +31,7 @@ class ScheduleWeek extends React.Component {
         Object.keys(schedule.times).forEach((time) => {
             weekTable.data.push([LeagueHelpers.convertMatchTime(schedule.times[time].time), '', '', '']);
             schedule.times[time].matches.forEach((match) => {
-                weekTable.data.push([lookups.venues[match.venue].name,  LeagueHelpers.getTeamName(league, match.team1), 'vs', LeagueHelpers.getTeamName(league, match.team2)]);
+                weekTable.data.push([match.venue,  LeagueHelpers.getTeamName(league, match.team1), 'vs', LeagueHelpers.getTeamName(league, match.team2)]);
             });
         })
 
