@@ -63,10 +63,12 @@ export default {
 				teamNum = team.numInLeague;
 			}
 		});
+		
 
 		//return leagues.teams.filter((team) => {team.id === teamId});
 
 		return teamNum;
+		
 	},
 
 	getTeamName: (league, teamId) => {
@@ -125,6 +127,8 @@ export default {
 					venue: venues[match.fieldId].name,
 					team1: match.teamOneId,
 					team2: match.teamTwoId,
+					playoff1: match.playoffTeamOneString,
+					playoff2: match.playoffTeamTwoString,
 				});
 			}
 		});

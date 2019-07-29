@@ -18,6 +18,8 @@ export default class Schedule extends React.Component {
 
         const { league } = this.props;
 
+        console.log(league.scheduledMatches);
+
         if (league == null || league.isFetching) return <Loading />
 
         return (
@@ -28,7 +30,7 @@ export default class Schedule extends React.Component {
 
                     {
                         league.leagueSchedule.map((week, i) => (
-                            <ScheduleWeek key={week.date.id} league={league} schedule={week} />
+                            <ScheduleWeek key={week.date.id} league={league} scheduleWeek={week} />
                         ))
                     }
 

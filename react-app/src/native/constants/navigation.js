@@ -22,7 +22,7 @@ export default {
     renderTitle: (props) => {
       return (
         <View style={{ flex: 1, backgroundColor: 'transparent', flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
-          <Image style={{ width: 170, height: 52, margin: 'auto' }} source={require('../../images/header-logo2.png')} />
+          <Image style={{ width: 170, height: 52, margin: 'auto' }} source={require('../../images/header-logo.png')} />
           {props.back &&
             <View style={{ width: 54 }}>
               <Text />

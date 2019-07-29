@@ -10,7 +10,7 @@ import Loading from '../common/Loading';
 
 class ScheduleWeek extends React.Component {
     static propTypes = {
-        schedule: PropTypes.object.isRequired,
+        scheduleWeek: PropTypes.object.isRequired,
         league: PropTypes.object.isRequired,
     }
 
@@ -20,7 +20,7 @@ class ScheduleWeek extends React.Component {
 
     render() {
 
-        const { schedule, league, lookups} = this.props;
+        const { scheduleWeek, league, lookups} = this.props;
 
         const flexArr = [6, 5, 2, 5];
         const weekTable = {
@@ -28,10 +28,14 @@ class ScheduleWeek extends React.Component {
             data: [],
         }
 
-        Object.keys(schedule.times).forEach((time) => {
-            weekTable.data.push([LeagueHelpers.convertMatchTime(schedule.times[time].time), '', '', '']);
-            schedule.times[time].matches.forEach((match) => {
-                weekTable.data.push([match.venue,  LeagueHelpers.getTeamName(league, match.team1), 'vs', LeagueHelpers.getTeamName(league, match.team2)]);
+        Object.keys(scheduleWeek.times).forEach((time) => {
+            weekTable.data.push([LeagueHelpers.convertMatchTime(scheduleWeek.times[time].time), '', '', '']);
+            scheduleWeek.times[time].matches.forEach((match) => {
+                if(match.playoff1 === '' && match.playoff2 === ''){
+                    weekTable.data.push([match.venue,  LeagueHelpers.getTeamName(league, match.team1), 'vs', LeagueHelpers.getTeamName(league, match.team2)]);
+                }else{
+                    weekTable.data.push([match.venue, match.playoff1 , 'vs', match.playoff2]);
+                }
             });
         })
 
@@ -40,7 +44,7 @@ class ScheduleWeek extends React.Component {
         return (
             <Card>
                 <CardItem header>
-                    <Text>{schedule.date.description} - Week {schedule.date.weekNumber}</Text>
+                    <Text>{scheduleWeek.date.description} - Week {scheduleWeek.date.weekNumber}</Text>
                 </CardItem>
                 <CardItem cardBody style={styles.cardItem}>
                     <Table style={styles.table} borderStyle={styles.tableborderstyle}>
