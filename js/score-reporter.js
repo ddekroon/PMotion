@@ -2,8 +2,10 @@
 
 $(function () {
 
-	$("#ScoreReporterForm input[name='submitterName']").val(getCookie("score-reporter-name"));
-	$("#ScoreReporterForm input[name='submitterEmail']").val(getCookie("score-reporter-email"));
+	if (typeof ("getCookie") === "function") {
+		$("#ScoreReporterForm input[name='submitterName']").val(getCookie("score-reporter-name"));
+		$("#ScoreReporterForm input[name='submitterEmail']").val(getCookie("score-reporter-email"));
+	}
 
 	$("#SelectLeague").change(function () {
 		getLeagueTeams($("#SelectTeam"), $(this).val(), 0, 1); //Skip team 1 so practice is never an option
