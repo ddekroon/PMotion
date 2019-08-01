@@ -1,32 +1,30 @@
-import React from 'react';
-import { Scene, Tabs, Stack } from 'react-native-router-flux';
-import { View, Text, Image } from 'react-native';
+import React from 'react'
+import { Scene, Tabs, Stack } from 'react-native-router-flux'
+import { View, Text, Image } from 'react-native'
 
-import DefaultProps from '../constants/navigation';
+import DefaultProps from '../constants/navigation'
 
-import SignUpContainer from '../../containers/SignUp';
-import SignUpComponent from '../components/pages/SignUp';
+import SignUpContainer from '../../containers/SignUp'
+import SignUpComponent from '../components/pages/SignUp'
 
-import LoginContainer from '../../containers/Login';
-import LoginComponent from '../components/pages/Login';
+import LoginContainer from '../../containers/Login'
+import LoginComponent from '../components/pages/Login'
 
-import ForgotPasswordContainer from '../../containers/ForgotPassword';
-import ForgotPasswordComponent from '../components/pages/ForgotPassword';
+import ForgotPasswordContainer from '../../containers/ForgotPassword'
+import ForgotPasswordComponent from '../components/pages/ForgotPassword'
 
-import UpdateProfileContainer from '../../containers/UpdateProfile';
-import UpdateProfileComponent from '../components/pages/UpdateProfile';
+import UpdateProfileContainer from '../../containers/UpdateProfile'
+import UpdateProfileComponent from '../components/pages/UpdateProfile'
 
-import MemberContainer from '../../containers/Member';
-import ProfileComponent from '../components/pages/Profile';
+import MemberContainer from '../../containers/Member'
+import ProfileComponent from '../components/pages/Profile'
 
-import LeaguesContainer from '../../containers/Leagues';
-import LeaguesComponent from '../components/pages/Leagues';
-import LeaguePage from '../components/leagues/League';
+import LeaguesContainer from '../../containers/Leagues'
+import LeaguesComponent from '../components/pages/Leagues'
+import LeaguePage from '../components/leagues/League'
 
-import ScoreReporterContainer from '../../containers/ScoreReporter';
-import ScoreReporterComponent from '../components/pages/ScoreReporter';
-
-import TeamPage from '../components/leagues/ByeWeek';
+import ScoreReporterContainer from '../../containers/ScoreReporter'
+import ScoreReporterComponent from '../components/pages/ScoreReporter'
 
 const Index = (
   <Stack hideNavBar>
@@ -40,13 +38,26 @@ const Index = (
       >
         <Stack
           key="leagues"
-          title='Leagues'
-          icon={() =>
-            <View style={{ flex: 1, flexDirection: 'column', alignItems: 'center', alignSelf: 'center', justifyContent: 'center' }}>
-              <Image style={{ width: 20, height: 20 }} source={require('../../images/icons/leagues.png')} />
-              <Text style={{ marginTop: 2, color: '#ffffff', fontSize: 11 }}>Leagues</Text>
+          title="Leagues"
+          icon={() => (
+            <View
+              style={{
+                flex: 1,
+                flexDirection: 'column',
+                alignItems: 'center',
+                alignSelf: 'center',
+                justifyContent: 'center'
+              }}
+            >
+              <Image
+                style={{ width: 20, height: 20 }}
+                source={require('../../images/icons/leagues.png')}
+              />
+              <Text style={{ marginTop: 2, color: '#ffffff', fontSize: 11 }}>
+                Leagues
+              </Text>
             </View>
-          }
+          )}
           {...DefaultProps.navbarProps}
         >
           <Scene
@@ -60,12 +71,25 @@ const Index = (
         <Stack
           key="reportScores"
           title="Report Scores"
-          icon={() =>
-            <View style={{ flex: 1, flexDirection: 'column', alignItems: 'center', alignSelf: 'center', justifyContent: 'center' }}>
-              <Image style={{ height: 20, width: 27 }} source={require('../../images/icons/scores.png')} />
-              <Text style={{ marginTop: 2, color: '#ffffff', fontSize: 11 }}>Report Scores</Text>
+          icon={() => (
+            <View
+              style={{
+                flex: 1,
+                flexDirection: 'column',
+                alignItems: 'center',
+                alignSelf: 'center',
+                justifyContent: 'center'
+              }}
+            >
+              <Image
+                style={{ height: 20, width: 27 }}
+                source={require('../../images/icons/scores.png')}
+              />
+              <Text style={{ marginTop: 2, color: '#ffffff', fontSize: 11 }}>
+                Report Scores
+              </Text>
             </View>
-          }
+          )}
           {...DefaultProps.navbarProps}
         >
           <Scene
@@ -79,12 +103,25 @@ const Index = (
         <Stack
           key="registration"
           title="Registration"
-          icon={() =>
-            <View style={{ flex: 1, flexDirection: 'column', alignItems: 'center', alignSelf: 'center', justifyContent: 'center' }}>
-              <Image style={{ width: 20, height: 20 }} source={require('../../images/icons/registration.png')} />
-              <Text style={{ marginTop: 2, color: '#ffffff', fontSize: 11 }}>Registration</Text>
+          icon={() => (
+            <View
+              style={{
+                flex: 1,
+                flexDirection: 'column',
+                alignItems: 'center',
+                alignSelf: 'center',
+                justifyContent: 'center'
+              }}
+            >
+              <Image
+                style={{ width: 20, height: 20 }}
+                source={require('../../images/icons/registration.png')}
+              />
+              <Text style={{ marginTop: 2, color: '#ffffff', fontSize: 11 }}>
+                Registration
+              </Text>
             </View>
-          }
+          )}
           {...DefaultProps.navbarProps}
         >
           <Scene
@@ -142,21 +179,7 @@ const Index = (
       component={LeaguesContainer}
       Layout={LeaguePage}
     />
-
   </Stack>
-);
+)
 
-export default Index;
-
-
-
- /*
-    <Scene
-      back
-      clone
-      key="teampage"
-      title=""
-      {...DefaultProps.navbarProps}
-      component={TeamPage}
-    />
-  */
+export default Index

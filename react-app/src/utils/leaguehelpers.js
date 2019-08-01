@@ -1,147 +1,106 @@
 import DateTimeHelpers from './datetimehelpers'
 
 export default {
-	getLeagueFromSeasons: (seasons, leagueId) => {
-		var league = null;
+  getLeagueFromSeasons: (seasons, leagueId) => {
+    if (seasons == null || leagueId == null || leagueId <= 0) {
+      return null
+    }
 
-		if (seasons == null || leagueId == null || leagueId <= 0) {
-			return league;
-		}
+    return seasons
+      .flatMap(curSeason => curSeason.leagues)
+      .find(curLeague => curLeague.id === leagueId)
+  },
 
-		seasons.forEach((curSeason) => {
-			if (league != null) {
-				return false; //break
-			}
+  isValidLeagueId: leagueId => {
+    return !isNaN(leagueId) && parseInt(leagueId, 10) > 0
+  },
 
-			league = curSeason.leagues.find((curLeague) => curLeague.id == leagueId);
-		})
+  getFormattedLeagueName: league => {
+    if (league == null) {
+      return ''
+    }
 
-		return league;
-	},
+    return league.name + ' ' + DateTimeHelpers.getDayString(league.dayNumber)
+  },
 
-	isValidLeagueId: (leagueId) => {
-		return !isNaN(leagueId) && parseInt(leagueId, 10) > 0;
-	},
+  getDate: (league, dateId) => {
+    if (league === null || dateId === '') {
+      return null
+    }
 
-	getFormattedLeagueName: (league) => {
-		if (league == null) {
-			return '';
-		}
+    return league.dates.find(curDate => curDate.id === dateId)
+  },
 
-		return league.name + ' ' + DateTimeHelpers.getDayString(league.dayNumber);
-	},
+  getNumInLeague: (league, teamId) => {
+    if (league === null || teamId === '') {
+      return ''
+    }
 
-	getDate: (league, dateId) => {
-		//dateId: league.scheduledMatches.dateId
-		var getdate = {};
+    var team = league.teams.find(team => team.id === teamId)
 
-		if(league === null || dateId === ''){
-			return null;
-		}
+    return team != null ? team.teamNumInLeague : ''
+  },
 
-		league.dates.forEach((date) => {
-			if(date.id === dateId){
-				getdate = date;
-			}
-		});
+  getTeamName: (league, teamId) => {
+    if (league === null || teamId === '') {
+      return ''
+    }
 
-		//return leagues.dates.find((date) => {date.id === dateId});
+    var team = league.teams.find(curTeam => curTeam.id === teamId)
 
-		return getdate;
-	},
+    return team != null ? team.name : ''
+  },
 
-	getNumInLeague: (league, teamId) => {
-		//teamId: league.scheduledMatches.teamOneId
-		var teamNum = '';
+  convertMatchTime: time => {
+    // This is just for the schedules bc theyre always at night
+    // we can change it later..
+    const newTime = (parseInt(time) - 1200).toString()
+    return newTime.substr(0, 1) + ':' + newTime.substr(1, 2) + 'pm'
+  },
 
-		if(league === null || teamId === ''){
-			return '';
-		}
+  getMatchTimes: (league, venues, dateId) => {
+    if (league === null || dateId === '') {
+      return null
+    }
 
-		league.teams.forEach((team) => {
-			if(team.id === teamId){
-				teamNum = team.numInLeague;
-			}
-		});
-		
+    const times = {}
+    var key = ''
+    var prevKey = ''
 
-		//return leagues.teams.filter((team) => {team.id === teamId});
+    league.scheduledMatches.forEach(match => {
+      if (match.dateId === dateId) {
+        key = match.matchTime
 
-		return teamNum;
-		
-	},
+        if (key != prevKey) {
+          times[key] = {
+            time: match.matchTime,
+            matches: []
+          }
+        }
+        prevKey = match.matchTime
+      }
+    })
 
-	getTeamName: (league, teamId) => {
-		//teamId: league.scheduledMatches.teamOneId
-		var teamName = '';
+    league.scheduledMatches.forEach(match => {
+      if (match.dateId === dateId) {
+        times[match.matchTime].matches.push({
+          venue: venues[match.fieldId].name,
+          team1: match.teamOneId,
+          team2: match.teamTwoId,
+          playoff1: match.playoffTeamOneString,
+          playoff2: match.playoffTeamTwoString
+        })
+      }
+    })
 
-		if(league === null || teamId === ''){
-			return '';
-		}
+    Object.keys(times).forEach(time => {
+      times[time].matches.sort((a, b) => {
+        if (a.venue < b.venue) return -1
+        if (a.venue > b.venue) return 1
+        return 0
+      })
+    })
 
-		league.teams.forEach((team) => {
-			if(team.id === teamId){
-				teamName = team.name;
-			}
-		});
-
-		//return leagues.teams.filter((team) => {team.id === teamId});
-
-		return teamName;
-	},
-
-	convertMatchTime: (time) => {
-		//This is just for the schedules bc theyre always at night
-		//we can change it later..
-		let newTime = (parseInt(time) - 1200).toString();
-		return newTime.substr(0,1) +':' + newTime.substr(1,2) + 'pm';
-	},
-
-	getMatchTimes: (league, venues, dateId) => {
-
-		if(league === null || dateId === ''){
-			return null;
-		}
-
-		let times = {};
-		var key = '';
-		var prevKey = '';
-
-		league.scheduledMatches.forEach((match) =>{
-			if(match.dateId === dateId){
-				key = match.matchTime;
-
-				if(key != prevKey){
-					times[key] = {
-						time: match.matchTime,
-						matches: [],
-					};
-				}
-				prevKey = match.matchTime;
-			}
-		});
-
-		league.scheduledMatches.forEach((match) => {
-			if(match.dateId === dateId){
-				times[match.matchTime].matches.push({
-					venue: venues[match.fieldId].name,
-					team1: match.teamOneId,
-					team2: match.teamTwoId,
-					playoff1: match.playoffTeamOneString,
-					playoff2: match.playoffTeamTwoString,
-				});
-			}
-		});
-		
-		Object.keys(times).forEach((time) => {
-			times[time].matches.sort((a,b) => {
-				if(a.venue < b.venue) return -1;
-				if(a.venue > b.venue) return 1;
-				return 0;
-			});
-		});
-		
-		return times;
-	},
-
-};
+    return times
+  }
+}

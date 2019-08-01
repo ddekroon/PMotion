@@ -31,10 +31,10 @@ export default class ScheduleWeek extends React.Component {
         Object.keys(scheduleWeek.times).forEach((time) => {
             weekTable.data.push([LeagueHelpers.convertMatchTime(scheduleWeek.times[time].time), '', '', '']);
             scheduleWeek.times[time].matches.forEach((match) => {
-                if(match.playoff1 === '' && match.playoff2 === ''){
+                if (match.playoff1 === '' && match.playoff2 === '') {
                     weekTable.data.push([match.venue, <Text style={styles.teamName}>{LeagueHelpers.getTeamName(league, match.team1)}</Text>, <Text style={styles.teamName}>vs</Text>, <Text style={styles.teamName}>{LeagueHelpers.getTeamName(league, match.team2)}</Text>]);
-                }else{
-                    weekTable.data.push([match.venue, match.playoff1 , 'vs', match.playoff2]);
+                } else {
+                    weekTable.data.push([match.venue, match.playoff1, 'vs', match.playoff2]);
                 }
             });
         })
@@ -61,7 +61,7 @@ export default class ScheduleWeek extends React.Component {
                                     flexArr={flexArr}
                                     data={rowData}
                                     style={[styles.row, index % 2 == 1 && { backgroundColor: '#e6e6e6' }]}
-                                    textStyle={[styles.text, rowData[2] === '' && {fontWeight: 'bold', fontSize: 20}]}
+                                    textStyle={[styles.text, rowData[2] === '' && { fontWeight: 'bold', fontSize: 20 }]}
                                 />
                             ))
                         }
@@ -80,20 +80,6 @@ const styles = StyleSheet.create({
     row: { padding: 2 },
     table: { flex: 1, marginBottom: 10 },
     tableborderstyle: { borderWidth: 0, borderColor: "transparent" },
-    cardItem: {padding: 10},
-    teamName: {textAlign: 'center'},
+    cardItem: { padding: 10 },
+    teamName: { textAlign: 'center' },
 });
-
-
-/**
- * Object.keys(scheduleWeek.times).forEach((time) => {
-            weekTable.data.push([LeagueHelpers.convertMatchTime(scheduleWeek.times[time].time), '', '', '']);
-            scheduleWeek.times[time].matches.forEach((match) => {
-                if(match.playoff1 === '' && match.playoff2 === ''){
-                    weekTable.data.push([match.venue, <Text style={styles.teampage} onPress={() => Actions.teampage({scheduleWeek: scheduleWeek})}>{LeagueHelpers.getTeamName(league, match.team1)}</Text>, <Text style={{textAlign: 'center'}}>vs</Text>, <Text style={styles.teampage} onPress={() => Actions.teampage({scheduleWeek: scheduleWeek})}>{LeagueHelpers.getTeamName(league, match.team2)}</Text>]);
-                }else{
-                    weekTable.data.push([match.venue, match.playoff1 , 'vs', match.playoff2]);
-                }
-            });
-        })
- */
