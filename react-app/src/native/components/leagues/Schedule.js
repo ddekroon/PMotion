@@ -3,6 +3,7 @@ import { Container, Content } from 'native-base';
 import Loading from '../common/Loading';
 import TeamList from './TeamList';
 import ScheduleWeek from './ScheduleWeek';
+import ByeWeek from './ByeWeek';
 import PropTypes from 'prop-types';
 
 export default class Schedule extends React.Component {
@@ -18,8 +19,6 @@ export default class Schedule extends React.Component {
 
         const { league } = this.props;
 
-        console.log(league.scheduledMatches);
-
         if (league == null || league.isFetching) return <Loading />
 
         return (
@@ -28,10 +27,14 @@ export default class Schedule extends React.Component {
 
                     <TeamList league={league} />
 
-                    {
-                        league.leagueSchedule.map((week, i) => (
-                            <ScheduleWeek key={week.date.id} league={league} scheduleWeek={week} />
-                        ))
+                    {   
+                        league.leagueSchedule.map((week, i) => {
+                            if(Object.keys(week.times).length === 0){
+                                return <ByeWeek key={week.date.id} scheduleWeek={week} />
+                            }else{
+                                return <ScheduleWeek key={week.date.id} league={league} scheduleWeek={week} />
+                            }
+                        })
                     }
 
                 </Content>

@@ -26,6 +26,8 @@ import LeaguePage from '../components/leagues/League';
 import ScoreReporterContainer from '../../containers/ScoreReporter';
 import ScoreReporterComponent from '../components/pages/ScoreReporter';
 
+import TeamPage from '../components/leagues/ByeWeek';
+
 const Index = (
   <Stack hideNavBar>
     <Scene hideNavBar>
@@ -145,3 +147,16 @@ const Index = (
 );
 
 export default Index;
+
+
+
+ /*
+    <Scene
+      back
+      clone
+      key="teampage"
+      title=""
+      {...DefaultProps.navbarProps}
+      component={TeamPage}
+    />
+  */

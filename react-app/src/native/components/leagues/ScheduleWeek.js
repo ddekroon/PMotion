@@ -5,10 +5,10 @@ import LeagueHelpers from '../../../utils/leaguehelpers';
 import { Text, Card, CardItem } from 'native-base';
 import { Table, Row } from 'react-native-table-component';
 import { StyleSheet } from 'react-native';
-import { connect } from 'react-redux';
+import { Actions } from 'react-native-router-flux';
 import Loading from '../common/Loading';
 
-class ScheduleWeek extends React.Component {
+export default class ScheduleWeek extends React.Component {
     static propTypes = {
         scheduleWeek: PropTypes.object.isRequired,
         league: PropTypes.object.isRequired,
@@ -20,7 +20,7 @@ class ScheduleWeek extends React.Component {
 
     render() {
 
-        const { scheduleWeek, league, lookups} = this.props;
+        const { scheduleWeek, league } = this.props;
 
         const flexArr = [6, 5, 2, 5];
         const weekTable = {
@@ -32,7 +32,7 @@ class ScheduleWeek extends React.Component {
             weekTable.data.push([LeagueHelpers.convertMatchTime(scheduleWeek.times[time].time), '', '', '']);
             scheduleWeek.times[time].matches.forEach((match) => {
                 if(match.playoff1 === '' && match.playoff2 === ''){
-                    weekTable.data.push([match.venue,  LeagueHelpers.getTeamName(league, match.team1), 'vs', LeagueHelpers.getTeamName(league, match.team2)]);
+                    weekTable.data.push([match.venue, LeagueHelpers.getTeamName(league, match.team1), 'VS', LeagueHelpers.getTeamName(league, match.team2)]);
                 }else{
                     weekTable.data.push([match.venue, match.playoff1 , 'vs', match.playoff2]);
                 }
@@ -81,12 +81,19 @@ const styles = StyleSheet.create({
     table: { flex: 1, marginBottom: 10 },
     tableborderstyle: { borderWidth: 0, borderColor: "transparent" },
     cardItem: {padding: 10},
+    teampage: {color:'blue'},
 });
 
-const mapStateToProps = state => ({
-    lookups: state.lookups || {},
-  });
-  
-export default connect(mapStateToProps)(ScheduleWeek);
 
-
+/**
+ * Object.keys(scheduleWeek.times).forEach((time) => {
+            weekTable.data.push([LeagueHelpers.convertMatchTime(scheduleWeek.times[time].time), '', '', '']);
+            scheduleWeek.times[time].matches.forEach((match) => {
+                if(match.playoff1 === '' && match.playoff2 === ''){
+                    weekTable.data.push([match.venue, <Text style={styles.teampage} onPress={() => Actions.teampage({scheduleWeek: scheduleWeek})}>{LeagueHelpers.getTeamName(league, match.team1)}</Text>, <Text style={{textAlign: 'center'}}>vs</Text>, <Text style={styles.teampage} onPress={() => Actions.teampage({scheduleWeek: scheduleWeek})}>{LeagueHelpers.getTeamName(league, match.team2)}</Text>]);
+                }else{
+                    weekTable.data.push([match.venue, match.playoff1 , 'vs', match.playoff2]);
+                }
+            });
+        })
+ */

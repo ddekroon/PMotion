@@ -58,28 +58,26 @@ function shouldFetchLeague(state, leagueId) {
 
 const buildLeagueSchedule = (league, venues) => {
 
-  if (typeof (league) === 'undefined' || league == null) {
+  if (typeof (league) === 'undefined' || league == null || league.scheduledMatches === undefined || league.scheduledMatches.length == 0) {
     return [];
   }
 
   var scheduleWeeks = [];
-  var prevWeek = '';
+  
+  league.scheduledMatches.sort((a,b) => {
+    let dateOne = LeagueHelpers.getDate(league, a.dateId);
+    let dateTwo = LeagueHelpers.getDate(league, b.dateId);
+    return dateOne.weekNumber - dateTwo.weekNumber;
+  })
 
-  league.scheduledMatches.forEach((match, i) => {
+  league.dates.forEach((date) => {
 
-    let date = LeagueHelpers.getDate(league, match.dateId);
-
-    if (prevWeek != date.weekNumber) {
-
-      let week = {
-        date: date,
-        times: LeagueHelpers.getMatchTimes(league, venues, match.dateId),
-      };
-
-      prevWeek = date.weekNumber;
-      scheduleWeeks.push(week);
-    }
-
+    let week = {
+      date: date,
+      times: LeagueHelpers.getMatchTimes(league, venues, date.id),
+    } 
+    scheduleWeeks.push(week);
+ 
   });
 
   return scheduleWeeks;

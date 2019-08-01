@@ -45,7 +45,7 @@ export default {
 			}
 		});
 
-		//return leagues.dates.filter((date) => {date.id === dateId});
+		//return leagues.dates.find((date) => {date.id === dateId});
 
 		return getdate;
 	},
