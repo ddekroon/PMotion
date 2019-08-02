@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types';
 import LeagueHelpers from '../../../utils/leaguehelpers';
 
-import { Text, Card, CardItem } from 'native-base';
+import { Text, Card, CardItem, Button} from 'native-base';
 import { Table, Row } from 'react-native-table-component';
 import { StyleSheet } from 'react-native';
 import { Actions } from 'react-native-router-flux';
@@ -28,13 +28,15 @@ export default class ScheduleWeek extends React.Component {
             data: [],
         }
 
+        
+
         Object.keys(scheduleWeek.times).forEach((time) => {
             weekTable.data.push([LeagueHelpers.convertMatchTime(scheduleWeek.times[time].time), '', '', '']);
             scheduleWeek.times[time].matches.forEach((match) => {
                 if(match.playoff1 === '' && match.playoff2 === ''){
-                    weekTable.data.push([match.venue, <Text style={styles.teamName}>{LeagueHelpers.getTeamName(league, match.team1)}</Text>, <Text style={styles.teamName}>vs</Text>, <Text style={styles.teamName}>{LeagueHelpers.getTeamName(league, match.team2)}</Text>]);
+                    weekTable.data.push([match.venue, <Text style={styles.center} onPress={() => Actions.teampage({league: league, team: match.team1})}>{LeagueHelpers.getTeamName(league, match.team1)}</Text>, <Text style={styles.center}>vs</Text>, <Text onPress={() => Actions.teampage({league: league, team: match.team2})} style={styles.center}>{LeagueHelpers.getTeamName(league, match.team2)}</Text>]);
                 }else{
-                    weekTable.data.push([match.venue, match.playoff1 , 'vs', match.playoff2]);
+                    weekTable.data.push([match.venue, <Text style={styles.center}>{match.playoff1}</Text> , <Text style={styles.teamName}>vs</Text>,  <Text style={styles.center}>{match.playoff1}</Text>]);
                 }
             });
         })
@@ -81,19 +83,11 @@ const styles = StyleSheet.create({
     table: { flex: 1, marginBottom: 10 },
     tableborderstyle: { borderWidth: 0, borderColor: "transparent" },
     cardItem: {padding: 10},
-    teamName: {textAlign: 'center'},
+    center: {textAlign: 'center', color: 'red'},
+    teamName: {textAlign: 'center'}
 });
 
 
-/**
- * Object.keys(scheduleWeek.times).forEach((time) => {
-            weekTable.data.push([LeagueHelpers.convertMatchTime(scheduleWeek.times[time].time), '', '', '']);
-            scheduleWeek.times[time].matches.forEach((match) => {
-                if(match.playoff1 === '' && match.playoff2 === ''){
-                    weekTable.data.push([match.venue, <Text style={styles.teampage} onPress={() => Actions.teampage({scheduleWeek: scheduleWeek})}>{LeagueHelpers.getTeamName(league, match.team1)}</Text>, <Text style={{textAlign: 'center'}}>vs</Text>, <Text style={styles.teampage} onPress={() => Actions.teampage({scheduleWeek: scheduleWeek})}>{LeagueHelpers.getTeamName(league, match.team2)}</Text>]);
-                }else{
-                    weekTable.data.push([match.venue, match.playoff1 , 'vs', match.playoff2]);
-                }
-            });
-        })
- */
+
+
+ 
