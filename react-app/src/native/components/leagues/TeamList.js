@@ -1,10 +1,12 @@
 import React from 'react';
-import { Text, Card, CardItem } from 'native-base';
+import { Text, Card, CardItem, Button, Right, Icon} from 'native-base';
 import { Table, Row } from 'react-native-table-component';
 import { StyleSheet } from 'react-native';
+import { Actions } from 'react-native-router-flux';
 import Loading from '../common/Loading';
 import LeagueHelpers from '../../../utils/leaguehelpers';
 import PropTypes from 'prop-types';
+import Spacer from '../common/Spacer';
 
 export default class Schedule extends React.Component {
     static propTypes = {
@@ -26,7 +28,13 @@ export default class Schedule extends React.Component {
         }
 
         league.teams.map((team, i) => {
-            teamTable.data.push([team.numInLeague, team.name]);
+            teamTable.data.push([
+                <Text style={{textAlign: 'center'}}>{team.numInLeague}</Text>,
+                <Button iconRight style={styles.button} onPress={() => Actions.teampage({league: league, team: team.id})}>
+                    <Text style={styles.name}>{team.name}</Text>
+                    <Icon style={{marginRight:5}} name="arrow-forward" style={{color: 'white'}}/>
+                </Button>
+            ]);
         });
 
         if (league == null || league.isFetching) return <Loading />
@@ -71,7 +79,8 @@ const styles = StyleSheet.create({
     table: { flex: 1, marginBottom: 10 },
     tableborderstyle: { borderWidth: 0, borderColor: "transparent" },
     cardItem: {padding: 10},
-
+    button: {width: 265, height: 40},
+    name: {fontSize: 14}
 });
 
 

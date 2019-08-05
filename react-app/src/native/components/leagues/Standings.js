@@ -2,6 +2,7 @@ import React from 'react';
 import { Container, Content, Text, Card, CardItem } from 'native-base';
 import { Table, Row } from 'react-native-table-component';
 import { StyleSheet } from 'react-native';
+import { Actions } from 'react-native-router-flux';
 
 import Loading from '../common/Loading';
 import LeagueHelpers from '../../../utils/leaguehelpers';
@@ -20,16 +21,36 @@ export default class Standings extends React.Component {
 
         const { league } = this.props;
 
-        const flexArr = [1, 8, 1, 1, 1, 1, 2];
-        const tableInfo = {
-            header: ['', 'Team', 'W', 'L', 'T', 'P', 'Spirit'],
-            data: [],
-        }
+        let curDay = new Date().getDay();
+        let leagueDay = parseInt(league.dayNumber);
+        let tableInfo = {};
+        let flexArr = [];
 
-        league.standings.forEach((team, i) => {
-            var points = parseInt(team.ties) + (parseInt(team.wins) * 2);
-            tableInfo.data.push([(i + 1), team.name, team.wins, team.losses, team.ties, points, parseFloat(team.spiritAverage).toFixed(2)]);
-        });
+        if(curDay != leagueDay && curDay != leagueDay + 1 && curDay != leagueDay + 2){
+            flexArr = [1, 8, 1, 1, 1, 1, 2];
+            tableInfo = {
+                header: ['', 'Team', 'W', 'L', 'T', 'P', 'Spirit'],
+                data: [],
+            }
+
+            league.standings.forEach((team, i) => {
+                var points = parseInt(team.ties) + (parseInt(team.wins) * 2);
+                tableInfo.data.push([(i + 1), <Text style={styles.link} onPress={() => Actions.teampage({league: league, team: team.id})}>{team.name}</Text>, team.wins, team.losses, team.ties, points, parseFloat(team.spiritAverage).toFixed(2)]);
+            });
+        }else{
+
+            flexArr = [1, 8, 1, 1, 1, 1];
+            tableInfo = {
+                header: ['', 'Team', 'W', 'L', 'T', 'P'],
+                data: [],
+            }
+
+            league.standings.forEach((team, i) => {
+                var points = parseInt(team.ties) + (parseInt(team.wins) * 2);
+                tableInfo.data.push([(i+1), <Text style={styles.link} onPress={() => Actions.teampage({league: league, team: team.id})}>{team.name}</Text>, team.wins, team.losses, team.ties, points]);
+            });
+
+        }
 
         if (league == null || league.isFetching) return <Loading />
 
@@ -78,5 +99,6 @@ const styles = StyleSheet.create({
     row: { padding: 2 },
     table: { flex: 1, marginBottom: 10 },
     tableborderstyle: { borderWidth: 0, borderColor: "transparent" },
-    cardItem: {padding: 10}
+    cardItem: {padding: 10},
+    link: {color: 'red'}
 });
