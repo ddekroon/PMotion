@@ -13,10 +13,15 @@ import ValidationHelpers from '../../../utils/validationhelpers';
 import ToastHelpers from '../../../utils/toasthelpers';
 import Enums from '../../../constants/enums';
 
+import { connect } from 'react-redux';
+
+import { submitScoreSubmission, updateScoreSubmission, resetMatches, resetSubmission } from '../actions/scoreSubmission';
+import { fetchLeague } from '../actions/leagues';
+
 class ScoreReporter extends React.Component {
   static propTypes = {
     error: PropTypes.string,
-    loading: PropTypes.bool.isRequired,
+    isLoading: PropTypes.bool.isRequired,
     getLeague: PropTypes.func.isRequired,
     onFormSubmit: PropTypes.func.isRequired,
     leagues: PropTypes.object.isRequired,
@@ -293,4 +298,19 @@ class ScoreReporter extends React.Component {
   }
 }
 
-export default ScoreReporter;
+const mapStateToProps = state => ({
+  leagues: state.leagues || {},
+  isLoading: state.status.loading || false,
+  lookups: state.lookups || {},
+  scoreSubmission: state.scoreSubmission || {}
+});
+
+const mapDispatchToProps = {
+  updateScoreSubmission: updateScoreSubmission,
+  onFormSubmit: submitScoreSubmission,
+  getLeague: fetchLeague,
+  resetMatches: resetMatches,
+  resetSubmission: resetSubmission
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(ScoreReporter);

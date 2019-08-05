@@ -172,7 +172,6 @@ const Index = (
 
     <Scene
       back
-      clone
       key="league"
       title=""
       {...DefaultProps.navbarProps}
