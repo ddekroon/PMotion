@@ -19,7 +19,7 @@ import { Root, StyleProvider } from 'native-base'
 import getTheme from '../../native-base-theme/components'
 import theme from '../../native-base-theme/variables/commonColor'
 
-import AppNavigator from './components/AppNavigator'
+import RootNavigator from './routes/RootNavigator'
 //import Routes from './routes/index'
 import Loading from './components/common/Loading'
 
@@ -36,9 +36,9 @@ export default class App extends React.Component {
 
   async componentWillMount() {
     await Font.loadAsync({
-      Roboto: require('native-base/Fonts/Roboto.ttf'),
-      Roboto_medium: require('native-base/Fonts/Roboto_medium.ttf'),
-      Ionicons: require('@expo/vector-icons/fonts/Ionicons.ttf')
+      Roboto: require('../../node_modules/native-base/Fonts/Roboto.ttf'),
+      Roboto_medium: require('../../node_modules/native-base/Fonts/Roboto_medium.ttf'),
+      Ionicons: require('../../node_modules/@expo/vector-icons/fonts/Ionicons.ttf')
     })
 
     await getLookups()
@@ -63,7 +63,7 @@ export default class App extends React.Component {
         <Provider store={store}>
           <PersistGate loading={<Loading />} persistor={persistor}>
             <StyleProvider style={getTheme(theme)}>
-              <AppNavigator />
+              <RootNavigator />
               {/*<Router>
                 <Stack key="root">
                   {Routes}

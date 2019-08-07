@@ -4,6 +4,8 @@ import {
   createAppContainer,
   createMaterialTopTabNavigator
 } from 'react-navigation'
+import { Image } from 'react-native'
+
 import Loading from '../common/Loading'
 import SportLeagues from '../leagues/LeaguesList'
 import NavigationProps from '../../constants/navigation'
@@ -17,6 +19,7 @@ const sportsNavigator = (sports, seasonsBySport) =>
     {
       Ultimate: props => (
         <SportLeagues
+          navigation={props.navigation}
           sports={sports}
           seasons={seasonsBySport['1']}
           sportId="1"
@@ -24,6 +27,7 @@ const sportsNavigator = (sports, seasonsBySport) =>
       ),
       VolleyBall: props => (
         <SportLeagues
+          navigation={props.navigation}
           sports={sports}
           seasons={seasonsBySport['2']}
           sportId="2"
@@ -31,6 +35,7 @@ const sportsNavigator = (sports, seasonsBySport) =>
       ),
       Soccer: props => (
         <SportLeagues
+          navigation={props.navigation}
           sports={sports}
           seasons={seasonsBySport['4']}
           sportId="4"
@@ -38,13 +43,13 @@ const sportsNavigator = (sports, seasonsBySport) =>
       ),
       Football: props => (
         <SportLeagues
+          navigation={props.navigation}
           sports={sports}
           seasons={seasonsBySport['3']}
           sportId="3"
         />
       )
     },
-
     {
       ...NavigationProps.tabConfig
     }
@@ -53,6 +58,16 @@ const sportsNavigator = (sports, seasonsBySport) =>
 class Leagues extends React.Component {
   static propTypes = {
     lookups: PropTypes.object.isRequired
+  }
+
+  static navigationOptions = {
+    title: 'Leagues',
+    tabBarIcon: () => (
+      <Image
+        style={{ width: 20, height: 20 }}
+        source={require('../../../images/icons/leagues.png')}
+      />
+    )
   }
 
   constructor(props) {
@@ -70,13 +85,16 @@ class Leagues extends React.Component {
 
   render() {
     const { loading, sports, scoreReporterSeasons } = this.props.lookups
+    const { navigation } = this.props
+
+    console.log(navigation)
 
     if (loading) return <Loading />
 
     const SportsNavigator = createAppContainer(
       sportsNavigator(sports, scoreReporterSeasons)
     )
-    return <SportsNavigator detached={true} />
+    return <SportsNavigator />
   }
 }
 

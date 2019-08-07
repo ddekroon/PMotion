@@ -1,6 +1,5 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Actions } from 'react-native-router-flux'
 import {
   Container,
   Content,
@@ -25,12 +24,14 @@ export default class SportLeagues extends React.Component {
     sports: PropTypes.array.isRequired
   }
 
+  static navigationOptions = {}
+
   constructor(props) {
     super(props)
   }
 
   render() {
-    const { sportId, seasons, sports } = this.props
+    const { navigation, sportId, seasons, sports } = this.props
 
     const sport = SportHelpers.getSportById(sports, sportId)
 
@@ -38,11 +39,16 @@ export default class SportLeagues extends React.Component {
       var leagues = curSeason.leagues.map((league, leagueIndex) => (
         <ListItem
           key={league.id}
-          onPress={() =>
-            Actions.league({
+          onPress={
+            () => {
+              console.log('Navigate to league ' + league.id)
+              console.log(navigation)
+              navigation.navigate('Volleyball', { leagueId: league.id })
+            }
+            /*Actions.league({
               leagueId: league.id,
               title: LeagueHelpers.getFormattedLeagueName(league)
-            })
+            })*/
           }
         >
           <View style={{ flex: 1 }}>

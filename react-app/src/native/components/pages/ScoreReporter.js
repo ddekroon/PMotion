@@ -1,22 +1,40 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { KeyboardAvoidingView } from 'react-native';
+import React from 'react'
+import PropTypes from 'prop-types'
+import { KeyboardAvoidingView, Image } from 'react-native'
 import {
-  Content, Text, Form, Item, Label, Input, Button, Picker, Icon, Card, CardItem, Body, Header
-} from 'native-base';
-import Loading from '../common/Loading';
-import Spacer from '../common/Spacer';
-import TeamPicker from '../common/TeamPicker';
-import ScoreReporterMatch from '../scorereporter/Match';
-import DateTimeHelpers from '../../../utils/datetimehelpers';
-import ValidationHelpers from '../../../utils/validationhelpers';
-import ToastHelpers from '../../../utils/toasthelpers';
-import Enums from '../../../constants/enums';
+  Content,
+  Text,
+  Form,
+  Item,
+  Label,
+  Input,
+  Button,
+  Picker,
+  Icon,
+  Card,
+  CardItem,
+  Body,
+  Header
+} from 'native-base'
 
-import { connect } from 'react-redux';
+import Loading from '../common/Loading'
+import Spacer from '../common/Spacer'
+import TeamPicker from '../common/TeamPicker'
+import ScoreReporterMatch from '../scorereporter/Match'
+import DateTimeHelpers from '../../../utils/datetimehelpers'
+import ValidationHelpers from '../../../utils/validationhelpers'
+import ToastHelpers from '../../../utils/toasthelpers'
+import Enums from '../../../constants/enums'
 
-import { submitScoreSubmission, updateScoreSubmission, resetMatches, resetSubmission } from '../actions/scoreSubmission';
-import { fetchLeague } from '../actions/leagues';
+import { connect } from 'react-redux'
+
+import {
+  submitScoreSubmission,
+  updateScoreSubmission,
+  resetMatches,
+  resetSubmission
+} from '../../../actions/scoreSubmission'
+import { fetchLeague } from '../../../actions/leagues'
 
 class ScoreReporter extends React.Component {
   static propTypes = {
@@ -34,97 +52,122 @@ class ScoreReporter extends React.Component {
   }
 
   static defaultProps = {
-    error: null,
+    error: null
+  }
+
+  static navigationOptions = {
+    title: 'Score Reporter',
+    tabBarIcon: () => (
+      <Image
+        style={{ width: 30, height: 22 }}
+        source={require('../../../images/icons/scores.png')}
+      />
+    )
   }
 
   constructor(props) {
-    super(props);
+    super(props)
 
-    this.handleChange = this.handleChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
-    this.updateMatchHandler = this.updateMatchHandler.bind(this);
+    this.handleChange = this.handleChange.bind(this)
+    this.handleSubmit = this.handleSubmit.bind(this)
+    this.updateMatchHandler = this.updateMatchHandler.bind(this)
   }
 
   calculateIsLeaguesToSelect = () => {
-    const { seasons, scoreSubmission } = this.props;
+    const { seasons, scoreSubmission } = this.props
 
-    if (seasons == null || Object.keys(seasons).length === 0 || scoreSubmission.sportId == '') {
-      return false;
+    if (
+      seasons == null ||
+      Object.keys(seasons).length === 0 ||
+      scoreSubmission.sportId == ''
+    ) {
+      return false
     }
 
-    var numLeagues = 0;
-    seasons[scoreSubmission.sportId].filter((curSeason) => curSeason.leagues != null)
-      .forEach((curSeason) => {
-        numLeagues += curSeason.leagues.length;
-      });
+    var numLeagues = 0
+    seasons[scoreSubmission.sportId]
+      .filter(curSeason => curSeason.leagues != null)
+      .forEach(curSeason => {
+        numLeagues += curSeason.leagues.length
+      })
 
-    return numLeagues > 0;
+    return numLeagues > 0
   }
 
   handleSubmit = () => {
-    const { onFormSubmit } = this.props;
-    onFormSubmit()
-      .catch(e => {
-        ToastHelpers.showToast(Enums.messageTypes.Error, e.message);
-        console.log(`Error: ${e.message}`)
-      });
+    const { onFormSubmit } = this.props
+    onFormSubmit().catch(e => {
+      ToastHelpers.showToast(Enums.messageTypes.Error, e.message)
+      console.log(`Error: ${e.message}`)
+    })
   }
 
   handleChange = (name, val) => {
-    const { scoreSubmission } = this.props;
+    const { scoreSubmission } = this.props
 
     var newSubmission = {
       ...scoreSubmission,
       [name]: val
-    };
+    }
 
     if (name == 'sportId') {
-      newSubmission['leagueId'] = '';
-      newSubmission['teamId'] = '';
+      newSubmission['leagueId'] = ''
+      newSubmission['teamId'] = ''
     }
 
     // Get the league via the API and store it into the store under store.leagues
     if (name == 'leagueId') {
-      newSubmission['teamId'] = '';
-      this.props.getLeague(val);
+      newSubmission['teamId'] = ''
+      this.props.getLeague(val)
     }
 
     if (name == 'teamId' && val != '') {
-      const { leagues } = this.props;
-      var league = leagues[newSubmission.leagueId];
+      const { leagues } = this.props
+      var league = leagues[newSubmission.leagueId]
 
-      if (league.scheduledMatches == null || league.scheduledMatches.length == 0) {
-        return;
+      if (
+        league.scheduledMatches == null ||
+        league.scheduledMatches.length == 0
+      ) {
+        return
       }
 
-      if (league.dateInScoreReporter != null && league.dateInScoreReporter.id != null) {
-        var teamMatches = league.scheduledMatches.filter((curMatch) => {
-          return curMatch.dateId == league.dateInScoreReporter.id
-            && (curMatch.teamOneId == val || curMatch.teamTwoId == val)
-        });
+      if (
+        league.dateInScoreReporter != null &&
+        league.dateInScoreReporter.id != null
+      ) {
+        var teamMatches = league.scheduledMatches.filter(curMatch => {
+          return (
+            curMatch.dateId == league.dateInScoreReporter.id &&
+            (curMatch.teamOneId == val || curMatch.teamTwoId == val)
+          )
+        })
 
-        for (var i = 0; i < Math.min(parseInt(league.numMatches, 10), teamMatches.length); i++) {
+        for (
+          var i = 0;
+          i < Math.min(parseInt(league.numMatches, 10), teamMatches.length);
+          i++
+        ) {
           if (teamMatches[i].teamOneId == val) {
-            newSubmission.matches[i].oppTeamId = teamMatches[i].teamTwoId;
+            newSubmission.matches[i].oppTeamId = teamMatches[i].teamTwoId
           } else {
-            newSubmission.matches[i].oppTeamId = teamMatches[i].teamOneId;
+            newSubmission.matches[i].oppTeamId = teamMatches[i].teamOneId
           }
         }
       }
     }
 
-    this.props.updateScoreSubmission(newSubmission);
+    this.props.updateScoreSubmission(newSubmission)
 
     // Pending sport, league, or team have been udpated the matches need to be reset
     // Needs to happen after first update score submission or else the matches udpate will get lost with the overall submission update
     if (name == 'sportId' || name == 'leagueId' || name == 'teamId') {
-      this.props.resetMatches();
+      this.props.resetMatches()
     }
   }
 
   updateMatchHandler = (matchNum, obj) => {
-
-    var { scoreSubmission } = this.props;
+    var { scoreSubmission } = this.props
 
     var newMatchResults = scoreSubmission.matches.map((match, index) => {
       if (index != matchNum) {
@@ -139,59 +182,91 @@ class ScoreReporter extends React.Component {
       matches: newMatchResults
     }
 
-    this.props.updateScoreSubmission(newSubmissions);
+    this.props.updateScoreSubmission(newSubmissions)
   }
 
   render() {
-    const { loading, error, scoreSubmission, seasons, leagues, resetSubmission } = this.props;
+    const {
+      loading,
+      error,
+      scoreSubmission,
+      seasons,
+      leagues,
+      resetSubmission
+    } = this.props
 
-    if (loading) return <Loading />;
+    if (loading) return <Loading />
 
-    var leaguePicker;
-    var isLeagues = this.calculateIsLeaguesToSelect();
-    var league = leagues[scoreSubmission.leagueId];
-    var isMultipleSeasons = scoreSubmission.sportId != '' ? seasons[scoreSubmission.sportId].length > 1 : false;
+    var leaguePicker
+    var isLeagues = this.calculateIsLeaguesToSelect()
+    var league = leagues[scoreSubmission.leagueId]
+    var isMultipleSeasons =
+      scoreSubmission.sportId != ''
+        ? seasons[scoreSubmission.sportId].length > 1
+        : false
 
     if (scoreSubmission.sportId != '' && !isLeagues) {
-      leaguePicker = <Item><Content padder><Text style={{ fontStyle: italic }}>No leagues to select</Text></Content></Item>;
+      leaguePicker = (
+        <Item>
+          <Content padder>
+            <Text style={{ fontStyle: italic }}>No leagues to select</Text>
+          </Content>
+        </Item>
+      )
     } else if (isLeagues) {
-      leaguePicker = <Item picker error={scoreSubmission.leagueId == ''}>
-        <Picker
-          note={false}
-          mode="dropdown"
-          iosIcon={<Icon name="arrow-down" />}
-          style={{ flex: 1 }}
-          selectedValue={scoreSubmission.leagueId}
-          placeholder="League"
-          onValueChange={(val, index) => {
-            this.handleChange('leagueId', val)
-          }}
-        >
-          <Picker.Item key={0} label={'League'} value={''} />
-          {
-            seasons[scoreSubmission.sportId].map((curSeason) => {
+      leaguePicker = (
+        <Item picker error={scoreSubmission.leagueId == ''}>
+          <Picker
+            note={false}
+            mode="dropdown"
+            iosIcon={<Icon name="arrow-down" />}
+            style={{ flex: 1 }}
+            selectedValue={scoreSubmission.leagueId}
+            placeholder="League"
+            onValueChange={(val, index) => {
+              this.handleChange('leagueId', val)
+            }}
+          >
+            <Picker.Item key={0} label={'League'} value={''} />
+            {seasons[scoreSubmission.sportId].map(curSeason => {
               if (curSeason.leagues == null) {
-                return;
+                return
               }
 
-              return curSeason.leagues.map((curLeague) => {
-                var leagueName = curLeague.name + " - " + DateTimeHelpers.getDayString(curLeague.dayNumber);
+              return curSeason.leagues.map(curLeague => {
+                var leagueName =
+                  curLeague.name +
+                  ' - ' +
+                  DateTimeHelpers.getDayString(curLeague.dayNumber)
                 if (isMultipleSeasons) {
-                  leagueName = leagueName + " - " + curSeason.name;
+                  leagueName = leagueName + ' - ' + curSeason.name
                 }
 
-                return <Picker.Item key={curLeague.id} label={leagueName} value={curLeague.id} />
-              });
-            })
-          }
-        </Picker>
-      </Item>
+                return (
+                  <Picker.Item
+                    key={curLeague.id}
+                    label={leagueName}
+                    value={curLeague.id}
+                  />
+                )
+              })
+            })}
+          </Picker>
+        </Item>
+      )
     }
 
     return (
       <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding" enabled>
         <Content padder>
-          {!scoreSubmission.submitted &&
+          <Button
+            onPress={() =>
+              this.props.navigation.navigate('League', { leagueId: 1640 })
+            }
+          >
+            <Text>Test</Text>
+          </Button>
+          {!scoreSubmission.submitted && (
             <Form>
               <Card>
                 <CardItem>
@@ -208,59 +283,78 @@ class ScoreReporter extends React.Component {
                           this.handleChange('sportId', val)
                         }}
                       >
-                        <Picker.Item key={0} label='Sport' value='' />
-                        {
-                          this.props.sports.map((curSport) => {
-                            return <Picker.Item key={curSport.id} label={curSport.name} value={curSport.id} />
-                          })
-                        }
+                        <Picker.Item key={0} label="Sport" value="" />
+                        {this.props.sports.map(curSport => {
+                          return (
+                            <Picker.Item
+                              key={curSport.id}
+                              label={curSport.name}
+                              value={curSport.id}
+                            />
+                          )
+                        })}
                       </Picker>
                     </Item>
 
                     {leaguePicker}
 
-                    {
-                      league != null &&
+                    {league != null && (
                       <TeamPicker
                         loading={league.isFetching}
                         teams={league.teams != null ? league.teams : []}
                         curTeamId={scoreSubmission.teamId}
-                        onTeamUpdated={(val) => this.handleChange('teamId', val)}
+                        onTeamUpdated={val => this.handleChange('teamId', val)}
                       />
-                    }
+                    )}
                   </Body>
                 </CardItem>
               </Card>
 
-              {
-                league != null && !league.isFetching && scoreSubmission.teamId != '' &&
-                Array.apply(null, new Array(parseInt(league.numMatches, 10))).map((e, index) => {
-                  return <ScoreReporterMatch
-                    key={index}
-                    curTeamId={scoreSubmission.teamId}
-                    league={league}
-                    matchNum={index}
-                    updateMatchHandler={this.updateMatchHandler}
-                    matchSubmission={scoreSubmission.matches[index]} />
-                })
-              }
+              {league != null &&
+                !league.isFetching &&
+                scoreSubmission.teamId != '' &&
+                Array.apply(
+                  null,
+                  new Array(parseInt(league.numMatches, 10))
+                ).map((e, index) => {
+                  return (
+                    <ScoreReporterMatch
+                      key={index}
+                      curTeamId={scoreSubmission.teamId}
+                      league={league}
+                      matchNum={index}
+                      updateMatchHandler={this.updateMatchHandler}
+                      matchSubmission={scoreSubmission.matches[index]}
+                    />
+                  )
+                })}
 
               <Card>
                 <CardItem>
                   <Body>
-                    <Item inlineLabel underline error={scoreSubmission.teamId != '' && scoreSubmission.name.length < 3}>
-                      <Label>
-                        Name
-                    </Label>
+                    <Item
+                      inlineLabel
+                      underline
+                      error={
+                        scoreSubmission.teamId != '' &&
+                        scoreSubmission.name.length < 3
+                      }
+                    >
+                      <Label>Name</Label>
                       <Input
                         onChangeText={v => this.handleChange('name', v)}
                         value={scoreSubmission.name}
                       />
                     </Item>
-                    <Item inlineLabel underline error={scoreSubmission.teamId != '' && !ValidationHelpers.isValidEmail(scoreSubmission.email)}>
-                      <Label>
-                        Email
-                    </Label>
+                    <Item
+                      inlineLabel
+                      underline
+                      error={
+                        scoreSubmission.teamId != '' &&
+                        !ValidationHelpers.isValidEmail(scoreSubmission.email)
+                      }
+                    >
+                      <Label>Email</Label>
                       <Input
                         autoCapitalize="none"
                         keyboardType="email-address"
@@ -271,39 +365,49 @@ class ScoreReporter extends React.Component {
 
                     <Spacer size={20} />
 
-                    <Button block onPress={this.handleSubmit} disabled={scoreSubmission.submitting}>
-                      <Text>{scoreSubmission.submitting ? 'Submitting...' : 'Submit Score'}</Text>
+                    <Button
+                      block
+                      onPress={this.handleSubmit}
+                      disabled={scoreSubmission.submitting}
+                    >
+                      <Text>
+                        {scoreSubmission.submitting
+                          ? 'Submitting...'
+                          : 'Submit Score'}
+                      </Text>
                     </Button>
                   </Body>
                 </CardItem>
               </Card>
             </Form>
-          }
+          )}
 
-          {
-            scoreSubmission.submitted &&
+          {scoreSubmission.submitted && (
             <Card>
               <CardItem>
                 <Body>
                   <Text>Your score submission has been received.</Text>
                   <Spacer size={20} />
-                  <Button block onPress={() => resetSubmission()}><Text>Submit another score</Text></Button>
+                  <Button block onPress={() => resetSubmission()}>
+                    <Text>Submit another score</Text>
+                  </Button>
                 </Body>
               </CardItem>
             </Card>
-          }
+          )}
         </Content>
-      </KeyboardAvoidingView >
-    );
+      </KeyboardAvoidingView>
+    )
   }
 }
 
 const mapStateToProps = state => ({
   leagues: state.leagues || {},
   isLoading: state.status.loading || false,
-  lookups: state.lookups || {},
+  sports: state.lookups.sports || [],
+  seasons: state.lookups.scoreReporterSeasons || [],
   scoreSubmission: state.scoreSubmission || {}
-});
+})
 
 const mapDispatchToProps = {
   updateScoreSubmission: updateScoreSubmission,
@@ -311,6 +415,9 @@ const mapDispatchToProps = {
   getLeague: fetchLeague,
   resetMatches: resetMatches,
   resetSubmission: resetSubmission
-};
+}
 
-export default connect(mapStateToProps, mapDispatchToProps)(ScoreReporter);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(ScoreReporter)
