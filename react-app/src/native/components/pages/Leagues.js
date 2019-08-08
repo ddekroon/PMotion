@@ -6,8 +6,7 @@ import {
 } from 'react-navigation'
 import { Image } from 'react-native'
 
-import Loading from '../common/Loading'
-import SportLeagues from '../leagues/LeaguesList'
+import LeaguesList from '../leagues/LeaguesList'
 import NavigationProps from '../../constants/navigation'
 import { connect } from 'react-redux'
 
@@ -18,7 +17,7 @@ const sportsNavigator = (sports, seasonsBySport) =>
   createMaterialTopTabNavigator(
     {
       Ultimate: props => (
-        <SportLeagues
+        <LeaguesList
           navigation={props.navigation}
           sports={sports}
           seasons={seasonsBySport['1']}
@@ -26,7 +25,7 @@ const sportsNavigator = (sports, seasonsBySport) =>
         />
       ),
       VolleyBall: props => (
-        <SportLeagues
+        <LeaguesList
           navigation={props.navigation}
           sports={sports}
           seasons={seasonsBySport['2']}
@@ -34,7 +33,7 @@ const sportsNavigator = (sports, seasonsBySport) =>
         />
       ),
       Soccer: props => (
-        <SportLeagues
+        <LeaguesList
           navigation={props.navigation}
           sports={sports}
           seasons={seasonsBySport['4']}
@@ -42,7 +41,7 @@ const sportsNavigator = (sports, seasonsBySport) =>
         />
       ),
       Football: props => (
-        <SportLeagues
+        <LeaguesList
           navigation={props.navigation}
           sports={sports}
           seasons={seasonsBySport['3']}
@@ -75,8 +74,7 @@ class Leagues extends React.Component {
   }
 
   componentDidMount = () => {
-    const { fetchData } = this.props
-    fetchData()
+    console.log('Leagues component did mount')
   }
 
   componentWillUnmount() {
@@ -84,12 +82,10 @@ class Leagues extends React.Component {
   }
 
   render() {
-    const { loading, sports, scoreReporterSeasons } = this.props.lookups
+    const { sports, scoreReporterSeasons } = this.props.lookups
     const { navigation } = this.props
 
-    console.log(navigation)
-
-    if (loading) return <Loading />
+    console.log('Render Leagues')
 
     const SportsNavigator = createAppContainer(
       sportsNavigator(sports, scoreReporterSeasons)
@@ -106,7 +102,6 @@ const mapStateToProps = state => ({
 
 //map actions to components
 const mapDispatchToProps = {
-  fetchData: getLookups,
   getLeague: fetchLeague
 }
 

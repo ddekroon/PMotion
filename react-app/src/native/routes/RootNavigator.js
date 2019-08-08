@@ -1,10 +1,15 @@
 import React from 'react'
+import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
 import { createAppContainer, createStackNavigator } from 'react-navigation'
 
 import MainNavigator from './MainNavigator'
 import LeaguePage from '../components/leagues/League'
+import Loading from '../components/common/Loading'
 
 import NavigationProps from '../constants/navigation'
+
+import { getLookups } from '../../actions/lookups'
 
 const RootStack = createStackNavigator(
   {
@@ -12,7 +17,7 @@ const RootStack = createStackNavigator(
     League: LeaguePage
   },
   {
-    initialRouteName: 'Main',
+    initialRouteName: 'League',
     mode: 'modal',
     defaultNavigationOptions: NavigationProps.navbarProps
   }
@@ -20,8 +25,35 @@ const RootStack = createStackNavigator(
 
 const RootContainer = createAppContainer(RootStack)
 
-export default class RootNavigator extends React.Component {
+class RootNavigator extends React.Component {
+  static propTypes = {
+    isFetching: PropTypes.bool.isRequired,
+    fetchLookups: PropTypes.func.isRequired
+  }
+
+  constructor(props) {
+    super(props)
+    props.fetchLookups()
+  }
+
   render() {
+    const { isFetching } = this.props
+
+    if (isFetching) return <Loading />
+
     return <RootContainer />
   }
 }
+
+const mapStateToProps = state => ({
+  isFetching: state.lookups.isFetching
+})
+
+const mapDispatchToProps = {
+  fetchLookups: getLookups
+}
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(RootNavigator)

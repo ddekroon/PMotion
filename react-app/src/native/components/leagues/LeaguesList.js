@@ -31,6 +31,8 @@ export default class SportLeagues extends React.Component {
   }
 
   render() {
+    console.log('Render LeaguesList')
+
     const { navigation, sportId, seasons, sports } = this.props
 
     const sport = SportHelpers.getSportById(sports, sportId)

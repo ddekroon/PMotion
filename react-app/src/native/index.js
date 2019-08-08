@@ -9,10 +9,8 @@ import {
   StyleSheet,
   Content
 } from 'react-native'
-import { Font } from 'expo'
 import PropTypes from 'prop-types'
 import { Provider } from 'react-redux'
-//import { Router, Stack } from 'react-native-router-flux'
 import { PersistGate } from 'redux-persist/es/integration/react'
 
 import { Root, StyleProvider } from 'native-base'
@@ -20,10 +18,7 @@ import getTheme from '../../native-base-theme/components'
 import theme from '../../native-base-theme/variables/commonColor'
 
 import RootNavigator from './routes/RootNavigator'
-//import Routes from './routes/index'
 import Loading from './components/common/Loading'
-
-import { getLookups } from '../actions/lookups'
 
 // Hide StatusBar on Android as it overlaps tabs
 //if (Platform.OS === 'android') StatusBar.setHidden(false);
@@ -32,16 +27,6 @@ export default class App extends React.Component {
   static propTypes = {
     store: PropTypes.shape({}).isRequired,
     persistor: PropTypes.shape({}).isRequired
-  }
-
-  async componentWillMount() {
-    await Font.loadAsync({
-      Roboto: require('../../node_modules/native-base/Fonts/Roboto.ttf'),
-      Roboto_medium: require('../../node_modules/native-base/Fonts/Roboto_medium.ttf'),
-      Ionicons: require('../../node_modules/@expo/vector-icons/fonts/Ionicons.ttf')
-    })
-
-    await getLookups()
   }
 
   render() {
@@ -64,11 +49,6 @@ export default class App extends React.Component {
           <PersistGate loading={<Loading />} persistor={persistor}>
             <StyleProvider style={getTheme(theme)}>
               <RootNavigator />
-              {/*<Router>
-                <Stack key="root">
-                  {Routes}
-                </Stack>
-              </Router>*/}
             </StyleProvider>
           </PersistGate>
         </Provider>
