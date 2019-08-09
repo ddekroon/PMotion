@@ -13,16 +13,14 @@ import {
   CardItem
 } from 'native-base'
 
+import { connect } from 'react-redux'
+
 import Spacer from '../common/Spacer'
 import SportHelpers from '../../../utils/sporthelpers'
 import LeagueHelpers from '../../../utils/leaguehelpers'
 
-export default class SportLeagues extends React.Component {
-  static propTypes = {
-    seasons: PropTypes.array.isRequired,
-    sportId: PropTypes.string.isRequired,
-    sports: PropTypes.array.isRequired
-  }
+class SportLeagues extends React.Component {
+  static propTypes = {}
 
   static navigationOptions = {}
 
@@ -31,27 +29,22 @@ export default class SportLeagues extends React.Component {
   }
 
   render() {
-    console.log('Render LeaguesList')
-
-    const { navigation, sportId, seasons, sports } = this.props
+    const { sports, scoreReporterSeasons } = this.props.lookups
+    const { sportId, navigation } = this.props.screenProps
 
     const sport = SportHelpers.getSportById(sports, sportId)
+    const seasons = scoreReporterSeasons[sportId]
 
-    const seasonsView = seasons.map(curSeason => {
+    const seasonsView = scoreReporterSeasons[sportId].map(curSeason => {
       var leagues = curSeason.leagues.map((league, leagueIndex) => (
         <ListItem
           key={league.id}
-          onPress={
-            () => {
-              console.log('Navigate to league ' + league.id)
-              console.log(navigation)
-              navigation.navigate('Volleyball', { leagueId: league.id })
-            }
-            /*Actions.league({
+          onPress={() => {
+            navigation.push('League', {
               leagueId: league.id,
               title: LeagueHelpers.getFormattedLeagueName(league)
-            })*/
-          }
+            })
+          }}
         >
           <View style={{ flex: 1 }}>
             <Text key={league.id}>
@@ -94,3 +87,15 @@ export default class SportLeagues extends React.Component {
     )
   }
 }
+
+const mapStateToProps = state => ({
+  lookups: state.lookups || {}
+})
+
+//map actions to components
+const mapDispatchToProps = {}
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(SportLeagues)

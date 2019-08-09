@@ -1,30 +1,22 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
-import {
-  createAppContainer,
-  createMaterialTopTabNavigator
-} from 'react-navigation'
-import { View, Button, Text, Icon } from 'native-base'
+import { createMaterialTopTabNavigator } from 'react-navigation'
 
-import { fetchLeague } from '../../../actions/leagues'
+import Standings from '../components/leagues/Standings'
+import Schedule from '../components/leagues/Schedule'
+import NavigationProps from '../constants/navigation'
 
-import Loading from '../common/Loading'
-import Standings from './Standings'
-import Schedule from './Schedule'
-import NavigationProps from '../../constants/navigation'
+const LeagueNavigator = createMaterialTopTabNavigator(
+  {
+    Standings: Standings,
+    Schedule: Schedule
+  },
+  {
+    ...NavigationProps.tabConfig
+  }
+)
 
-const leagueNavigator = league =>
-  createMaterialTopTabNavigator(
-    {
-      Standings: props => <Standings league={league} />,
-      Schedule: props => <Schedule league={league} />
-    },
-    {
-      ...NavigationProps.tabConfig
-    }
-  )
+export default LeagueNavigator
 
+/*
 class LeaguePage extends React.Component {
   static propTypes = {
     leagues: PropTypes.object.isRequired,
@@ -42,6 +34,7 @@ class LeaguePage extends React.Component {
   }
 
   render() {
+    console.log(this.props.navigation)
     const { leagues, leagueId } = this.props
     const league = leagues[leagueId]
 
@@ -78,3 +71,4 @@ export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(LeaguePage)
+*/

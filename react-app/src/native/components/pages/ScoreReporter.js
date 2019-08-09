@@ -259,13 +259,6 @@ class ScoreReporter extends React.Component {
     return (
       <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding" enabled>
         <Content padder>
-          <Button
-            onPress={() =>
-              this.props.navigation.navigate('League', { leagueId: 1640 })
-            }
-          >
-            <Text>Test</Text>
-          </Button>
           {!scoreSubmission.submitted && (
             <Form>
               <Card>

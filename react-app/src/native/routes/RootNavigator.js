@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import { createAppContainer, createStackNavigator } from 'react-navigation'
 
 import MainNavigator from './MainNavigator'
-import LeaguePage from '../components/leagues/League'
+import LeagueNavigator from './LeagueNavigator'
 import Loading from '../components/common/Loading'
 
 import NavigationProps from '../constants/navigation'
@@ -13,11 +13,19 @@ import { getLookups } from '../../actions/lookups'
 
 const RootStack = createStackNavigator(
   {
-    Main: MainNavigator,
-    League: LeaguePage
+    Main: {
+      screen: MainNavigator,
+      navigationOptions: NavigationProps.mainTitle
+    },
+    League: {
+      screen: LeagueNavigator,
+      navigationOptions: ({ navigation }) => ({
+        title: navigation.getParam('title', 'League')
+      })
+    }
   },
   {
-    initialRouteName: 'League',
+    initialRouteName: 'Main',
     mode: 'modal',
     defaultNavigationOptions: NavigationProps.navbarProps
   }

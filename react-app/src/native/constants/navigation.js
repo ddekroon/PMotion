@@ -19,7 +19,7 @@ export default {
     },
     backButtonTintColor: Colors.inverseTextColor
   },
-  screenProps: {
+  mainTitle: {
     headerTitle: props => {
       return (
         <View
