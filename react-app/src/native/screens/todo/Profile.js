@@ -94,13 +94,7 @@ Profile.defaultProps = {
 }
 
 Profile.navigationOptions = {
-  title: 'Registration',
-  tabBarIcon: () => (
-    <Image
-      style={{ width: 20, height: 20 }}
-      source={require('../../../images/icons/registration.png')}
-    />
-  )
+  title: 'Profile'
 }
 
 export default Profile

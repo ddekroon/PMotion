@@ -6,7 +6,7 @@ import Loading from '../common/Loading'
 import LeagueHelpers from '../../../utils/leaguehelpers'
 import PropTypes from 'prop-types'
 
-export default class Schedule extends React.Component {
+export default class TeamList extends React.Component {
   static propTypes = {
     league: PropTypes.object.isRequired
   }

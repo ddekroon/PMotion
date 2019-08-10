@@ -1,5 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+
 import {
   Container,
   Content,
@@ -13,29 +14,24 @@ import {
   CardItem
 } from 'native-base'
 
-import { connect } from 'react-redux'
-
 import Spacer from '../common/Spacer'
-import SportHelpers from '../../../utils/sporthelpers'
+
 import LeagueHelpers from '../../../utils/leaguehelpers'
 
-class SportLeagues extends React.Component {
-  static propTypes = {}
-
-  static navigationOptions = {}
+export default class LeaguesList extends React.Component {
+  static propTypes = {
+    seasons: PropTypes.array.isRequired,
+    navigation: PropTypes.object.isRequired
+  }
 
   constructor(props) {
     super(props)
   }
 
   render() {
-    const { sports, scoreReporterSeasons } = this.props.lookups
-    const { sportId, navigation } = this.props.screenProps
+    const { seasons, navigation } = this.props
 
-    const sport = SportHelpers.getSportById(sports, sportId)
-    const seasons = scoreReporterSeasons[sportId]
-
-    const seasonsView = scoreReporterSeasons[sportId].map(curSeason => {
+    const seasonsView = seasons.map(curSeason => {
       var leagues = curSeason.leagues.map((league, leagueIndex) => (
         <ListItem
           key={league.id}
@@ -87,15 +83,3 @@ class SportLeagues extends React.Component {
     )
   }
 }
-
-const mapStateToProps = state => ({
-  lookups: state.lookups || {}
-})
-
-//map actions to components
-const mapDispatchToProps = {}
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(SportLeagues)

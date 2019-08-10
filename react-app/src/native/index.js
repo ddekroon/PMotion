@@ -17,7 +17,7 @@ import { Root, StyleProvider } from 'native-base'
 import getTheme from '../../native-base-theme/components'
 import theme from '../../native-base-theme/variables/commonColor'
 
-import RootNavigator from './routes/RootNavigator'
+import RootNavigator from './navigators/RootNavigator'
 import Loading from './components/common/Loading'
 
 // Hide StatusBar on Android as it overlaps tabs
@@ -32,19 +32,9 @@ export default class App extends React.Component {
   render() {
     const { store, persistor } = this.props
 
-    let { height, width } = Dimensions.get('window')
-    //console.log(height + " " + width);
-
     return (
       <Root>
         <StatusBar barStyle="default" hidden={false} translucent={true} />
-        {/*<View
-          style={{backgroundColor:'blue',width:width,height:height}}
-        >
-          <ImageBackground
-            source={require('../images/logo-grey.png')}
-          style={{width:'100%',height:'100%'}}>*/}
-
         <Provider store={store}>
           <PersistGate loading={<Loading />} persistor={persistor}>
             <StyleProvider style={getTheme(theme)}>
@@ -56,11 +46,3 @@ export default class App extends React.Component {
     )
   }
 }
-
-/*let styles = StyleSheet.create({
-  backgroundImage: {
-    position: 'absolute',
-    width: 83,
-    height: 56
-  }
-})*/

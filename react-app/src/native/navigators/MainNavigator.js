@@ -3,8 +3,8 @@ import { createBottomTabNavigator } from 'react-navigation'
 import { Image } from 'react-native'
 
 import SportsNavigator from './SportsNavigator'
-import ScoreReporterPage from '../components/pages/ScoreReporter'
-import ProfilePage from '../components/pages/Profile'
+import ScoreReporter from '../screens/ScoreReporter'
+import Registration from '../screens/Registration'
 
 import NavigationProps from '../constants/navigation'
 import Images from '../../images/index'
@@ -14,6 +14,7 @@ const MainNavigator = createBottomTabNavigator(
     Leagues: {
       screen: SportsNavigator,
       navigationOptions: {
+        title: 'Leagues',
         tabBarIcon: ({ focused, horizontal, tintColor }) => (
           <Image
             style={{ width: 20, height: 20 }}
@@ -25,8 +26,9 @@ const MainNavigator = createBottomTabNavigator(
       }
     },
     ScoreReporter: {
-      screen: ScoreReporterPage,
+      screen: ScoreReporter,
       navigationOptions: {
+        title: 'Score Reporter',
         tabBarIcon: ({ focused, horizontal, tintColor }) => (
           <Image
             style={{ width: 30, height: 22 }}
@@ -35,9 +37,10 @@ const MainNavigator = createBottomTabNavigator(
         )
       }
     },
-    Profile: {
-      screen: ProfilePage,
+    Registration: {
+      screen: Registration,
       navigationOptions: {
+        title: 'Registration',
         tabBarIcon: ({ focused, horizontal, tintColor }) => (
           <Image
             style={{ width: 20, height: 20 }}
@@ -57,17 +60,3 @@ const MainNavigator = createBottomTabNavigator(
 )
 
 export default MainNavigator
-
-/*
-const MainContainer = createAppContainer(RootStack)
-
-export default class MainNavigator extends React.Component {
-  static navigationOptions = {
-    ...NavigationProps.screenProps
-  }
-
-  render() {
-    return <MainContainer />
-  }
-}
-*/

@@ -1,5 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
 import { KeyboardAvoidingView, Image } from 'react-native'
 import {
   Content,
@@ -17,24 +18,22 @@ import {
   Header
 } from 'native-base'
 
-import Loading from '../common/Loading'
-import Spacer from '../common/Spacer'
-import TeamPicker from '../common/TeamPicker'
-import ScoreReporterMatch from '../scorereporter/Match'
-import DateTimeHelpers from '../../../utils/datetimehelpers'
-import ValidationHelpers from '../../../utils/validationhelpers'
-import ToastHelpers from '../../../utils/toasthelpers'
-import Enums from '../../../constants/enums'
+import Loading from '../components/common/Loading'
+import Spacer from '../components/common/Spacer'
+import TeamPicker from '../components/common/TeamPicker'
+import ScoreReporterMatch from '../components/scorereporter/Match'
+import DateTimeHelpers from '../../utils/datetimehelpers'
+import ValidationHelpers from '../../utils/validationhelpers'
+import ToastHelpers from '../../utils/toasthelpers'
 
-import { connect } from 'react-redux'
-
+import Enums from '../../constants/enums'
 import {
   submitScoreSubmission,
   updateScoreSubmission,
   resetMatches,
   resetSubmission
-} from '../../../actions/scoreSubmission'
-import { fetchLeague } from '../../../actions/leagues'
+} from '../../actions/scoreSubmission'
+import { fetchLeague } from '../../actions/leagues'
 
 class ScoreReporter extends React.Component {
   static propTypes = {
@@ -53,16 +52,6 @@ class ScoreReporter extends React.Component {
 
   static defaultProps = {
     error: null
-  }
-
-  static navigationOptions = {
-    title: 'Score Reporter',
-    tabBarIcon: () => (
-      <Image
-        style={{ width: 30, height: 22 }}
-        source={require('../../../images/icons/scores.png')}
-      />
-    )
   }
 
   constructor(props) {

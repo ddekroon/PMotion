@@ -1,13 +1,14 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import { Container, Content, Text, Card, CardItem } from 'native-base'
 import { Table, Row } from 'react-native-table-component'
 import { StyleSheet } from 'react-native'
 import { connect } from 'react-redux'
 
-import Loading from '../common/Loading'
-import LeagueHelpers from '../../../utils/leaguehelpers'
-import PropTypes from 'prop-types'
-import { fetchLeague } from '../../../actions/leagues'
+import Loading from '../components/common/Loading'
+
+import LeagueHelpers from '../../utils/leaguehelpers'
+import { fetchLeague } from '../../actions/leagues'
 
 class Standings extends React.Component {
   state = {

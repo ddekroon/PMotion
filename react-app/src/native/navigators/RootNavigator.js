@@ -8,7 +8,6 @@ import LeagueNavigator from './LeagueNavigator'
 import Loading from '../components/common/Loading'
 
 import NavigationProps from '../constants/navigation'
-
 import { getLookups } from '../../actions/lookups'
 
 const RootStack = createStackNavigator(

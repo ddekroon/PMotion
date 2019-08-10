@@ -3,12 +3,12 @@ import { Container, Content } from 'native-base'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 
-import Loading from '../common/Loading'
-import TeamList from './TeamList'
-import ScheduleWeek from './ScheduleWeek'
-import ByeWeek from './ByeWeek'
+import Loading from '../components/common/Loading'
+import TeamList from '../components/leagues/TeamList'
+import ScheduleWeek from '../components/leagues/ScheduleWeek'
+import ByeWeek from '../components/leagues/ByeWeek'
 
-import { fetchLeague } from '../../../actions/leagues'
+import { fetchLeague } from '../../actions/leagues'
 
 class Schedule extends React.Component {
   state = {
