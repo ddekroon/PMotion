@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { KeyboardAvoidingView, Image } from 'react-native'
 import {
+  Container,
   Content,
   Text,
   Form,
@@ -247,137 +248,141 @@ class ScoreReporter extends React.Component {
 
     return (
       <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding" enabled>
-        <Content padder>
-          {!scoreSubmission.submitted && (
-            <Form>
-              <Card>
-                <CardItem>
-                  <Body>
-                    <Item picker error={scoreSubmission.sportId == ''}>
-                      <Picker
-                        note={false}
-                        mode="dropdown"
-                        iosIcon={<Icon name="arrow-down" />}
-                        style={{ flex: 1 }}
-                        selectedValue={scoreSubmission.sportId}
-                        placeholder="Sport"
-                        onValueChange={(val, index) => {
-                          this.handleChange('sportId', val)
-                        }}
-                      >
-                        <Picker.Item key={0} label="Sport" value="" />
-                        {this.props.sports.map(curSport => {
-                          return (
-                            <Picker.Item
-                              key={curSport.id}
-                              label={curSport.name}
-                              value={curSport.id}
-                            />
-                          )
-                        })}
-                      </Picker>
-                    </Item>
+        <Container>
+          <Content padder>
+            {!scoreSubmission.submitted && (
+              <Form>
+                <Card>
+                  <CardItem>
+                    <Body>
+                      <Item picker error={scoreSubmission.sportId == ''}>
+                        <Picker
+                          note={false}
+                          mode="dropdown"
+                          iosIcon={<Icon name="arrow-down" />}
+                          style={{ flex: 1 }}
+                          selectedValue={scoreSubmission.sportId}
+                          placeholder="Sport"
+                          onValueChange={(val, index) => {
+                            this.handleChange('sportId', val)
+                          }}
+                        >
+                          <Picker.Item key={0} label="Sport" value="" />
+                          {this.props.sports.map(curSport => {
+                            return (
+                              <Picker.Item
+                                key={curSport.id}
+                                label={curSport.name}
+                                value={curSport.id}
+                              />
+                            )
+                          })}
+                        </Picker>
+                      </Item>
 
-                    {leaguePicker}
+                      {leaguePicker}
 
-                    {league != null && (
-                      <TeamPicker
-                        loading={league.isFetching}
-                        teams={league.teams != null ? league.teams : []}
+                      {league != null && (
+                        <TeamPicker
+                          loading={league.isFetching}
+                          teams={league.teams != null ? league.teams : []}
+                          curTeamId={scoreSubmission.teamId}
+                          onTeamUpdated={val =>
+                            this.handleChange('teamId', val)
+                          }
+                        />
+                      )}
+                    </Body>
+                  </CardItem>
+                </Card>
+
+                {league != null &&
+                  !league.isFetching &&
+                  scoreSubmission.teamId != '' &&
+                  Array.apply(
+                    null,
+                    new Array(parseInt(league.numMatches, 10))
+                  ).map((e, index) => {
+                    return (
+                      <ScoreReporterMatch
+                        key={index}
                         curTeamId={scoreSubmission.teamId}
-                        onTeamUpdated={val => this.handleChange('teamId', val)}
+                        league={league}
+                        matchNum={index}
+                        updateMatchHandler={this.updateMatchHandler}
+                        matchSubmission={scoreSubmission.matches[index]}
                       />
-                    )}
-                  </Body>
-                </CardItem>
-              </Card>
+                    )
+                  })}
 
-              {league != null &&
-                !league.isFetching &&
-                scoreSubmission.teamId != '' &&
-                Array.apply(
-                  null,
-                  new Array(parseInt(league.numMatches, 10))
-                ).map((e, index) => {
-                  return (
-                    <ScoreReporterMatch
-                      key={index}
-                      curTeamId={scoreSubmission.teamId}
-                      league={league}
-                      matchNum={index}
-                      updateMatchHandler={this.updateMatchHandler}
-                      matchSubmission={scoreSubmission.matches[index]}
-                    />
-                  )
-                })}
+                <Card>
+                  <CardItem>
+                    <Body>
+                      <Item
+                        inlineLabel
+                        underline
+                        error={
+                          scoreSubmission.teamId != '' &&
+                          scoreSubmission.name.length < 3
+                        }
+                      >
+                        <Label>Name</Label>
+                        <Input
+                          onChangeText={v => this.handleChange('name', v)}
+                          value={scoreSubmission.name}
+                        />
+                      </Item>
+                      <Item
+                        inlineLabel
+                        underline
+                        error={
+                          scoreSubmission.teamId != '' &&
+                          !ValidationHelpers.isValidEmail(scoreSubmission.email)
+                        }
+                      >
+                        <Label>Email</Label>
+                        <Input
+                          autoCapitalize="none"
+                          keyboardType="email-address"
+                          onChangeText={v => this.handleChange('email', v)}
+                          value={scoreSubmission.email}
+                        />
+                      </Item>
 
+                      <Spacer size={20} />
+
+                      <Button
+                        block
+                        onPress={this.handleSubmit}
+                        disabled={scoreSubmission.submitting}
+                      >
+                        <Text>
+                          {scoreSubmission.submitting
+                            ? 'Submitting...'
+                            : 'Submit Score'}
+                        </Text>
+                      </Button>
+                    </Body>
+                  </CardItem>
+                </Card>
+              </Form>
+            )}
+
+            {scoreSubmission.submitted && (
               <Card>
                 <CardItem>
                   <Body>
-                    <Item
-                      inlineLabel
-                      underline
-                      error={
-                        scoreSubmission.teamId != '' &&
-                        scoreSubmission.name.length < 3
-                      }
-                    >
-                      <Label>Name</Label>
-                      <Input
-                        onChangeText={v => this.handleChange('name', v)}
-                        value={scoreSubmission.name}
-                      />
-                    </Item>
-                    <Item
-                      inlineLabel
-                      underline
-                      error={
-                        scoreSubmission.teamId != '' &&
-                        !ValidationHelpers.isValidEmail(scoreSubmission.email)
-                      }
-                    >
-                      <Label>Email</Label>
-                      <Input
-                        autoCapitalize="none"
-                        keyboardType="email-address"
-                        onChangeText={v => this.handleChange('email', v)}
-                        value={scoreSubmission.email}
-                      />
-                    </Item>
-
+                    <Text>Your score submission has been received.</Text>
                     <Spacer size={20} />
-
-                    <Button
-                      block
-                      onPress={this.handleSubmit}
-                      disabled={scoreSubmission.submitting}
-                    >
-                      <Text>
-                        {scoreSubmission.submitting
-                          ? 'Submitting...'
-                          : 'Submit Score'}
-                      </Text>
+                    <Button block onPress={() => resetSubmission()}>
+                      <Text>Submit another score</Text>
                     </Button>
                   </Body>
                 </CardItem>
               </Card>
-            </Form>
-          )}
-
-          {scoreSubmission.submitted && (
-            <Card>
-              <CardItem>
-                <Body>
-                  <Text>Your score submission has been received.</Text>
-                  <Spacer size={20} />
-                  <Button block onPress={() => resetSubmission()}>
-                    <Text>Submit another score</Text>
-                  </Button>
-                </Body>
-              </CardItem>
-            </Card>
-          )}
-        </Content>
+            )}
+          </Content>
+        </Container>
       </KeyboardAvoidingView>
     )
   }

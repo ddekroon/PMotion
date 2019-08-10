@@ -7,6 +7,7 @@ import { connect } from 'react-redux'
 
 import Loading from '../components/common/Loading'
 
+import CommonColors from '../../../native-base-theme/variables/commonColor'
 import LeagueHelpers from '../../utils/leaguehelpers'
 import { fetchLeague } from '../../actions/leagues'
 
@@ -42,8 +43,10 @@ class Standings extends React.Component {
         team.wins,
         team.losses,
         team.ties,
-        points,
-        parseFloat(team.spiritAverage).toFixed(2)
+        <Text style={styles.textRight}>{points}</Text>,
+        <Text style={styles.textRight}>
+          {parseFloat(team.spiritAverage).toFixed(2)}
+        </Text>
       ])
     })
 
@@ -69,7 +72,9 @@ class Standings extends React.Component {
                     data={rowData}
                     style={[
                       styles.row,
-                      index % 2 == 1 && { backgroundColor: '#e6e6e6' }
+                      index % 2 == 1 && {
+                        backgroundColor: CommonColors.brandLightGray
+                      }
                     ]}
                     textStyle={styles.text}
                   />
@@ -98,7 +103,6 @@ export default connect(
 )(Standings)
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: 'yellow' },
   header: { padding: 2, borderBottomWidth: 2, borderBottomColor: 'black' },
   headerText: { fontWeight: 'bold' },
   text: {},
@@ -106,5 +110,6 @@ const styles = StyleSheet.create({
   row: { padding: 2 },
   table: { flex: 1, marginBottom: 10 },
   tableborderstyle: { borderWidth: 0, borderColor: 'transparent' },
-  cardItem: { padding: 10 }
+  cardItem: { padding: 10 },
+  textRight: { textAlign: 'right', padding: 0 }
 })
