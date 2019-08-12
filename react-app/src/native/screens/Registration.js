@@ -6,7 +6,7 @@ export default class Registration extends React.Component {
     return (
       <Container>
         <Content>
-          <Text>In Development</Text>
+          <Text>Under Construction</Text>
         </Content>
       </Container>
     )
