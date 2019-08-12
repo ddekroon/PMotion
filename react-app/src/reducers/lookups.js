@@ -1,6 +1,6 @@
-import Store from '../store/lookup';
+import Store from '../store/lookup'
 
-export const initialState = Store;
+export const initialState = Store
 
 export default function lookupReducer(state = initialState, action) {
   switch (action.type) {
@@ -8,21 +8,28 @@ export default function lookupReducer(state = initialState, action) {
       if (action.data) {
         return {
           ...state,
-          loading: false,
-          seasonsAvailableRegistration: action.data.seasonsAvailableRegistration,
-          seasonsAvailableScoreReporter: action.data.seasonsAvailableScoreReporter,
+          isFetching: false,
+          seasonsAvailableRegistration:
+            action.data.seasonsAvailableRegistration,
+          seasonsAvailableScoreReporter:
+            action.data.seasonsAvailableScoreReporter,
           sports: action.data.sports,
           scoreReporterSeasons: action.data.scoreReporterSeasons,
           registrationSeasons: action.data.registrationSeasons,
-          venues: action.data.venues,
-        };
+          venues: action.data.venues
+        }
       }
-      return initialState;
+      return initialState
+    }
+    case 'REQUEST_LOOKUPS': {
+      return Object.assign({}, state, {
+        isFetching: true
+      })
     }
     case 'LOOKUP_RESET': {
-      return initialState;
+      return initialState
     }
     default:
-      return state;
+      return state
   }
 }

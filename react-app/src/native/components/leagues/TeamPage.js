@@ -2,18 +2,14 @@ import React from 'react'
 import PropTypes from 'prop-types';
 import LeagueHelpers from '../../../utils/leaguehelpers';
 
-import { Text, Card, CardItem, Container, Content} from 'native-base';
+import { Text, Card, CardItem, Container, Content, Header} from 'native-base';
 import { Table, Row } from 'react-native-table-component';
-import { StyleSheet } from 'react-native';
-import { Actions } from 'react-native-router-flux';
+import { StyleSheet, Image } from 'react-native';
 import { connect } from 'react-redux';
 import Loading from '../common/Loading';
 
-export class TeamPage extends React.Component {
-    static propTypes = {
-        team: PropTypes.string.isRequired,
-        league: PropTypes.object.isRequired,
-    }
+
+class TeamPage extends React.Component {
 
     constructor(props) {
         super(props);
@@ -21,7 +17,10 @@ export class TeamPage extends React.Component {
 
     render() {
 
-        const { league, team, lookups } = this.props;
+        const { lookups } = this.props;
+        const league = this.props.navigation.getParam('league');
+        const team = this.props.navigation.getParam('team');
+        //const {navigation} = this.props.screenProps;
 
         const flexArr = [6, 6, 4, 5, 5];
         const weekTable = {
@@ -29,8 +28,15 @@ export class TeamPage extends React.Component {
             data: [],
         }
 
-        console.log(league.dates);
+        let teamPicId = '';
 
+        league.teams.forEach((teamName) => {
+            if(teamName.id === team){
+                teamPicId = teamName.picName;
+            }
+        });
+
+        let teamPic = 'data.perpetualmotion.org/' + league.picLink + '/' + teamPicId + '.JPG';
         let teamMatches = [];
 
         //get all matches of team
@@ -54,7 +60,7 @@ export class TeamPage extends React.Component {
 
             league.teams.forEach((team) => {
                 if(team.id === opponent){
-                    opponentStats = '(' + team.wins + '-' + team.ties + '-' + team.losses + ')(' + parseFloat(team.spiritAverage).toFixed(2) + ')';
+                    opponentStats = '(' + team.wins + '-' + team.losses + '-' + team.ties + ')(' + parseFloat(team.spiritAverage).toFixed(2) + ')';
                 }
             });
 
@@ -64,7 +70,7 @@ export class TeamPage extends React.Component {
                 'TODO',
                 lookups.venues[match.fieldId].name,
                 LeagueHelpers.convertMatchTime(match.matchTime)
-                ]);
+            ]);
         });
 
 
@@ -99,6 +105,17 @@ export class TeamPage extends React.Component {
                             </Table>
                         </CardItem>
                     </Card>
+
+
+                    <Card>
+                        <CardItem header>
+                            <Text style={styles.title}>{LeagueHelpers.getTeamName(league, team)}</Text>
+                        </CardItem>   
+                        <CardItem cardBody>
+                            <Image source={{uri: teamPic}} style={styles.teamImage}/>
+                        </CardItem>  
+                    </Card> 
+
                 </Content>
             </Container>
         );
@@ -121,5 +138,8 @@ const styles = StyleSheet.create({
     tableborderstyle: { borderWidth: 0, borderColor: "transparent" },
     cardItem: {padding: 10},
     title: {fontSize: 18},
-    name: {color: 'red'}
+    name: {color: 'red'},
+    teamImage: {width: null, height: 300, flex: 1, resizeMode: 'cover'}
 });
+
+

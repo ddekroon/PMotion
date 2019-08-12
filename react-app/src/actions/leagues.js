@@ -43,8 +43,6 @@ export function fetchLeague(leagueId) {
 }
 
 function shouldFetchLeague(state, leagueId) {
-  console.log('Should fetch league: ' + leagueId)
-
   if (!LeagueHelpers.isValidLeagueId(leagueId)) {
     return false
   }
