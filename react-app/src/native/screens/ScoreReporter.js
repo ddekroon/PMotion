@@ -26,6 +26,7 @@ import ScoreReporterMatch from '../components/scorereporter/Match'
 import DateTimeHelpers from '../../utils/datetimehelpers'
 import ValidationHelpers from '../../utils/validationhelpers'
 import ToastHelpers from '../../utils/toasthelpers'
+import LeagueHelpers from '../../utils/leaguehelpers'
 
 import Enums from '../../constants/enums'
 import {
@@ -114,6 +115,11 @@ class ScoreReporter extends React.Component {
     if (name == 'teamId' && val != '') {
       const { leagues } = this.props
       var league = leagues[newSubmission.leagueId]
+      var leagueDateInScoreReporter = LeagueHelpers.getLeagueWeekInScoreReporter(
+        league
+      )
+
+      console.log(leagueDateInScoreReporter)
 
       if (
         league.scheduledMatches == null ||
@@ -122,16 +128,17 @@ class ScoreReporter extends React.Component {
         return
       }
 
+      console.log(leagueDateInScoreReporter.id)
+
       if (
-        league.dateInScoreReporter != null &&
-        league.dateInScoreReporter.id != null
+        leagueDateInScoreReporter != null &&
+        leagueDateInScoreReporter.id != null
       ) {
-        var teamMatches = league.scheduledMatches.filter(curMatch => {
-          return (
-            curMatch.dateId == league.dateInScoreReporter.id &&
+        var teamMatches = league.scheduledMatches.filter(
+          curMatch =>
+            curMatch.dateId == leagueDateInScoreReporter.id &&
             (curMatch.teamOneId == val || curMatch.teamTwoId == val)
-          )
-        })
+        )
 
         for (
           var i = 0;
@@ -173,6 +180,12 @@ class ScoreReporter extends React.Component {
     }
 
     this.props.updateScoreSubmission(newSubmissions)
+  }
+
+  renderLeagueWeekLabel(league) {
+    let date = LeagueHelpers.getLeagueWeekInScoreReporter(league)
+
+    return date != null ? date.description + ' - Week ' + date.weekNumber : ''
   }
 
   render() {
@@ -291,6 +304,12 @@ class ScoreReporter extends React.Component {
                             this.handleChange('teamId', val)
                           }
                         />
+                      )}
+
+                      {league != null && !league.isFetching && (
+                        <Text style={{ fontWeight: 'bold', marginTop: 10 }}>
+                          {this.renderLeagueWeekLabel(league)}
+                        </Text>
                       )}
                     </Body>
                   </CardItem>

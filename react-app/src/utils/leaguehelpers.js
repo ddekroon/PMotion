@@ -31,6 +31,16 @@ export default {
     return league.dates.find(curDate => curDate.id === dateId)
   },
 
+  getLeagueWeekInScoreReporter: league => {
+    if (league === null || league.dates === null) {
+      return null
+    }
+
+    return league.dates.find(
+      curDate => curDate.weekNumber === league.weekInScoreReporter
+    )
+  },
+
   getNumInLeague: (league, teamId) => {
     if (league === null || teamId === '') {
       return ''

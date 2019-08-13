@@ -1,5 +1,4 @@
 import React from 'react'
-import PropTypes from 'prop-types'
 import { Container, Content, Text, Card, CardItem } from 'native-base'
 import { Table, Row } from 'react-native-table-component'
 import { StyleSheet } from 'react-native'
@@ -8,7 +7,6 @@ import { connect } from 'react-redux'
 import Loading from '../components/common/Loading'
 
 import CommonColors from '../../../native-base-theme/variables/commonColor'
-import LeagueHelpers from '../../utils/leaguehelpers'
 import { fetchLeague } from '../../actions/leagues'
 
 class Standings extends React.Component {
@@ -31,7 +29,17 @@ class Standings extends React.Component {
 
     const flexArr = [1, 8, 1, 1, 1, 1, 2]
     const tableInfo = {
-      header: ['', 'Team', 'W', 'L', 'T', 'P', 'Spirit'],
+      header: [
+        '',
+        <Text style={[styles.headerText, styles.textLeft, styles.cellText]}>
+          Team
+        </Text>,
+        'W',
+        'L',
+        'T',
+        'P',
+        'Spirit'
+      ],
       data: []
     }
 
@@ -39,14 +47,12 @@ class Standings extends React.Component {
       var points = parseInt(team.ties) + parseInt(team.wins) * 2
       tableInfo.data.push([
         i + 1,
-        team.name,
+        <Text style={[styles.textLeft, styles.cellText]}>{team.name}</Text>,
         team.wins,
         team.losses,
         team.ties,
-        <Text style={styles.textRight}>{points}</Text>,
-        <Text style={styles.textRight}>
-          {parseFloat(team.spiritAverage).toFixed(2)}
-        </Text>
+        points,
+        parseFloat(team.spiritAverage).toFixed(2)
       ])
     })
 
@@ -54,9 +60,6 @@ class Standings extends React.Component {
       <Container>
         <Content padder>
           <Card>
-            <CardItem header>
-              <Text>{LeagueHelpers.getFormattedLeagueName(league)}</Text>
-            </CardItem>
             <CardItem cardBody style={styles.cardItem}>
               <Table style={styles.table} borderStyle={styles.tableborderstyle}>
                 <Row
@@ -103,13 +106,23 @@ export default connect(
 )(Standings)
 
 const styles = StyleSheet.create({
-  header: { padding: 2, borderBottomWidth: 2, borderBottomColor: 'black' },
-  headerText: { fontWeight: 'bold' },
-  text: {},
-  statText: { textAlign: 'center' },
+  header: {
+    padding: 2,
+    borderBottomWidth: 2,
+    borderBottomColor: CommonColors.brandDarkGray
+  },
+  headerText: { fontWeight: 'bold', textAlign: 'center' },
+  text: { textAlign: 'center' },
   row: { padding: 2 },
-  table: { flex: 1, marginBottom: 10 },
+  table: {
+    flex: 1,
+    marginBottom: CommonColors.contentPadding,
+    marginTop: CommonColors.contentPadding
+  },
   tableborderstyle: { borderWidth: 0, borderColor: 'transparent' },
   cardItem: { padding: 10 },
-  textRight: { textAlign: 'right', padding: 0 }
+  cellText: {
+    marginTop: -1
+  },
+  textLeft: { textAlign: 'left' }
 })

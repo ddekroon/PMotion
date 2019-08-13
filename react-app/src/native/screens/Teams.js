@@ -3,12 +3,11 @@ import { Container, Content } from 'native-base'
 import { connect } from 'react-redux'
 
 import Loading from '../components/common/Loading'
-import ScheduleWeek from '../components/leagues/ScheduleWeek'
-import ByeWeek from '../components/leagues/ByeWeek'
+import TeamList from '../components/leagues/TeamList'
 
 import { fetchLeague } from '../../actions/leagues'
 
-class Schedule extends React.Component {
+class Teams extends React.Component {
   state = {
     leagueId: -1
   }
@@ -29,19 +28,7 @@ class Schedule extends React.Component {
     return (
       <Container>
         <Content padder>
-          {league.leagueSchedule.map((week, i) => {
-            if (Object.keys(week.times).length === 0) {
-              return <ByeWeek key={week.date.id} scheduleWeek={week} />
-            } else {
-              return (
-                <ScheduleWeek
-                  key={week.date.id}
-                  league={league}
-                  scheduleWeek={week}
-                />
-              )
-            }
-          })}
+          <TeamList league={league} />
         </Content>
       </Container>
     )
@@ -60,4 +47,4 @@ const mapDispatchToProps = {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(Schedule)
+)(Teams)
