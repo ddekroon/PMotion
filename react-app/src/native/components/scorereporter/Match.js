@@ -64,8 +64,6 @@ class ScoreReporterMatch extends React.Component {
 		const { oppTeamId, results, spiritScore, comment } = this.props.matchSubmission;
 		const { handleScoreChange } = this;
 
-		console.log("opp team iid: " + oppTeamId);
-
 		function getScorePicker(gameNum, label, stateScoreKey, selectedValue, maxPoints) {
 			return <Item picker>
 				<Picker
