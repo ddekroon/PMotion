@@ -3,6 +3,7 @@ import member from './member';
 import lookups from './lookups';
 import scoreSubmission from './scoreSubmission';
 import leagues from './leagues';
+import teams from './teams';
 
 const rehydrated = (state = false, action) => {
   switch (action.type) {
@@ -19,5 +20,6 @@ export default {
   member,
   lookups,
   scoreSubmission,
-  leagues
+  leagues,
+  teams
 };
