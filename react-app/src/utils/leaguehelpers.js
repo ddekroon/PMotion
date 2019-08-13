@@ -31,6 +31,16 @@ export default {
     return league.dates.find(curDate => curDate.id === dateId)
   },
 
+  getLeagueWeekInScoreReporter: league => {
+    if (league === null || league.dates === null) {
+      return null
+    }
+
+    return league.dates.find(
+      curDate => curDate.weekNumber === league.weekInScoreReporter
+    )
+  },
+
   getNumInLeague: (league, teamId) => {
     if (league === null || teamId === '') {
       return ''
@@ -102,5 +112,38 @@ export default {
     })
 
     return times
+  },
+
+  checkHideSpirit: league => {
+    if (
+      league == null ||
+      league.dayNumber == null ||
+      league.numDaysSpiritHidden == null ||
+      league.hideSpiritHour == null ||
+      league.showSpiritHour == null
+    ) {
+      return false
+    }
+
+    let curDay = new Date().getDay()
+    let timeOfDay = new Date().getHours()
+    let dayHide = parseInt(league.dayNumber)
+    let dayShow = dayHide + parseInt(league.numDaysSpiritHidden)
+
+    if (dayShow > 7) {
+      dayShow = dayShow % 7
+    }
+
+    if (curDay == dayHide) {
+      return timeOfDay >= league.hideSpiritHour
+    }
+
+    if (curDay == dayShow) {
+      return !(timeOfDay >= league.showSpiritHour)
+    }
+
+    return (
+      (curDay > dayHide && curDay < dayShow) || (curDay == 1 && dayHide == 7)
+    )
   }
 }
