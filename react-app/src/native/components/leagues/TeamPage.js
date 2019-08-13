@@ -201,6 +201,6 @@ const styles = StyleSheet.create({
     title: {fontSize: 18},
     name: {color: 'red'},
     teamImage: {width: null, height: 300, flex: 1, resizeMode: 'cover'}
-});
+}); 
 
 
