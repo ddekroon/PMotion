@@ -29,7 +29,7 @@ const RootStack = createStackNavigator(
   },
   {
     initialRouteName: 'Main',
-    mode: 'Modal',
+    mode: 'modal',
     defaultNavigationOptions: NavigationProps.navbarProps
   }
 )
