@@ -19,7 +19,11 @@
     },
     "assetBundlePatterns": ["**/*"],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "org.perpetualmotion.pmotionapp"
+    },
+    "android": {
+      "package": "org.perpetualmotion.pmotionapp"
     }
   }
 }
