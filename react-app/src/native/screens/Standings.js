@@ -8,6 +8,7 @@ import Loading from '../components/common/Loading'
 
 import CommonColors from '../../../native-base-theme/variables/commonColor'
 import { fetchLeague } from '../../actions/leagues'
+import LeagueHelpers from '../../utils/leaguehelpers'
 
 class Standings extends React.Component {
   state = {
@@ -37,23 +38,31 @@ class Standings extends React.Component {
         'W',
         'L',
         'T',
-        'P',
-        'Spirit'
+        'P'
       ],
       data: []
     }
 
+    if (!LeagueHelpers.checkHideSpirit(league)) {
+      tableInfo.header.push('Spirit')
+    }
+
     league.standings.forEach((team, i) => {
       var points = parseInt(team.ties) + parseInt(team.wins) * 2
-      tableInfo.data.push([
+      var teamRow = [
         i + 1,
         <Text style={[styles.textLeft, styles.cellText]}>{team.name}</Text>,
         team.wins,
         team.losses,
         team.ties,
-        points,
-        parseFloat(team.spiritAverage).toFixed(2)
-      ])
+        points
+      ]
+
+      if (!LeagueHelpers.checkHideSpirit(league)) {
+        teamRow.push(parseFloat(team.spiritAverage).toFixed(2))
+      }
+
+      tableInfo.data.push(teamRow)
     })
 
     return (

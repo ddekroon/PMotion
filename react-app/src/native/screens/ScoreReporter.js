@@ -119,16 +119,12 @@ class ScoreReporter extends React.Component {
         league
       )
 
-      console.log(leagueDateInScoreReporter)
-
       if (
         league.scheduledMatches == null ||
         league.scheduledMatches.length == 0
       ) {
         return
       }
-
-      console.log(leagueDateInScoreReporter.id)
 
       if (
         leagueDateInScoreReporter != null &&
