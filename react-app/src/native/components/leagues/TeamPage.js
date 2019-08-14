@@ -2,12 +2,18 @@ import React from 'react'
 import PropTypes from 'prop-types';
 import LeagueHelpers from '../../../utils/leaguehelpers';
 
-import { Text, Card, CardItem, Container, Content, Header} from 'native-base';
+import { Text, Card, CardItem, Container, Content, Header, Button, Icon} from 'native-base';
 import { Table, Row } from 'react-native-table-component';
 import { StyleSheet, Image } from 'react-native';
 import { connect } from 'react-redux';
 import Loading from '../common/Loading';
 import {fetchTeam, resetTeamStore} from '../../../actions/teams';
+
+/**
+ * TODO
+ * - check if teamphoto exists
+ * - figure out loading team state correctly
+ */
 
 
 class TeamPage extends React.Component {
@@ -58,20 +64,22 @@ class TeamPage extends React.Component {
             data: [],
         }
 
+        if(team == null || team.isFetching) return <Loading />
+
         //sort score submissions to match scheduled matches
         team.scoreSubmissions.sort((a,b) => a.dateId - b.dateId);
 
         //get the teams picture name
         league.teams.forEach((team) => {
+            //check if isPic is null - currently it is always null for some reason
             if(team.id === teamId){
                 teamPicId = team.picName;
             }
         });
-
         //build link to team pic
         let teamPic = 'data.perpetualmotion.org/' + league.picLink + '/' + teamPicId + '.JPG';
 
-        //get all matches of team and sort
+        //get all matches of team and sort by date
         league.scheduledMatches.forEach((match) => {
             if(match.teamOneId === teamId || match.teamTwoId === teamId){
                 teamMatches.push(match);
@@ -83,7 +91,7 @@ class TeamPage extends React.Component {
         teamMatches.forEach((match) => {
             let opponent = '';
             let opponentStats = '';
-            let gameResult = '';
+            let gameResult = ' ';
 
             if(match.teamOneId === teamId){
                 opponent = match.teamTwoId;
@@ -127,7 +135,6 @@ class TeamPage extends React.Component {
             ]);
         });
 
-
         if (league == null || league.isFetching) return <Loading />
 
         return (
@@ -158,9 +165,18 @@ class TeamPage extends React.Component {
                                 }
                             </Table>
                         </CardItem>
+
                     </Card>
 
-
+                    <Card>
+                        <CardItem>
+                        <Button light iconRight style={styles.button} onPress={() => this.props.navigation.push('Schedule', {leagueId: league.id, addTeamList: false})}>
+                            <Text style={styles.buttonText}>For playoffs please see the full schedule</Text>
+                            <Icon style={{marginRight:5}} name="arrow-forward" style={{color: 'black'}}/>
+                        </Button>
+                        </CardItem>
+                    </Card>
+  
                     <Card>
                         <CardItem header>
                             <Text style={styles.title}>{LeagueHelpers.getTeamName(league, teamId)}</Text>
@@ -200,7 +216,9 @@ const styles = StyleSheet.create({
     cardItem: {padding: 10},
     title: {fontSize: 18},
     name: {color: 'red'},
-    teamImage: {width: null, height: 300, flex: 1, resizeMode: 'cover'}
+    teamImage: {width: null, height: 300, flex: 1, resizeMode: 'cover'},
+    button: {width: 350, height: 40},
+    buttonText: {fontSize: 14}
 }); 
 
 

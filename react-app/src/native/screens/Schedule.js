@@ -25,13 +25,18 @@ class Schedule extends React.Component {
     const { leagueId } = this.state
     const { leagues, navigation } = this.props
     const league = leagues[leagueId]
+    const addTeamList = this.props.navigation.getParam('addTeamList');
 
     if (league == null || league.isFetching) return <Loading />
 
     return (
       <Container>
         <Content>
-          <TeamList league={league} navigation={navigation} />
+
+          {
+            addTeamList === true &&(
+            <TeamList league={league} navigation={navigation} />
+          )}
 
           {league.leagueSchedule.map((week, i) => {
             if (Object.keys(week.times).length === 0) {

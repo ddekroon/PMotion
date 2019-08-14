@@ -7,6 +7,7 @@ import MainNavigator from './MainNavigator'
 import LeagueNavigator from './LeagueNavigator'
 import Loading from '../components/common/Loading'
 import TeamPage from '../components/leagues/TeamPage'
+import SchedulePage from '../screens/Schedule'
 
 import NavigationProps from '../constants/navigation'
 import { getLookups } from '../../actions/lookups'
@@ -25,11 +26,14 @@ const RootStack = createStackNavigator(
     },
     Team: {
      screen: TeamPage
+    },
+    Schedule:{
+      screen: SchedulePage,
     }
   },
   {
     initialRouteName: 'Main',
-    mode: 'modal',
+    mode: 'stack',
     defaultNavigationOptions: NavigationProps.navbarProps
   }
 )

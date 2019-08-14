@@ -1,8 +1,6 @@
 /**
  * Get lookups
  */
-
-
 export function fetchTeam(teamId) {
   return (dispatch, getState) => {
     if (shouldFetchTeam(getState(), teamId)) {

@@ -38,7 +38,8 @@ export default class LeaguesList extends React.Component {
           onPress={() => {
             navigation.push('League', {
               leagueId: league.id,
-              title: LeagueHelpers.getFormattedLeagueName(league)
+              title: LeagueHelpers.getFormattedLeagueName(league),
+              addTeamList: true,
             })
           }}
         >

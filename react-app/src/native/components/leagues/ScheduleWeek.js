@@ -44,11 +44,11 @@ export default class ScheduleWeek extends React.Component {
         if (match.playoff1 === '' && match.playoff2 === '') {
           weekTable.data.push([
             match.venue,
-            <Text style={styles.teamName} onPress={() => navigation.navigate('Team', {team: match.team1, league: league})}>
+            <Text style={styles.teamName} onPress={() => navigation.push('Team', {team: match.team1, league: league})}>
               {LeagueHelpers.getTeamName(league, match.team1)}
             </Text>,
             <Text style={styles.center}>vs</Text>,
-            <Text style={styles.teamName} onPress={() => navigation.navigate('Team', {team: match.team2, league: league})}>
+            <Text style={styles.teamName} onPress={() => navigation.push('Team', {team: match.team2, league: league})}>
               {LeagueHelpers.getTeamName(league, match.team2)}
             </Text>
           ])

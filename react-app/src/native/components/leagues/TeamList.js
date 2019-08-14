@@ -20,7 +20,7 @@ export default class TeamList extends React.Component {
 
     const flexArr = [2, 7]
     const teamTable = {
-      header: ['Team #', 'Name'],
+      header: [<Text style={styles.headerText}>Team #</Text>, <Text style={styles.headerText}>Team Page</Text>],
       data: []
     }
 
@@ -71,12 +71,12 @@ export default class TeamList extends React.Component {
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: 'yellow' },
   header: { padding: 2, borderBottomWidth: 2, borderBottomColor: 'black' },
-  headerText: { fontWeight: 'bold' },
+  headerText: { fontWeight: 'bold', textAlign: 'center' },
   text: {},
   row: { padding: 2 },
   table: { flex: 1, marginBottom: 10 },
   tableborderstyle: { borderWidth: 0, borderColor: 'transparent' },
   cardItem: { padding: 10 },
   button: {width: 265, height: 40},
-  name: {fontSize: 14}
+  name: {fontSize: 14},
 })
