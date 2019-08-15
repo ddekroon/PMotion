@@ -12,7 +12,6 @@ import {fetchTeam, resetTeamStore} from '../../../actions/teams';
 /**
  * TODO
  * - check if teamphoto exists
- * - figure out loading team state correctly
  */
 
 
@@ -130,7 +129,7 @@ class TeamPage extends React.Component {
                 LeagueHelpers.getDate(league, match.dateId).description,
                 <Text style={styles.name} onPress={() => this.props.navigation.push('Team',{league: league, team: opponent})}>{LeagueHelpers.getTeamName(league, opponent)} {opponentStats}</Text>,
                 gameResult,
-                lookups.venues[match.fieldId].name,
+                <Text style={styles.name} onPress={() => this.props.navigation.push('Maps', {venue: lookups.venues[match.fieldId].name})}>{lookups.venues[match.fieldId].name}</Text>,
                 LeagueHelpers.convertMatchTime(match.matchTime)
             ]);
         });

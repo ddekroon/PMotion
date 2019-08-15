@@ -8,6 +8,7 @@ import LeagueNavigator from './LeagueNavigator'
 import Loading from '../components/common/Loading'
 import TeamPage from '../components/leagues/TeamPage'
 import SchedulePage from '../screens/Schedule'
+import Maps from '../screens/Maps'
 
 import NavigationProps from '../constants/navigation'
 import { getLookups } from '../../actions/lookups'
@@ -29,6 +30,9 @@ const RootStack = createStackNavigator(
     },
     Schedule:{
       screen: SchedulePage,
+    },
+    Maps: {
+      screen: Maps
     }
   },
   {

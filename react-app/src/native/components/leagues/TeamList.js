@@ -27,9 +27,9 @@ export default class TeamList extends React.Component {
     league.teams.map((team, i) => {
       teamTable.data.push([
         <Text style={{textAlign: 'center'}}>{team.numInLeague}</Text>,
-        <Button iconRight style={styles.button} onPress={() => navigation.navigate('Team', {league: league, team: team.id})}>
+        <Button light iconRight style={styles.button} onPress={() => navigation.navigate('Team', {league: league, team: team.id})}>
             <Text style={styles.name}>{team.name}</Text>
-            <Icon style={{marginRight:5}} name="arrow-forward" style={{color: 'white'}}/>
+            <Icon style={{marginRight:5}} name="arrow-forward" style={{color: 'black'}}/>
         </Button>
       ])
     })
