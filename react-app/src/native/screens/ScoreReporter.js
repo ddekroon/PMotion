@@ -70,7 +70,8 @@ class ScoreReporter extends React.Component {
     if (
       seasons == null ||
       Object.keys(seasons).length === 0 ||
-      scoreSubmission.sportId == ''
+      scoreSubmission.sportId == '' ||
+      seasons[scoreSubmission.sportId] == null
     ) {
       return false
     }
@@ -184,6 +185,51 @@ class ScoreReporter extends React.Component {
     return date != null ? date.description + ' - Week ' + date.weekNumber : ''
   }
 
+  renderLeagueOptions = (scoreSubmission, seasons) => {
+    if (seasons[scoreSubmission.sportId] == null) {
+      return <Picker.Item key={0} label="League" value="" />
+    }
+
+    var isMultipleSeasons =
+      scoreSubmission.sportId != ''
+        ? seasons[scoreSubmission.sportId].length > 1
+        : false
+
+    var leagueOptions = [{ placeholder: true }]
+
+    seasons[scoreSubmission.sportId].forEach(curSeason => {
+      if (curSeason.leagues == null) {
+        return
+      }
+
+      curSeason.leagues.forEach(curLeague => leagueOptions.push(curLeague))
+    })
+
+    var toReturn = leagueOptions.map(curLeague => {
+      if (curLeague.placeholder) {
+        return <Picker.Item key={0} label="League" value="" />
+      }
+
+      var leagueName =
+        curLeague.name +
+        ' - ' +
+        DateTimeHelpers.getDayString(curLeague.dayNumber)
+      if (isMultipleSeasons) {
+        leagueName = leagueName + ' - ' + curSeason.name
+      }
+
+      return (
+        <Picker.Item
+          key={curLeague.id}
+          label={leagueName}
+          value={curLeague.id}
+        />
+      )
+    })
+
+    return toReturn
+  }
+
   render() {
     const {
       loading,
@@ -191,7 +237,8 @@ class ScoreReporter extends React.Component {
       scoreSubmission,
       seasons,
       leagues,
-      resetSubmission
+      resetSubmission,
+      sports
     } = this.props
 
     if (loading) return <Loading />
@@ -199,57 +246,36 @@ class ScoreReporter extends React.Component {
     var leaguePicker
     var isLeagues = this.calculateIsLeaguesToSelect()
     var league = leagues[scoreSubmission.leagueId]
-    var isMultipleSeasons =
-      scoreSubmission.sportId != ''
-        ? seasons[scoreSubmission.sportId].length > 1
-        : false
+    var sportOptions = [{ id: '', name: 'Sport' }].concat(sports)
 
     if (scoreSubmission.sportId != '' && !isLeagues) {
       leaguePicker = (
         <Item>
           <Content padder>
-            <Text style={{ fontStyle: italic }}>No leagues to select</Text>
+            <Text style={{ fontStyle: 'italic' }}>No leagues to select</Text>
           </Content>
         </Item>
       )
     } else if (isLeagues) {
       leaguePicker = (
-        <Item picker error={scoreSubmission.leagueId == ''}>
+        <Item
+          picker
+          error={scoreSubmission.leagueId == ''}
+          style={{ flex: 1, width: '100%' }}
+        >
           <Picker
             note={false}
             mode="dropdown"
-            iosIcon={<Icon name="arrow-down" />}
+            iosIcon={<Icon name="ios-arrow-down" />}
+            iosHeader="Select One"
             style={{ flex: 1 }}
             selectedValue={scoreSubmission.leagueId}
-            placeholder="League"
+            textStyle={{ fontWeight: 'normal' }}
             onValueChange={(val, index) => {
               this.handleChange('leagueId', val)
             }}
           >
-            <Picker.Item key={0} label={'League'} value={''} />
-            {seasons[scoreSubmission.sportId].map(curSeason => {
-              if (curSeason.leagues == null) {
-                return
-              }
-
-              return curSeason.leagues.map(curLeague => {
-                var leagueName =
-                  curLeague.name +
-                  ' - ' +
-                  DateTimeHelpers.getDayString(curLeague.dayNumber)
-                if (isMultipleSeasons) {
-                  leagueName = leagueName + ' - ' + curSeason.name
-                }
-
-                return (
-                  <Picker.Item
-                    key={curLeague.id}
-                    label={leagueName}
-                    value={curLeague.id}
-                  />
-                )
-              })
-            })}
+            {this.renderLeagueOptions(scoreSubmission, seasons)}
           </Picker>
         </Item>
       )
@@ -264,28 +290,30 @@ class ScoreReporter extends React.Component {
                 <Card>
                   <CardItem>
                     <Body>
-                      <Item picker error={scoreSubmission.sportId == ''}>
+                      <Item
+                        picker
+                        error={scoreSubmission.sportId == ''}
+                        style={{ flex: 1, width: '100%' }}
+                      >
                         <Picker
                           note={false}
                           mode="dropdown"
-                          iosIcon={<Icon name="arrow-down" />}
+                          iosIcon={<Icon name="ios-arrow-down" />}
+                          iosHeader="Select One"
                           style={{ flex: 1 }}
+                          textStyle={{ fontWeight: 'normal' }}
                           selectedValue={scoreSubmission.sportId}
-                          placeholder="Sport"
-                          onValueChange={(val, index) => {
+                          onValueChange={(val, index) =>
                             this.handleChange('sportId', val)
-                          }}
+                          }
                         >
-                          <Picker.Item key={0} label="Sport" value="" />
-                          {this.props.sports.map(curSport => {
-                            return (
-                              <Picker.Item
-                                key={curSport.id}
-                                label={curSport.name}
-                                value={curSport.id}
-                              />
-                            )
-                          })}
+                          {sportOptions.map(curSport => (
+                            <Picker.Item
+                              key={curSport.id}
+                              label={curSport.name}
+                              value={curSport.id}
+                            />
+                          ))}
                         </Picker>
                       </Item>
 

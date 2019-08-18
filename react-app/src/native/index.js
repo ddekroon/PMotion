@@ -34,7 +34,12 @@ export default class App extends React.Component {
 
     return (
       <Root>
-        <StatusBar barStyle="default" hidden={false} translucent={true} />
+        <StatusBar
+          barStyle="default"
+          hidden={false}
+          translucent={true}
+          barStyle="light-content"
+        />
         <Provider store={store}>
           <PersistGate loading={<Loading />} persistor={persistor}>
             <StyleProvider style={getTheme(theme)}>

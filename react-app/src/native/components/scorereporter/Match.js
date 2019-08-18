@@ -59,33 +59,41 @@ class ScoreReporterMatch extends React.Component {
 		this.props.updateMatchHandler(matchNum, newMachSubmission);
 	}
 
+	getScorePicker = (gameNum, label, stateScoreKey, selectedValue, maxPoints) => {
+
+		var options = [{placeholder: true }].concat(Array.apply(null, { length: maxPoints }))
+
+		return <Item picker>
+			<Picker
+				note={false}
+				mode="dropdown"
+				iosIcon={<Icon name="ios-arrow-down" />}
+				style={{ flex: 1 }}
+				textStyle={{ fontWeight: 'normal' }}
+				selectedValue={selectedValue}
+				placeholder={label}
+				onValueChange={(val, idx) => {
+					this.handleScoreChange(gameNum, stateScoreKey, val)
+				}}
+			>
+				{
+					options.map((element, index) => {
+						if(element != null)
+						{
+							return <Picker.Item key={0} label={label} value='' />
+						}
+						return <Picker.Item key={index} label={index.toString()} value={index - 1} />
+					})
+				}
+			</Picker>
+		</Item>
+	}
+
 	render() {
 		const { matchNum, league, curTeamId } = this.props;
 		const { oppTeamId, results, spiritScore, comment } = this.props.matchSubmission;
-		const { handleScoreChange } = this;
 
-		function getScorePicker(gameNum, label, stateScoreKey, selectedValue, maxPoints) {
-			return <Item picker>
-				<Picker
-					note={false}
-					mode="dropdown"
-					iosIcon={<Icon name="arrow-down" />}
-					style={{ flex: 1 }}
-					selectedValue={selectedValue}
-					placeholder={label}
-					onValueChange={(val, idx) => {
-						handleScoreChange(gameNum, stateScoreKey, val)
-					}}
-				>
-					<Picker.Item key={0} label={label} value='' />
-					{
-						Array.apply(null, { length: maxPoints }).map((element, index) => {
-							return <Picker.Item key={index + 1} label={index.toString()} value={index} />
-						})
-					}
-				</Picker>
-			</Item>
-		}
+		var resultOptions = [{ placeholder: true }].concat(Object.values(Enums.matchResult))
 
 		return (
 			<Card>
@@ -110,28 +118,33 @@ class ScoreReporterMatch extends React.Component {
 									<Item
 										key={'oppTeamId' + gameIndex}
 										picker
+										style={{flex:1, width:'100%'}}
 										error={!ValidationHelpers.isValidGameResult(results[gameIndex].result)}
 									>
 										<Picker
 											note={false}
 											mode="dropdown"
-											iosIcon={<Icon name="arrow-down" />}
+											iosIcon={<Icon name="ios-arrow-down" />}
 											style={{ flex: 1 }}
+											textStyle={{ fontWeight: 'normal' }}
 											selectedValue={results[gameIndex].result}
 											placeholder={gameString}
 											onValueChange={(val, idx) => {
-												handleScoreChange(gameIndex, 'result', val)
+												this.handleScoreChange(gameIndex, 'result', val)
 											}}
 										>
-											<Picker.Item key={0} label={gameString} value='' />
 											{
-												Object.values(Enums.matchResult).filter((curResult) => {
-													return !(curResult.val == Enums.matchResult.Error.val
+												resultOptions.filter((curResult) => {
+													return curResult.placeholder || !(curResult.val == Enums.matchResult.Error.val
 														|| curResult.val == Enums.matchResult.Tied.val && !league.isTies
 														|| curResult.val == Enums.matchResult.Practice.val && !league.isPracticeGames
 														|| curResult.val == Enums.matchResult.Cancelled.val && !league.isShowCancelOption
 													);
 												}).map((curResult) => {
+													if(curResult.placeholder)
+													{
+														return <Picker.Item key={0} label={gameString} value='' />
+													}
 													return <Picker.Item key={curResult.val} label={curResult.text} value={curResult.val} />
 												})
 											}
@@ -144,10 +157,10 @@ class ScoreReporterMatch extends React.Component {
 									obj.push(
 										<Grid key={'scores' + gameIndex}>
 											<Col>
-												{getScorePicker(gameIndex, 'We Got', 'scoreUs', results[gameIndex].scoreUs, parseInt(league.maxPointsPerGame, 10))}
+												{this.getScorePicker(gameIndex, 'We Got', 'scoreUs', results[gameIndex].scoreUs, parseInt(league.maxPointsPerGame, 10))}
 											</Col>
 											<Col>
-												{getScorePicker(gameIndex, 'They Got', 'scoreThem', results[gameIndex].scoreThem, parseInt(league.maxPointsPerGame, 10))}
+												{this.getScorePicker(gameIndex, 'They Got', 'scoreThem', results[gameIndex].scoreThem, parseInt(league.maxPointsPerGame, 10))}
 											</Col>
 										</Grid>
 									)
@@ -157,12 +170,13 @@ class ScoreReporterMatch extends React.Component {
 							})
 						}
 
-						<Item picker error={spiritScore == ''}>
+						<Item picker error={spiritScore == ''} style={{flex:1, width:'100%'}}>
 							<Picker
 								note={false}
 								mode="dropdown"
-								iosIcon={<Icon name="arrow-down" />}
+								iosIcon={<Icon name="ios-arrow-down" />}
 								style={{ flex: 1 }}
+								textStyle={{ fontWeight: 'normal' }}
 								selectedValue={spiritScore}
 								placeholder="Spirit Score"
 								onValueChange={(val, index) => {

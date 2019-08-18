@@ -7,7 +7,7 @@ export default (variables = variable) => {
   const theme = {
     flex: 1,
     height: Platform.OS === 'ios' ? deviceHeight : deviceHeight - 20,
-    backgroundColor: variables.brandGray
+    backgroundColor: 'transparent'
   }
 
   return theme

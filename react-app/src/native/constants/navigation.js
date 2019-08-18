@@ -11,7 +11,8 @@ export default {
         height: 0
       },
       elevation: 0,
-      height: 52
+      height: 52,
+      borderBottomWidth: 0
     },
     headerTintColor: Colors.inverseTextColor,
     headerTitleStyle: {
@@ -44,12 +45,6 @@ export default {
       )
     }
   },
-  tabProps: {
-    swipeEnabled: false,
-    activeBackgroundColor: 'rgba(255,255,255,0.1)',
-    inactiveBackgroundColor: Colors.brandPrimary,
-    tabBarStyle: { backgroundColor: Colors.brandPrimary }
-  },
 
   icons: {
     style: { color: 'white', height: 30, width: 30 }
@@ -58,9 +53,9 @@ export default {
   tabConfig: {
     tabBarOptions: {
       activeTintColor: 'white',
-      inactiveTintColor: 'gray',
+      inactiveTintColor: Colors.brandGray,
       style: {
-        backgroundColor: '#303030'
+        backgroundColor: Colors.brandPrimary
       },
       tabStyle: {
         paddingTop: 12,
@@ -73,9 +68,9 @@ export default {
         borderBottomWidth: 3
       },
       labelStyle: {
-        fontSize: 10,
+        fontSize: 11,
         fontWeight: '600',
-        letterSpacing: 1,
+        letterSpacing: 0.5,
         margin: 0
       }
     }
@@ -83,9 +78,9 @@ export default {
   bottomTabConfig: {
     tabBarOptions: {
       activeTintColor: 'white',
-      inactiveTintColor: 'gray',
+      inactiveTintColor: Colors.brandGray,
       style: {
-        backgroundColor: '#303030'
+        backgroundColor: Colors.brandPrimary
       },
       tabStyle: {
         paddingTop: 2,

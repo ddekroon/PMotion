@@ -10,6 +10,8 @@ import Loading from '../components/common/Loading'
 import NavigationProps from '../constants/navigation'
 import { getLookups } from '../../actions/lookups'
 
+import CommonColors from '../../../native-base-theme/variables/commonColor'
+
 const RootStack = createStackNavigator(
   {
     Main: {
@@ -25,8 +27,10 @@ const RootStack = createStackNavigator(
   },
   {
     initialRouteName: 'Main',
-    mode: 'modal',
-    defaultNavigationOptions: NavigationProps.navbarProps
+    defaultNavigationOptions: NavigationProps.navbarProps,
+    cardStyle: {
+      backgroundColor: CommonColors.brandGray
+    }
   }
 )
 

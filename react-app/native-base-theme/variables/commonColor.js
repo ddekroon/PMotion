@@ -136,7 +136,7 @@ export default {
 
   // Header
   toolbarBtnColor: platform === 'ios' ? '#007aff' : '#fff',
-  toolbarDefaultBg: platform === 'ios' ? '#F8F8F8' : '#303030',
+  toolbarDefaultBg: this.brandSuccess, //'ios' ? '#F8F8F8' : '#303030',
   toolbarHeight: platform === 'ios' ? (isIphoneX ? 88 : 64) : 56,
   toolbarSearchIconSize: platform === 'ios' ? 20 : 23,
   toolbarInputColor: platform === 'ios' ? '#CECDD2' : '#fff',
