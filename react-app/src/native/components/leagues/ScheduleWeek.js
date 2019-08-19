@@ -8,6 +8,7 @@ import { Table, Row } from 'react-native-table-component'
 import Loading from '../common/Loading'
 
 import LeagueHelpers from '../../../utils/leaguehelpers'
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 export default class ScheduleWeek extends React.Component {
   static propTypes = {
@@ -41,9 +42,18 @@ export default class ScheduleWeek extends React.Component {
         ''
       ])
       scheduleWeek.times[time].matches.forEach(match => {
+        let disableClick = false;
+        if(match.venue === 'Practice Area'){
+          disableClick = true;
+        }
+
         if (match.playoff1 === '' && match.playoff2 === '') {
           weekTable.data.push([
-            match.venue,
+            <TouchableOpacity disabled={disableClick} onPress={() => this.props.navigation.push('Maps', {venue: match.venue})}>
+              <Text style={styles.venue}>
+              {match.venue}
+              </Text>
+            </TouchableOpacity>,
             <Text style={styles.teamName} onPress={() => navigation.push('Team', {team: match.team1, league: league})}>
               {LeagueHelpers.getTeamName(league, match.team1)}
             </Text>,
@@ -114,6 +124,7 @@ const styles = StyleSheet.create({
   cardItem: { padding: 10 },
   teamName: { textAlign: 'center', color: 'red' },
   center: {textAlign: 'center'},
-  title: {textAlign:'center', fontWeight: 'bold'}
+  title: {textAlign:'center', fontWeight: 'bold'},
+  venue: {textDecorationLine: 'underline'}
 
 })

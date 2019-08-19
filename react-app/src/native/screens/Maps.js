@@ -17,7 +17,7 @@ export default class Map extends React.Component {
         },
         directions: {
             displayDirections: false,
-            locationFetched: true,
+            locationFetched: false,
             disablePress: true
         }
     }
@@ -151,15 +151,18 @@ export default class Map extends React.Component {
         <Container>
             <Header style={{height: 50}}>
                 <Body style={styles.header}> 
-                    <Button disabled={this.state.directions.disablePress} style={styles.button} info onPress={() => this.setState({
-                            directions: {
-                                displayDirections: true, 
-                                locationFetched: true,
-                                disablePress: true,
-                            }
-                        })}>
-                        <Text>Get Directions</Text>
-                    </Button>
+                    {
+                        this.state.directions.locationFetched == true &&
+                        <Button disabled={this.state.directions.disablePress} style={styles.button} info onPress={() => this.setState({
+                                directions: {
+                                    displayDirections: true, 
+                                    locationFetched: true,
+                                    disablePress: true,
+                                }
+                            })}>
+                            <Text>Get Directions</Text>
+                        </Button>
+                    }
                     <Text style={styles.adress}>{marker.adress}</Text>
                 </Body>
             </Header>
