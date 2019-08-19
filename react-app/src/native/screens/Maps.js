@@ -1,25 +1,25 @@
 import React from 'react'
 import MapView, {PROVIDER_GOOGLE, Marker} from 'react-native-maps'
 import MapViewDirections from 'react-native-maps-directions'
-import {Text, Container, Header, Body, Button, Right, Left} from 'native-base'
+import {Text, Container, Header, Body, Button} from 'native-base'
 import {StyleSheet} from 'react-native'
 
 const GOOGLE_MAPS_APIKEY = 'AIzaSyCoKB5__7kMmOLTaICW9EtcbBjnuSlbdew';
-var locationFetched = false;
-var displayDirections = false;
 
 export default class Map extends React.Component {
 
   constructor(props) {
     super(props);
     this.state = {
-        latitude: 0,
-        longitude: 0,
+        coordinates: {
+            latitude: 0,
+            longitude: 0,
+        },
+        directions: {
+            displayDirections: false,
+            locationFetched: true,
+        }
     }
-  }
-
-  getDirectionActivation = () => {
-    displayDirections = true;
   }
 
   componentDidMount(){
@@ -27,16 +27,20 @@ export default class Map extends React.Component {
     navigator.geolocation.getCurrentPosition(
         position => {
             this.setState({
-                latitude: position.coords.latitude,
-                longitude: position.coords.longitude,
+                coordinates: {
+                    latitude: position.coords.latitude,
+                    longitude: position.coords.longitude,
+                },
+                directions: {
+                    locationFetched: true,
+                    displayDirections: false,
+                    disablePress: false,
+                }
             });
         },
         error => Alert.alert(error.message),
         { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
     );
-
-    locationFetched = true;
-
   }
 
   render() {
@@ -52,6 +56,7 @@ export default class Map extends React.Component {
         }
     }
 
+    //add all this info to the Api whenever possible
     if(venue.includes("U of Guelph")){
         marker.title = 'U of Guelph Beach Volleyball';
         marker.coordinates.latitude = 43.531402;
@@ -76,27 +81,27 @@ export default class Map extends React.Component {
         marker.title = 'Bailey Park';
         marker.coordinates.latitude = 43.558906;
         marker.coordinates.longitude = -80.274895;
-        marker.adress = '55 Bailey Ave';
+        marker.adress = '55 Bailey Ave, Guelph, ON';
     }else if(venue.includes("Lourdes")){
         marker.title = 'Lourdes High School';
         marker.coordinates.latitude = 43.547769;
         marker.coordinates.longitude = -80.267713;
-        marker.adress = '54 Westmount Rd, Guelph, ON N1H 5H7';
+        marker.adress = '54 Westmount Rd, Guelph, ON';
     }else if(venue.includes("Springdale")){
         marker.title = 'Springdale Park';
         marker.coordinates.latitude = 43.519301;
         marker.coordinates.longitude = -80.274616;
-        marker.adress = '38 Springdale Blvd,Guelph, ON N1H 7S5';
+        marker.adress = '38 Springdale Blvd,Guelph, ON';
     }else if(venue.includes("Wilson Farm")){
         marker.title = 'Wilson Farm';
         marker.coordinates.latitude = 43.579715;
         marker.coordinates.longitude = -80.267982;
-        marker.adress = '80 Simmonds Dr, Guelph, ON N1E 0G4';
+        marker.adress = '80 Simmonds Dr, Guelph, ON';
     }else if(venue.includes("Centennial")){
         marker.title = 'Centennial';
         marker.coordinates.latitude = 43.521831;
         marker.coordinates.longitude = -80.250960;
-        marker.adress = '371 College Ave W, Guelph, ON N1G 1T3';
+        marker.adress = '371 College Ave W, Guelph, ON';
     }else if(venue.includes("Dovercliffe")){
         marker.title = 'Dovercliffe Park';
         marker.coordinates.latitude = 43.512281;
@@ -106,37 +111,37 @@ export default class Map extends React.Component {
         marker.title = 'Grange Park';
         marker.coordinates.latitude = 43.574491;
         marker.coordinates.longitude = -80.224425;
-        marker.adress = '598 Grange Rd, Guelph, ON N1E 7C6';
+        marker.adress = '598 Grange Rd, Guelph, ON';
     }else if(venue.includes("Castlebury")){
         marker.title = 'Castlebury Park';
         marker.coordinates.latitude = 43.529456;
         marker.coordinates.longitude = -80.272227;
-        marker.adress = '50 Castlebury Dr, Guelph, ON N1K 1X2';
+        marker.adress = '50 Castlebury Dr, Guelph, ON';
     }else if(venue.includes("Eastview")){
         marker.title = 'Eastview Community Park';
         marker.coordinates.latitude = 43.581814;
         marker.coordinates.longitude = -80.233555;
-        marker.adress = '186 Eastview Rd, Guelph, ON N1E 6X2';
+        marker.adress = '186 Eastview Rd, Guelph, ON';
     }else if(venue.includes("W.E Hamilton")){
         marker.title = 'W.E Hamilton Park';
         marker.coordinates.latitude = 43.518429;
         marker.coordinates.longitude = -80.242075;
-        marker.adress = '565 Scottsdale Dr, Guelph, ON N1G 2W6';
+        marker.adress = '565 Scottsdale Dr, Guelph, ON';
     }else if(venue.includes("Severn Drive")){
         marker.title = 'Severn Drive Park';
         marker.coordinates.latitude = 43.576045;
         marker.coordinates.longitude = -80.217148;
-        marker.adress = '125 Severn Dr, Guelph, ON N1E 7K6';
+        marker.adress = '125 Severn Dr, Guelph, ON';
     }else if(venue.includes("Bishop Mac")){
         marker.title = 'Bishop Macdonald High School';
         marker.coordinates.latitude = 43.494527;
         marker.coordinates.longitude = -80.195389;
-        marker.adress = '200 Clair Rd W, Guelph, ON N1L 1G1';
+        marker.adress = '200 Clair Rd W, Guelph, ON';
     }else if(venue.includes("Herb Markle")){
         marker.title = 'Herb Markle Park';
         marker.coordinates.latitude = 43.553219;
         marker.coordinates.longitude = -80.256160;
-        marker.adress = '175 Cardigan St, Guelph, ON N1H 3Z8';
+        marker.adress = '175 Cardigan St, Guelph, ON';
     }
 
   
@@ -144,10 +149,17 @@ export default class Map extends React.Component {
 
         <Container>
             <Header style={{height: 50}}>
-                <Body>
-                    <Button primary onPress={() => this.getDirectionActivation()}>
+                <Body style={styles.header}> 
+                    <Button disabled={this.state.directions.disablePress} style={styles.button} info onPress={() => this.setState({
+                            directions: {
+                                displayDirections: true, 
+                                locationFetched: true,
+                                disablePress: true,
+                            }
+                        })}>
                         <Text>Get Directions</Text>
                     </Button>
+                    <Text style={styles.adress}>{marker.adress}</Text>
                 </Body>
             </Header>
             <MapView 
@@ -162,9 +174,9 @@ export default class Map extends React.Component {
                 />
                 
                 {
-                    locationFetched == true &&
+                    this.state.directions.locationFetched == true && this.state.directions.displayDirections == true &&
                     <MapViewDirections
-                    origin={this.state}
+                    origin={this.state.coordinates}
                     destination={marker.coordinates}
                     apikey={GOOGLE_MAPS_APIKEY}
                     strokeWidth={4}
@@ -180,7 +192,9 @@ export default class Map extends React.Component {
 }
 
 const styles = StyleSheet.create({
-   marker: {fontWeight: 'bold', fontSize: 16},
+   adress: {fontWeight: 'bold', fontSize: 14},
+   button: {height: 30},
+   header: {height: 60}
 }); 
 
 
