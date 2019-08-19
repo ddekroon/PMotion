@@ -18,6 +18,7 @@ export default class Map extends React.Component {
         directions: {
             displayDirections: false,
             locationFetched: true,
+            disablePress: true
         }
     }
   }
