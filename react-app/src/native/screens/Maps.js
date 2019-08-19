@@ -1,7 +1,12 @@
 import React from 'react'
 import MapView, {PROVIDER_GOOGLE, Marker} from 'react-native-maps'
-import {Text, Container, Card, CardItem, Header, Body} from 'native-base'
+import MapViewDirections from 'react-native-maps-directions'
+import {Text, Container, Header, Body, Button, Right, Left} from 'native-base'
 import {StyleSheet} from 'react-native'
+
+const GOOGLE_MAPS_APIKEY = 'AIzaSyCoKB5__7kMmOLTaICW9EtcbBjnuSlbdew';
+var locationFetched = false;
+var displayDirections = false;
 
 export default class Map extends React.Component {
 
@@ -13,26 +18,30 @@ export default class Map extends React.Component {
     }
   }
 
+  getDirectionActivation = () => {
+    displayDirections = true;
+  }
+
   componentDidMount(){
-    this.watchId = navigator.geolocation.watchPosition(
-        (position) => {
+    //get current position of mobile device
+    navigator.geolocation.getCurrentPosition(
+        position => {
             this.setState({
                 latitude: position.coords.latitude,
                 longitude: position.coords.longitude,
             });
         },
-        (error) => {
-            this.setState({error: error.message})
-        },
-        {enableHighAccuracy: false, timeout: 1, maximumAge:1, distanceFilter: 1}
-    )
+        error => Alert.alert(error.message),
+        { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
+    );
+
+    locationFetched = true;
+
   }
 
   render() {
 
     const venue = this.props.navigation.getParam('venue');
-
-    console.log("lat:" + this.state.latitude + " " + "long:" + this.state.longitude);
 
     var marker = {
         title: '',
@@ -54,7 +63,7 @@ export default class Map extends React.Component {
         marker.coordinates.longitude = -80.255051;
         marker.adress = 'Woodlawn Road East, Guelph, ON';
     }else if(venue.includes("Margaret") || venue.includes("Margaret Green")){
-        marker.title = 'Margaret Green Park';
+        marker.title = 'Margaret Greene Park';
         marker.coordinates.latitude = 43.530584;
         marker.coordinates.longitude = -80.281722;
         marker.adress = '80 Westwood Rd, Guelph, ON';
@@ -136,7 +145,9 @@ export default class Map extends React.Component {
         <Container>
             <Header style={{height: 50}}>
                 <Body>
-                    <Text style={styles.marker}>{marker.adress}</Text>
+                    <Button primary onPress={() => this.getDirectionActivation()}>
+                        <Text>Get Directions</Text>
+                    </Button>
                 </Body>
             </Header>
             <MapView 
@@ -144,12 +155,23 @@ export default class Map extends React.Component {
             style={{flex: 1}} 
             initialRegion={{latitude: 43.5448,longitude: -80.2482,latitudeDelta: 0.15,longitudeDelta: 0.15}} 
             showsUserLocation={true} 
-            >   
-
+            >
                 <Marker
                 coordinate={marker.coordinates}
                 title={marker.title}
                 />
+                
+                {
+                    locationFetched == true &&
+                    <MapViewDirections
+                    origin={this.state}
+                    destination={marker.coordinates}
+                    apikey={GOOGLE_MAPS_APIKEY}
+                    strokeWidth={4}
+                    strokeColor='#4A89F3'
+                    />
+                }
+
 
             </MapView>
         </Container>
@@ -160,3 +182,6 @@ export default class Map extends React.Component {
 const styles = StyleSheet.create({
    marker: {fontWeight: 'bold', fontSize: 16},
 }); 
+
+
+
