@@ -19,7 +19,7 @@ export default class Map extends React.Component {
             displayDirections: false,
             locationFetched: false,
             disablePress: true
-        }
+        } 
     }
   }
 
@@ -56,6 +56,8 @@ export default class Map extends React.Component {
             longitude: 0,
         }
     }
+
+    //maybe create a dropdown for locations in the future then re-render
 
     //add all this info to the Api whenever possible
     if(venue.includes("U of Guelph")){
@@ -143,6 +145,91 @@ export default class Map extends React.Component {
         marker.coordinates.latitude = 43.553219;
         marker.coordinates.longitude = -80.256160;
         marker.adress = '175 Cardigan St, Guelph, ON';
+    }else if(venue.includes("O’Conner")){
+        marker.title = 'O’Conner Park';
+        marker.coordinates.latitude = 43.570239;
+        marker.coordinates.longitude = -80.219873;
+        marker.adress = "31 O'Connor Ln, Guelph, ON";
+    }else if(venue.includes("Curling Club")){
+        marker.title = 'Guelph Curling Club';
+        marker.coordinates.latitude = 43.567111;
+        marker.coordinates.longitude = -80.279525;
+        marker.adress = '816 Woolwich St, Guelph, ON';
+    }else if(venue.includes("Eramosa River")){
+        marker.title = 'Eramosa River Park';
+        marker.coordinates.latitude = 43.549544;
+        marker.coordinates.longitude = -80.221834;
+        marker.adress = '259 Victoria Rd S, Guelph, ON';
+    }else if(venue.includes("Gateway Public")){
+        marker.title = 'Gateway Public';
+        marker.coordinates.latitude = 43.518041;
+        marker.coordinates.longitude = -80.275046;
+        marker.adress = '33 Gateway Dr, Guelph, ON ';
+    }else if(venue.includes("Orin Reid")){
+        marker.title = 'Orin Reid Park';
+        marker.coordinates.latitude = 43.509834;
+        marker.coordinates.longitude = -80.182303;
+        marker.adress = '120 Goodwin Dr, Guelph ON';
+    }else if(venue.includes("Marden Field House") || venue.includes("Marden")){
+        marker.title = 'Marden Park';
+        marker.coordinates.latitude = 43.534303;
+        marker.coordinates.longitude = -80.224905;
+        marker.adress = '55 E Ring Rd, Guelph, ON ';
+    }else if(venue.includes("J.F. Ross")){
+        marker.title = 'J.F. Ross';
+        marker.coordinates.latitude = 43.561506;
+        marker.coordinates.longitude = -80.246603;
+        marker.adress = '21 Meyer Dr, Guelph, ON ';
+    }else if(venue.includes("Peter Misersky")){
+        marker.title = 'Peter Misersky Park';
+        marker.coordinates.latitude = 43.564755;
+        marker.coordinates.longitude = -80.231550;
+        marker.adress = '122 Hadati Rd, Guelph, ON';
+    }else if(venue.includes("Rickson Park")){
+        marker.title = 'Rickson Park';
+        marker.coordinates.latitude = 43.520656;
+        marker.coordinates.longitude = -80.224823;
+        marker.adress = '25 Rickson Ave, Guelph, ON';
+    }else if(venue.includes("St. Francis")){
+        marker.title = 'St. Francis School';
+        marker.coordinates.latitude = 43.524226;
+        marker.coordinates.longitude = -80.281983;
+        marker.adress = '287 Imperial Rd S, Guelph, ON ';
+    }else if(venue.includes("UofG Football Stadium")){
+        marker.title = 'UofG Football Stadium';
+        marker.coordinates.latitude = 43.534793;
+        marker.coordinates.longitude = -80.227703;
+        marker.adress = '15 Lang Way, Guelph, ON ';
+    }else if(venue.includes("UofG Varsity")){
+        marker.title = 'UofG Varsity Field';
+        marker.coordinates.latitude = 43.536972;
+        marker.coordinates.longitude = -80.224368;
+        marker.adress = '';
+    }else if(venue.includes("UofG Field Hockey")){
+        marker.title = 'UofG Field Hockey Field';
+        marker.coordinates.latitude = 43.532958;
+        marker.coordinates.longitude = -80.220343;
+        marker.adress = '';
+    }else if(venue.includes("Westminster Woods")){
+        marker.title = 'Westminster Woods';
+        marker.coordinates.latitude = 43.508133;
+        marker.coordinates.longitude = -80.189929;
+        marker.adress = '146 Clairfields Dr E, Guelph, ON';
+    }else if(venue.includes("York Road")){
+        marker.title = 'York Road Park';
+        marker.coordinates.latitude = 43.541444;
+        marker.coordinates.longitude = -80.238101;
+        marker.adress = '85 York Rd, Guelph, ON';
+    }else if(venue.includes("Exhibition")){
+        marker.title = 'Exhibition Park';
+        marker.coordinates.latitude = 43.549159;
+        marker.coordinates.longitude = -80.262167;
+        marker.adress = '81 London Rd W, Guelph, ON';
+    }else{
+        marker.title = '';
+        marker.coordinates.latitute = 0;
+        marker.coordinates.longitude = 0;
+        marker.adress = 'No Location Found'
     }
 
   
@@ -152,7 +239,7 @@ export default class Map extends React.Component {
             <Header style={{height: 50}}>
                 <Body style={styles.header}> 
                     {
-                        this.state.directions.locationFetched == true &&
+                        this.state.directions.locationFetched == true && marker.adress != 'No Location Found' &&
                         <Button disabled={this.state.directions.disablePress} style={styles.button} info onPress={() => this.setState({
                                 directions: {
                                     displayDirections: true, 
