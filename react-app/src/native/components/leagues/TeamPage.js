@@ -26,29 +26,6 @@ class TeamPage extends React.Component {
         props.fetchTeam(this.state.teamId);
     }
 
-    checkHideSpirit = () => {
-
-        const league = this.props.navigation.getParam('league');
-        let curDay = new Date().getDay();
-        let timeOfDay = new Date().getHours();
-        let dayHide = parseInt(league.dayNumber);
-        let dayShow = dayHide + parseInt(league.numDaysSpiritHidden);
-    
-        if(dayShow > 7){
-            dayShow = dayShow % 7;
-        }
-    
-        if(curDay == dayHide){
-            return timeOfDay >= league.hideSpiritHour;
-        }
-    
-        if(curDay == dayShow){
-            return !(timeOfDay >= league.showSpiritHour);
-        }
-    
-        return (curDay > dayHide && curDay < dayShow || curDay == 1 && dayHide == 7); 
-    }
-
     render() {
 
         const { lookups, teams } = this.props;
@@ -101,7 +78,7 @@ class TeamPage extends React.Component {
             //get the opponents stats
             league.teams.forEach((team) => {
                 if(team.id === opponent){
-                    if(this.checkHideSpirit() == false){
+                    if(LeagueHelpers.checkHideSpirit(league) == false){
                         opponentStats = '(' + team.wins + '-' + team.losses + '-' + team.ties + ')(' + parseFloat(team.spiritAverage).toFixed(2) + ')';
                     }else{
                         opponentStats = '(' + team.wins + '-' + team.losses + '-' + team.ties + ')';

@@ -102,5 +102,27 @@ export default {
     })
 
     return times
+  },
+
+  checkHideSpirit: (league) => {
+
+    let curDay = new Date().getDay();
+    let timeOfDay = new Date().getHours();
+    let dayHide = parseInt(league.dayNumber);
+    let dayShow = dayHide + parseInt(league.numDaysSpiritHidden);
+
+    if(dayShow > 7){
+        dayShow = dayShow % 7;
+    }
+
+    if(curDay == dayHide){
+        return timeOfDay >= league.hideSpiritHour;
+    }
+
+    if(curDay == dayShow){
+        return !(timeOfDay >= league.showSpiritHour);
+    }
+
+    return (curDay > dayHide && curDay < dayShow || curDay == 1 && dayHide == 7); 
   }
 }

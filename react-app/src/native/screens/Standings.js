@@ -21,32 +21,6 @@ class Standings extends React.Component {
     props.fetchLeague(this.state.leagueId)
   }
 
-  checkHideSpirit = () => {
-    const { leagues } = this.props;
-    const {leagueId} = this.state;
-    const league = leagues[leagueId];
-
-    let curDay = new Date().getDay();
-    let timeOfDay = new Date().getHours();
-    let dayHide = parseInt(league.dayNumber);
-    let dayShow = dayHide + parseInt(league.numDaysSpiritHidden);
-
-    if(dayShow > 7){
-        dayShow = dayShow % 7;
-    }
-
-    if(curDay == dayHide){
-        return timeOfDay >= league.hideSpiritHour;
-    }
-
-    if(curDay == dayShow){
-        return !(timeOfDay >= league.showSpiritHour);
-    }
-
-    return (curDay > dayHide && curDay < dayShow || curDay == 1 && dayHide == 7); 
-  }
-
-
   render() {
     const { leagueId } = this.state
     const { leagues } = this.props
@@ -57,7 +31,7 @@ class Standings extends React.Component {
     let flexArr = []
     let tableInfo = {}
 
-    if(this.checkHideSpirit() == false){
+    if(LeagueHelpers.checkHideSpirit(league) == false){
       flexArr = [1, 8, 1, 1, 1, 1, 2];
       tableInfo = {
           header: ['', 'Team', 'W', 'L', 'T', 'P', 'Spirit'],
