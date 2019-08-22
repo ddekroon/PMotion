@@ -14,7 +14,6 @@ import {fetchTeam, resetTeamStore} from '../../../actions/teams';
  * - check if teamphoto exists
  */
 
-
 class TeamPage extends React.Component {
     state = {
         teamId: -1
