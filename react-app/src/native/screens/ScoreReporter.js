@@ -11,20 +11,18 @@ import {
   Label,
   Input,
   Button,
-  Picker,
-  Icon,
   Card,
   CardItem,
-  Body,
-  Header
+  Body
 } from 'native-base'
 
 import Loading from '../components/common/Loading'
 import Spacer from '../components/common/Spacer'
-import TeamPicker from '../components/common/TeamPicker'
+import Messages from '../components/common/Messages'
+import SportPicker from '../components/scorereporter/SportPicker'
+import LeaguePicker from '../components/scorereporter/LeaguePicker'
+import TeamPicker from '../components/scorereporter/TeamPicker'
 import ScoreReporterMatch from '../components/scorereporter/Match'
-import DateTimeHelpers from '../../utils/datetimehelpers'
-import ValidationHelpers from '../../utils/validationhelpers'
 import ToastHelpers from '../../utils/toasthelpers'
 import LeagueHelpers from '../../utils/leaguehelpers'
 
@@ -59,6 +57,10 @@ class ScoreReporter extends React.Component {
   constructor(props) {
     super(props)
 
+    this.state = {
+      validate: false
+    }
+
     this.handleChange = this.handleChange.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
     this.updateMatchHandler = this.updateMatchHandler.bind(this)
@@ -87,11 +89,20 @@ class ScoreReporter extends React.Component {
   }
 
   handleSubmit = () => {
+    var scoreReporter = this
     const { onFormSubmit } = this.props
-    onFormSubmit().catch(e => {
-      ToastHelpers.showToast(Enums.messageTypes.Error, e.message)
-      console.log(`Error: ${e.message}`)
-    })
+
+    scoreReporter.setState({ validate: true })
+
+    onFormSubmit()
+      .then(() => {
+        console.log('Form submitted')
+        scoreReporter.setState({ validate: false })
+      })
+      .catch(e => {
+        ToastHelpers.showToast(Enums.messageTypes.Error, e.message)
+        console.log(`Error: ${e.message}`)
+      })
   }
 
   handleChange = (name, val) => {
@@ -185,51 +196,6 @@ class ScoreReporter extends React.Component {
     return date != null ? date.description + ' - Week ' + date.weekNumber : ''
   }
 
-  renderLeagueOptions = (scoreSubmission, seasons) => {
-    if (seasons[scoreSubmission.sportId] == null) {
-      return <Picker.Item key={0} label="League" value="" />
-    }
-
-    var isMultipleSeasons =
-      scoreSubmission.sportId != ''
-        ? seasons[scoreSubmission.sportId].length > 1
-        : false
-
-    var leagueOptions = [{ placeholder: true }]
-
-    seasons[scoreSubmission.sportId].forEach(curSeason => {
-      if (curSeason.leagues == null) {
-        return
-      }
-
-      curSeason.leagues.forEach(curLeague => leagueOptions.push(curLeague))
-    })
-
-    var toReturn = leagueOptions.map(curLeague => {
-      if (curLeague.placeholder) {
-        return <Picker.Item key={0} label="League" value="" />
-      }
-
-      var leagueName =
-        curLeague.name +
-        ' - ' +
-        DateTimeHelpers.getDayString(curLeague.dayNumber)
-      if (isMultipleSeasons) {
-        leagueName = leagueName + ' - ' + curSeason.name
-      }
-
-      return (
-        <Picker.Item
-          key={curLeague.id}
-          label={leagueName}
-          value={curLeague.id}
-        />
-      )
-    })
-
-    return toReturn
-  }
-
   render() {
     const {
       loading,
@@ -240,6 +206,8 @@ class ScoreReporter extends React.Component {
       resetSubmission,
       sports
     } = this.props
+
+    const { validate } = this.state
 
     if (loading) return <Loading />
 
@@ -258,31 +226,17 @@ class ScoreReporter extends React.Component {
       )
     } else if (isLeagues) {
       leaguePicker = (
-        <Item
-          picker
-          error={scoreSubmission.leagueId == ''}
-          style={{ flex: 1, width: '100%' }}
-        >
-          <Picker
-            note={false}
-            mode="dropdown"
-            iosIcon={<Icon name="ios-arrow-down" />}
-            iosHeader="Select One"
-            style={{ flex: 1 }}
-            selectedValue={scoreSubmission.leagueId}
-            textStyle={{ fontWeight: 'normal' }}
-            onValueChange={(val, index) => {
-              this.handleChange('leagueId', val)
-            }}
-          >
-            {this.renderLeagueOptions(scoreSubmission, seasons)}
-          </Picker>
-        </Item>
+        <LeaguePicker
+          scoreSubmission={scoreSubmission}
+          seasons={seasons}
+          onLeagueUpdated={val => this.handleChange('leagueId', val)}
+          validate={validate}
+        />
       )
     }
 
     return (
-      <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding" enabled>
+      <KeyboardAvoidingView style={{ flex: 1 }} behavior='padding' enabled>
         <Container>
           <Content padder>
             {!scoreSubmission.submitted && (
@@ -290,32 +244,14 @@ class ScoreReporter extends React.Component {
                 <Card>
                   <CardItem>
                     <Body>
-                      <Item
-                        picker
-                        error={scoreSubmission.sportId == ''}
-                        style={{ flex: 1, width: '100%' }}
-                      >
-                        <Picker
-                          note={false}
-                          mode="dropdown"
-                          iosIcon={<Icon name="ios-arrow-down" />}
-                          iosHeader="Select One"
-                          style={{ flex: 1 }}
-                          textStyle={{ fontWeight: 'normal' }}
-                          selectedValue={scoreSubmission.sportId}
-                          onValueChange={(val, index) =>
-                            this.handleChange('sportId', val)
-                          }
-                        >
-                          {sportOptions.map(curSport => (
-                            <Picker.Item
-                              key={curSport.id}
-                              label={curSport.name}
-                              value={curSport.id}
-                            />
-                          ))}
-                        </Picker>
-                      </Item>
+                      <SportPicker
+                        sportId={scoreSubmission.sportId}
+                        sportOptions={sportOptions}
+                        validate={validate}
+                        onSportUpdated={val =>
+                          this.handleChange('sportId', val)
+                        }
+                      />
 
                       {leaguePicker}
 
@@ -324,6 +260,7 @@ class ScoreReporter extends React.Component {
                           loading={league.isFetching}
                           teams={league.teams != null ? league.teams : []}
                           curTeamId={scoreSubmission.teamId}
+                          validate={validate}
                           onTeamUpdated={val =>
                             this.handleChange('teamId', val)
                           }
@@ -354,6 +291,7 @@ class ScoreReporter extends React.Component {
                         matchNum={index}
                         updateMatchHandler={this.updateMatchHandler}
                         matchSubmission={scoreSubmission.matches[index]}
+                        validate={validate}
                       />
                     )
                   })}
@@ -375,18 +313,21 @@ class ScoreReporter extends React.Component {
                           value={scoreSubmission.name}
                         />
                       </Item>
-                      <Item
-                        inlineLabel
-                        underline
-                        error={
-                          scoreSubmission.teamId != '' &&
-                          !ValidationHelpers.isValidEmail(scoreSubmission.email)
-                        }
-                      >
+                      {validate &&
+                      scoreSubmission.teamId != '' &&
+                      scoreSubmission.name.length < 3 ? (
+                        <Item style={{ marginTop: 10, borderBottomWidth: 0 }}>
+                          <Messages
+                            type='error'
+                            message='Name is a required field'
+                          />
+                        </Item>
+                      ) : null}
+                      <Item inlineLabel underline>
                         <Label>Email</Label>
                         <Input
-                          autoCapitalize="none"
-                          keyboardType="email-address"
+                          autoCapitalize='none'
+                          keyboardType='email-address'
                           onChangeText={v => this.handleChange('email', v)}
                           value={scoreSubmission.email}
                         />
@@ -447,7 +388,4 @@ const mapDispatchToProps = {
   resetSubmission: resetSubmission
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(ScoreReporter)
+export default connect(mapStateToProps, mapDispatchToProps)(ScoreReporter)
