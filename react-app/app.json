@@ -23,7 +23,8 @@
       "bundleIdentifier": "org.perpetualmotion.pmotionapp"
     },
     "android": {
-      "package": "org.perpetualmotion.pmotionapp"
+      "package": "org.perpetualmotion.pmotionapp",
+      "versionCode": 3
     }
   }
 }
