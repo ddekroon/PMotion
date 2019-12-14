@@ -1,16 +1,7 @@
 import React from 'react'
-import {
-  StatusBar,
-  Platform,
-  View,
-  Dimensions,
-  Image,
-  ImageBackground,
-  StyleSheet,
-  Content
-} from 'react-native'
+import { StatusBar } from 'react-native'
 import PropTypes from 'prop-types'
-import { Provider } from 'react-redux'
+import { Provider, connect } from 'react-redux'
 import { PersistGate } from 'redux-persist/es/integration/react'
 
 import { Root, StyleProvider } from 'native-base'
@@ -20,13 +11,20 @@ import theme from '../../native-base-theme/variables/commonColor'
 import RootNavigator from './navigators/RootNavigator'
 import Loading from './components/common/Loading'
 
+import { resetSubmission } from '../actions/scoreSubmission'
+
 // Hide StatusBar on Android as it overlaps tabs
 //if (Platform.OS === 'android') StatusBar.setHidden(false);
 
-export default class App extends React.Component {
+class App extends React.Component {
   static propTypes = {
     store: PropTypes.shape({}).isRequired,
-    persistor: PropTypes.shape({}).isRequired
+    persistor: PropTypes.shape({}).isRequired,
+    resetSubmission: PropTypes.func.isRequired
+  }
+
+  componentDidMount() {
+    this.props.resetSubmission()
   }
 
   render() {
@@ -35,10 +33,10 @@ export default class App extends React.Component {
     return (
       <Root>
         <StatusBar
-          barStyle="default"
+          barStyle='default'
           hidden={false}
           translucent={true}
-          barStyle="light-content"
+          barStyle='light-content'
         />
         <Provider store={store}>
           <PersistGate loading={<Loading />} persistor={persistor}>
@@ -51,3 +49,11 @@ export default class App extends React.Component {
     )
   }
 }
+
+const mapStateToProps = state => ({})
+
+const mapDispatchToProps = {
+  resetSubmission: resetSubmission
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(App)
