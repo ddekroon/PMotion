@@ -36,7 +36,7 @@ export default class LeaguesList extends React.Component {
         <ListItem
           key={league.id}
           onPress={() => {
-            navigation.push('League', {
+            navigation.navigation.push('League', {
               leagueId: league.id,
               title: LeagueHelpers.getFormattedLeagueName(league),
               addTeamList: true,

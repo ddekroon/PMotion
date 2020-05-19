@@ -4,8 +4,10 @@
     "description": "App to help team captains submit scores, check schedules, and register teams for Perpetual Motion",
     "slug": "perpetual-motion-app",
     "privacy": "public",
-    "sdkVersion": "33.0.0",
-    "platforms": ["ios", "android"],
+    "platforms": [
+      "ios",
+      "android"
+    ],
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./src/images/app-icon.png",
@@ -17,7 +19,9 @@
     "updates": {
       "fallbackToCacheTimeout": 0
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": true
     }

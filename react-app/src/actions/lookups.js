@@ -1,21 +1,21 @@
 /**
  * Get lookups
  */
-export function getLookups(dispatch) {
-  return function(dispatch) {
+export function getLookups (dispatch) {
+  return function (dispatch) {
     console.log('Get lookups from api and store them in the store')
     dispatch({
       type: 'REQUEST_LOOKUPS'
     })
 
-    return fetch('http://data.perpetualmotion.org/web-app/api/lookups')
+    return fetch('https://data.perpetualmotion.org/web-app/api/lookups')
       .then(response => response.json())
       .then(responseJson => {
-        let scoreReporterSeasons = parseSeasonsBySport(
+        const scoreReporterSeasons = parseSeasonsBySport(
           responseJson.sports,
           responseJson.seasonsAvailableScoreReporter
         )
-        let registrationSeasons = parseSeasonsBySport(
+        const registrationSeasons = parseSeasonsBySport(
           responseJson.sports,
           responseJson.seasonsAvailableRegistration
         )
@@ -37,7 +37,7 @@ export function getLookups(dispatch) {
 /**
  * Reset lookups
  */
-export function resetLookups(dispatch) {
+export function resetLookups (dispatch) {
   return dispatch({
     type: 'RESET_LOOKUPS',
     data: []
@@ -56,10 +56,10 @@ const parseSeasonsBySport = (sports, seasons) => {
 
   var localSeasonsWithLeaguesBySport = {}
 
-  sports.forEach(function(curSport, index) {
+  sports.forEach(function (curSport, index) {
     var seasonsForSport = []
 
-    seasons.forEach(function(curSeason, index) {
+    seasons.forEach(function (curSeason, index) {
       var season = {
         name: curSeason.name,
         year: curSeason.year,
@@ -67,7 +67,7 @@ const parseSeasonsBySport = (sports, seasons) => {
       }
 
       if (curSeason.leagues == null) {
-        //season doesn't have any leagues yet
+        // season doesn't have any leagues yet
         seasonsForSport.push(season)
         return true
       }
@@ -75,7 +75,7 @@ const parseSeasonsBySport = (sports, seasons) => {
       var curSeasonAndSportLeagues = curSeason.leagues.filter(
         league => league.sportId == curSport.id
       )
-      curSeasonAndSportLeagues.sort(function compare(a, b) {
+      curSeasonAndSportLeagues.sort(function compare (a, b) {
         if (a.dayNumber < b.dayNumber) {
           return -1
         }

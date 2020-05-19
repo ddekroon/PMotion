@@ -1,7 +1,7 @@
 import React from 'react'
 import MapView, {PROVIDER_GOOGLE, Marker} from 'react-native-maps'
 import MapViewDirections from 'react-native-maps-directions'
-import {Text, Container, Header, Body, Button, Card, Icon, Picker, Item, CardItem} from 'native-base'
+import {Text, Container, Header, Body, Button } from 'native-base'
 import {StyleSheet} from 'react-native'
 import MapHelpers from '../../utils/maphelpers'
 
@@ -12,7 +12,7 @@ export default class Map extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-        venue: this.props.navigation.getParam('venue'),
+        venue: this.props.route?.params?.venue ?? -1,
         coordinates: {
             latitude: 0,
             longitude: 0,
