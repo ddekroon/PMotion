@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Container, Content, Text, Card, CardItem } from 'native-base'
 import { Table, Row } from 'react-native-table-component'
-import { StyleSheet } from 'react-native'
+import { StyleSheet, ActionSheetIOS } from 'react-native'
 import { connect } from 'react-redux'
 
 import Loading from '../components/common/Loading'
@@ -17,7 +17,7 @@ class Standings extends React.Component {
 
   constructor(props) {
     super(props)
-    this.state.leagueId = this.props.navigation.getParam('leagueId')
+    this.state.leagueId = this.props.route?.params?.leagueId ?? -1
     props.fetchLeague(this.state.leagueId)
   }
 

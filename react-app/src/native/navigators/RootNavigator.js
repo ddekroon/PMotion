@@ -1,7 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import { createAppContainer, createStackNavigator } from 'react-navigation'
+import { NavigationContainer } from '@react-navigation/native'
+import { createStackNavigator } from '@react-navigation/stack'
 
 import MainNavigator from './MainNavigator'
 import LeagueNavigator from './LeagueNavigator'
@@ -13,36 +14,7 @@ import Maps from '../screens/Maps'
 import NavigationProps from '../constants/navigation'
 import { getLookups } from '../../actions/lookups'
 
-const RootStack = createStackNavigator(
-  {
-    Main: {
-      screen: MainNavigator,
-      navigationOptions: NavigationProps.mainTitle
-    },
-    League: {
-      screen: LeagueNavigator,
-      navigationOptions: ({ navigation }) => ({
-        title: navigation.getParam('title', 'League')
-      })
-    },
-    Team: {
-     screen: TeamPage
-    },
-    Schedule:{
-      screen: SchedulePage,
-    },
-    Maps: {
-      screen: Maps
-    }
-  },
-  {
-    initialRouteName: 'Main',
-    mode: 'stack',
-    defaultNavigationOptions: NavigationProps.navbarProps
-  }
-)
-
-const RootContainer = createAppContainer(RootStack)
+const Stack = createStackNavigator();
 
 class RootNavigator extends React.Component {
   static propTypes = {
@@ -60,7 +32,44 @@ class RootNavigator extends React.Component {
 
     if (isFetching) return <Loading />
 
-    return <RootContainer />
+    return (
+    <NavigationContainer>
+      <Stack.Navigator
+        initialRouteName="Main"
+        mode="stack"
+        defaultNavigationOptions={NavigationProps.navbarProps}
+      >
+        <Stack.Screen 
+          name="Main"
+          component={MainNavigator} 
+          navigationOptions={NavigationProps.mainTitle}
+          />
+
+        <Stack.Screen 
+          name="League"
+          component={LeagueNavigator} 
+          options={({ route }) => ({
+            title: route.params.title ?? 'League'
+          })}
+          />
+
+        <Stack.Screen 
+          name="Team"
+          component={TeamPage}
+        />
+
+        <Stack.Screen 
+          name="Schedule"
+          component={SchedulePage}
+        />
+
+        <Stack.Screen 
+          name="Maps"
+          component={Maps}
+        />
+      </Stack.Navigator>
+    </NavigationContainer>
+    )
   }
 }
 

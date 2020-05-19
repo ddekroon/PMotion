@@ -3,7 +3,7 @@ import LeagueHelpers from '../utils/leaguehelpers'
 /**
  * Get lookups
  */
-export function fetchLeague(leagueId) {
+export function fetchLeague (leagueId) {
   return (dispatch, getState) => {
     if (shouldFetchLeague(getState(), leagueId)) {
       console.log('Get league from api and store it in the leagues store')
@@ -13,7 +13,7 @@ export function fetchLeague(leagueId) {
       })
 
       return fetch(
-        'http://data.perpetualmotion.org/web-app/api/leagues/' + leagueId
+        'https://data.perpetualmotion.org/web-app/api/leagues/' + leagueId
       )
         .then(
           response => response.json(),
@@ -42,7 +42,7 @@ export function fetchLeague(leagueId) {
   }
 }
 
-function shouldFetchLeague(state, leagueId) {
+function shouldFetchLeague (state, leagueId) {
   if (!LeagueHelpers.isValidLeagueId(leagueId)) {
     return false
   }

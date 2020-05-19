@@ -21,14 +21,14 @@ class TeamPage extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state.teamId = this.props.navigation.getParam('team');
+        this.state.teamId = this.props.route?.params?.team ?? -1;
         props.fetchTeam(this.state.teamId);
     }
 
     render() {
 
         const { lookups, teams } = this.props;
-        const league = this.props.navigation.getParam('league');
+        const league = this.props.route?.params?.league ?? -1;
         const teamId = this.state.teamId;
         const team = teams[teamId];
         let teamPicId = '';

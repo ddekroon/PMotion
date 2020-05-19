@@ -17,15 +17,15 @@ class Schedule extends React.Component {
 
   constructor(props) {
     super(props)
-    this.state.leagueId = this.props.navigation.getParam('leagueId')
+    this.state.leagueId = this.props.route?.params?.leagueId ?? -1
     props.fetchLeague(this.state.leagueId)
   }
 
   render() {
     const { leagueId } = this.state
-    const { leagues, navigation } = this.props
+    const { leagues, route, navigation } = this.props
     const league = leagues[leagueId]
-    const addTeamList = this.props.navigation.getParam('addTeamList');
+    const addTeamList = route.params?.addTeamList ?? false;
 
     if (league == null || league.isFetching) return <Loading />
 

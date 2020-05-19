@@ -1,6 +1,5 @@
 import React from 'react'
 import { StyleSheet } from 'react-native'
-import { withNavigation } from 'react-navigation'
 import PropTypes from 'prop-types'
 
 import { Text, Card, CardItem } from 'native-base'
