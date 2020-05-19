@@ -1,4 +1,4 @@
-import Enums from '../constants/enums'
+import Enums from '../constants/enums';
 
 export default {
   submitting: false,
@@ -45,4 +45,4 @@ export default {
   ],
   name: '',
   email: ''
-}
+};

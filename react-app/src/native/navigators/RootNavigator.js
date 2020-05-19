@@ -6,11 +6,12 @@ import { createAppContainer, createStackNavigator } from 'react-navigation'
 import MainNavigator from './MainNavigator'
 import LeagueNavigator from './LeagueNavigator'
 import Loading from '../components/common/Loading'
+import TeamPage from '../components/leagues/TeamPage'
+import SchedulePage from '../screens/Schedule'
+import Maps from '../screens/Maps'
 
 import NavigationProps from '../constants/navigation'
 import { getLookups } from '../../actions/lookups'
-
-import CommonColors from '../../../native-base-theme/variables/commonColor'
 
 const RootStack = createStackNavigator(
   {
@@ -23,14 +24,21 @@ const RootStack = createStackNavigator(
       navigationOptions: ({ navigation }) => ({
         title: navigation.getParam('title', 'League')
       })
+    },
+    Team: {
+     screen: TeamPage
+    },
+    Schedule:{
+      screen: SchedulePage,
+    },
+    Maps: {
+      screen: Maps
     }
   },
   {
     initialRouteName: 'Main',
-    defaultNavigationOptions: NavigationProps.navbarProps,
-    cardStyle: {
-      backgroundColor: CommonColors.brandGray
-    }
+    mode: 'stack',
+    defaultNavigationOptions: NavigationProps.navbarProps
   }
 )
 

@@ -1,5 +1,6 @@
 import React from 'react'
 import { StyleSheet } from 'react-native'
+import { withNavigation } from 'react-navigation'
 import PropTypes from 'prop-types'
 
 import { Text, Card, CardItem } from 'native-base'
@@ -7,7 +8,7 @@ import { Table, Row } from 'react-native-table-component'
 import Loading from '../common/Loading'
 
 import LeagueHelpers from '../../../utils/leaguehelpers'
-import commonColor from '../../../../native-base-theme/variables/commonColor'
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 export default class ScheduleWeek extends React.Component {
   static propTypes = {
@@ -20,44 +21,57 @@ export default class ScheduleWeek extends React.Component {
   }
 
   render() {
-    const { scheduleWeek, league } = this.props
+    const { scheduleWeek, league, navigation } = this.props
 
-    const flexArr = [5, 5, 1, 5]
-    const timeTemplate = {
-      header: ['', 'Dark', '', 'White'],
+    const flexArr = [6, 5, 2, 5]
+    const weekTable = {
+      header: [
+        <Text style={styles.headerText}>Field</Text>,
+        <Text style={styles.title}>Dark</Text>,
+        '',
+        <Text style={styles.title}>White</Text>
+      ],
       data: []
     }
 
-    const timeTables = Object.keys(scheduleWeek.times).map(
-      (time, timeIndex) => {
-        var timeTable = JSON.parse(JSON.stringify(timeTemplate))
-        timeTable.header[0] = (
-          <Text style={styles.time} key={timeIndex}>
-            {LeagueHelpers.convertMatchTime(scheduleWeek.times[time].time)}
-          </Text>
-        )
+    Object.keys(scheduleWeek.times).forEach(time => {
+      weekTable.data.push([
+        LeagueHelpers.convertMatchTime(scheduleWeek.times[time].time),
+        '',
+        '',
+        ''
+      ])
+      scheduleWeek.times[time].matches.forEach(match => {
+        let disableClick = false;
+        if(match.venue === 'Practice Area'){
+          disableClick = true;
+        }
 
-        timeTable.data = scheduleWeek.times[time].matches.map(match => {
-          if (match.playoff1 === '' && match.playoff2 === '') {
-            return [
-              <Text style={styles.venue}>{match.venue}</Text>,
-              LeagueHelpers.getTeamName(league, match.team1),
-              'vs',
-              LeagueHelpers.getTeamName(league, match.team2)
-            ]
-          } else {
-            return [
-              <Text style={styles.venue}>{match.venue}</Text>,
-              match.playoff1,
-              'vs',
-              match.playoff2
-            ]
-          }
-        })
-
-        return timeTable
-      }
-    )
+        if (match.playoff1 === '' && match.playoff2 === '') {
+          weekTable.data.push([
+            <TouchableOpacity disabled={disableClick} onPress={() => this.props.navigation.push('Maps', {venue: match.venue})}>
+              <Text style={styles.venue}>
+              {match.venue}
+              </Text>
+            </TouchableOpacity>,
+            <Text style={styles.teamName} onPress={() => navigation.push('Team', {team: match.team1, league: league})}>
+              {LeagueHelpers.getTeamName(league, match.team1)}
+            </Text>,
+            <Text style={styles.center}>vs</Text>,
+            <Text style={styles.teamName} onPress={() => navigation.push('Team', {team: match.team2, league: league})}>
+              {LeagueHelpers.getTeamName(league, match.team2)}
+            </Text>
+          ])
+        } else {
+          weekTable.data.push([
+            match.venue,
+            <Text style={styles.center}>{match.playoff1}</Text>,
+            <Text style={styles.center}>vs</Text>,
+            <Text style={styles.center}>{match.playoff2}</Text>
+          ])
+        }
+      })
+    })
 
     if (league == null || league.isFetching) return <Loading />
 
@@ -71,38 +85,27 @@ export default class ScheduleWeek extends React.Component {
         </CardItem>
         <CardItem cardBody style={styles.cardItem}>
           <Table style={styles.table} borderStyle={styles.tableborderstyle}>
-            {timeTables.map((timeTable, timeTableIndex) => {
-              var objectArray = []
-
-              objectArray.push(
-                <Row
-                  key={timeTableIndex}
-                  flexArr={flexArr}
-                  data={timeTable.header}
-                  style={styles.header}
-                  textStyle={styles.headerText}
-                />
-              )
-
-              objectArray.push(
-                timeTable.data.map((rowData, matchIndex) => (
-                  <Row
-                    key={timeTableIndex + '-' + matchIndex}
-                    flexArr={flexArr}
-                    data={rowData}
-                    style={[
-                      styles.row,
-                      matchIndex % 2 == 1 && {
-                        backgroundColor: commonColor.brandLightGray
-                      }
-                    ]}
-                    textStyle={styles.text}
-                  />
-                ))
-              )
-
-              return objectArray
-            })}
+            <Row
+              flexArr={flexArr}
+              data={weekTable.header}
+              style={styles.header}
+              textStyle={styles.headerText}
+            />
+            {weekTable.data.map((rowData, index) => (
+              <Row
+                key={index}
+                flexArr={flexArr}
+                data={rowData}
+                style={[
+                  styles.row,
+                  index % 2 == 1 && { backgroundColor: '#e6e6e6' }
+                ]}
+                textStyle={[
+                  styles.text,
+                  rowData[2] === '' && { fontWeight: 'bold', fontSize: 20 }
+                ]}
+              />
+            ))}
           </Table>
         </CardItem>
       </Card>
@@ -111,31 +114,17 @@ export default class ScheduleWeek extends React.Component {
 }
 
 const styles = StyleSheet.create({
-  header: {
-    padding: 2,
-    alignItems: 'baseline',
-    borderBottomWidth: 2,
-    borderBottomColor: commonColor.brandDarkGray
-  },
-  headerText: { fontWeight: 'bold', textAlign: 'center' },
-  time: {
-    fontWeight: 'bold',
-    fontSize: commonColor.fontSizeBase * 1.1,
-    textAlign: 'left'
-  },
-  row: { padding: 2, alignItems: 'center' },
-  text: {
-    fontSize: commonColor.fontSizeBase * 0.8,
-    textAlign: 'center'
-  },
-  venue: {
-    fontSize: commonColor.fontSizeBase * 0.8,
-    textAlign: 'left',
-    marginTop: -1,
-    borderRightWidth: 1,
-    borderRightColor: commonColor.brandDarkGray
-  },
+  container: { flex: 1, backgroundColor: 'yellow' },
+  header: { padding: 2, borderBottomWidth: 2, borderBottomColor: 'black' },
+  headerText: { fontWeight: 'bold' },
+  text: {},
+  row: { padding: 2 },
   table: { flex: 1, marginBottom: 10 },
   tableborderstyle: { borderWidth: 0, borderColor: 'transparent' },
-  cardItem: { flex: 1, padding: commonColor.contentPadding }
+  cardItem: { padding: 10 },
+  teamName: { textAlign: 'center', color: 'red' },
+  center: {textAlign: 'center'},
+  title: {textAlign:'center', fontWeight: 'bold'},
+  venue: {textDecorationLine: 'underline'}
+
 })

@@ -3,6 +3,7 @@
  */
 export function getLookups(dispatch) {
   return function(dispatch) {
+    console.log('Get lookups from api and store them in the store')
     dispatch({
       type: 'REQUEST_LOOKUPS'
     })

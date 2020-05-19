@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import { Container, Content, Text, Card, CardItem } from 'native-base'
 import { Table, Row } from 'react-native-table-component'
 import { StyleSheet } from 'react-native'
@@ -6,9 +7,8 @@ import { connect } from 'react-redux'
 
 import Loading from '../components/common/Loading'
 
-import CommonColors from '../../../native-base-theme/variables/commonColor'
-import { fetchLeague } from '../../actions/leagues'
 import LeagueHelpers from '../../utils/leaguehelpers'
+import { fetchLeague } from '../../actions/leagues'
 
 class Standings extends React.Component {
   state = {
@@ -28,47 +28,42 @@ class Standings extends React.Component {
 
     if (league == null || league.isFetching) return <Loading />
 
-    const flexArr = [1, 8, 1, 1, 1, 1, 2]
-    const tableInfo = {
-      header: [
-        '',
-        <Text style={[styles.headerText, styles.textLeft, styles.cellText]}>
-          Team
-        </Text>,
-        'W',
-        'L',
-        'T',
-        'P'
-      ],
-      data: []
-    }
+    let flexArr = []
+    let tableInfo = {}
 
-    if (!LeagueHelpers.checkHideSpirit(league)) {
-      tableInfo.header.push('Spirit')
-    }
-
-    league.standings.forEach((team, i) => {
-      var points = parseInt(team.ties) + parseInt(team.wins) * 2
-      var teamRow = [
-        i + 1,
-        <Text style={[styles.textLeft, styles.cellText]}>{team.name}</Text>,
-        team.wins,
-        team.losses,
-        team.ties,
-        points
-      ]
-
-      if (!LeagueHelpers.checkHideSpirit(league)) {
-        teamRow.push(parseFloat(team.spiritAverage).toFixed(2))
+    if(LeagueHelpers.checkHideSpirit(league) == false){
+      flexArr = [1, 8, 1, 1, 1, 1, 2];
+      tableInfo = {
+          header: ['', 'Team', 'W', 'L', 'T', 'P', 'Spirit'],
+          data: [],
       }
 
-      tableInfo.data.push(teamRow)
-    })
+      league.standings.forEach((team, i) => {
+          var points = parseInt(team.ties) + (parseInt(team.wins) * 2);
+          tableInfo.data.push([(i + 1), <Text style={styles.link} onPress={() => this.props.navigation.navigate('Team',{league: league, team: team.id})}>{team.name}</Text>, team.wins, team.losses, team.ties, points, parseFloat(team.spiritAverage).toFixed(2)]);
+      });
+    }else{
+
+      flexArr = [1, 8, 1, 1, 1, 1];
+      tableInfo = {
+          header: ['', 'Team', 'W', 'L', 'T', 'P'],
+          data: [],
+      }
+
+      league.standings.forEach((team, i) => {
+          var points = parseInt(team.ties) + (parseInt(team.wins) * 2);
+          tableInfo.data.push([(i+1), <Text style={styles.link} onPress={() => this.props.navigation.navigate('Team',{league: league, team: team.id})}>{team.name}</Text>, team.wins, team.losses, team.ties, points]);
+      });
+
+    }
 
     return (
       <Container>
         <Content padder>
           <Card>
+            <CardItem header>
+              <Text>{LeagueHelpers.getFormattedLeagueName(league)}</Text>
+            </CardItem>
             <CardItem cardBody style={styles.cardItem}>
               <Table style={styles.table} borderStyle={styles.tableborderstyle}>
                 <Row
@@ -84,9 +79,7 @@ class Standings extends React.Component {
                     data={rowData}
                     style={[
                       styles.row,
-                      index % 2 == 1 && {
-                        backgroundColor: CommonColors.brandLightGray
-                      }
+                      index % 2 == 1 && { backgroundColor: '#e6e6e6' }
                     ]}
                     textStyle={styles.text}
                   />
@@ -115,23 +108,14 @@ export default connect(
 )(Standings)
 
 const styles = StyleSheet.create({
-  header: {
-    padding: 2,
-    borderBottomWidth: 2,
-    borderBottomColor: CommonColors.brandDarkGray
-  },
-  headerText: { fontWeight: 'bold', textAlign: 'center' },
-  text: { textAlign: 'center' },
+  container: { flex: 1, backgroundColor: 'yellow' },
+  header: { padding: 2, borderBottomWidth: 2, borderBottomColor: 'black' },
+  headerText: { fontWeight: 'bold' },
+  text: {},
+  statText: { textAlign: 'center' },
   row: { padding: 2 },
-  table: {
-    flex: 1,
-    marginBottom: CommonColors.contentPadding,
-    marginTop: CommonColors.contentPadding
-  },
+  table: { flex: 1, marginBottom: 10 },
   tableborderstyle: { borderWidth: 0, borderColor: 'transparent' },
   cardItem: { padding: 10 },
-  cellText: {
-    marginTop: -1
-  },
-  textLeft: { textAlign: 'left' }
+  link: {color: 'red'}
 })

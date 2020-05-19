@@ -1,8 +1,10 @@
 import React from 'react'
 import { Container, Content } from 'native-base'
 import { connect } from 'react-redux'
+import PropTypes from 'prop-types'
 
 import Loading from '../components/common/Loading'
+import TeamList from '../components/leagues/TeamList'
 import ScheduleWeek from '../components/leagues/ScheduleWeek'
 import ByeWeek from '../components/leagues/ByeWeek'
 
@@ -21,14 +23,21 @@ class Schedule extends React.Component {
 
   render() {
     const { leagueId } = this.state
-    const { leagues } = this.props
+    const { leagues, navigation } = this.props
     const league = leagues[leagueId]
+    const addTeamList = this.props.navigation.getParam('addTeamList');
 
     if (league == null || league.isFetching) return <Loading />
 
     return (
       <Container>
-        <Content padder>
+        <Content>
+
+          {
+            addTeamList === true &&(
+            <TeamList league={league} navigation={navigation} />
+          )}
+
           {league.leagueSchedule.map((week, i) => {
             if (Object.keys(week.times).length === 0) {
               return <ByeWeek key={week.date.id} scheduleWeek={week} />
@@ -38,6 +47,7 @@ class Schedule extends React.Component {
                   key={week.date.id}
                   league={league}
                   scheduleWeek={week}
+                  navigation={navigation}
                 />
               )
             }

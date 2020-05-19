@@ -1,13 +1,13 @@
 {
   "expo": {
     "name": "Perpetual Motion Sports and Entertainment",
-    "description": "App to help players submit scores, check schedules, and register teams for Perpetual Motion",
+    "description": "App to help team captains submit scores, check schedules, and register teams for Perpetual Motion",
     "slug": "perpetual-motion-app",
     "privacy": "public",
     "sdkVersion": "33.0.0",
     "platforms": ["ios", "android"],
-    "version": "1.0.3",
-    "orientation": "default",
+    "version": "1.0.0",
+    "orientation": "portrait",
     "icon": "./src/images/app-icon.png",
     "splash": {
       "image": "./src/images/launch.png",
@@ -19,12 +19,7 @@
     },
     "assetBundlePatterns": ["**/*"],
     "ios": {
-      "supportsTablet": true,
-      "bundleIdentifier": "org.perpetualmotion.pmotionapp"
-    },
-    "android": {
-      "package": "org.perpetualmotion.pmotionapp",
-      "versionCode": 3
+      "supportsTablet": true
     }
   }
 }
