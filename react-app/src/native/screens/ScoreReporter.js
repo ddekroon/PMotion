@@ -220,6 +220,7 @@ class ScoreReporter extends React.Component {
           >
             <Picker.Item key={0} label={'League'} value={''} />
 
+            {/* always at spot 0 here*/}
             {seasons[scoreSubmission.sportId][0].leagues.map(curLeague => {
               var leagueName =
                 curLeague.name +
