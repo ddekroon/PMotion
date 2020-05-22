@@ -198,7 +198,7 @@ class ScoreReporter extends React.Component {
       leaguePicker = (
         <Item>
           <Content padder>
-            <Text style={{ fontStyle: italic }}>No leagues to select</Text>
+            <Text style={{ fontStyle: 'italic' }}>No leagues to select</Text>
           </Content>
         </Item>
       )
@@ -206,40 +206,38 @@ class ScoreReporter extends React.Component {
       leaguePicker = (
         <Item picker error={scoreSubmission.leagueId == ''}>
           <Picker
+            placeholder="League"
             note={false}
             mode="dropdown"
             iosIcon={<Icon name="arrow-down" />}
+            
             style={{ flex: 1 }}
             selectedValue={scoreSubmission.leagueId}
             placeholder="League"
             onValueChange={(val, index) => {
               this.handleChange('leagueId', val)
-            }}
+            }} 
           >
             <Picker.Item key={0} label={'League'} value={''} />
-            {seasons[scoreSubmission.sportId].map(curSeason => {
-              if (curSeason.leagues == null) {
-                return
+
+            {seasons[scoreSubmission.sportId][0].leagues.map(curLeague => {
+              var leagueName =
+                curLeague.name +
+                ' - ' +
+                DateTimeHelpers.getDayString(curLeague.dayNumber)
+              if (isMultipleSeasons) {
+                leagueName = leagueName + ' - ' + curSeason.name
               }
-
-              return curSeason.leagues.map(curLeague => {
-                var leagueName =
-                  curLeague.name +
-                  ' - ' +
-                  DateTimeHelpers.getDayString(curLeague.dayNumber)
-                if (isMultipleSeasons) {
-                  leagueName = leagueName + ' - ' + curSeason.name
-                }
-
-                return (
-                  <Picker.Item
-                    key={curLeague.id}
-                    label={leagueName}
-                    value={curLeague.id}
-                  />
-                )
-              })
+              
+              return (
+                <Picker.Item
+                  key={curLeague.id}
+                  label={leagueName}
+                  value={curLeague.id}
+                />
+              )
             })}
+
           </Picker>
         </Item>
       )
