@@ -10,6 +10,7 @@ import Loading from '../components/common/Loading'
 import LeagueHelpers from '../../utils/leaguehelpers'
 import { fetchLeague } from '../../actions/leagues'
 
+
 class Standings extends React.Component {
   state = {
     leagueId: -1
@@ -19,6 +20,8 @@ class Standings extends React.Component {
     super(props)
     this.state.leagueId = this.props.route?.params?.leagueId ?? -1
     props.fetchLeague(this.state.leagueId)
+    //console.log("this.state = " + JSON.stringify(this.state))
+
   }
 
   render() {

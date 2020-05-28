@@ -33,17 +33,19 @@ import {
   resetMatches,
   resetSubmission
 } from '../../actions/scoreSubmission'
-import { fetchLeague } from '../../actions/leagues'
+import { fetchLeague } from '../../actions/leagues' //Gets the leagues from the web.
+
 
 class ScoreReporter extends React.Component {
+
   static propTypes = {
     error: PropTypes.string,
     isLoading: PropTypes.bool.isRequired,
-    getLeague: PropTypes.func.isRequired,
+    getLeague: PropTypes.func.isRequired, //getLeague is a function!
     onFormSubmit: PropTypes.func.isRequired,
     leagues: PropTypes.object.isRequired,
     sports: PropTypes.array.isRequired,
-    seasons: PropTypes.object.isRequired,
+    seasons: PropTypes.object.isRequired, //seasons is a object (JSON string)
     scoreSubmission: PropTypes.object.isRequired,
     updateScoreSubmission: PropTypes.func.isRequired,
     resetMatches: PropTypes.func.isRequired,
@@ -175,6 +177,7 @@ class ScoreReporter extends React.Component {
   }
 
   render() {
+
     const {
       loading,
       error,
@@ -221,24 +224,7 @@ class ScoreReporter extends React.Component {
             <Picker.Item key={0} label={'League'} value={''} />
 
             {/* always at spot 0 here*/}
-            {seasons[scoreSubmission.sportId][0].leagues.map(curLeague => {
-              var leagueName =
-                curLeague.name +
-                ' - ' +
-                DateTimeHelpers.getDayString(curLeague.dayNumber)
-              if (isMultipleSeasons) {
-                leagueName = leagueName + ' - ' + curSeason.name
-              }
-              
-              return (
-                <Picker.Item
-                  key={curLeague.id}
-                  label={leagueName}
-                  value={curLeague.id}
-                />
-              )
-            })}
-
+            
           </Picker>
         </Item>
       )
