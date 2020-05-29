@@ -55,7 +55,6 @@ class PickLeagues extends React.Component {
           mode="dropdown"
           iosIcon={<Icon name="arrow-down" />}
           selectedValue = {this.state.league}
-          placeholder="League"
           onValueChange={this.updateLeague}
           style = {{
             borderWidth: 1,

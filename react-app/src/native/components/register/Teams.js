@@ -32,8 +32,8 @@ export default class PickTeam extends React.Component {
             return (
               <Picker.Item
                 key={curSport.id}
-                  label={curSport.name}
-                  value={curSport.id}
+                label={curSport.name}
+                value={curSport.id}
               />
             )   
           })}

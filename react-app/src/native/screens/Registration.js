@@ -36,25 +36,9 @@ export default class Registration extends React.Component {
         <Text>Prefered League</Text>   
         {/*<PickLeagues sport={4}/>*/}
 
-        <Text>Second Choice</Text>   
-
+        <Text>------------------</Text>   
         <AddingTeamMembers/>
-        <AddingTeamMembers/>
-        <AddingTeamMembers/>
-        <AddingTeamMembers/>
-        <AddingTeamMembers/>
-        <AddingTeamMembers/>
-        <AddingTeamMembers/>
-        <AddingTeamMembers/>
-        <AddingTeamMembers/>
-        <AddingTeamMembers/>
-        <AddingTeamMembers/>
-        <AddingTeamMembers/>
-        <AddingTeamMembers/>
-        <AddingTeamMembers/>
-        <AddingTeamMembers/>
-
-        <Text>Third Choice</Text>   
+        <Text>------------------</Text>   
         
       </View>
     )
