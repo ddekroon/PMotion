@@ -37,7 +37,6 @@ class PickLeagues extends React.Component {
   render() {
     if (seasons == null) {
       console.log("Error loading seasons")
-      return <Loading/>
     }
 
     const {
@@ -45,7 +44,6 @@ class PickLeagues extends React.Component {
       seasons
     } = this.props
 
-    if (loading) return <Loading />
 
     return (
       <View>

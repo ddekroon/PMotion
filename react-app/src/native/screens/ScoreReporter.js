@@ -189,7 +189,7 @@ class ScoreReporter extends React.Component {
 
     if (loading) return <Loading />
 
-    var leaguePicker
+      var leaguePicker
     var isLeagues = this.calculateIsLeaguesToSelect()
     var league = leagues[scoreSubmission.leagueId]
     var isMultipleSeasons =
@@ -216,7 +216,6 @@ class ScoreReporter extends React.Component {
             
             style={{ flex: 1 }}
             selectedValue={scoreSubmission.leagueId}
-            placeholder="League"
             onValueChange={(val, index) => {
               this.handleChange('leagueId', val)
             }} 

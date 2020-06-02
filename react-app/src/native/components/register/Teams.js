@@ -16,9 +16,7 @@ export default class PickTeam extends React.Component {
           iosIcon={<Icon name="arrow-down" />}
           style = {{
             borderWidth: 1,
-            alignItems: 'center',
-            flexDirection:'row',
-            justifyContent: 'center',
+            
             //Should be centered :/
           }}
 

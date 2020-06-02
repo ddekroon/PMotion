@@ -17,68 +17,73 @@ export default class AddingTeamMembers extends React.Component {
     render() {    
         return (
             <View style={styles.main}>
-                <View style={styles.floatingBox}>
-                    <Text style={styles.text}>First Name           </Text>
-                    <TextInput  //First name
-                        placeholder={'First Name'}
-                        multiline={false}
-                        autoCapitalize={'words'}
-                        autoComplete={'name'}
-                        onChangeText={ (FN) => this.setState({ FN })}
-                        value={this.state.FN}
-                        style={styles.FillIn}
-                    />
-                </View>
+                <View style={styles.padding}>
+                    <View style={styles.floatingBox}>
+                        <Text style={styles.text}>First Name           </Text>
+                        <TextInput  //First name
+                            placeholder={'First Name'}
+                            multiline={false}
+                            autoCapitalize={'words'}
+                            autoComplete={'name'}
+                            onChangeText={ (FN) => this.setState({ FN })}
+                            value={this.state.FN}
+                            style={styles.FillIn}
+                        />
+                    </View>
 
-                <View style={styles.floatingBox}>
-                    <Text style={styles.text}>Last Name            </Text>
-                    <TextInput  //Last name
-                        placeholder={'Last Name'}
-                        autoCapitalize={'words'}
-                        multiline={false}
-                        onChangeText={ (LN) => this.setState({ LN })}
-                        value={this.state.LN}
-                        style={styles.FillIn}
-                    />
-                </View>
-                
-                <View style={styles.floatingBox}>
-                    <Text style={styles.text}>Email                     </Text>
-                    <TextInput  //Email
-                        placeholder={'Email'}
-                        keyboardType={'email-address'}
-                        multiline={false}
-                        autoComplete={'email'}
-                        onChangeText={ (email) => this.setState({ email })}
-                        value={this.state.email}
-                        style={styles.FillIn}
-                    />
-                </View>
-                
-                <View style={styles.floatingBox}>
-                    <Text style={styles.text}>Phone Number     </Text>
-                    <TextInput  //Phone Number
-                        placeholder={'Phone Number'}
-                        keyboardType={'number-pad'}
-                        multiline={false}
-                        onChangeText={ (phone) => this.setState({ phone })}
-                        value={this.state.phone}
-                        style={styles.FillIn}
-                    />
-                </View>
+                    <View style={styles.floatingBox}>
+                        <Text style={styles.text}>Last Name            </Text>
+                        <TextInput  //Last name
+                            placeholder={'Last Name'}
+                            autoCapitalize={'words'}
+                            multiline={false}
+                            onChangeText={ (LN) => this.setState({ LN })}
+                            value={this.state.LN}
+                            style={styles.FillIn}
+                        />
+                    </View>
+                    
+                    <View style={styles.floatingBox}>
+                        <Text style={styles.text}>Email                     </Text>
+                        <TextInput  //Email
+                            placeholder={'Email'}
+                            keyboardType={'email-address'}
+                            multiline={false}
+                            autoComplete={'email'}
+                            onChangeText={ (email) => this.setState({ email })}
+                            value={this.state.email}
+                            style={styles.FillIn}
+                        />
+                    </View>
+                    
+                    <View style={styles.floatingBox}>
+                        <Text style={styles.text}>Phone Number     </Text>
+                        <TextInput  //Phone Number
+                            placeholder={'Phone Number'}
+                            keyboardType={'number-pad'}
+                            multiline={false}
+                            onChangeText={ (phone) => this.setState({ phone })}
+                            value={this.state.phone}
+                            style={styles.FillIn}
+                        />
+                    </View>
 
-                <View style={styles.floatingBox}>
-                    <Text style={styles.text}>Sex             </Text>
-                    {dropDownSex()}
-                </View>
+                    <View style={styles.floatingBox, {paddingBottom:5, flexDirection:'row', justifyContent: 'center',}}>
+                        <View>
+                            <Text style={styles.text}>Sex             </Text>
+                            {dropDownSex()}
+                        </View>
 
-                <View style={styles.floatingBox}>
-                    <Text style={styles.text}>Skill             </Text>
-                    {dropDownSkill()}
+                        <View>
+                            <Text style={styles.text}>Skill             </Text>
+                            {dropDownSkill()}
+                        </View>
+                    </View>
+                    
+                    
                 </View>
-                
-                
             </View>
+            
         )
     }
     
@@ -118,7 +123,7 @@ export function dropDownSkill(){
                 iosIcon={<Icon name="arrow-down" />}
                 style={ styles.picker}
                 selectedValue = {chosen}
-                onValueChange={ (skill) => {chosen = skill, console.log("chosen = " + chosen)} }
+                onValueChange={ (skill) => {chosen = skill} }
             >
                 <Picker.Item label="Skill" value='' key={0} />
                 <Picker.Item label="5 (High)" value="5" key={5} />
@@ -149,19 +154,25 @@ const styles = StyleSheet.create({
     },
 
     floatingBox: {
-        backgroundColor:'white',
         flexDirection:'row',
-        height:40
+        height:40,
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center'
     },
 
     picker: {
         borderWidth:1,
-        //color:'red',
         justifyContent: 'flex-start',
         width:100
     },
 
     main: {
-        
+        backgroundColor:'white',
+        borderRadius:15,
+    },
+
+    padding: {
+        padding:10
     }
 })
