@@ -4,6 +4,17 @@ import PickTeam from '../components/register/Teams'
 import PickLeagues from '../components/register/ChooseLeague'
 import AddingTeamMembers from '../components/register/TeamMember'
 import Comment from '../components/register/Comment'
+import RegisterTeam from '../components/register/RegisterTeam'
+
+//This is the base template im using for team register
+const user = {
+  user:'imckechn',
+  FN:'Ian',
+  LN:'McKechnie',
+  email:'imckechn@uoguelph.ca',
+  phone:'9056915041',
+  sex:'Male',
+}
 
 const Ultimate = {
   "name":"Ultimate",
@@ -36,9 +47,13 @@ export default class Registration extends React.Component {
 
   render() {
     const { modalVisible } = this.state
+    /** IF THE USER IS LOGGED IN OR NOT, THIS IS TEMP */
 
-    {this.props.sports = {}}
+    {this.props.isLoggedIn = {}}
     return (
+      <RegisterTeam isLoggedIn={true} user={user}/>
+
+      /*
       <ScrollView>
         <Text style={styles.header}>Registration</Text>
         <View style={{alignItems:'center', justifyContent:'center'}}>
@@ -123,6 +138,7 @@ export default class Registration extends React.Component {
         <Comment/>
 
       </ScrollView>
+      */
     )
   }
 }

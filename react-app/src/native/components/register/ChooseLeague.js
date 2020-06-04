@@ -16,13 +16,14 @@ import {
 
 class PickLeagues extends React.Component { 
   
+  //I make a server call to get all the leagues. In the props (sport=(1-4)) the correct leagues for that sport appear
   static propTypes = {
     seasons: PropTypes.object.isRequired,
     isLoading: PropTypes.bool.isRequired,
     leagues: PropTypes.object.isRequired,
     scoreSubmission: PropTypes.object.isRequired,
     updateScoreSubmission: PropTypes.func.isRequired,
-    getLeague: PropTypes.func.isRequired //getLeague is a function!
+    getLeague: PropTypes.func.isRequired 
   }
   
   constructor(props) {

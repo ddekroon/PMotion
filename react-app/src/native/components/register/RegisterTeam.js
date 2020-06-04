@@ -1,20 +1,46 @@
-import React, { useState} from 'react'
-import {View, Picker, Text, Icon} from 'native-base'
-import { TextInput } from 'react-native-gesture-handler'
+import React from 'react'
+import {View, Text, Button, Picker, Icon  } from 'native-base'
 import {StyleSheet} from 'react-native'
+import { TextInput } from 'react-native-gesture-handler'
 
-export default class AddingTeamMembers extends React.Component {
+export default class Dash extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {
-            FN:"",
-            LN:"",
-            email:"",
-            phone:"",
+        if (this.props.user) {
+            this.state = {
+                FN:this.props.user.FN,
+                LN:this.props.user.LN,
+                email:this.props.user.email,
+                phone:this.props.user.phone,
+            }
+        } else {
+            this.state = {
+                FN:'',
+                LN:'',
+                email:'',
+                phone:'',
+            }
         }
+        
     }
     
-    render() {    
+    /** This is the object im expecting to be passed,
+     * 
+     * const user = {
+        user:'imckechn',
+        FN:'Ian',
+        LN:'McKechnie',
+        email:'imckechn@uoguelph.ca',
+        phone:'9056915041',
+        sex:'Male',
+        }
+
+        This is also another item(s) im expecting to be passed to the class:
+        -RegsterNewTeam: [true/false]
+        -isLoggedIn:[true/false]
+     */
+    
+    render() {
         return (
             <View style={styles.main}>
                 <View style={styles.padding}>
@@ -23,10 +49,10 @@ export default class AddingTeamMembers extends React.Component {
                         <TextInput  //First name
                             placeholder={'First Name'}
                             multiline={false}
+                            value={this.state.FN}
                             autoCapitalize={'words'}
                             autoComplete={'name'}
                             onChangeText={ (FN) => this.setState({ FN })}
-                            value={this.state.FN}
                             style={styles.FillIn}
                         />
                     </View>
@@ -36,9 +62,9 @@ export default class AddingTeamMembers extends React.Component {
                         <TextInput  //Last name
                             placeholder={'Last Name'}
                             autoCapitalize={'words'}
+                            value={this.state.LN}
                             multiline={false}
                             onChangeText={ (LN) => this.setState({ LN })}
-                            value={this.state.LN}
                             style={styles.FillIn}
                         />
                     </View>
@@ -48,10 +74,10 @@ export default class AddingTeamMembers extends React.Component {
                         <TextInput  //Email
                             placeholder={'Email'}
                             keyboardType={'email-address'}
+                            value={this.state.email}
                             multiline={false}
                             autoComplete={'email'}
                             onChangeText={ (email) => this.setState({ email })}
-                            value={this.state.email}
                             style={styles.FillIn}
                         />
                     </View>
@@ -60,34 +86,32 @@ export default class AddingTeamMembers extends React.Component {
                         <Text style={styles.text}>Phone Number     </Text>
                         <TextInput  //Phone Number
                             placeholder={'Phone Number'}
+                            value={this.state.phone}
                             keyboardType={'number-pad'}
                             multiline={false}
                             onChangeText={ (phone) => this.setState({ phone })}
-                            value={this.state.phone}
                             style={styles.FillIn}
                         />
                     </View>
-
-                    <View style={styles.floatingBox, {paddingBottom:5, flexDirection:'row', justifyContent: 'center',}}>
-                        <View>
-                            <Text style={styles.text}>Sex</Text>
-                            {dropDownSex()}
-                        </View>
-
-                        <View>
-                            <Text style={styles.text}>Skill</Text>
-                            {dropDownSex()}
-                        </View>
+                    
+                    <View style={styles.floatingBox, {paddingBottom:5, flexDirection:'column', justifyContent: 'center', alignItems:'center'}}>
+                        <Text style={styles.text}>Sex</Text>
+                        { this.props.user ? dropDownSex(this.props.user.sex) : dropDownSex(null) }
                     </View>
                 </View>
-            </View>
+            </View> 
         )
     }
 }
 
 //The picker function for chosing the sex of the player
-export function dropDownSex(){
+export function dropDownSex(sex){
+    console.log("Sex is" + JSON.stringify(sex))
     let chosen = ''
+    if (sex) {
+        chosen = sex
+    } 
+    
      
     return (
         <View>
@@ -99,34 +123,8 @@ export function dropDownSex(){
                 selectedValue = {chosen}
                 onValueChange={ (sex) => {chosen = sex, console.log("chosen = " + chosen)} }
             >
-                <Picker.Item label="Sex" value='' key={0} />
                 <Picker.Item label="Male" value="Male" key={1} />
                 <Picker.Item label="Female" value="Female" key={2} />
-            </Picker>
-        </View>
-    );
-}
-
-//The picker function for chosing the skill level of the player
-export function dropDownSkill(){
-    let chosen = ''
-     
-    return (
-        <View>
-            <Picker
-                placeholder='Skill Level'
-                mode="dropdown"
-                iosIcon={<Icon name="arrow-down" />}
-                style={ styles.picker}
-                selectedValue = {chosen}
-                onValueChange={ (skill) => {chosen = skill} }
-            >
-                <Picker.Item label="Skill" value='' key={0} />
-                <Picker.Item label="5 (High)" value="5" key={5} />
-                <Picker.Item label="4" value="4" key={4} />
-                <Picker.Item label="3" value="3" key={3} />
-                <Picker.Item label="2" value="2" key={2} />
-                <Picker.Item label="1 (Low)" value="1" key={1} />
             </Picker>
         </View>
     );
@@ -143,7 +141,6 @@ const styles = StyleSheet.create({
 
     text: {
         fontSize:20,
-        flex:1,
         flexDirection:'column',
         alignItems:'center',
     },
