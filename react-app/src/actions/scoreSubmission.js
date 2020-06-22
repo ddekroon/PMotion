@@ -27,6 +27,7 @@ export function resetSubmission () {
  * Submit score to the server
  */
 export function submitScoreSubmission () {
+  console.log("actions/scoreSubmission")
   return (dispatch, getState) => new Promise(async (resolve, reject) => {
     // Validation checks
     if (!isScoreSubmissionValid(getState().scoreSubmission, getState().leagues)) {

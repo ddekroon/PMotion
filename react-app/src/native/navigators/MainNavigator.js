@@ -1,6 +1,6 @@
 import React from 'react'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
-import { Image } from 'react-native'
+import { Image, Text } from 'react-native'
 
 import SportsNavigator from './SportsNavigator'
 import ScoreReporter from '../screens/ScoreReporter'
@@ -13,6 +13,7 @@ const Tab = createBottomTabNavigator()
 
 function MainNavigator () {
   return (
+    
     <Tab.Navigator {...NavigationProps.bottomTabConfig}>
       <Tab.Screen name="Leagues" component={SportsNavigator}
         navigationOptions={{

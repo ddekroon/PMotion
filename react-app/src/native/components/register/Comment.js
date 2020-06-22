@@ -1,10 +1,16 @@
+//The thing that actually makes all the calling 
+
 import React, {useState} from 'react'
+import PropTypes from 'prop-types'
 import {TextInput, Text, View, Button, Alert} from 'react-native'
 import {Picker, Icon} from 'native-base'
 import {StyleSheet} from 'react-native'
+import { ScrollView } from 'react-native-gesture-handler';
 
+import { connect } from 'react-redux'
 
-export default class Comment extends React.Component {
+class Comment extends React.Component {
+
     constructor(props) {
         super(props);
         this.state = {
@@ -15,8 +21,9 @@ export default class Comment extends React.Component {
     }
 
     render() {
+
         return (
-            <View>
+            <ScrollView>
                 <Text style={styles.header}>Comments</Text>
                 <Text style = {styles.subHeading}>Comments, notes, player needs, etc. (limit 1000 characters).</Text>
                 <View style= {styles.line}/>
@@ -121,12 +128,13 @@ export default class Comment extends React.Component {
                 <Text style={styles.header}>Register</Text>
                 <Text style = {styles.subHeading}>Submit your group registration to the convenor.</Text>
                 <View style= {styles.line}/>
-                <View style={styles.addPadding}>
-                    <Button title={'Register'}/>
-                    <Button title={'Print form?'}/>
+                <View style={styles.addPadding, {justifyContent:'space-between', flexDirection:'row'}}>
+                    <Button title={'Register'} color='red' style={{border:1}} onPre/>
+                    <Button title={'Print form?'} color='red' onPress={() => {
+                        console.log("JERE")
+                    }}/>
                 </View>
-
-            </View>
+            </ScrollView>
         )
     }
 }
@@ -154,7 +162,6 @@ const styles = StyleSheet.create({
     },
 
     setHorizontal: {
-        flex:1,
         flexDirection:'row',
         
     },  
@@ -175,10 +182,31 @@ const styles = StyleSheet.create({
     },
 
     commentView: {
-        flexDirection:'row',
         height:40,
-        flex: 1,
         justifyContent: 'center',
         alignItems: 'center'
     },
+
+    botButton: {
+        backgroundColor:'red',
+        borderRadius:10,
+    }
 })
+
+const mapStateToProps = (state) => {  
+    return {
+        TeamSubmisson: state.TeamSubmisson
+    }
+}
+
+
+const connectToStore = connect(
+    mapStateToProps
+)
+  // and that function returns the connected, wrapper component:
+  const ConnectedComponent = connectToStore(Comment)
+  
+  // We normally do both in one step, like this:
+export default connect(
+    null,
+  )(Comment)

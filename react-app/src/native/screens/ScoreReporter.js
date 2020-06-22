@@ -38,7 +38,7 @@ import { fetchLeague } from '../../actions/leagues' //Gets the leagues from the 
 
 class ScoreReporter extends React.Component {
 
-  static propTypes = {
+  static propTypes = {  //These are actions
     error: PropTypes.string,
     isLoading: PropTypes.bool.isRequired,
     getLeague: PropTypes.func.isRequired, //getLeague is a function!
@@ -177,8 +177,9 @@ class ScoreReporter extends React.Component {
   }
 
   render() {
+    console.log("ScoreReporter.js")
 
-    const {
+    const { //Data
       loading,
       error,
       scoreSubmission,
@@ -189,7 +190,7 @@ class ScoreReporter extends React.Component {
 
     if (loading) return <Loading />
 
-      var leaguePicker
+    var leaguePicker
     var isLeagues = this.calculateIsLeaguesToSelect()
     var league = leagues[scoreSubmission.leagueId]
     var isMultipleSeasons =

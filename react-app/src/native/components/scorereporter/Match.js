@@ -60,6 +60,7 @@ class ScoreReporterMatch extends React.Component {
 	}
 
 	render() {
+		console.log("Match.js")
 		const { matchNum, league, curTeamId } = this.props;
 		const { oppTeamId, results, spiritScore, comment } = this.props.matchSubmission;
 		const { handleScoreChange } = this;

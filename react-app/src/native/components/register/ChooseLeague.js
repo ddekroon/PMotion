@@ -6,13 +6,7 @@ import { fetchLeague } from '../../../actions/leagues' //Gets the leagues from t
 import DateTimeHelpers from '../../../utils/datetimehelpers'
 import Loading from '../../components/common/Loading'
 
-
-import {
-  submitScoreSubmission,
-  updateScoreSubmission,
-  resetMatches,
-  resetSubmission
-} from '../../../actions/scoreSubmission'
+//Expects a sport id given as 1-4 under the 'sport' props tag
 
 class PickLeagues extends React.Component { 
   
@@ -21,8 +15,6 @@ class PickLeagues extends React.Component {
     seasons: PropTypes.object.isRequired,
     isLoading: PropTypes.bool.isRequired,
     leagues: PropTypes.object.isRequired,
-    scoreSubmission: PropTypes.object.isRequired,
-    updateScoreSubmission: PropTypes.func.isRequired,
     getLeague: PropTypes.func.isRequired 
   }
   
@@ -89,12 +81,9 @@ const mapStateToProps = state => ({
   seasons: state.lookups.scoreReporterSeasons || [],
   leagues: state.leagues || {},
   isLoading: state.status.loading || false,
-  scoreSubmission: state.scoreSubmission || {}
 })
 
 const mapDispatchToProps = { 
-  updateScoreSubmission: updateScoreSubmission,
-  onFormSubmit: submitScoreSubmission,
   getLeague: fetchLeague
 }
 

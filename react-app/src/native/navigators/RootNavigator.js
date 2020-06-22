@@ -13,6 +13,9 @@ import Maps from '../screens/Maps'
 
 import NavigationProps from '../constants/navigation'
 import { getLookups } from '../../actions/lookups'
+import IndividualRegister from '../screens/IndividualRegister'
+import GroupRegister from '../screens/GroupRegister'
+import Login from '../screens/todo/Login'
 
 const Stack = createStackNavigator();
 
@@ -67,6 +70,22 @@ class RootNavigator extends React.Component {
           name="Maps"
           component={Maps}
         />
+
+        <Stack.Screen
+          name="IndividualRegister"
+          component={IndividualRegister}
+        />
+
+        <Stack.Screen
+          name="Login"
+          component={Login}
+        />
+        
+        <Stack.Screen
+          name="GroupRegister"
+          component={GroupRegister}
+        />
+        
       </Stack.Navigator>
     </NavigationContainer>
     )

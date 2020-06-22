@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState} from 'react'
 import {View, Text, Button, Picker, Icon  } from 'native-base'
 import {StyleSheet} from 'react-native'
 import { TextInput } from 'react-native-gesture-handler'
@@ -6,7 +6,7 @@ import { TextInput } from 'react-native-gesture-handler'
 export default class Dash extends React.Component {
     constructor(props) {
         super(props);
-        if (this.props.user) {
+        if (this.props.user) {  
             this.state = {
                 FN:this.props.user.FN,
                 LN:this.props.user.LN,
@@ -23,22 +23,6 @@ export default class Dash extends React.Component {
         }
         
     }
-    
-    /** This is the object im expecting to be passed,
-     * 
-     * const user = {
-        user:'imckechn',
-        FN:'Ian',
-        LN:'McKechnie',
-        email:'imckechn@uoguelph.ca',
-        phone:'9056915041',
-        sex:'Male',
-        }
-
-        This is also another item(s) im expecting to be passed to the class:
-        -RegsterNewTeam: [true/false]
-        -isLoggedIn:[true/false]
-     */
     
     render() {
         return (
@@ -104,14 +88,15 @@ export default class Dash extends React.Component {
     }
 }
 
+//const [chosen, setChosen] = useState()
+
 //The picker function for chosing the sex of the player
-export function dropDownSex(sex){
-    console.log("Sex is" + JSON.stringify(sex))
+export const dropDownSex = (sex) => {
     let chosen = ''
+
     if (sex) {
         chosen = sex
     } 
-    
      
     return (
         <View>
@@ -121,8 +106,9 @@ export function dropDownSex(sex){
                 iosIcon={<Icon name="arrow-down" />}
                 style={ styles.picker}
                 selectedValue = {chosen}
-                onValueChange={ (sex) => {chosen = sex, console.log("chosen = " + chosen)} }
+                onValueChange={ (sex) => chosen = sex }
             >
+                <Picker.Item label='Sex' value='Sex' key={0} />
                 <Picker.Item label="Male" value="Male" key={1} />
                 <Picker.Item label="Female" value="Female" key={2} />
             </Picker>

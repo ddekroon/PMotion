@@ -1,6 +1,14 @@
 import React, {useState} from 'react'
 import { Container, Content, Text, Picker, Icon, View } from 'native-base'
 
+/**
+ * Expects all sports given in an array (given to props: 'sports'), where each sport is an object modeled after:
+ * const Soccer = {
+    "name":"Soccer",
+    "id":4
+  }
+ */
+
 export default class PickTeam extends React.Component {
 
   state = {sport: ''}
