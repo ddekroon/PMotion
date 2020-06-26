@@ -10,9 +10,14 @@ import { ScrollView } from 'react-native-gesture-handler';
 import AddingTeamMembers from '../components/register/TeamRegisterNewTeammate'
 import { submitTeam } from '../../actions/teams'
 
+import {
+    saveTeamToState,
+    reset
+} from '../../actions/teams'
+
 //Expects a sport id given as 1-4 under the 'sport' props tag
 
-/** This is the object im expecting to be passed,
+/** also expects this to be a prop given named as user
      * 
      * const user = {
         user:'imckechn',
@@ -32,19 +37,22 @@ class RegisterTeam extends React.Component {
         isLoading: PropTypes.bool.isRequired,
         leagues: PropTypes.object.isRequired,
         getLeague: PropTypes.func.isRequired,
-        onSubmit: PropTypes.func.isRequired
+        onSubmit: PropTypes.func.isRequired,
+        team: PropTypes.object.isRequired,
+        saveTeamToState: PropTypes.func.isRequired,
+        reset: PropTypes.func.isRequired
     }
-  
+    
     constructor(props) {
         super(props)
         this.state = {
             comment:'',
-            chosen:'',
-            chosen2:'',
-            players:[],
+            hearMethod:'',
+            paymentMethod:'',
+            league:'',
             teamName:'',
             count:0,
-            imgArr:[]
+            jsonPlayers:[]
         }
 
         if (this.props.user) {  
@@ -65,43 +73,120 @@ class RegisterTeam extends React.Component {
     } 
 
     update = (newJson) => {
-        let obj = JSON.parse(newJson)
+        let arr = this.state.jsonPlayers
+        arr[newJson.index] = newJson
 
-        let arr = this.state.imgArr
-        arr[obj.index] = newJson
-
-        this.setState({imgArr:arr})
+        this.setState({jsonPlayers:arr})
     }
 
-    handleToScreen = () => {
-        this.setState({ input: ''})
-    }
-
-    state = {league: ''}
     updateLeague = (league) => {
          this.setState({ league: league })
     }
 
-    handleSubmit = () => {
-        //Do this so the last player is the team capt/ the person filling in the forum
-        obj = new Object
-        obj.fn = this.state.FN
-        obj.ln = this.state.LN
-        obj.email = this.state.email
-        obj.sex = this.state.sex
-        obj.key = this.state.imgArr.length
+    checkAnswers() {
+        let str = "You're missing information!";
+        let noError = true
 
-        temp = this.state.imgArr
-        temp/push(JSON.stringify(obj))
+        if (this.state.league == undefined) {
+            noError = false
+            str += ('\n-No league selected')
+        }
+        if (this.state.teamName == undefined) {
+            noError = false
+            str += ('\n- No team name chosen')
+        }
+        if (this.state.paymentMethod == undefined) {
+            noError = false
+            str += ('\n- No payment method selected')
+        }
 
-        this.setState({imgArr:temp})
+        if (noError) {
+            return false
+
+        } else {
+            alert(str)
+            return true
+        }
+    }
+
+    handleSubmit = (seasons) => {
+
+        if (this.checkAnswers()) return;
+        console.log('sucess')
         
-        //Submit it (POST)
-        console.log("Submitted!")
-        const {onSubmit} = this.props
-        onSubmit().catch(e => {
-            console.log("Encountered an error submitting the data")
+        //Creating the object that will be uploaded to redux/the server
+        let obj = new Object
+
+        //Get the league ID
+        let league;
+
+        seasons[this.props.sport][0].leagues.map( (curLeague) => {
+            if (this.state.league == curLeague.name) {
+                obj.leagueId = curLeague.id;
+                league  = curLeague //Need this later 
+                return;
+            }
         })
+
+        obj.name = this.state.teamName
+        obj.wins = 0
+        obj.loses = 0
+        obj.ties= 0
+
+        let t = new Date()
+        obj.dateCreate = {
+            date : t.getFullYear() + "-"
+             + t.getMonth() + "-"
+              + t.getDay() + " "
+               + t.getHours() + ":"
+                + t.getMinutes() + ":"
+                 + t.getMilliseconds(),
+            timezone_type : 3,  //Hardcode as I don't know where this comes from and all the examples its 3, same with the line bellow
+            timezone : 'America/Toronto'
+        }
+        obj.isFinalized = false
+        obj.isPaid = 0
+        obj.isDeleted = 0
+        obj.isDroppedOut = false
+        obj.submittedWins = 0
+        obj.submittedLoses = 0
+        obj.submittedTies = 0
+        obj.oppSubmittedWins = 0
+        obj.oppSubmittedLosses = 0
+        obj.oppSubmittedTies = 0
+        obj.league = league
+        
+        let captain = new Object
+        captain.fn = this.state.FN
+        captain.ln = this.state.LN
+        captain.email = this.state.email
+        captain.sex = this.state.sex
+
+        obj.captain = captain
+
+        obj.players = this.state.jsonPlayers
+        obj.registrationComment = this.state.comment
+
+        //Get a random ID for the team
+        let unique = false;
+        let id = Math.round(Math.random() * 10000) 
+
+        while (!unique) {
+            for (team in this.props.team) {
+                if (team == id) {
+                    unique = false
+                    id = Math.round(Math.random() * 10000) 
+                    return
+                } else {
+                    unique = true
+                }
+            }
+        }
+        
+        obj.id = id
+        
+        //console.log("What will be saved: " + JSON.stringify(obj))
+        this.props.saveTeamToState(obj)
     }
 
     render() {
@@ -119,7 +204,9 @@ class RegisterTeam extends React.Component {
                 <Text style={styles.header, styles.addPadding}>Team Register</Text>
                 <View style={styles.addPadding}>
                 <View style={styles.setHorizontal}>
-                    <Text style={styles.normalText}>League</Text>
+                    <Text style={styles.normalText}>League
+                        <Text style={styles.normalText, {color:'red'} }>*</Text>
+                    </Text>
                     <Picker
                     placeholder="League"
                     note={false}
@@ -138,30 +225,34 @@ class RegisterTeam extends React.Component {
 
                     <Picker.Item key={0} label={'League'} value={''} />
                         {seasons[this.props.sport][0].leagues.map(curLeague => {
-                        var leagueName =
-                            curLeague.name +
-                            ' - ' +
-                            DateTimeHelpers.getDayString(curLeague.dayNumber)
+                            //console.log("Seasons  = " + JSON.stringify(seasons))
+                            var leagueName =
+                                curLeague.name +
+                                ' - ' +
+                                DateTimeHelpers.getDayString(curLeague.dayNumber)
 
-                        return (
-                            <Picker.Item
-                            key={curLeague.id}
-                            label={leagueName}
-                            value={curLeague.id}
-                            />
-                        )
+                            return (
+                                <Picker.Item
+                                key={curLeague.id}
+                                label={leagueName}
+                                value={curLeague.id}
+                                />
+                            )
                         })}
                     </Picker>
-                    </View>
+                </View>
 
                 <View style={styles.setHorizontal}>
-                    <Text style={styles.normalText}>Team Name</Text>
+                    <Text style={styles.normalText}>Team Name
+                        <Text style={styles.normalText, {color:'red'} }>*</Text>
+                    </Text>
                     <TextInput style={styles.textInput} onChangeText={(val) => this.setState({teamName:val})} value={this.state.teamName}/>
                     </View>
                 </View>
 
                 <View style={styles.main}>
                     <View style={styles.padding}>
+                    <Text style={{fontSize:20, fontWeight:'bold'}}>Team Captain</Text>
                         <View style={styles.floatingBox}>
                             <Text style={styles.text}>First Name           </Text>
                             <TextInput  //First name
@@ -226,7 +317,7 @@ class RegisterTeam extends React.Component {
 
                     <View style={styles.stack}>
                         <View style={styles.stack}>
-                            {counter = -1, this.state.imgArr?this.state.imgArr.map( (elem) => {
+                            {counter = -1, this.state.jsonPlayers?this.state.jsonPlayers.map( (elem) => {
                                 counter++
                                 return (<View style={styles.padding} key={counter}>
                                         <AddingTeamMembers json={elem} func={this.update}/>
@@ -237,9 +328,8 @@ class RegisterTeam extends React.Component {
                         <View style={styles.setHorizontal}>
                             <Button style={styles.botButton} title={'Add Player'} onPress={() => {
                                 //Check for max list lenght
-                                
 
-                                if (this.state.imgArr && this.state.imgArr.length == 14) {
+                                if (this.state.jsonPlayers && this.state.jsonPlayers.length == 14) {
                                     alert("Cannot have a team size greater than 15")
                                 } else {
                                     
@@ -248,24 +338,23 @@ class RegisterTeam extends React.Component {
                                     obj.index = this.state.count?this.state.count:0
                                     this.setState({count: obj.index + 1})
 
-                                    obj.fn = ''
-                                    obj.ln = ''
+                                    obj.firstName = ''
+                                    obj.lastName = ''
                                     obj.email = ''
                                     obj.sex = ''
                                     obj.key = obj.index
 
-                                    let str = JSON.stringify(obj)
-                                    let arr = this.state.imgArr?this.state.imgArr:[]
-                                    arr.push(str)
-                                    this.setState({imgArr:arr})
+                                    let arr = this.state.jsonPlayers?this.state.jsonPlayers:[]
+                                    arr.push(obj)
+                                    this.setState({jsonPlayers:arr})
                                 }
                             }}/>
 
                             <Button title={'Remove Player'} style={styles.botButton} onPress={() => {
-                                let arr = this.state.imgArr
-                                arr.pop()
+                                let arr = this.state.jsonPlayers
+                                arr?arr.pop():alert("No teammates created yet.")
 
-                                this.setState({imgArr:arr})
+                                this.setState({jsonPlayers:arr})
                             }}/>
                         </View>
                     </View>
@@ -296,8 +385,8 @@ class RegisterTeam extends React.Component {
                                     mode="dropdown"
                                     iosIcon={<Icon name="arrow-down" />}
                                     style={ styles.commentsPicker}
-                                    selectedValue = {this.state.chosen}
-                                    onValueChange={ (method) => { this.setState({chosen:method})} }
+                                    selectedValue = {this.state.hearMethod}
+                                    onValueChange={ (method) => { this.setState({hearMethod:method})} }
                                 >
                                     <Picker.Item label="Choose Method" value='' key={0} />
                                     <Picker.Item label="Google/Internet Search" value='Google/Internet Search' key={1} />
@@ -321,7 +410,7 @@ class RegisterTeam extends React.Component {
                     <View style={styles.addPadding}>
                         <View style={ [styles.setHorizontal, styles.addPadding], {justifyContent:'center', alignItems:'center', paddingVertical:20 }}>
                             <Text style={styles.normalText}>Method
-                                <Text style={{color:'red'}, styles.normalText}>*</Text>
+                                <Text style={styles.normalText, {color:'red'} }>*</Text>
                             </Text>
 
                             <View>
@@ -331,8 +420,8 @@ class RegisterTeam extends React.Component {
                                     note={false}
                                     iosIcon={<Icon name="arrow-down" />}
                                     style={ styles.commentsPicker}
-                                    selectedValue = {this.state.chosen2}
-                                    onValueChange={ (itemValue, itemIndex) => this.setState({chosen2:itemValue}) }
+                                    selectedValue = {this.state.paymentMethod}
+                                    onValueChange={ (itemValue, itemIndex) => this.setState({paymentMethod:itemValue}) }
                                 >
                                     <Picker.Item label={"Choose Method"} value={''} key={0} />
                                     <Picker.Item label={"I will send an money email transfer to dave@perpetualmotion.org"} value={'I will send an money email transfer to dave@perpetualmotion.org'} key={1} />
@@ -377,14 +466,19 @@ class RegisterTeam extends React.Component {
                     <View style= {styles.line}/>
                     <View style={styles.addPadding, {justifyContent:'space-between', flexDirection:'row'}}>
                         <Button title={'register (Submit)'} color='red' onPress={() => {
-                            console.log("HERE")
-                            this.handleSubmit()
+                            this.handleSubmit(seasons)
                         }}/>
-                        <Button title={'Print Forum'} color='red'/>
-                        <Button title={'Save Details'} color='red'/>
+                        <Button /*title={'Print Forum'}*/ title={'practice clicking+'} color='red' onPress={() => {
+                            this.props.reset()   
+                        }}/>
+                        <Button title={'Delete old tags'} color='red' onPress={() => {
+                            this.props.reset()
+                        }}/>
                     </View>
                 </View>
-                <Button title={"Get full state"} onPress={() => console.log(JSON.stringify(this.state))}/>
+                <Button title={"Get team props "} onPress={() => {
+                    //console.log("Team Obj = " + JSON.stringify(this.props.team))
+                }}/>
             </ScrollView>
         )
     }
@@ -393,10 +487,7 @@ class RegisterTeam extends React.Component {
 //The picker function for chosing the sex of the player
 export const dropDownSex = (sex) => {
     let chosen = ''
-
-    if (sex) {
-        chosen = (sex)
-    } 
+    if (sex) chosen = (sex);
     
     return (
         <View>
@@ -520,19 +611,23 @@ const mapStateToProps = state => ({
   seasons: state.lookups.scoreReporterSeasons || [],
   leagues: state.leagues || {},
   isLoading: state.status.loading || false,
-  TeamSubmisson: state.TeamSubmisson
+  TeamSubmisson: state.TeamSubmisson,
+  team: state.teams,
+  user: state.currentUser || {}
 })
 
 const mapDispatchToProps = { 
   getLeague: fetchLeague,
-  onSubmit: submitTeam
+  onSubmit: submitTeam,
+  saveTeamToState: saveTeamToState,
+  reset: reset
 }
 
 const connectToStore = connect(
     mapStateToProps
 )
   // and that function returns the connected, wrapper component:
-  const ConnectedComponent = connectToStore(RegisterTeam)
+//const ConnectedComponent = connectToStore(RegisterTeam) //dont think i need this.
 
 export default connect(
   mapStateToProps,

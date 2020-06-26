@@ -85,7 +85,7 @@ export function submitTeam() {
       })
   })
 }
-
+ 
 function shouldFetchTeam (state, teamId) {
   /*
   if (!LeagueHelpers.isValidLeagueId(leagueId)) {
@@ -100,5 +100,18 @@ function shouldFetchTeam (state, teamId) {
     return false
   } else {
     return team.didInvalidate
+  }
+}
+
+export function saveTeamToState(team) {
+  return {
+    type: 'NEW_TEAM',
+    team
+  }
+}
+
+export function reset(){
+  return {
+    type:'RESTART'
   }
 }

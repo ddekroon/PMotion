@@ -14,8 +14,7 @@ import {
   Icon,
   Card,
   CardItem,
-  Body,
-  Header
+  Body
 } from 'native-base'
 
 import Loading from '../components/common/Loading'

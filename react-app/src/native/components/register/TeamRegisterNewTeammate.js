@@ -6,7 +6,7 @@ import {StyleSheet} from 'react-native'
 export default class AddingTeamMembers extends React.Component {
    
     render() {
-        let obj = JSON.parse(this.props.json)
+        let obj = this.props.json
         return (
             <View style={styles.main}>
                 <View style={styles.padding}>
@@ -19,7 +19,7 @@ export default class AddingTeamMembers extends React.Component {
                             autoComplete={'name'}
                             onChangeText={ (FN) => {
                                 obj.fn = FN
-                                this.props.func(JSON.stringify(obj))
+                                this.props.func(obj)
                             }}
                             value={obj.fn}
                             style={styles.FillIn}

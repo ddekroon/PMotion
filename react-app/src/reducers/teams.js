@@ -35,7 +35,44 @@ export default function teamsReducer(state = initialState, action) {
 			return Object.assign({}, state, {
 				[action.id]: team(state[action.id], action)
 			})
+		case 'NEW_TEAM':
+			return Object.assign({}, state, {
+				team:action.team
+			});
+		case 'RESTART':
+			console.log("Resetting????")
+			return Object.assign({}, state, {
+				/*teamObj: undefined,
+				team: undefined,
+				help: undefined,
+				league: undefined,
+				paymentMethod: undefined,
+				teamName: undefined,
+				JSONarr: undefined,
+				JSONarr: undefined,
+				*/
+				teamObj:undefined,
+				title:undefined
+			});
+			
 		default:
 			return state
 	}
 }
+
+/* Pretty sure I dont need this
+function updateState(state = [], action) {
+	console.log("HERE")
+	switch(action.type) {
+		case 'NEW_TEAM' :
+			return [
+				...state.slice(0,i), //b4 the one we are updating
+				{...state[i], team: newTeam},
+				...state.slice(i + 1),
+
+
+			]
+		default:
+			return state
+	}
+} */

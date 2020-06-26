@@ -37,19 +37,16 @@ const user = {
   FN:'Ian',
   LN:'McKechnie',
   email:'imckechn@uoguelph.ca',
-  phone:'9056915041',
+  phone:'1234567890',
   sex:'Male',
 }
 
 export default function Register({ navigation }) {
 
   return (
-    <View>
-      <IndividualRegister sport={1} user={user} />
-      <Button title={"Get teams"} onPress={() => {
-        //Make Fetch request request
-        console.log("Printing teams:")
-      }}/>
-    </View>
+    <ScrollView>
+      <RegisterTeam sport={1} user={user} />
+      
+    </ScrollView>
   )
 }
