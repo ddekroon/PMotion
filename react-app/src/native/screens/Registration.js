@@ -12,40 +12,44 @@ import RegisterTeam from './RegisterTeam'
 import ChooseLeague from '../components/register/ChooseLeague'
 import IndividualRegister from './IndividualRegister'
 
-const Ultimate = {
-  "name":"Ultimate",
-  "id":1
-}
-
-const Volleyball = {
-  "name":"Volleyball",
-  "id":2
-}
-
-const Football = {
-  "name":"Football",
-  "id":3
-}
-
-const Soccer = {
-  "name":"Soccer",
-  "id":4
-}
-
-const user = {
-  user:'imckechn',
+/*
+const me = {
+  id:'imckechn',
   FN:'Ian',
   LN:'McKechnie',
   email:'imckechn@uoguelph.ca',
   phone:'1234567890',
   sex:'Male',
-}
+}*/
 
-export default function Register({ navigation }) {
+export default function Register({ navigation}) {
+  let me = {
+    id:'imckechn',
+    FN:'Ian',
+    LN:'McKechnie',
+    email:'imckechn@uoguelph.ca',
+    phone:'1234567890',
+    sex:'Male',
+  }
 
   return (
     <ScrollView>
-      <RegisterTeam sport={1} user={user} />
+      <Text>Perpetual Motion Registration</Text>
+      <Button title={'Register as an Indivdual or Small Group'} onPress={ () => {
+        navigation.navigate('PickSport', {registerType:'individualRegister'})
+      }}/>
+
+      <Button title={'Re-register Previous Team'} onPress={ () => {
+        navigation.navigate('Login', {registerType:'reregister'})
+      }}/>
+
+      <Button title={'Register New Team'} onPress={ () => {
+        navigation.navigate('Login', {registerType:'newTeam'})
+      }}/>
+
+      <Button title={'View Old leagues'} onPress={ () => {
+        navigation.navigate('Previousleagues')
+      }}/>
       
     </ScrollView>
   )

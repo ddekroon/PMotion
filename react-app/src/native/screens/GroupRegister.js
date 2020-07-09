@@ -50,16 +50,11 @@ export default class IndividualRegister extends React.Component {
 
     render() {
         const addPlayer = () => {
-            console.log("HERE")
             let arr = this.state.players
             arr.push(<AddingTeamMembers key={arr.length}/>)
     
             this.setState({players: arr})
             console.log('players length = ' + this.state.players.length)
-        }
-
-        const deletePlayer = () => {
-            this.state.players.pop()
         }
 
         const { modalVisible } = this.state

@@ -1,25 +1,7 @@
-import React, {useState} from 'react'
-import PropTypes from 'prop-types' 
-import { connect } from 'react-redux'
-import {Icon, Picker } from 'native-base'
-import { fetchLeague } from '../../actions/leagues' //Gets the leagues from the web.
-import DateTimeHelpers from '../../utils/datetimehelpers'
-import {TextInput, Text, View, Button, Alert} from 'react-native'
-import {StyleSheet} from 'react-native'
-import { ScrollView } from 'react-native-gesture-handler';
-import AddingTeamMembers from '../components/register/TeamRegisterNewTeammate'
-import { submitTeam } from '../../actions/teams'
-
-import {
-    saveTeamToState,
-    reset
-} from '../../actions/teams'
-
 //Expects a sport id given as 1-4 under the 'sport' props tag
 
-/** also expects this to be a prop given named as user
-     * 
-     * const user = {
+/** also expects this to be a prop given named as user (this is the team capt)
+ex: const user = {
         user:'imckechn',
         FN:'Ian',
         LN:'McKechnie',
@@ -27,7 +9,25 @@ import {
         phone:'9056915041',
         sex:'Male',
     }
-     */
+*/
+
+import React, {useState} from 'react'
+import PropTypes from 'prop-types' 
+import { connect } from 'react-redux'
+import {Icon, Picker } from 'native-base'
+import { fetchLeague } from '../../actions/leagues' //Gets the leagues from the web.
+import DateTimeHelpers from '../../utils/datetimehelpers'
+import {TextInput, Text, View, Button} from 'react-native'
+import {StyleSheet} from 'react-native'
+import { ScrollView } from 'react-native-gesture-handler';
+import AddingTeamMembers from '../components/register/TeamRegisterNewTeammate'
+import { submitTeam } from '../../actions/teams'
+import ToastHelpers from '../../utils/toasthelpers'
+import ValidationHelpers from '../../utils/validationhelpers'
+import {
+    saveTeamToState,
+    reset
+} from '../../actions/teams'
 
 class RegisterTeam extends React.Component { 
   
@@ -55,12 +55,14 @@ class RegisterTeam extends React.Component {
             jsonPlayers:[]
         }
 
-        if (this.props.user) {  
+        //If data gets passed 
+        if (this.props.userData) {  
             this.state = {
-                FN:this.props.user.FN,
-                LN:this.props.user.LN,
-                email:this.props.user.email,
-                phone:this.props.user.phone,
+                FN:this.props.userData.FN,
+                LN:this.props.userData.LN,
+                email:this.props.userData.email,
+                phone:this.props.userData.phone,
+                sex:this.props.userData.sex
             }
         } else {
             this.state = {
@@ -68,10 +70,12 @@ class RegisterTeam extends React.Component {
                 LN:'',
                 email:'',
                 phone:'',
+                sex:''
             }
         }
     } 
 
+    //When a new players info get changed, the update gets put into the state here
     update = (newJson) => {
         let arr = this.state.jsonPlayers
         arr[newJson.index] = newJson
@@ -79,10 +83,12 @@ class RegisterTeam extends React.Component {
         this.setState({jsonPlayers:arr})
     }
 
+    //When the user changes their league choice, it gets updated in the state here
     updateLeague = (league) => {
          this.setState({ league: league })
     }
 
+    //When submitting the forum, this checks that all the required fields are filled out
     checkAnswers() {
         let str = "You're missing information!";
         let noError = true
@@ -100,19 +106,42 @@ class RegisterTeam extends React.Component {
             str += ('\n- No payment method selected')
         }
 
+        if ( !ValidationHelpers.isValidEmail(this.state.email)) {
+            str += ('\n- Team Captain email is invalid')
+            noError = false
+        }
+        
+        for (player in this.state.jsonPlayers) {
+
+            if (this.state.jsonPlayers[player].email) {
+                if ( !ValidationHelpers.isValidEmail(this.state.jsonPlayers[player].email) ) {
+                    noError = false
+                    str += ('\n- A player email is invalid')
+                    break
+                }
+            }
+
+            if (this.state.jsonPlayers[player].phone) {
+                if (this.state.jsonPlayers[player].phone.length != 0 && this.state.jsonPlayers[player].phone.lenght != 10) {
+                    noError = false
+                    str += ('\n- A players phone number has an invalid length')
+                    break
+                }
+            }
+        }
+
         if (noError) {
             return false
 
         } else {
-            alert(str)
+            ToastHelpers.showToast(null, str)
             return true
         }
     }
 
+    //This submits the forum to the server (Takes everything in the state and save it)
     handleSubmit = (seasons) => {
-
         if (this.checkAnswers()) return;
-        console.log('sucess')
         
         //Creating the object that will be uploaded to redux/the server
         let obj = new Object
@@ -120,7 +149,7 @@ class RegisterTeam extends React.Component {
         //Get the league ID
         let league;
 
-        seasons[this.props.sport][0].leagues.map( (curLeague) => {
+        seasons[this.props.route.params.sport][0].leagues.map( (curLeague) => {
             if (this.state.league == curLeague.name) {
                 obj.leagueId = curLeague.id;
                 league  = curLeague //Need this later 
@@ -182,28 +211,37 @@ class RegisterTeam extends React.Component {
                 }
             }
         }
-        
         obj.id = id
         
-        //console.log("What will be saved: " + JSON.stringify(obj))
+        console.log("Object will be = " + JSON.stringify(obj))
         this.props.saveTeamToState(obj)
+        console.log("props = " + JSON.stringify(this.props))
+
+        //  To submit 
+        /*const {onSubmit} = this.props
+        onSubmit().catch(e => {
+            console.log("Encountered an error submitting the data")
+        })*/
     }
 
     render() {
         let counter = 0;
-
         if (!seasons) console.log("Error loading seasons")
 
         const {
-        loading,
-        seasons
+            loading,
+            seasons
         } = this.props
+
+        console.log('the props = ' + JSON.stringify(this.props))
 
         return (
             <ScrollView>
                 <Text style={styles.header, styles.addPadding}>Team Register</Text>
                 <View style={styles.addPadding}>
                 <View style={styles.setHorizontal}>
+
+                    {/**Where the user chooses the league they want their team to play in */}
                     <Text style={styles.normalText}>League
                         <Text style={styles.normalText, {color:'red'} }>*</Text>
                     </Text>
@@ -224,8 +262,7 @@ class RegisterTeam extends React.Component {
                     >
 
                     <Picker.Item key={0} label={'League'} value={''} />
-                        {seasons[this.props.sport][0].leagues.map(curLeague => {
-                            //console.log("Seasons  = " + JSON.stringify(seasons))
+                        {seasons[this.props.route.params.sport][0].leagues.map(curLeague => {
                             var leagueName =
                                 curLeague.name +
                                 ' - ' +
@@ -243,6 +280,7 @@ class RegisterTeam extends React.Component {
                 </View>
 
                 <View style={styles.setHorizontal}>
+                    {/**Where the user chooses their team name */}
                     <Text style={styles.normalText}>Team Name
                         <Text style={styles.normalText, {color:'red'} }>*</Text>
                     </Text>
@@ -250,6 +288,7 @@ class RegisterTeam extends React.Component {
                     </View>
                 </View>
 
+                {/**The team capt. fill in information */}
                 <View style={styles.main}>
                     <View style={styles.padding}>
                     <Text style={{fontSize:20, fontWeight:'bold'}}>Team Captain</Text>
@@ -286,7 +325,7 @@ class RegisterTeam extends React.Component {
                                 value={this.state.email}
                                 multiline={false}
                                 autoComplete={'email'}
-                                onChangeText={ (email) => this.setState({ email })}
+                                onChangeText={ (email) => this.setState({ email }) }
                                 style={styles.FillIn}
                             />
                         </View>
@@ -305,16 +344,29 @@ class RegisterTeam extends React.Component {
                         
                         <View style={styles.floatingBox, {paddingBottom:5, flexDirection:'column', justifyContent: 'center', alignItems:'center'}}>
                             <Text style={styles.text}>Sex</Text>
-                            { this.props.user ? dropDownSex(this.props.user.sex) : dropDownSex(null) }
+                            <Picker
+                                placeholder='Sex'
+                                mode="dropdown"
+                                iosIcon={<Icon name="arrow-down" />}
+                                style={ styles.picker}
+                                selectedValue = {this.state.sex}
+                                onValueChange={ (sex) => this.setState({sex:sex}) }
+                            >
+                                <Picker.Item label='Sex' value='Sex' key={0} />
+                                <Picker.Item label="Male" value="Male" key={1} />
+                                <Picker.Item label="Female" value="Female" key={2} />
+                            </Picker>
                         </View>
                     </View>
                 </View> 
 
                 <View>
+
                     <Text style={styles.header}>Player Information</Text>
                     <Text style = {styles.subHeading}>Comments, notes, player needs, etc. (limit 1000 characters).</Text>
                     <View style= {styles.line}/>
 
+                    {/**The loop that shows all the individual user forums */}
                     <View style={styles.stack}>
                         <View style={styles.stack}>
                             {counter = -1, this.state.jsonPlayers?this.state.jsonPlayers.map( (elem) => {
@@ -324,10 +376,10 @@ class RegisterTeam extends React.Component {
                                     </View>)
                             }):null}
                         </View>
-
+                        
+                        {/**Add a new player */}
                         <View style={styles.setHorizontal}>
                             <Button style={styles.botButton} title={'Add Player'} onPress={() => {
-                                //Check for max list lenght
 
                                 if (this.state.jsonPlayers && this.state.jsonPlayers.length == 14) {
                                     alert("Cannot have a team size greater than 15")
@@ -361,6 +413,7 @@ class RegisterTeam extends React.Component {
                 </View>
 
                 <View>
+                    {/**Where the user enter a new comment */}
                     <Text style={styles.header}>Comments</Text>
                     <Text style = {styles.subHeading}>Comments, notes, player needs, etc. (limit 1000 characters).</Text>
                     <View style= {styles.line}/>
@@ -377,6 +430,7 @@ class RegisterTeam extends React.Component {
                             />
                         </View>
                         
+                        {/**Where the user tells us hwo they heard about Perpetual Motion */}
                         <View style={styles.addPadding, {justifyContent:'center', alignItems:'center' }}>
                             <Text style={styles.normalText}>How did you hear about us?</Text>
                             <View>
@@ -403,10 +457,12 @@ class RegisterTeam extends React.Component {
                         </View>
                         
                     </View>
-
+                    
+                    {/**Where the fees are confirmed */}
                     <Text style={styles.header}>Confirm Fees</Text>
                     <Text style = {styles.subHeading}>The registration process is not finalized until fees have been paid.</Text>
                     <View style= {styles.line}/>
+
                     <View style={styles.addPadding}>
                         <View style={ [styles.setHorizontal, styles.addPadding], {justifyContent:'center', alignItems:'center', paddingVertical:20 }}>
                             <Text style={styles.normalText}>Method
@@ -438,6 +494,7 @@ class RegisterTeam extends React.Component {
                         <Text style={styles.normalText}>78 Kathleen St. Guelph, Ontario; H1H 4Y3</Text>
                     </View>
 
+                    {/**Where we need to add server calls to get the registration due dates*/}
                     <Text style={styles.header}>Registration Due By</Text>
                     <View style= {styles.line}/>
                     <View style={styles.addPadding}>
@@ -468,43 +525,15 @@ class RegisterTeam extends React.Component {
                         <Button title={'register (Submit)'} color='red' onPress={() => {
                             this.handleSubmit(seasons)
                         }}/>
-                        <Button /*title={'Print Forum'}*/ title={'practice clicking+'} color='red' onPress={() => {
-                            this.props.reset()   
-                        }}/>
-                        <Button title={'Delete old tags'} color='red' onPress={() => {
-                            this.props.reset()
-                        }}/>
+                        {/*<Button title={'Print Forum'} color='red' onPress={() => {
+                            
+                        }}/>*/}
+                        
                     </View>
                 </View>
-                <Button title={"Get team props "} onPress={() => {
-                    //console.log("Team Obj = " + JSON.stringify(this.props.team))
-                }}/>
             </ScrollView>
         )
     }
-}
-
-//The picker function for chosing the sex of the player
-export const dropDownSex = (sex) => {
-    let chosen = ''
-    if (sex) chosen = (sex);
-    
-    return (
-        <View>
-            <Picker
-                placeholder='Sex'
-                mode="dropdown"
-                iosIcon={<Icon name="arrow-down" />}
-                style={ styles.picker}
-                selectedValue = {chosen}
-                onValueChange={ (sex) => chosen = (sex) }
-            >
-                <Picker.Item label='Sex' value='Sex' key={0} />
-                <Picker.Item label="Male" value="Male" key={1} />
-                <Picker.Item label="Female" value="Female" key={2} />
-            </Picker>
-        </View>
-    );
 }
 
 const styles = StyleSheet.create({

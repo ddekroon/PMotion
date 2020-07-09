@@ -1,3 +1,5 @@
+//Doesn't need anything passed to it, but somehow needs to know the users previous teams
+
 import React, { useState} from 'react'
 import {Text, Picker, Icon} from 'native-base'
 import {Button, View, Image} from 'react-native'
@@ -24,8 +26,8 @@ addLeague(oldLeagues, 'name11', 'league11', 'season11', 'Yes') //11
 addLeague(oldLeagues, 'name12', 'league12', 'season12', 'Yes') //12
 addLeague(oldLeagues, 'name13', 'league13', 'season13', 'Yes') //13
 
-
-export default function Previousleagues() {
+//The colour part of this is still broken ;/
+export default function Previousleagues({navigation}) {
     const [show, setShow] = useState(0) //Do I even need this???
     const [chosen, setChosen] = useState(10)
     const [pageNum, setPageNum] = useState(1)
@@ -33,7 +35,7 @@ export default function Previousleagues() {
     const [colour, setColour] = useState(0)
 
     return (
-        <View>
+        <ScrollView>
             {/**Header */}
             <Text style={styles.header}>Previous Teams Registers</Text>
             <Text style={styles.subheading}>Click on your team's name to re-register a previous team for the upcoming season</Text>
@@ -169,7 +171,7 @@ export default function Previousleagues() {
                 <Text style={styles.subheading}>Page {pageNum} fo {Math.ceil(beingShown.length/chosen)} entries.</Text>
             </View>
 
-        </View>
+        </ScrollView>
     )
 }
 

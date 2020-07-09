@@ -1,10 +1,9 @@
 import React, {useState} from 'react'
 import PropTypes from 'prop-types' 
 import { connect } from 'react-redux'
-import { Container, Content, Text, Picker, View, Icon, Button } from 'native-base'
+import {Picker, View, Icon } from 'native-base'
 import { fetchLeague } from '../../../actions/leagues' //Gets the leagues from the web.
 import DateTimeHelpers from '../../../utils/datetimehelpers'
-import Loading from '../../components/common/Loading'
 
 //Expects a sport id given as 1-4 under the 'sport' props tag
 
@@ -20,23 +19,20 @@ class PickLeagues extends React.Component {
   
   constructor(props) {
     super(props)
-  }
-
-  state = {league: ''}
-  updateLeague = (league) => {
-      this.setState({ league: league })
+    state = {
+      counter:[1]
+    }
   }
 
   render() {
-    if (seasons == null) {
-      console.log("Error loading seasons")
-    }
-
+    
     const {
       loading,
       seasons
     } = this.props
 
+
+    if (seasons == null || seasons == undefined) console.log("Error loading seasons");
 
     return (
       <View>
@@ -45,19 +41,34 @@ class PickLeagues extends React.Component {
           note={false}
           mode="dropdown"
           iosIcon={<Icon name="arrow-down" />}
-          selectedValue = {this.state.league}
-          onValueChange={this.updateLeague}
+          selectedValue = {this.props.league}
+          onValueChange={(elem) => {
+            console.log("Elem = " + elem)
+            if (elem == 1 || elem == undefined || elem == null) return;
+            
+            let leagueName
+            seasons[this.props.sport][0].leagues.map(curLeague => {
+              if (curLeague.id == elem) {   
+                leagueName =
+                  curLeague.name +
+                  ' - ' +
+                  DateTimeHelpers.getDayString(curLeague.dayNumber)
+                return
+              }
+            })
+            this.props.update(this.props.index, leagueName)
+          }}
           style = {{
             borderWidth: 1,
             alignItems: 'center',
             flexDirection:'row',
             justifyContent: 'center',
-            //Should be centered :/
+            //Should be centered
           }}
         >
 
           <Picker.Item key={0} label={'League'} value={''} />
-          {seasons[this.props.sport][0].leagues.map(curLeague => {
+          { this.props.sport != 'Sport' ? seasons[this.props.sport][0].leagues.map(curLeague => {
             var leagueName =
               curLeague.name +
               ' - ' +
@@ -70,7 +81,8 @@ class PickLeagues extends React.Component {
                 value={curLeague.id}
               />
             )
-          })}
+          }):<Picker.item key={1} label={'*No sport chosen*'} value={1}/>}
+          {/*<Picker.item key={1} label={'*No sport chosen*'} value={1}/>*/}
         </Picker>
       </View>
     )

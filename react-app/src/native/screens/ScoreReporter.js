@@ -88,7 +88,6 @@ class ScoreReporter extends React.Component {
     const { onFormSubmit } = this.props
     onFormSubmit().catch(e => {
       ToastHelpers.showToast(Enums.messageTypes.Error, e.message)
-      console.log(`Error: ${e.message}`)
     })
   }
 
@@ -176,7 +175,6 @@ class ScoreReporter extends React.Component {
   }
 
   render() {
-    console.log("ScoreReporter.js")
 
     const { //Data
       loading,
@@ -228,7 +226,6 @@ class ScoreReporter extends React.Component {
         </Item>
       )
     }
-
     return (
       <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding" enabled>
         <Content padder>
@@ -263,7 +260,7 @@ class ScoreReporter extends React.Component {
                     </Item>
 
                     {leaguePicker}
-
+                    
                     {league != null && (
                       <TeamPicker
                         loading={league.isFetching}

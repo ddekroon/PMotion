@@ -36,23 +36,16 @@ export default function teamsReducer(state = initialState, action) {
 				[action.id]: team(state[action.id], action)
 			})
 		case 'NEW_TEAM':
+			let variable = '' + action.team.id
+			console.log("action id = " + action.team.id)
 			return Object.assign({}, state, {
-				team:action.team
+				[variable]:action.team
 			});
 		case 'RESTART':
-			console.log("Resetting????")
+			//been using this to delete test pushes
 			return Object.assign({}, state, {
-				/*teamObj: undefined,
-				team: undefined,
-				help: undefined,
-				league: undefined,
-				paymentMethod: undefined,
-				teamName: undefined,
-				JSONarr: undefined,
-				JSONarr: undefined,
-				*/
-				teamObj:undefined,
-				title:undefined
+				4695:undefined,
+				3933:undefined,
 			});
 			
 		default:
@@ -60,7 +53,7 @@ export default function teamsReducer(state = initialState, action) {
 	}
 }
 
-/* Pretty sure I dont need this
+/* Pretty sure we dont need this
 function updateState(state = [], action) {
 	console.log("HERE")
 	switch(action.type) {

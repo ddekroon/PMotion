@@ -1,53 +1,22 @@
+//This does not need any props handed to it when creating the tag for it 
+
 import React from 'react'
-import PropTypes from 'prop-types'
+import PropTypes from 'prop-types' 
 import { connect } from 'react-redux'
+import {Icon, Picker } from 'native-base'
 import { fetchLeague } from '../../actions/leagues' //Gets the leagues from the web.
-import {
-    Text, 
-    View, 
-    ScrollView,
-    StyleSheet,
-    Modal,
-    TouchableHighlight,
-    Button,
-    TextInput
-} from 'react-native'
-import {Picker, Icon} from 'native-base'
-import PickTeam from '../components/register/Teams'
-import PickLeagues from '../components/register/ChooseLeague'
-import {AddingTeamMembers} from '../components/register/TeamMember'
-import RegisterTeam from '../components/register/RegisterTeam'
+import {TextInput, Text, View, Button, Modal, TouchableHighlight} from 'react-native'
+import {StyleSheet} from 'react-native'
+import { ScrollView } from 'react-native-gesture-handler';
 import { submitTeam } from '../../actions/teams'
-
-//This is the base template im using for team register
-const user = {
-    user:'imckechn',
-    FN:'Ian',
-    LN:'McKechnie',
-    email:'imckechn@uoguelph.ca',
-    phone:'9056915041',
-    sex:'Male',
-}
-
-const Ultimate = {
-    "name":"Ultimate",
-    "id":1
-}
-
-const Volleyball = {
-    "name":"Volleyball",
-    "id":2
-}
-
-const Football = {
-    "name":"Football",
-    "id":3
-}
-
-const Soccer = {
-    "name":"Soccer",
-    "id":4
-}
+import ToastHelpers from '../../utils/toasthelpers'
+import ValidationHelpers from '../../utils/validationhelpers'
+import TeamPicker from '../components/common/TeamPicker'
+import AddingTeamMembersIndividual from '../components/register/IndividualTeamMemberPlayerAdder'
+import {
+    saveTeamToState,
+    reset
+} from '../../actions/teams'
 
 class IndividualRegister extends React.Component {
     static propTypes = {
@@ -55,69 +24,279 @@ class IndividualRegister extends React.Component {
         isLoading: PropTypes.bool.isRequired,
         leagues: PropTypes.object.isRequired,
         getLeague: PropTypes.func.isRequired,
-        onSubmit: PropTypes.func.isRequired
+        onSubmit: PropTypes.func.isRequired,
+        sports: PropTypes.array.isRequired,
+        team: PropTypes.object.isRequired,
+        saveTeamToState: PropTypes.func.isRequired,
+        reset: PropTypes.func.isRequired
     }
 
     constructor(props) {
         super(props)
         this.state = {
+            chsnSport:'',
             modalVisible: false,
             comment:'',
-            chosen:'',
-            chosen2:'',
-            players:[],
+            source:'',
+            paymentMethod:'',
             teamName:'',
             count:0,
-            imgArr:[]
+            players:[],
+            league:['', '', '']
         }
     }
 
+    //When the user changes the sport, update the state and reset the league choices
+    sportChange = (sport) => {
+        this.setState({chsnSport:sport})
+        this.setState({league:['', '', '']})    //I.e reset it")
+    }
+
+    //The info button to display the league difficulties
     setModalVisible = (visible) => {
         this.setState({ modalVisible: visible });
     }
 
+    //When a new players info get changed, the update gets put into the state here
     update = (newJson) => {
-        let obj = JSON.parse(newJson)
+        let obj = newJson
 
-        let arr = this.state.imgArr
-        arr[obj.index] = newJson
+        let arr = this.state.players
+        arr[obj.key] = newJson
 
-        this.setState({imgArr:arr})
+        this.setState({players:arr})
     }
 
-    handleToScreen = () => {
-        this.setState({ input: ''})
+    //When submitting the forum, this checks that all the required fields are filled out
+    checkAnswers() {
+        let str = "You're missing information!";
+        let noError = true
+
+        if (this.state.league[0] == '') {
+            noError = false
+            str += ('\n-No league selected')
+        }
+        if (this.state.teamName == undefined) {
+            noError = false
+            str += ('\n- No team name chosen')
+        }
+        if (this.state.paymentMethod == undefined) {
+            noError = false
+            str += ('\n- No payment method selected')
+        }
+
+        for (player in this.state.jsonPlayers) {
+            if (this.state.jsonPlayers[player].email) {
+                if ( !ValidationHelpers.isValidEmail(this.state.jsonPlayers[player].email) ) {
+                    noError = false
+                    str += ('\n- A players email is invalid')
+                    break
+                }
+            }
+
+            if (this.state.jsonPlayers[player].phone) {
+                if (this.state.jsonPlayers[player].phone.length != 0 && this.state.jsonPlayers[player].phone.lenght != 10) {
+                    noError = false
+                    str += ('\n- A players phone number has an invalid length')
+                    break
+                }
+            }
+        }
+
+        if (this.state.players.length == 0) {
+            noError = false;
+            str += ('\n- You need at least one player')
+
+        } else {
+
+            if (this.state.players[0].fn == undefined || this.state.players[0].fn == '' ) {
+                noError = false;
+                str += ('\n- Your first players first name needs to be filled in')
+                    
+            } 
+
+            if (this.state.players[0].ln == undefined || this.state.players[0].ln == '' ) {
+                noError = false;
+                str += ('\n- Your first players last name needs to be filled in')
+
+            } 
+
+            if (this.state.players[0].email == undefined || this.state.players[0].email == '' ) {
+                noError = false;
+                str += ('\n- Your first players email needs to be filled in')
+
+            } 
+
+            if (this.state.players[0].phone == undefined || this.state.players[0].phone == '' ) {
+                noError = false;
+                str += ('\n- Your first players phone number needs to be filled in')
+
+            } 
+
+            if (this.state.players[0].sex == undefined || this.state.players[0].sex == '' ) {
+                noError = false;
+                str += ('\n- Your first players sex needs to be filled in')
+            
+            } 
+
+            if (this.state.players[0].skill == undefined || this.state.players[0].skill == '' ) {
+                noError = false;
+                str += ('\n- Your first players skill needs to be filled in')            
+            }
+        }
+
+        if (noError) {
+            return false
+
+        } else {
+            ToastHelpers.showToast(null, str)
+            return true
+        }
     }
 
-    state = {league: ''}
-    updateLeague = (league) => {
-         this.setState({ league: league })
-    }
-
+    //This submits the forum to the server (Takes everything in the state and save it)
     handleSubmit = () => {
-        console.log("Submitted!")
-        const {onSubmit} = this.props
+        if (this.checkAnswers()) return;
+        
+        let obj = new Object
+        let league;
+
+        this.props.seasons[this.state.chsnSport][0].leagues.map( (curLeague) => {
+            if (this.state.league == curLeague.name) {
+                obj.leagueId = curLeague.id;
+                league  = curLeague //Need this later 
+                return;
+            }
+        })
+
+        obj.name = this.state.teamName
+        obj.wins = 0
+        obj.loses = 0
+        obj.ties= 0
+
+        let t = new Date()
+        obj.dateCreate = {
+            date : t.getFullYear() + "-"
+             + t.getMonth() + "-"
+              + t.getDay() + " "
+               + t.getHours() + ":"
+                + t.getMinutes() + ":"
+                 + t.getMilliseconds(),
+            timezone_type : 3,  //Hardcode as I don't know where this comes from and all the examples its 3, same with the line bellow
+            timezone : 'America/Toronto'
+        }
+        obj.isFinalized = false
+        obj.isPaid = 0
+        obj.isDeleted = 0
+        obj.isDroppedOut = false
+        obj.submittedWins = 0
+        obj.submittedLoses = 0
+        obj.submittedTies = 0
+        obj.oppSubmittedWins = 0
+        obj.oppSubmittedLosses = 0
+        obj.oppSubmittedTies = 0
+        obj.captain = ''
+
+        obj.preferedLeague = this.state.league[0]
+        obj.secondaryLeague = this.state.league[1]?this.state.league[1]:''
+        obj.tertiaryLeague = this.state.league[2]?this.state.league[2]:''
+
+        obj.players = this.state.players
+        obj.registrationComment = this.state.comment
+
+        //Get a random ID for the team
+        let unique = false;
+        let id; 
+
+        while (!unique) {
+            id = Math.round(Math.random() * 10000);
+            
+            for (team in this.props.team) {
+                if (team == id) {
+                    unique = false
+                    id = Math.round(Math.random() * 10000) 
+                    return
+                } else {
+                    unique = true
+                }
+            }
+        }
+        
+        obj.id = id
+        
+        //console.log("THE FINAL OBJ = " + JSON.stringify(obj))
+        this.props.saveTeamToState(obj)
+        console.log("props = " + JSON.stringify(this.props))
+
+        //  To submit 
+        /*const {onSubmit} = this.props
         onSubmit().catch(e => {
             console.log("Encountered an error submitting the data")
-        })
+        })*/
+    }
+
+    //Returns the array of all the leagues for the chosen sport for the league pickers to use
+    getLeaguesArr = (sportId) => {
+        let counter = 1;
+
+        for (seasonId in this.props.seasons) {
+            if (counter == sportId) {
+                return this.props.seasons[seasonId][0].leagues
+            }
+            counter++
+        }
+        
+        return []
+    }
+
+    //When the user changes their league choice, it gets updated in the state here
+    changedLeague = (index, value) => {
+        let arr = this.state.league
+        arr[index] = value
+        this.setState({league:arr})
     }
 
     render() {
-        let counter = 0
-        const { modalVisible } = this.state
-
-        if (!seasons) console.log("Error loading seasons")
+        console.log("The route = " + JSON.stringify(this.props.route))
 
         const {
             loading,
             seasons
         } = this.props
-        
+        const { modalVisible } = this.state
+
+        if (!seasons) console.log("Error loading seasons")
+        if (this.state.modalVisible == undefined) this.setState({modalVisible: false})
+
         return(
             <ScrollView>
                 <Text style={styles.header}>Registration</Text>
                 <View style={{alignItems:'center', justifyContent:'center'}}>
-                    <PickTeam sports={ [Ultimate, Football, Volleyball, Soccer]}/>
+                    
+                    {/*Where the user picks the sport*/}
+                    <Picker
+                        note={false}
+                        mode="dropdown"
+                        iosIcon={<Icon name="arrow-down" />}
+                        selectedValue={this.state.chsnSport}
+                        placeholder="Sport"
+                        onValueChange={(val) => {
+                            this.sportChange(val)
+                        }}
+                    >
+                        <Picker.Item key={0} label="Sport" value="" />
+                        {this.props.sports.map(curSport => {
+                            return (
+                                <Picker.Item
+                                    key={curSport.id}
+                                    label={curSport.name}
+                                    value={curSport.id}
+                                />
+                            )
+                        })}
+                    </Picker>
+
+                    {/**The info part that pops up when pressed */}
                     <Modal
                         animationType="slide"
                         transparent={true}
@@ -125,6 +304,7 @@ class IndividualRegister extends React.Component {
                     >
                         <View style={styles.centeredView}>
                             <View style={styles.modalView}>
+                                
                                 <ScrollView>
                                     <Text>
                                         <Text style={{fontWeight:'bold'}}>A:</Text>
@@ -177,63 +357,91 @@ class IndividualRegister extends React.Component {
                         <Text style={styles.textStyle}>Show League Info</Text>
                     </TouchableHighlight>
                     
-                    <Text style={styles.normalText}>Prefered League
-                        <Text style = {styles.normalText, {color:'red'}}>*</Text>
-                    </Text>   
-                    <PickLeagues sport={4} style={{paddingBottom:10}}/>
+                    {/**Where the user picks they're 3 league choices */}
+                    <View>
+                        <View style={{paddingBottom:5}}>
+                            <Text style={styles.normalText}>Prefered League
+                                <Text style = {styles.normalText, {color:'red'}}>*</Text>
+                            </Text>   
+                            <TeamPicker
+                                loading={false}
+                                teams={this.getLeaguesArr(this.state.chsnSport)}
+                                curTeamId={this.state.league[0]}
+                                onTeamUpdated={(val) => this.changedLeague(0, val)}
+                            />
+                        </View>
 
-                    <Text style={styles.normalText}>Secondary Choice</Text>   
-                    <PickLeagues sport={4} style={{paddingBottom:10}}/>
+                        <View style={{paddingBottom:5}}>
+                            <Text style={styles.normalText}>Secondary Choice</Text> 
+                            <TeamPicker
+                                loading={false}
+                                teams={this.getLeaguesArr(this.state.chsnSport)}
+                                curTeamId={this.state.league[1]}
+                                onTeamUpdated={(val) => this.changedLeague(1, val)}
+                            />
+                        </View>
 
-                    <Text style={styles.normalText}>Tertiary Choice</Text>   
-                    <PickLeagues sport={4} style={{paddingBottom:10}}/>
+                        <View style={{paddingBottom:5}}>
+                            <Text style={styles.normalText}>Tertiary Choice</Text>  
+                            <TeamPicker
+                                loading={false}
+                                teams={this.getLeaguesArr(this.state.chsnSport)}
+                                curTeamId={this.state.league[2]}
+                                onTeamUpdated={(val) => this.changedLeague(2, val)}
+                            />
+                        </View>
+
+                    </View>
                 </View>
                 <View>
                     <Text style={styles.header}>Player Information</Text>
                     <Text style = {styles.subHeading}>Comments, notes, player needs, etc. (limit 1000 characters).</Text>
                     <View style= {styles.line}/>
 
+                    {/**The loop that shows all the individual user forums */}
                     <View style={styles.stack}>
                         <View style={styles.stack}>
-                            {counter = -1, this.state.imgArr?this.state.imgArr.map( (elem) => {
+                            {counter = -1, this.state.players?this.state.players.map( (elem) => {
                                 counter++
-                                return (<View style={styles.padding} key={counter}>
-                                        <AddingTeamMembers json={elem} func={this.update}/>
+                                return (
+                                    <View style={styles.padding} key={counter}>
+                                        <AddingTeamMembersIndividual json={elem} func={this.update}/>
                                     </View>)
                             }):null}
                         </View>
-
+                        
+                        {/**Add a new player */}
                         <View style={styles.setHorizontal}>
                             <Button style={styles.botButton} title={'Add Player'} onPress={() => {
                                 //Check for max list lenght
                                 
-                                if (this.state.imgArr && this.state.imgArr.length == 15) {
+                                if (this.state.players && this.state.players.length == 15) {
                                     alert("Cannot have a team size greater than 15")
                                 } else {
                                     
-                                    //create the object and set its index to the current count (then update the count)
+                                    //create the object and set its key to the current count (then update the count)
                                     let obj = new Object
-                                    obj.index = this.state.count?this.state.count:0
-                                    this.setState({count: obj.index + 1})
+                                    obj.key = this.state.count?this.state.count:0
+                                    this.setState({count: obj.key + 1})
 
                                     obj.fn = ''
                                     obj.ln = ''
                                     obj.email = ''
+                                    obj.phone = ''
                                     obj.sex = ''
-                                    obj.key = obj.index
+                                    obj.skill = ''
 
-                                    let str = JSON.stringify(obj)
-                                    let arr = this.state.imgArr?this.state.imgArr:[]
-                                    arr.push(str)
-                                    this.setState({imgArr:arr})
+                                    let arr = this.state.players?this.state.players:[]
+                                    arr.push(obj)
+                                    this.setState({players:arr})
                                 }
                             }}/>
 
                             <Button title={'Remove Player'} style={styles.botButton} onPress={() => {
-                                let arr = this.state.imgArr
+                                let arr = this.state.players
                                 arr.pop()
 
-                                this.setState({imgArr:arr})
+                                this.setState({players:arr})
                             }}/>
                         </View>
                     </View>
@@ -245,6 +453,7 @@ class IndividualRegister extends React.Component {
                     <View style= {styles.line}/>
                     
                     <View style={styles.addPadding}>
+                        {/**The comment section */}
                         <View style={ [styles.setHorizontal, styles.addPadding, styles.commentView]}>
                             <Text style={styles.normalText}>Comments </Text>
                             <TextInput
@@ -264,8 +473,8 @@ class IndividualRegister extends React.Component {
                                     mode="dropdown"
                                     iosIcon={<Icon name="arrow-down" />}
                                     style={ styles.commentsPicker}
-                                    selectedValue = {this.state.chosen}
-                                    onValueChange={ (method) => { this.setState({chosen:method})} }
+                                    selectedValue = {this.state.source}
+                                    onValueChange={ (method) => { this.setState({source:method})} }
                                 >
                                     <Picker.Item label="Choose Method" value='' key={0} />
                                     <Picker.Item label="Google/Internet Search" value='Google/Internet Search' key={1} />
@@ -299,8 +508,8 @@ class IndividualRegister extends React.Component {
                                     note={false}
                                     iosIcon={<Icon name="arrow-down" />}
                                     style={ styles.commentsPicker}
-                                    selectedValue = {this.state.chosen2}
-                                    onValueChange={ (itemValue, itemIndex) => this.setState({chosen2:itemValue}) }
+                                    selectedValue = {this.state.paymentMethod}
+                                    onValueChange={ (itemValue) => this.setState({paymentMethod:itemValue}) }
                                 >
                                     <Picker.Item label={"Choose Method"} value={''} key={0} />
                                     <Picker.Item label={"I will send an money email transfer to dave@perpetualmotion.org"} value={'I will send an money email transfer to dave@perpetualmotion.org'} key={1} />
@@ -320,6 +529,8 @@ class IndividualRegister extends React.Component {
                     <Text style={styles.header}>Registration Due By</Text>
                     <View style= {styles.line}/>
                     <View style={styles.addPadding}>
+
+                        {/**Where the deadlines need to be inserted */}
                         <Text style={ [styles.normalText, {fontWeight:'bold'}]}>Spring League</Text>
 
                         <Text style={styles.normalText}>Ultimate Frisbee
@@ -337,7 +548,6 @@ class IndividualRegister extends React.Component {
                         <Text style={styles.normalText}>Soccer
                             <Text style={{color:'#FF0000'}}>    *Insert date Here*</Text>
                         </Text>
-
                     </View>
 
                     <Text style={styles.header}>Register</Text>
@@ -345,14 +555,13 @@ class IndividualRegister extends React.Component {
                     <View style= {styles.line}/>
                     <View style={styles.addPadding, {justifyContent:'space-between', flexDirection:'row'}}>
                         <Button title={'register (Submit)'} color='red' onPress={() => {
-                            console.log("HERE")
                             this.handleSubmit()
                         }}/>
-                        <Button title={'Print Forum'} color='red'/>
-                        <Button title={'Save Details'} color='red'/>
+                        {/*<Button title={'Print Forum'} color='red' onPress={ ()=>{
+                            this.props.reset()
+                        }}/>*/}
                     </View>
                 </View>
-                <Button title={"Get full state"} onPress={() => console.log(JSON.stringify(this.state))}/>
             </ScrollView>
         )
     }
@@ -515,20 +724,25 @@ const styles = StyleSheet.create({
 const mapStateToProps = state => ({
     seasons: state.lookups.scoreReporterSeasons || [],
     leagues: state.leagues || {},
+    sports: state.lookups.sports || [],
     isLoading: state.status.loading || false,
-    TeamSubmisson: state.TeamSubmisson
+    TeamSubmisson: state.TeamSubmisson,
+    team: state.teams,
+    user: state.currentUser || {}
   })
   
   const mapDispatchToProps = { 
     getLeague: fetchLeague,
-    onSubmit: submitTeam
+    onSubmit: submitTeam,
+    saveTeamToState: saveTeamToState,
+    reset: reset
   }
   
   const connectToStore = connect(
       mapStateToProps
   )
     // and that function returns the connected, wrapper component:
-    const ConnectedComponent = connectToStore(RegisterTeam)
+    const ConnectedComponent = connectToStore(IndividualRegister)
   
   export default connect(
     mapStateToProps,

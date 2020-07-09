@@ -6,16 +6,21 @@ import { createStackNavigator } from '@react-navigation/stack'
 
 import MainNavigator from './MainNavigator'
 import LeagueNavigator from './LeagueNavigator'
+//import Registration from './Registration'
 import Loading from '../components/common/Loading'
 import TeamPage from '../components/leagues/TeamPage'
 import SchedulePage from '../screens/Schedule'
 import Maps from '../screens/Maps'
+import Registration from '../screens/Registration'
 
 import NavigationProps from '../constants/navigation'
 import { getLookups } from '../../actions/lookups'
 import IndividualRegister from '../screens/IndividualRegister'
 import GroupRegister from '../screens/GroupRegister'
-import Login from '../screens/todo/Login'
+import Login from '../screens/Login'
+import PickSport from '../components/SportChooser'
+import Previousleagues from '../screens/PreviousLeagues'
+import RegisterTeam from '../screens/RegisterTeam'
 
 const Stack = createStackNavigator();
 
@@ -55,6 +60,14 @@ class RootNavigator extends React.Component {
             title: route.params.title ?? 'League'
           })}
           />
+          
+          <Stack.Screen 
+          name="Registration"
+          component={Registration} 
+          options={({ route }) => ({
+            title: route.params.title ?? 'Registration'
+          })}
+        />
 
         <Stack.Screen 
           name="Team"
@@ -72,18 +85,28 @@ class RootNavigator extends React.Component {
         />
 
         <Stack.Screen
+          name="Login"
+          component={Login}
+        />
+
+        <Stack.Screen
           name="IndividualRegister"
           component={IndividualRegister}
         />
 
         <Stack.Screen
-          name="Login"
-          component={Login}
-        />
-        
+          name ='PickSport'
+          component={PickSport}
+        ></Stack.Screen>
+
         <Stack.Screen
-          name="GroupRegister"
-          component={GroupRegister}
+          name='Previousleagues'
+          component={Previousleagues}
+        />
+
+        <Stack.Screen
+          name='RegisterNewTeam'
+          component={RegisterTeam}
         />
         
       </Stack.Navigator>

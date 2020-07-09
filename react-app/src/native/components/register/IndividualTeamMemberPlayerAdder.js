@@ -3,7 +3,7 @@ import {View, Picker, Text, Icon} from 'native-base'
 import { TextInput } from 'react-native-gesture-handler'
 import {StyleSheet} from 'react-native'
 
-export default class AddingTeamMembers extends React.Component {
+export default class AddingTeamMembersIndividual extends React.Component {
    
     render() {
         let obj = this.props.json
@@ -56,6 +56,22 @@ export default class AddingTeamMembers extends React.Component {
                             style={styles.FillIn}
                         />
                     </View>
+                    
+                    <View style={styles.floatingBox}>
+                        <Text style={styles.text}>Phone                     </Text>
+                        <TextInput  //Email
+                            placeholder={'Phone'}
+                            keyboardType={'phone-pad'}
+                            multiline={false}
+                            autoComplete={'tel'}
+                            onChangeText={ (tel) => {
+                                obj.phone = tel
+                                this.props.func(JSON.stringify(obj))
+                            }}
+                            value={obj.phone}
+                            style={styles.FillIn}
+                        />
+                    </View>
 
                     <View style={styles.floatingBox, {paddingBottom:5, flexDirection:'row', justifyContent: 'center',}}>
                         <View>
@@ -76,8 +92,32 @@ export default class AddingTeamMembers extends React.Component {
                                 <Picker.Item label="Female" value="Female" key={2} />
                             </Picker>
                         </View>
-
                     </View>
+
+                    <View style={styles.floatingBox, {paddingBottom:5, flexDirection:'row', justifyContent: 'center',}}>
+                        <View>
+                            <Text style={styles.text}>Skill</Text>
+                            <Picker
+                                placeholder='Skill'
+                                mode="dropdown"
+                                iosIcon={<Icon name="arrow-down" />}
+                                style={ styles.picker}
+                                selectedValue = {obj.skill}
+                                onValueChange={ ((skill) => {
+                                    obj.skill = skill
+                                    this.props.func(JSON.stringify(obj))
+                                }) }
+                            >
+                                <Picker.Item label="Skill" value='' key={0} />
+                                <Picker.Item label="5 (High)" value="Male" key={1} />
+                                <Picker.Item label="4" value="Female" key={2} />
+                                <Picker.Item label="3" value="Female" key={3} />
+                                <Picker.Item label="2" value="Female" key={4} />
+                                <Picker.Item label="1 (Low)" value="Female" key={5} />
+                            </Picker>
+                        </View>
+                    </View>
+
                 </View>
             </View>
         )
