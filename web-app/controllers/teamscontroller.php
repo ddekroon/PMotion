@@ -196,6 +196,7 @@ class Controllers_TeamsController extends Controllers_Controller {
 			$curPlayer->setFirstName($allPostVars['playerFirstName_' . $i]);
 			$curPlayer->setLastName($allPostVars['playerLastName_' . $i]);
 			$curPlayer->setEmail($allPostVars['playerEmail_' . $i]);
+			$curPlayer->setPhoneNumber($allPostVars['playerPhone_' . $i]);
 			$curPlayer->setGender($allPostVars['playerGender_' . $i]);
 			
 			if($isUpdate) {

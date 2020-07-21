@@ -118,8 +118,9 @@ function postForm() { //This function posts the form with any input the user may
         <div class="Row">
                 <h3>AWARENESS AND ASSUMPTION OF RISK</h3>
                 <p>I am aware that sports involves risks including risk of personal injury, death, property damage, expense and related loss, including loss of income. Included in these risks are negligence on the part of Perpetual Motion Sports & Entertainment Inc. (known as "Perpetual Motion"), its directors, officers, officials, shareholders, employees and volunteers, other participants and owners of the facilities where the activities occur (referred to in the rest of this agreement as PERPETUAL MOTION and OTHERS). I freely accept and fully assume all such risks and the possibility of personal injury, death, property damage, expense and related loss, including loss of income.</p>
+                <p>The novel coronavirus, COVID-19, has been declared a worldwide pandemic by the World Health Organization and COVID-19 is extremely contagious. PERPETUAL MOTION has put in place preventative measures to reduce the spread of COVID-19; however, I understand that PERPETUAL MOTION AND OTHERS cannot and does not guarantee that I will not become infected with COVID-19. Further, participating in any group activity and sports may significantly increase my risk of contracting COVID-19 and such exposure may result in temporary or permanent personal injury, illness, disability or death and I freely and voluntarily agree to assume all the foregoing risks. </p>
                 
-                <h3>RELEASE OF LIABILITY, WAIVER OF CLAIMS, INDEMNITY AGREEMENT & PHOTO RELEASE</h3>
+				<h3>RELEASE OF LIABILITY, WAIVER OF CLAIMS, INDEMNITY AGREEMENT & PHOTO RELEASE</h3>
                 <p>In consideration of PERPETUAL MOTION accepting my application to participate in this activity, I agree:</p>
                 
                 <ol>
@@ -128,6 +129,7 @@ function postForm() { //This function posts the form with any input the user may
                     <li>To hold harmless and indemnify PERPETUAL MOTION and OTHERS from any and all liability for any damage to property of, or personal injury to, any third party, resulting from my participation in this activity.</li>
                     <li>That this agreement is binding on not only myself but my next if kin, heirs, executors, administrators and assigns.</li>
 					<li>I grant permission to PERPETUAL MOTION AND OTHERS to photograph and/or record my image and/or voice on still or motion picture film and/or audio tape, and to use this material to promote PERPETUAL MOTION through the media of newsletters, websites, television, film, radio, print and/or display form. I waive any claim to remuneration for use of audio/visual materials used for these purposes. I understand that I may withdraw such consent at any time by contacting PERPETUAL MOTION. PERPETUAL MOTION will advise the implications of such withdrawal.</li>
+					<li>To FOREVER RELEASE AND INDEMNIFY PERPETUAL MOTION AND OTHERS relating to becoming exposed to or infected by COVID-19 which may result from the actions, omission or negligence of myself and others, including but not limited to PERPETUAL MOTION and other participants in activities and sports offered by the PERPETUAL MOTION.</li>
 				</ol>
                 <h2>I HAVE READ THIS AGREEMENT AND UNDERSTAND IT. I AM AWARE THAT BY SIGNING THIS DOCUMENT I AM WAIVING CERTAIN RIGHTS WHICH I OR MY NEXT OF KIN, HEIRS, EXECUTORS, ADMINISTRATORS AND ASSIGNS MAY HAVE AGAINST PERPETUAL MOTION AND OTHERS.  I WARRANT THAT AT THE TIME OF SIGNING, I AM PHYSICALLY FIT TO PARTICIPATE.</h2>
             </div>
