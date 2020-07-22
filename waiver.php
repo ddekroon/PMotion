@@ -234,8 +234,11 @@ function postForm() { //This function posts the form with any input the user may
 	
 	//This function expedites the process of querying a database
 	function query($query_string){
-		$quer_line=mysql_query($query_string) or die("TEST ".mysql_error());
-		$array_line=mysql_fetch_array($quer_line);
+		global $link;
+
+		$quer_line = mysqli_query($link, $query_string) or die("TEST ".mysqli_error($link));
+		$array_line = mysqli_fetch_array($quer_line);
+
 		return ($array_line);
 	}
 	
@@ -257,15 +260,15 @@ function postForm() { //This function posts the form with any input the user may
 			
 			$dateString = date("M d, Y; H:i:s");
 		
-			$escapedName = mysql_real_escape_string($name);
-			$escapedEmail = mysql_real_escape_string($email);
-			$escapedGuardName = mysql_real_escape_string($guardName);
-			$escapedGuardEmail = mysql_real_escape_string($guardEmail);
+			$escapedName = mysqli_real_escape_string($name);
+			$escapedEmail = mysqli_real_escape_string($email);
+			$escapedGuardName = mysqli_real_escape_string($guardName);
+			$escapedGuardEmail = mysqli_real_escape_string($guardEmail);
 			
 			//Insert the new waiver #, form name, email, guardian info, and timestamp (as a string)
 			$insertQuery = "INSERT INTO waivers (waiver_id, waiver_name, waiver_email, waiver_guard_name, waiver_guard_email, waiver_date, waiver_sport_id)
 				VALUES ('$newID', '$escapedName', '$escapedEmail', '$escapedGuardName', '$escapedGuardEmail', '$dateString', $sportID)";
-			mysql_query($insertQuery) or die(mysql_error());
+			mysqli_query($link, $insertQuery) or die(mysqli_error($link));
 		
 			//tell the user their input was successful
 			// redirect back to url visitor came from
