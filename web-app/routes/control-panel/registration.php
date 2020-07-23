@@ -17,7 +17,7 @@
 			$seasonsRegistration = $seasonsController->getSeasonsAvailableForRegistration();
 			$seasonsScoreReporter = $seasonsController->getSeasonsAvailableForScoreReporter();
 			
-			$seasons = array_merge($seasonsRegistration, $seasonsScoreReporter);
+			$seasons = array_unique(array_merge($seasonsRegistration, $seasonsScoreReporter));
 
 			return $this->view->render($response, "control-panel/registration/index.phtml", [
 					"request" => $request,

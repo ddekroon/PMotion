@@ -260,10 +260,10 @@ function postForm() { //This function posts the form with any input the user may
 			
 			$dateString = date("M d, Y; H:i:s");
 		
-			$escapedName = mysqli_real_escape_string($name);
-			$escapedEmail = mysqli_real_escape_string($email);
-			$escapedGuardName = mysqli_real_escape_string($guardName);
-			$escapedGuardEmail = mysqli_real_escape_string($guardEmail);
+			$escapedName = mysqli_real_escape_string($link, $name);
+			$escapedEmail = mysqli_real_escape_string($link, $email);
+			$escapedGuardName = mysqli_real_escape_string($link, $guardName);
+			$escapedGuardEmail = mysqli_real_escape_string($link, $guardEmail);
 			
 			//Insert the new waiver #, form name, email, guardian info, and timestamp (as a string)
 			$insertQuery = "INSERT INTO waivers (waiver_id, waiver_name, waiver_email, waiver_guard_name, waiver_guard_email, waiver_date, waiver_sport_id)

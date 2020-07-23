@@ -162,7 +162,7 @@
 										$firstName = $user->getFirstName();
 										$lastName = $user->getLastName();
 										$email = $user->getEmail();
-										$phone = $user->getPhone();
+										$phone = ($team->getCaptain()->getId() == null ? $user->getPhone() : $team->getCaptain()->getPhoneNumber());
 										$gender = $user->getGender();
 									} else {
 										$firstName = $curPlayer->getFirstName();
