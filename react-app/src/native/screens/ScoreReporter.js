@@ -85,10 +85,11 @@ class ScoreReporter extends React.Component {
   }
 
   handleSubmit = () => {
-    const { onFormSubmit } = this.props
+    console.log("props being submitted = "+ JSON.stringify(this.props) + "\n\n");
+    /*const { onFormSubmit } = this.props
     onFormSubmit().catch(e => {
       ToastHelpers.showToast(Enums.messageTypes.Error, e.message)
-    })
+    })*/
   }
 
   handleChange = (name, val) => {
@@ -175,6 +176,7 @@ class ScoreReporter extends React.Component {
   }
 
   render() {
+    console.log("props at render time = "+ JSON.stringify(this.props) + "\n\n")
 
     const { //Data
       loading,

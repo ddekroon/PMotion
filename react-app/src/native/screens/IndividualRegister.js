@@ -3,10 +3,9 @@
 import React from 'react'
 import PropTypes from 'prop-types' 
 import { connect } from 'react-redux'
-import {Icon, Picker } from 'native-base'
+import {Icon, Picker, Container, Content, Card} from 'native-base'
 import { fetchLeague } from '../../actions/leagues' //Gets the leagues from the web.
-import {TextInput, Text, View, Button, Modal, TouchableHighlight} from 'react-native'
-import {StyleSheet} from 'react-native'
+import {TextInput, Text, View, Button, Modal, TouchableHighlight, StyleSheet} from 'react-native'
 import { ScrollView } from 'react-native-gesture-handler';
 import { submitTeam } from '../../actions/teams'
 import ToastHelpers from '../../utils/toasthelpers'
@@ -34,7 +33,7 @@ class IndividualRegister extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            chsnSport:'',
+            chsnSport:this.props.route?.params?.sport?this.props.route.params.sport:'',
             modalVisible: false,
             comment:'',
             source:'',
@@ -45,7 +44,7 @@ class IndividualRegister extends React.Component {
             league:['', '', '']
         }
     }
-
+    
     //When the user changes the sport, update the state and reset the league choices
     sportChange = (sport) => {
         this.setState({chsnSport:sport})
@@ -226,7 +225,6 @@ class IndividualRegister extends React.Component {
         
         //console.log("THE FINAL OBJ = " + JSON.stringify(obj))
         this.props.saveTeamToState(obj)
-        console.log("props = " + JSON.stringify(this.props))
 
         //  To submit 
         /*const {onSubmit} = this.props
@@ -257,7 +255,10 @@ class IndividualRegister extends React.Component {
     }
 
     render() {
-        console.log("The route = " + JSON.stringify(this.props.route))
+        
+        /*if (this.state.chsnSport == '' && this.props.route?.params?.sport != undefined) {
+            this.setState({chsnSport:this.props.route.params.sport})
+        }*/
 
         const {
             loading,
@@ -269,300 +270,321 @@ class IndividualRegister extends React.Component {
         if (this.state.modalVisible == undefined) this.setState({modalVisible: false})
 
         return(
-            <ScrollView>
-                <Text style={styles.header}>Registration</Text>
-                <View style={{alignItems:'center', justifyContent:'center'}}>
-                    
-                    {/*Where the user picks the sport*/}
-                    <Picker
-                        note={false}
-                        mode="dropdown"
-                        iosIcon={<Icon name="arrow-down" />}
-                        selectedValue={this.state.chsnSport}
-                        placeholder="Sport"
-                        onValueChange={(val) => {
-                            this.sportChange(val)
-                        }}
-                    >
-                        <Picker.Item key={0} label="Sport" value="" />
-                        {this.props.sports.map(curSport => {
-                            return (
-                                <Picker.Item
-                                    key={curSport.id}
-                                    label={curSport.name}
-                                    value={curSport.id}
-                                />
-                            )
-                        })}
-                    </Picker>
-
-                    {/**The info part that pops up when pressed */}
-                    <Modal
-                        animationType="slide"
-                        transparent={true}
-                        visible={modalVisible}
-                    >
-                        <View style={styles.centeredView}>
-                            <View style={styles.modalView}>
+            <Container>
+                <Content>
+                    <Card>
+                        <View>
+                            <Text style={styles.header}>Registration</Text>
+                            <View style={{alignItems:'center', justifyContent:'center'}}>
                                 
-                                <ScrollView>
-                                    <Text>
-                                        <Text style={{fontWeight:'bold'}}>A:</Text>
-                                        <Text>This 7 vs 7 division is recommended for teams and players who would like to play very competitive Ultimate at a high-pace. Players generally have lots of tournament experience and a very strong knowledge of rules and strategies.</Text>
-                                    </Text>
-
-                                    <Text>
-                                        <Text style={{fontWeight:'bold'}}>B7:</Text>
-                                        <Text>This 7 vs 7 division is recommended for teams and players who would like to try playing 7s Ultimate. Players generally have at least a couple years of league experience and are fairly knowledgeable of rules and strategies. </Text>
-                                    </Text>
-
-                                    <Text>
-                                        <Text style={{fontWeight:'bold'}}>B/B1:</Text>
-                                        <Text>This 5 vs 5 division is recommended for teams and players who are of high intermediate skill level. Players generally have a few years of league experience, and a good knowledge of rules and strategies, such as the stack. </Text>
-                                    </Text>
-
-                                    <Text>
-                                        <Text style={{fontWeight:'bold'}}>B2:</Text>
-                                        <Text>This 5 vs 5 division is recommended for teams and players who are of intermediate skill level. Players generally have a couple years of league experience and a decent knowledge of rules and strategies, such as the "stack". </Text>
-                                    </Text>
-
-                                    <Text>
-                                        <Text style={{fontWeight:'bold'}}>C/C1:</Text>
-                                        <Text>This 5 vs 5 division is recommended for teams and players who are of high beginner skill levels. Players generally have at least a year of league experience and a basic knowledge of rules and strategies. </Text>
-                                    </Text>
-
-                                    <Text>
-                                        <Text style={{fontWeight:'bold'}}>C2:</Text>
-                                        <Text>This 5 vs 5 division is recommended for teams and players who are new to the sport of ultimate. Players have less than a year of league experience and have little knowledge of rules and strategies. Players are more focused on learning the game and are less concerned with the skill level.</Text>
-                                    </Text>
-                                </ScrollView>
-                                <TouchableHighlight
-                                style={{ ...styles.openButton, backgroundColor: "red", paddingTop:10 }}
-                                onPress={() => {
-                                    this.setModalVisible(!modalVisible);
-                                }}
-                                >
-                                    <Text style={styles.textStyle}>Close</Text>
-                                </TouchableHighlight>
-                            </View>
-                        </View>
-                    </Modal>
-
-                    <TouchableHighlight
-                        style={styles.openButton}
-                        onPress={() => {
-                        this.setModalVisible(true);
-                        }}
-                    >
-                        <Text style={styles.textStyle}>Show League Info</Text>
-                    </TouchableHighlight>
-                    
-                    {/**Where the user picks they're 3 league choices */}
-                    <View>
-                        <View style={{paddingBottom:5}}>
-                            <Text style={styles.normalText}>Prefered League
-                                <Text style = {styles.normalText, {color:'red'}}>*</Text>
-                            </Text>   
-                            <TeamPicker
-                                loading={false}
-                                teams={this.getLeaguesArr(this.state.chsnSport)}
-                                curTeamId={this.state.league[0]}
-                                onTeamUpdated={(val) => this.changedLeague(0, val)}
-                            />
-                        </View>
-
-                        <View style={{paddingBottom:5}}>
-                            <Text style={styles.normalText}>Secondary Choice</Text> 
-                            <TeamPicker
-                                loading={false}
-                                teams={this.getLeaguesArr(this.state.chsnSport)}
-                                curTeamId={this.state.league[1]}
-                                onTeamUpdated={(val) => this.changedLeague(1, val)}
-                            />
-                        </View>
-
-                        <View style={{paddingBottom:5}}>
-                            <Text style={styles.normalText}>Tertiary Choice</Text>  
-                            <TeamPicker
-                                loading={false}
-                                teams={this.getLeaguesArr(this.state.chsnSport)}
-                                curTeamId={this.state.league[2]}
-                                onTeamUpdated={(val) => this.changedLeague(2, val)}
-                            />
-                        </View>
-
-                    </View>
-                </View>
-                <View>
-                    <Text style={styles.header}>Player Information</Text>
-                    <Text style = {styles.subHeading}>Comments, notes, player needs, etc. (limit 1000 characters).</Text>
-                    <View style= {styles.line}/>
-
-                    {/**The loop that shows all the individual user forums */}
-                    <View style={styles.stack}>
-                        <View style={styles.stack}>
-                            {counter = -1, this.state.players?this.state.players.map( (elem) => {
-                                counter++
-                                return (
-                                    <View style={styles.padding} key={counter}>
-                                        <AddingTeamMembersIndividual json={elem} func={this.update}/>
-                                    </View>)
-                            }):null}
-                        </View>
-                        
-                        {/**Add a new player */}
-                        <View style={styles.setHorizontal}>
-                            <Button style={styles.botButton} title={'Add Player'} onPress={() => {
-                                //Check for max list lenght
-                                
-                                if (this.state.players && this.state.players.length == 15) {
-                                    alert("Cannot have a team size greater than 15")
-                                } else {
-                                    
-                                    //create the object and set its key to the current count (then update the count)
-                                    let obj = new Object
-                                    obj.key = this.state.count?this.state.count:0
-                                    this.setState({count: obj.key + 1})
-
-                                    obj.fn = ''
-                                    obj.ln = ''
-                                    obj.email = ''
-                                    obj.phone = ''
-                                    obj.sex = ''
-                                    obj.skill = ''
-
-                                    let arr = this.state.players?this.state.players:[]
-                                    arr.push(obj)
-                                    this.setState({players:arr})
-                                }
-                            }}/>
-
-                            <Button title={'Remove Player'} style={styles.botButton} onPress={() => {
-                                let arr = this.state.players
-                                arr.pop()
-
-                                this.setState({players:arr})
-                            }}/>
-                        </View>
-                    </View>
-                </View>
-
-                <View>
-                    <Text style={styles.header}>Comments</Text>
-                    <Text style = {styles.subHeading}>Comments, notes, player needs, etc. (limit 1000 characters).</Text>
-                    <View style= {styles.line}/>
-                    
-                    <View style={styles.addPadding}>
-                        {/**The comment section */}
-                        <View style={ [styles.setHorizontal, styles.addPadding, styles.commentView]}>
-                            <Text style={styles.normalText}>Comments </Text>
-                            <TextInput
-                                style={styles.textInput}
-                                placeHolder={'Comment here...'}
-                                multiLine={true}
-                                onChangeText= { (comment) => this.setState( {comment})}
-                                value={this.state.comment}                    
-                            />
-                        </View>
-                        
-                        <View style={styles.addPadding, {justifyContent:'center', alignItems:'center' }}>
-                            <Text style={styles.normalText}>How did you hear about us?</Text>
-                            <View>
+                                {/*Where the user picks the sport*/}
                                 <Picker
-                                    placeholder='Choose Method'
+                                    note={false}
                                     mode="dropdown"
                                     iosIcon={<Icon name="arrow-down" />}
-                                    style={ styles.commentsPicker}
-                                    selectedValue = {this.state.source}
-                                    onValueChange={ (method) => { this.setState({source:method})} }
+                                    selectedValue={this.state.chsnSport}
+                                    placeholder= {
+                                        this.state.chsnSport?
+                                        this.props.sports[this.state.chsnSport - 1].name
+                                        :"Sport"}
+                                    onValueChange={(val) => {
+                                        this.sportChange(val)
+                                    }}
                                 >
-                                    <Picker.Item label="Choose Method" value='' key={0} />
-                                    <Picker.Item label="Google/Internet Search" value='Google/Internet Search' key={1} />
-                                    <Picker.Item label="Facebook Page" value='Facebook Page' key={2} />
-                                    <Picker.Item label="Kijiji Ad" value='Kijiji Ad' key={3} />
-                                    <Picker.Item label="Returning Player" value='Returning Player' key={4} />
-                                    <Picker.Item label="From a Friend" value='From a Friend' key={5} />
-                                    <Picker.Item label="Restaurant Ad" value='Restaurant Ad' key={6} />
-                                    <Picker.Item label="The Guelph Community Guide" value='The Guelph Community Guide' key={7} />
-                                    <Picker.Item label="Other" value='Other' key={8} />
-                                    
+                                    <Picker.Item key={0} label="Sport" value="" />
+                                    {this.props.sports.map(curSport => {
+                                        return (
+                                            <Picker.Item
+                                                key={curSport.id}
+                                                label={curSport.name}
+                                                value={curSport.id}
+                                            />
+                                        )
+                                    })}
                                 </Picker>
+
+                                {/**The info part that pops up when pressed */}
+                                <Modal
+                                    animationType="slide"
+                                    transparent={true}
+                                    visible={modalVisible}
+                                >
+                                <View style={styles.centeredView}>
+                                    <View style={styles.modalView}>
+                                        
+                                        <ScrollView>
+                                            <Text>
+                                                <Text style={{fontWeight:'bold'}}>A:</Text>
+                                                <Text>This 7 vs 7 division is recommended for teams and players who would like to play very competitive Ultimate at a high-pace. Players generally have lots of tournament experience and a very strong knowledge of rules and strategies.</Text>
+                                            </Text>
+
+                                            <Text>
+                                                <Text style={{fontWeight:'bold'}}>B7:</Text>
+                                                <Text>This 7 vs 7 division is recommended for teams and players who would like to try playing 7s Ultimate. Players generally have at least a couple years of league experience and are fairly knowledgeable of rules and strategies. </Text>
+                                            </Text>
+
+                                            <Text>
+                                                <Text style={{fontWeight:'bold'}}>B/B1:</Text>
+                                                <Text>This 5 vs 5 division is recommended for teams and players who are of high intermediate skill level. Players generally have a few years of league experience, and a good knowledge of rules and strategies, such as the stack. </Text>
+                                            </Text>
+
+                                            <Text>
+                                                <Text style={{fontWeight:'bold'}}>B2:</Text>
+                                                <Text>This 5 vs 5 division is recommended for teams and players who are of intermediate skill level. Players generally have a couple years of league experience and a decent knowledge of rules and strategies, such as the "stack". </Text>
+                                            </Text>
+
+                                            <Text>
+                                                <Text style={{fontWeight:'bold'}}>C/C1:</Text>
+                                                <Text>This 5 vs 5 division is recommended for teams and players who are of high beginner skill levels. Players generally have at least a year of league experience and a basic knowledge of rules and strategies. </Text>
+                                            </Text>
+
+                                            <Text>
+                                                <Text style={{fontWeight:'bold'}}>C2:</Text>
+                                                <Text>This 5 vs 5 division is recommended for teams and players who are new to the sport of ultimate. Players have less than a year of league experience and have little knowledge of rules and strategies. Players are more focused on learning the game and are less concerned with the skill level.</Text>
+                                            </Text>
+                                        </ScrollView>
+                                        <TouchableHighlight
+                                            style={{ ...styles.openButton, backgroundColor: "red", paddingTop:10 }}
+                                            onPress={() => {
+                                                this.setModalVisible(!modalVisible);
+                                            }}
+                                        >
+                                            <Text style={styles.textStyle}>Close</Text>
+                                        </TouchableHighlight>
+                                    </View>
+                                </View>
+                            </Modal>
+
+                            <TouchableHighlight
+                                style={styles.openButton}
+                                onPress={() => {
+                                this.setModalVisible(true);
+                                }}
+                            >
+                                <Text style={styles.textStyle}>Show League Info</Text>
+                            </TouchableHighlight>
+                        </View>
+                        </View>
+                    </Card>
+                    <Card>
+                        {/**Where the user picks they're 3 league choices */}
+                        <View>
+                            <View style={{paddingBottom:5}}>
+                                <Text style={styles.normalText}>Prefered League
+                                    <Text style = {styles.normalText, {color:'red'}}>*</Text>
+                                </Text>   
+                                <TeamPicker
+                                    loading={false}
+                                    teams={this.getLeaguesArr(this.state.chsnSport)}
+                                    curTeamId={this.state.league[0]}
+                                    onTeamUpdated={(val) => this.changedLeague(0, val)}
+                                />
+                            </View>
+
+                            <View style={{paddingBottom:5}}>
+                                <Text style={styles.normalText}>Secondary Choice</Text> 
+                                <TeamPicker
+                                    loading={false}
+                                    teams={this.getLeaguesArr(this.state.chsnSport)}
+                                    curTeamId={this.state.league[1]}
+                                    onTeamUpdated={(val) => this.changedLeague(1, val)}
+                                />
+                            </View>
+
+                            <View style={{paddingBottom:5}}>
+                                <Text style={styles.normalText}>Tertiary Choice</Text>  
+                                <TeamPicker
+                                    loading={false}
+                                    teams={this.getLeaguesArr(this.state.chsnSport)}
+                                    curTeamId={this.state.league[2]}
+                                    onTeamUpdated={(val) => this.changedLeague(2, val)}
+                                />
                             </View>
                         </View>
-                        
-                    </View>
+                    </Card>
 
-                    <Text style={styles.header}>Confirm Fees</Text>
-                    <Text style = {styles.subHeading}>The registration process is not finalized until fees have been paid.</Text>
-                    <View style= {styles.line}/>
-                    <View style={styles.addPadding}>
-                        <View style={ [styles.setHorizontal, styles.addPadding], {justifyContent:'center', alignItems:'center', paddingVertical:20 }}>
-                            <Text style={styles.normalText}>Method
-                                <Text style={{color:'red'}, styles.normalText}>*</Text>
-                            </Text>
+                    <Card>
+                        <View>
+                            <Text style={styles.header}>Player Information</Text>
+                            <Text style = {styles.subHeading}>Comments, notes, player needs, etc. (limit 1000 characters).</Text>
+                            <View style= {styles.line}/>
 
-                            <View>
-                                <Picker
-                                    placeholder='Choose Method'
-                                    mode={'dropdown'}
-                                    note={false}
-                                    iosIcon={<Icon name="arrow-down" />}
-                                    style={ styles.commentsPicker}
-                                    selectedValue = {this.state.paymentMethod}
-                                    onValueChange={ (itemValue) => this.setState({paymentMethod:itemValue}) }
-                                >
-                                    <Picker.Item label={"Choose Method"} value={''} key={0} />
-                                    <Picker.Item label={"I will send an money email transfer to dave@perpetualmotion.org"} value={'I will send an money email transfer to dave@perpetualmotion.org'} key={1} />
-                                    <Picker.Item label={"I will mail a cheque to the Perpetual Motion head office"} value={'I will mail a cheque to the Perpetual Motion head office'} key={2} />
-                                    <Picker.Item label={"I will bring a cash/cheque to the Perpetual Motion head office"} value={'I will bring a cash/cheque to the Perpetual Motion head office'} key={3} />
-                                    <Picker.Item label={"I will bring cash/cheque to registration night"} value={'I will bring cash/cheque to registration night'} key={4} />
-                                    
-                                </Picker>
+                            {/**The loop that shows all the individual user forums */}
+                            <View style={styles.stack}>
+                                <View style={styles.stack}>
+                                    {counter = -1, this.state.players?this.state.players.map( (elem) => {
+                                        counter++
+                                        return (
+                                            <View style={styles.padding} key={counter}>
+                                                <Card>
+                                                    <AddingTeamMembersIndividual json={elem} func={this.update}/>
+                                                </Card>
+                                            </View>)
+                                    }):null}
+                                </View>
+                                
+                                {/**Add a new player */}
+                                <View style={styles.setHorizontal}>
+                                    <Button style={styles.botButton} title={'Add Player'} onPress={() => {
+                                        //Check for max list lenght
+                                        
+                                        if (this.state.players && this.state.players.length == 15) {
+                                            alert("Cannot have a team size greater than 15")
+                                        } else {
+                                            
+                                            //create the object and set its key to the current count (then update the count)
+                                            let obj = new Object
+                                            obj.key = this.state.count?this.state.count:0
+                                            this.setState({count: obj.key + 1})
+
+                                            obj.fn = ''
+                                            obj.ln = ''
+                                            obj.email = ''
+                                            obj.phone = ''
+                                            obj.sex = ''
+                                            obj.skill = ''
+
+                                            let arr = this.state.players?this.state.players:[]
+                                            arr.push(obj)
+                                            this.setState({players:arr})
+                                        }
+                                    }}/>
+
+                                    <Button title={'Remove Player'} style={styles.botButton} onPress={() => {
+                                        let arr = this.state.players
+                                        arr.pop()
+
+                                        this.setState({players:arr})
+                                    }}/>
+                                </View>
                             </View>
                         </View>
-                        
-                        <Text style={ [styles.normalText, {fontWeight:'bold'}]}>Make Checks Payable to Perpetual Motion</Text>
-                        <Text style={ [styles.normalText, {fontWeight:'bold'}]}>Send This Confirmation Form & Fees to:</Text>
-                        <Text style={styles.normalText}>78 Kathleen St. Guelph, Ontario; H1H 4Y3</Text>
-                    </View>
+                    </Card>
 
-                    <Text style={styles.header}>Registration Due By</Text>
-                    <View style= {styles.line}/>
-                    <View style={styles.addPadding}>
+                    <Card>
+                        <View>
+                            <Text style={styles.header}>Comments</Text>
+                            <Text style = {styles.subHeading}>Comments, notes, player needs, etc. (limit 1000 characters).</Text>
+                            <View style= {styles.line}/>
+                            
+                            <View style={styles.addPadding}>
+                                {/**The comment section */}
+                                <View style={ [styles.setHorizontal, styles.addPadding, styles.commentView]}>
+                                    <Text style={styles.normalText}>Comments </Text>
+                                    <TextInput
+                                        style={styles.textInput}
+                                        placeHolder={'Comment here...'}
+                                        multiLine={true}
+                                        onChangeText= { (comment) => this.setState( {comment})}
+                                        value={this.state.comment}                    
+                                    />
+                                </View>
+                                
+                                <View style={styles.addPadding, {justifyContent:'center', alignItems:'center' }}>
+                                    <Text style={styles.normalText}>How did you hear about us?</Text>
+                                    <View>
+                                        <Picker
+                                            placeholder='Choose Method'
+                                            mode="dropdown"
+                                            iosIcon={<Icon name="arrow-down" />}
+                                            style={ styles.commentsPicker}
+                                            selectedValue = {this.state.source}
+                                            onValueChange={ (method) => { this.setState({source:method})} }
+                                        >
+                                            <Picker.Item label="Choose Method" value='' key={0} />
+                                            <Picker.Item label="Google/Internet Search" value='Google/Internet Search' key={1} />
+                                            <Picker.Item label="Facebook Page" value='Facebook Page' key={2} />
+                                            <Picker.Item label="Kijiji Ad" value='Kijiji Ad' key={3} />
+                                            <Picker.Item label="Returning Player" value='Returning Player' key={4} />
+                                            <Picker.Item label="From a Friend" value='From a Friend' key={5} />
+                                            <Picker.Item label="Restaurant Ad" value='Restaurant Ad' key={6} />
+                                            <Picker.Item label="The Guelph Community Guide" value='The Guelph Community Guide' key={7} />
+                                            <Picker.Item label="Other" value='Other' key={8} />
+                                            
+                                        </Picker>
+                                    </View>
+                                </View>
+                            </View>
+                        </View>
+                    </Card>
 
-                        {/**Where the deadlines need to be inserted */}
-                        <Text style={ [styles.normalText, {fontWeight:'bold'}]}>Spring League</Text>
+                    <Card>
+                        <View>
+                            <Text style={styles.header}>Confirm Fees</Text>
+                            <Text style = {styles.subHeading}>The registration process is not finalized until fees have been paid.</Text>
+                            <View style= {styles.line}/>
+                            <View style={styles.addPadding}>
+                                <View style={ [styles.setHorizontal, styles.addPadding], {justifyContent:'center', alignItems:'center', paddingVertical:20 }}>
+                                    <Text style={styles.normalText}>Method
+                                        <Text style={{color:'red'}, styles.normalText}>*</Text>
+                                    </Text>
 
-                        <Text style={styles.normalText}>Ultimate Frisbee
-                            <Text style={{color:'#FF0000'}}>    *Insert date Here*</Text>
-                        </Text>
+                                    <View>
+                                        <Picker
+                                            placeholder='Choose Method'
+                                            mode={'dropdown'}
+                                            note={false}
+                                            iosIcon={<Icon name="arrow-down" />}
+                                            style={ styles.commentsPicker}
+                                            selectedValue = {this.state.paymentMethod}
+                                            onValueChange={ (itemValue) => this.setState({paymentMethod:itemValue}) }
+                                        >
+                                            <Picker.Item label={"Choose Method"} value={''} key={0} />
+                                            <Picker.Item label={"I will send an money email transfer to dave@perpetualmotion.org"} value={'I will send an money email transfer to dave@perpetualmotion.org'} key={1} />
+                                            <Picker.Item label={"I will mail a cheque to the Perpetual Motion head office"} value={'I will mail a cheque to the Perpetual Motion head office'} key={2} />
+                                            <Picker.Item label={"I will bring a cash/cheque to the Perpetual Motion head office"} value={'I will bring a cash/cheque to the Perpetual Motion head office'} key={3} />
+                                            <Picker.Item label={"I will bring cash/cheque to registration night"} value={'I will bring cash/cheque to registration night'} key={4} />
+                                            
+                                        </Picker>
+                                    </View>
+                                </View>
+                                
+                                <Text style={ [styles.normalText, {fontWeight:'bold'}]}>Make Checks Payable to Perpetual Motion</Text>
+                                <Text style={ [styles.normalText, {fontWeight:'bold'}]}>Send This Confirmation Form & Fees to:</Text>
+                                <Text style={styles.normalText}>78 Kathleen St. Guelph, Ontario; H1H 4Y3</Text>
+                            </View>
+                        </View>
+                    </Card>
+                    <Card>
+                        <View>
+                            <Text style={styles.header}>Registration Due By</Text>
+                            <View style= {styles.line}/>
+                            <View style={styles.addPadding}>
 
-                        <Text style={styles.normalText}>Beach Volleyball
-                            <Text style={{color:'#FF0000'}}>    *Insert date Here*</Text>
-                        </Text>
+                                {/**Where the deadlines need to be inserted */}
+                                <Text style={ [styles.normalText, {fontWeight:'bold'}]}>Spring League</Text>
 
-                        <Text style={styles.normalText}>Flag Football
-                            <Text style={{color:'#FF0000'}}>    *Insert date Here*</Text>
-                        </Text>
+                                <Text style={styles.normalText}>Ultimate Frisbee
+                                    <Text style={{color:'#FF0000'}}>    *Insert date Here*</Text>
+                                </Text>
 
-                        <Text style={styles.normalText}>Soccer
-                            <Text style={{color:'#FF0000'}}>    *Insert date Here*</Text>
-                        </Text>
-                    </View>
+                                <Text style={styles.normalText}>Beach Volleyball
+                                    <Text style={{color:'#FF0000'}}>    *Insert date Here*</Text>
+                                </Text>
 
-                    <Text style={styles.header}>Register</Text>
-                    <Text style = {styles.subHeading}>Submit your group registration to the convenor.</Text>
-                    <View style= {styles.line}/>
-                    <View style={styles.addPadding, {justifyContent:'space-between', flexDirection:'row'}}>
-                        <Button title={'register (Submit)'} color='red' onPress={() => {
-                            this.handleSubmit()
-                        }}/>
-                        {/*<Button title={'Print Forum'} color='red' onPress={ ()=>{
-                            this.props.reset()
-                        }}/>*/}
-                    </View>
-                </View>
-            </ScrollView>
+                                <Text style={styles.normalText}>Flag Football
+                                    <Text style={{color:'#FF0000'}}>    *Insert date Here*</Text>
+                                </Text>
+
+                                <Text style={styles.normalText}>Soccer
+                                    <Text style={{color:'#FF0000'}}>    *Insert date Here*</Text>
+                                </Text>
+                            </View>
+
+                            <View style={styles.addPadding, {justifyContent:'space-between', flexDirection:'row'}}>
+                                <Button title={'register (Submit)'} color='red' onPress={() => {
+                                    this.handleSubmit()
+                                }}/>
+
+                                {/**This is on the website, not sure if we want that functionality on the app */}
+                                {/*<Button title={'Print Forum'} color='red' onPress={ ()=>{
+                                    this.props.reset()
+                                }}/>*/}
+                            </View>
+                        </View>
+                    </Card>
+                </Content>
+            </Container>
         )
     }
 }
@@ -729,22 +751,22 @@ const mapStateToProps = state => ({
     TeamSubmisson: state.TeamSubmisson,
     team: state.teams,
     user: state.currentUser || {}
-  })
+})
   
-  const mapDispatchToProps = { 
+const mapDispatchToProps = { 
     getLeague: fetchLeague,
     onSubmit: submitTeam,
     saveTeamToState: saveTeamToState,
     reset: reset
-  }
+}
   
-  const connectToStore = connect(
-      mapStateToProps
-  )
+const connectToStore = connect(
+    mapStateToProps
+)
     // and that function returns the connected, wrapper component:
-    const ConnectedComponent = connectToStore(IndividualRegister)
+const ConnectedComponent = connectToStore(IndividualRegister)
   
-  export default connect(
+export default connect(
     mapStateToProps,
     mapDispatchToProps
-  )(IndividualRegister)
+)(IndividualRegister)

@@ -57,6 +57,22 @@ export default class AddingTeamMembers extends React.Component {
                         />
                     </View>
 
+                    <View style={styles.floatingBox}>
+                        <Text style={styles.text}>Phone Number           </Text>
+                        <TextInput  //First name
+                            placeholder={'Phone Number'}
+                            multiline={false}
+                            keyboardType={'number-pad'}
+                            autoComplete={'tel'}
+                            onChangeText={ (number) => {
+                                obj.phone = FN
+                                this.props.func(obj)
+                            }}
+                            value={obj.fn}
+                            style={styles.FillIn}
+                        />
+                    </View>
+
                     <View style={styles.floatingBox, {paddingBottom:5, flexDirection:'row', justifyContent: 'center',}}>
                         <View>
                             <Text style={styles.text}>Sex</Text>

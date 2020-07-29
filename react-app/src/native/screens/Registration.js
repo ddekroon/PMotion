@@ -1,56 +1,258 @@
 import React from 'react'
-import {Text, Button, View, TextInput, Header, ScrollView, StyleSheet, Modal, TouchableHighlight } from 'react-native'
-import PickTeam from '../components/register/Teams'
-import PickLeagues from '../components/register/ChooseLeague'
-import AddingTeamMembers from '../components/register/TeamMember'
-import Comment from '../components/register/Comment'
-//import RegisterTeam from '../components/register/RegisterTeam'
-import Login from './todo/Login'
-import Navigation from '../constants/navigation'
-import PreviousLeagues from './PreviousLeagues'
-import RegisterTeam from './RegisterTeam'
-import ChooseLeague from '../components/register/ChooseLeague'
-import IndividualRegister from './IndividualRegister'
+import {Text, View, StyleSheet, ScrollView, TouchableOpacity, TouchableHighlight, Image } from 'react-native'
+import Header from '../components/common/Header'
+import Previousleagues from './PreviousLeagues'
+import { Container, Content, Card, Button } from 'native-base'
+import PropTypes from 'prop-types' 
+import { connect } from 'react-redux'
+import { saveWaiverToState } from '../../actions/Waiver'
 
-/*
-const me = {
-  id:'imckechn',
-  FN:'Ian',
-  LN:'McKechnie',
-  email:'imckechn@uoguelph.ca',
-  phone:'1234567890',
-  sex:'Male',
-}*/
+//function Register({ navigation, route}) {
+  class Register extends React.Component {
 
-export default function Register({ navigation}) {
-  let me = {
-    id:'imckechn',
-    FN:'Ian',
-    LN:'McKechnie',
-    email:'imckechn@uoguelph.ca',
-    phone:'1234567890',
-    sex:'Male',
+  static propTypes = {
+    seasons: PropTypes.object.isRequired,
+    isLoading: PropTypes.bool.isRequired,
+    leagues: PropTypes.object.isRequired,
+    addWaiver: PropTypes.func.isRequired,
+    sports: PropTypes.array.isRequired,
+    team: PropTypes.object.isRequired,
   }
+  
+  render() {
+    const { navigation } = this.props;
+    //const navigation = useNavigation();
+    
+    let user = {  //Stub
+      id:1234,
+      FN:'Ian',
+      LN:'McKechnie',
+      email:'imckechn@uoguelph.ca',
+      phone:'1234567890',
+      sex:'Male',
+    }
 
-  return (
-    <ScrollView>
-      <Text>Perpetual Motion Registration</Text>
-      <Button title={'Register as an Indivdual or Small Group'} onPress={ () => {
-        navigation.navigate('PickSport', {registerType:'individualRegister'})
-      }}/>
+    let Waiver = { //Waiver base
+      Submitted:false,
+      name:'le Test',
+      email:'',
+      guardName:'',
+      guardEmail:'',
+    }
 
-      <Button title={'Re-register Previous Team'} onPress={ () => {
-        navigation.navigate('Login', {registerType:'reregister'})
-      }}/>
+    return (
+      <Container>
+        <Content>
+          <Card>
+            <View style={{flexDirection:'row', justifyContent:'space-around', paddingBottom:10, paddingTop:10}}>
+              
+              <Button rounded light onPress={() => {
+                navigation.navigate('profile', {user:user});
+              }}>
+                <Text>  My Profile  </Text>
+              </Button>
 
-      <Button title={'Register New Team'} onPress={ () => {
-        navigation.navigate('Login', {registerType:'newTeam'})
-      }}/>
+              <Button rounded light onPress={() => {
+                //console.log("This.props in register A = " + JSON.stringify(this.props))
+                console.log("A")
+                this.props.addWaiver(Waiver)
+                console.log("After, props.Waiver = " + JSON.stringify(this.props))
+                //console.log("This.props in register = " + JSON.stringify(this.props))
+                //navigation.navigate('waivers');
+              }}>
+                <Text>  Sign Waivers  </Text>
+              </Button>
 
-      <Button title={'View Old leagues'} onPress={ () => {
-        navigation.navigate('Previousleagues')
-      }}/>
-      
-    </ScrollView>
-  )
+            </View>
+          </Card>
+
+          <Card>
+
+            <View>
+              <View>
+                <Header
+                  title="Hello"
+                  content="Pick what you would like to register in."
+                />
+              </View>
+              <View style={{paddingBottom:10}}/>
+              
+              <TouchableOpacity 
+                onPress={ () => {
+                  navigation.navigate('PickSport', {registerType:'individualRegister'})
+                }}
+                style={styles.button}
+              >
+                <Text style={styles.text}>Register as an Indivdual or Small Group </Text>
+              </TouchableOpacity>
+              <View style={{paddingBottom:20}}/>
+
+              <TouchableOpacity 
+                onPress={ () => {
+                  navigation.navigate('Login', {registerType:'reregister'})
+                }}
+                style={styles.button}
+              >
+                <Text style={styles.text}>Re-register Previous Team</Text>
+              </TouchableOpacity>
+              <View style={{paddingBottom:20}}/>
+
+              <TouchableOpacity 
+                onPress={ () => {
+                  navigation.navigate('Login', {registerType:'newTeam'})
+                }}
+                style={styles.button}
+              >
+                <Text style={styles.text}>Register New Team</Text>
+              </TouchableOpacity>
+              <View style={{paddingBottom:15}}/>
+            </View>
+          </Card>
+
+          <Card>
+            <View>
+              <Text style={styles.header}>Registration Due By</Text>
+              <View style={styles.line}/>
+              <View style={{paddingBottom:20}}/>
+
+              <Text>Ultimate Frisbee
+                <Text style={{color:'red'}}>      INSERT DATA</Text>
+              </Text>
+              <View style={{paddingBottom:10}}/>
+        
+              <Text>Beach Volleyball
+                <Text style={{color:'red'}}>      INSERT DATA</Text>
+              </Text><View style={{paddingBottom:10}}/>
+
+              <Text>Flag Football
+                <Text style={{color:'red'}}>      INSERT DATA</Text>
+              </Text>
+              <View style={{paddingBottom:10}}/>
+
+              <Text>Soccer
+                <Text style={{color:'red'}}>      INSERT DATA</Text>
+              </Text>         
+              <View style={{paddingBottom:10}}/>   
+            </View>
+          </Card>
+
+          <Card>
+            <Previousleagues/>
+          </Card>
+
+          <Card>
+            <Text style={styles.header}>Choose a sport</Text>
+            <Text style={styles.subHeading}>Select a sport logo below to start a new registration</Text>
+            <View style={styles.line}/>
+            <View style={{paddingBottom:10}}/>
+            <View style={{
+                flex: 1,
+                flexDirection: 'column',
+                justifyContent: 'space-between',
+                alignItems:'center'
+            }}>
+              
+              <TouchableHighlight  onPress={() => {
+                navigation.navigate('RegisterNewTeam', {sport:1})  //Runs when the user selects it from the registration page
+              }}>
+                  <Image
+                      source ={ require('../../images/ultimate-small.png')}
+                  />
+              </TouchableHighlight >
+
+              <View style={{paddingTop:10}}/>
+              <TouchableHighlight  onPress={() => {
+                navigation.navigate('RegisterNewTeam',{sport:2})  //Runs when the user selects it from the registration page
+              }}>
+                  <Image
+                      source ={ require('../../images/volleyball-small.png')}
+                  />
+              </TouchableHighlight >
+
+              <View style={{paddingTop:10}}/>
+              <TouchableHighlight  onPress={() => {
+                navigation.navigate('RegisterNewTeam',{sport:3})  //Runs when the user selects it from the registration page
+              
+              }}>
+                  <Image
+                      source ={ require('../../images/football-small.png')}
+                  />
+              </TouchableHighlight >
+
+              <View style={{paddingTop:10}}/>
+              <TouchableHighlight  onPress={() => {
+                  navigation.navigate('RegisterNewTeam',{sport:4})  //Runs when the user selects it from the registration page
+                  
+              }}>
+                  <Image
+                      source ={ require('../../images/soccer-small.png')}
+                  />
+              </TouchableHighlight >
+            </View>
+          </Card>
+        </Content>
+      </Container>
+    )
+  }
 }
+
+const styles = StyleSheet.create({ 
+  button: {
+    width:'100%',
+    //backgroundColor:'#212F3D',
+    backgroundColor:'red',
+    borderRadius: 5,
+    textAlign:'center',
+    fontWeight: 'bold',
+    height: 40,
+    flexDirection:'column',
+    justifyContent: 'space-between',
+    alignItems:'center',
+  },
+
+  text: {
+    color:'white',
+    fontSize:20,
+    textAlign:'center',
+  },
+
+  header: {
+    fontWeight:'bold',
+    fontSize:35
+  },
+
+  subHeading: {
+      color: '#474747',
+      fontSize:12,
+  },
+
+  line: {
+      borderBottomColor:'black',
+      borderBottomWidth:1,
+  },
+})
+
+const mapStateToProps = state => ({
+  seasons: state.lookups.scoreReporterSeasons || [],
+  leagues: state.leagues || {},
+  sports: state.lookups.sports || [],
+  isLoading: state.status.loading || false,
+  TeamSubmisson: state.TeamSubmisson,
+  team: state.teams,
+  user: state.currentUser || {}
+})
+
+const mapDispatchToProps = { 
+  addWaiver: saveWaiverToState,
+}
+
+const connectToStore = connect(
+  mapStateToProps
+)
+  // and that function returns the connected, wrapper component:
+const ConnectedComponent = connectToStore(Register)
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Register)

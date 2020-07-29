@@ -14,7 +14,7 @@ ex: const user = {
 import React, {useState} from 'react'
 import PropTypes from 'prop-types' 
 import { connect } from 'react-redux'
-import {Icon, Picker } from 'native-base'
+import {Icon, Picker, Container, Content, Card } from 'native-base'
 import { fetchLeague } from '../../actions/leagues' //Gets the leagues from the web.
 import DateTimeHelpers from '../../utils/datetimehelpers'
 import {TextInput, Text, View, Button} from 'react-native'
@@ -85,7 +85,8 @@ class RegisterTeam extends React.Component {
 
     //When the user changes their league choice, it gets updated in the state here
     updateLeague = (league) => {
-         this.setState({ league: league })
+        console.log("league " + league)
+        this.setState({ league: league })
     }
 
     //When submitting the forum, this checks that all the required fields are filled out
@@ -149,7 +150,7 @@ class RegisterTeam extends React.Component {
         //Get the league ID
         let league;
 
-        seasons[this.props.route.params.sport][0].leagues.map( (curLeague) => {
+        seasons[this.props.route?.params?.sport?this.props.route.params.sport:1][0].leagues.map( (curLeague) => {
             if (this.state.league == curLeague.name) {
                 obj.leagueId = curLeague.id;
                 league  = curLeague //Need this later 
@@ -225,6 +226,7 @@ class RegisterTeam extends React.Component {
     }
 
     render() {
+
         let counter = 0;
         if (!seasons) console.log("Error loading seasons")
 
@@ -233,305 +235,314 @@ class RegisterTeam extends React.Component {
             seasons
         } = this.props
 
-        console.log('the props = ' + JSON.stringify(this.props))
+        //console.log('the props = ' + JSON.stringify(this.props))
 
         return (
-            <ScrollView>
-                <Text style={styles.header, styles.addPadding}>Team Register</Text>
-                <View style={styles.addPadding}>
-                <View style={styles.setHorizontal}>
+            <Container>
+                <Content>
+                    <Card>
+                        <Text style={styles.header}>Team Register</Text>
+                        <View style={styles.addPadding}/>
 
-                    {/**Where the user chooses the league they want their team to play in */}
-                    <Text style={styles.normalText}>League
-                        <Text style={styles.normalText, {color:'red'} }>*</Text>
-                    </Text>
-                    <Picker
-                    placeholder="League"
-                    note={false}
-                    mode="dropdown"
-                    iosIcon={<Icon name="arrow-down" />}
-                    selectedValue = {this.state.league}
-                    onValueChange={this.updateLeague}
-                    style = {{
-                        borderWidth: 1,
-                        alignItems: 'center',
-                        flexDirection:'row',
-                        justifyContent: 'center',
-                        //Should be centered :/
-                    }}
-                    >
+                        <View style={styles.addPadding}>
+                            <View style={styles.setHorizontal}>
 
-                    <Picker.Item key={0} label={'League'} value={''} />
-                        {seasons[this.props.route.params.sport][0].leagues.map(curLeague => {
-                            var leagueName =
-                                curLeague.name +
-                                ' - ' +
-                                DateTimeHelpers.getDayString(curLeague.dayNumber)
-
-                            return (
-                                <Picker.Item
-                                key={curLeague.id}
-                                label={leagueName}
-                                value={curLeague.id}
-                                />
-                            )
-                        })}
-                    </Picker>
-                </View>
-
-                <View style={styles.setHorizontal}>
-                    {/**Where the user chooses their team name */}
-                    <Text style={styles.normalText}>Team Name
-                        <Text style={styles.normalText, {color:'red'} }>*</Text>
-                    </Text>
-                    <TextInput style={styles.textInput} onChangeText={(val) => this.setState({teamName:val})} value={this.state.teamName}/>
-                    </View>
-                </View>
-
-                {/**The team capt. fill in information */}
-                <View style={styles.main}>
-                    <View style={styles.padding}>
-                    <Text style={{fontSize:20, fontWeight:'bold'}}>Team Captain</Text>
-                        <View style={styles.floatingBox}>
-                            <Text style={styles.text}>First Name           </Text>
-                            <TextInput  //First name
-                                placeholder={'First Name'}
-                                multiline={false}
-                                value={this.state.FN}
-                                autoCapitalize={'words'}
-                                autoComplete={'name'}
-                                onChangeText={ (FN) => this.setState({ FN })}
-                                style={styles.FillIn}
-                            />
-                        </View>
-
-                        <View style={styles.floatingBox}>
-                            <Text style={styles.text}>Last Name            </Text>
-                            <TextInput  //Last name
-                                placeholder={'Last Name'}
-                                autoCapitalize={'words'}
-                                value={this.state.LN}
-                                multiline={false}
-                                onChangeText={ (LN) => this.setState({ LN })}
-                                style={styles.FillIn}
-                            />
-                        </View>
-                        
-                        <View style={styles.floatingBox}>
-                            <Text style={styles.text}>Email                     </Text>
-                            <TextInput  //Email
-                                placeholder={'Email'}
-                                keyboardType={'email-address'}
-                                value={this.state.email}
-                                multiline={false}
-                                autoComplete={'email'}
-                                onChangeText={ (email) => this.setState({ email }) }
-                                style={styles.FillIn}
-                            />
-                        </View>
-                        
-                        <View style={styles.floatingBox}>
-                            <Text style={styles.text}>Phone Number     </Text>
-                            <TextInput  //Phone Number
-                                placeholder={'Phone Number'}
-                                value={this.state.phone}
-                                keyboardType={'number-pad'}
-                                multiline={false}
-                                onChangeText={ (phone) => this.setState({ phone })}
-                                style={styles.FillIn}
-                            />
-                        </View>
-                        
-                        <View style={styles.floatingBox, {paddingBottom:5, flexDirection:'column', justifyContent: 'center', alignItems:'center'}}>
-                            <Text style={styles.text}>Sex</Text>
-                            <Picker
-                                placeholder='Sex'
-                                mode="dropdown"
-                                iosIcon={<Icon name="arrow-down" />}
-                                style={ styles.picker}
-                                selectedValue = {this.state.sex}
-                                onValueChange={ (sex) => this.setState({sex:sex}) }
-                            >
-                                <Picker.Item label='Sex' value='Sex' key={0} />
-                                <Picker.Item label="Male" value="Male" key={1} />
-                                <Picker.Item label="Female" value="Female" key={2} />
-                            </Picker>
-                        </View>
-                    </View>
-                </View> 
-
-                <View>
-
-                    <Text style={styles.header}>Player Information</Text>
-                    <Text style = {styles.subHeading}>Comments, notes, player needs, etc. (limit 1000 characters).</Text>
-                    <View style= {styles.line}/>
-
-                    {/**The loop that shows all the individual user forums */}
-                    <View style={styles.stack}>
-                        <View style={styles.stack}>
-                            {counter = -1, this.state.jsonPlayers?this.state.jsonPlayers.map( (elem) => {
-                                counter++
-                                return (<View style={styles.padding} key={counter}>
-                                        <AddingTeamMembers json={elem} func={this.update}/>
-                                    </View>)
-                            }):null}
-                        </View>
-                        
-                        {/**Add a new player */}
-                        <View style={styles.setHorizontal}>
-                            <Button style={styles.botButton} title={'Add Player'} onPress={() => {
-
-                                if (this.state.jsonPlayers && this.state.jsonPlayers.length == 14) {
-                                    alert("Cannot have a team size greater than 15")
-                                } else {
-                                    
-                                    //create the object and set its index to the current count (then update the count)
-                                    let obj = new Object
-                                    obj.index = this.state.count?this.state.count:0
-                                    this.setState({count: obj.index + 1})
-
-                                    obj.firstName = ''
-                                    obj.lastName = ''
-                                    obj.email = ''
-                                    obj.sex = ''
-                                    obj.key = obj.index
-
-                                    let arr = this.state.jsonPlayers?this.state.jsonPlayers:[]
-                                    arr.push(obj)
-                                    this.setState({jsonPlayers:arr})
-                                }
-                            }}/>
-
-                            <Button title={'Remove Player'} style={styles.botButton} onPress={() => {
-                                let arr = this.state.jsonPlayers
-                                arr?arr.pop():alert("No teammates created yet.")
-
-                                this.setState({jsonPlayers:arr})
-                            }}/>
-                        </View>
-                    </View>
-                </View>
-
-                <View>
-                    {/**Where the user enter a new comment */}
-                    <Text style={styles.header}>Comments</Text>
-                    <Text style = {styles.subHeading}>Comments, notes, player needs, etc. (limit 1000 characters).</Text>
-                    <View style= {styles.line}/>
-                    
-                    <View style={styles.addPadding}>
-                        <View style={ [styles.setHorizontal, styles.addPadding, styles.commentView]}>
-                            <Text style={styles.normalText}>Comments </Text>
-                            <TextInput
-                                style={styles.textInput}
-                                placeHolder={'Comment here...'}
-                                multiLine={true}
-                                onChangeText= { (comment) => this.setState( {comment})}
-                                value={this.state.comment}                    
-                            />
-                        </View>
-                        
-                        {/**Where the user tells us hwo they heard about Perpetual Motion */}
-                        <View style={styles.addPadding, {justifyContent:'center', alignItems:'center' }}>
-                            <Text style={styles.normalText}>How did you hear about us?</Text>
-                            <View>
+                                {/**Where the user chooses the league they want their team to play in */}
+                                <Text style={styles.normalText}>League
+                                    <Text style={styles.normalText, {color:'red'} }>*</Text>
+                                </Text>
                                 <Picker
-                                    placeholder='Choose Method'
+                                    placeholder="League"
+                                    note={false}
                                     mode="dropdown"
                                     iosIcon={<Icon name="arrow-down" />}
-                                    style={ styles.commentsPicker}
-                                    selectedValue = {this.state.hearMethod}
-                                    onValueChange={ (method) => { this.setState({hearMethod:method})} }
+                                    selectedValue = {this.state.league}
+                                    onValueChange={this.updateLeague}
+                                    style = {{
+                                        borderWidth: 1,
+                                        alignItems: 'center',
+                                        flexDirection:'row',
+                                        justifyContent: 'center',
+                                        //Should be centered :/
+                                    }}
                                 >
-                                    <Picker.Item label="Choose Method" value='' key={0} />
-                                    <Picker.Item label="Google/Internet Search" value='Google/Internet Search' key={1} />
-                                    <Picker.Item label="Facebook Page" value='Facebook Page' key={2} />
-                                    <Picker.Item label="Kijiji Ad" value='Kijiji Ad' key={3} />
-                                    <Picker.Item label="Returning Player" value='Returning Player' key={4} />
-                                    <Picker.Item label="From a Friend" value='From a Friend' key={5} />
-                                    <Picker.Item label="Restaurant Ad" value='Restaurant Ad' key={6} />
-                                    <Picker.Item label="The Guelph Community Guide" value='The Guelph Community Guide' key={7} />
-                                    <Picker.Item label="Other" value='Other' key={8} />
-                                    
+
+                                    <Picker.Item key={0} label={'League'} value={''} />
+                                    {seasons[this.props.route?.params?.sport?this.props.route.params.sport:1][0].leagues.map(curLeague => {
+                                        var leagueName =
+                                            curLeague.name +
+                                            ' - ' +
+                                            DateTimeHelpers.getDayString(curLeague.dayNumber)
+
+                                        return (
+                                            <Picker.Item
+                                                key={curLeague.id}
+                                                label={leagueName}
+                                                value={curLeague.id}
+                                            />
+                                        )
+                                    })}
                                 </Picker>
                             </View>
-                        </View>
-                        
-                    </View>
-                    
-                    {/**Where the fees are confirmed */}
-                    <Text style={styles.header}>Confirm Fees</Text>
-                    <Text style = {styles.subHeading}>The registration process is not finalized until fees have been paid.</Text>
-                    <View style= {styles.line}/>
 
-                    <View style={styles.addPadding}>
-                        <View style={ [styles.setHorizontal, styles.addPadding], {justifyContent:'center', alignItems:'center', paddingVertical:20 }}>
-                            <Text style={styles.normalText}>Method
-                                <Text style={styles.normalText, {color:'red'} }>*</Text>
+                             <View style={styles.setHorizontal}>
+                                {/**Where the user chooses their team name */}
+                                <Text style={styles.normalText}>Team Name
+                                    <Text style={styles.normalText, {color:'red'} }>*</Text>
+                                </Text>
+                                <TextInput style={styles.textInput} onChangeText={(val) => this.setState({teamName:val})} value={this.state.teamName}/>
+                                
+                            </View>
+                        </View>
+                    </Card>
+
+                    <Card>
+                        <View style={styles.padding}>
+                            <Text style={{fontSize:20, fontWeight:'bold'}}>Team Captain</Text>
+                            <View style={styles.floatingBox}>
+                                <Text style={styles.text}>First Name           </Text>
+                                <TextInput  //First name
+                                    placeholder={'First Name'}
+                                    multiline={false}
+                                    value={this.state.FN}
+                                    autoCapitalize={'words'}
+                                    autoComplete={'name'}
+                                    onChangeText={ (FN) => this.setState({ FN })}
+                                    style={styles.FillIn}
+                                />
+                            </View>
+
+                            <View style={styles.floatingBox}>
+                                <Text style={styles.text}>Last Name            </Text>
+                                <TextInput  //Last name
+                                    placeholder={'Last Name'}
+                                    autoCapitalize={'words'}
+                                    value={this.state.LN}
+                                    multiline={false}
+                                    onChangeText={ (LN) => this.setState({ LN })}
+                                    style={styles.FillIn}
+                                />
+                            </View>
+                            
+                            <View style={styles.floatingBox}>
+                                <Text style={styles.text}>Email                     </Text>
+                                <TextInput  //Email
+                                    placeholder={'Email'}
+                                    keyboardType={'email-address'}
+                                    value={this.state.email}
+                                    multiline={false}
+                                    autoComplete={'email'}
+                                    onChangeText={ (email) => this.setState({ email }) }
+                                    style={styles.FillIn}
+                                />
+                            </View>
+                            
+                            <View style={styles.floatingBox}>
+                                <Text style={styles.text}>Phone Number     </Text>
+                                <TextInput  //Phone Number
+                                    placeholder={'Phone Number'}
+                                    value={this.state.phone}
+                                    autoComplete={'tel'}
+                                    keyboardType={'number-pad'}
+                                    multiline={false}
+                                    onChangeText={ (phone) => this.setState({ phone })}
+                                    style={styles.FillIn}
+                                />
+                            </View>
+                            
+                            <View style={styles.floatingBox, {paddingBottom:5, flexDirection:'column', justifyContent: 'center', alignItems:'center'}}>
+                                <Text style={styles.text}>Sex</Text>
+                                <Picker
+                                    placeholder='Sex'
+                                    mode="dropdown"
+                                    iosIcon={<Icon name="arrow-down" />}
+                                    style={ styles.picker}
+                                    selectedValue = {this.state.sex}
+                                    onValueChange={ (sex) => this.setState({sex:sex}) }
+                                >
+                                    <Picker.Item label='Sex' value='Sex' key={0} />
+                                    <Picker.Item label="Male" value="Male" key={1} />
+                                    <Picker.Item label="Female" value="Female" key={2} />
+                                </Picker>
+                            </View>
+                        </View> 
+                    </Card>
+
+                    <Card>
+                        <Text style={styles.header}>Player Information</Text>
+                        <Text style = {styles.subHeading}>Comments, notes, player needs, etc. (limit 1000 characters).</Text>
+                        <View style= {styles.line}/>
+
+                        {/**The loop that shows all the individual user forums */}
+                        <View style={styles.stack}>
+                            <View style={styles.stack}>
+                                {counter = -1, this.state.jsonPlayers?this.state.jsonPlayers.map( (elem) => {
+                                    counter++
+                                    return (
+                                        <Card key={counter}>
+                                            <View style={styles.padding} key={counter}>
+                                                <AddingTeamMembers json={elem} func={this.update}/>
+                                            </View>
+                                        </Card>
+                                    )
+                                }):null}
+                            </View>
+                            
+                            {/**Add a new player */}
+                            <View style={styles.setHorizontal}>
+                                <Button style={styles.botButton} title={'Add Player'} onPress={() => {
+
+                                    if (this.state.jsonPlayers && this.state.jsonPlayers.length == 14) {
+                                        alert("Cannot have a team size greater than 15")
+                                    } else {
+                                        
+                                        //create the object and set its index to the current count (then update the count)
+                                        let obj = new Object
+                                        obj.index = this.state.count?this.state.count:0
+                                        this.setState({count: obj.index + 1})
+
+                                        obj.firstName = ''
+                                        obj.lastName = ''
+                                        obj.email = ''
+                                        obj.sex = ''
+                                        obj.phone = ''
+                                        obj.key = obj.index
+
+                                        let arr = this.state.jsonPlayers?this.state.jsonPlayers:[]
+                                        arr.push(obj)
+                                        this.setState({jsonPlayers:arr})
+                                    }
+                                }}/>
+
+                                <Button title={'Remove Player'} style={styles.botButton} onPress={() => {
+                                    let arr = this.state.jsonPlayers
+                                    arr?arr.pop():alert("No teammates created yet.")
+
+                                    this.setState({jsonPlayers:arr})
+                                }}/>
+                            </View>
+                        </View>
+                    </Card>
+
+                    <Card>
+                        <Text style={styles.header}>Comments</Text>
+                        <Text style = {styles.subHeading}>Comments, notes, player needs, etc. (limit 1000 characters).</Text>
+                        <View style= {styles.line}/>
+                        
+                        <View style={styles.addPadding}>
+                            <View style={ [styles.setHorizontal, styles.addPadding, styles.commentView]}>
+                                <View style={{paddingTop:10}}/>
+                                <Text style={styles.normalText}>Comments </Text>
+                                <TextInput
+                                    style={styles.textInput}
+                                    placeHolder={'Comment here...'}
+                                    multiLine={true}
+                                    onChangeText= { (comment) => this.setState( {comment})}
+                                    value={this.state.comment}                    
+                                />
+                            </View>
+                            
+                            {/**Where the user tells us hwo they heard about Perpetual Motion */}
+                            <View style={styles.addPadding, {justifyContent:'center', alignItems:'center' }}>
+                                <Text style={styles.normalText}>How did you hear about us?</Text>
+                                <View>
+                                    <Picker
+                                        placeholder='Choose Method'
+                                        mode="dropdown"
+                                        iosIcon={<Icon name="arrow-down"/>}
+                                        style={ styles.commentsPicker}
+                                        selectedValue = {this.state.hearMethod}
+                                        onValueChange={ (method) => { this.setState({hearMethod:method})} }
+                                    >
+                                        <Picker.Item label="Choose Method" value='' key={0} />
+                                        <Picker.Item label="Google/Internet Search" value='Google/Internet Search' key={1} />
+                                        <Picker.Item label="Facebook Page" value='Facebook Page' key={2} />
+                                        <Picker.Item label="Kijiji Ad" value='Kijiji Ad' key={3} />
+                                        <Picker.Item label="Returning Player" value='Returning Player' key={4} />
+                                        <Picker.Item label="From a Friend" value='From a Friend' key={5} />
+                                        <Picker.Item label="Restaurant Ad" value='Restaurant Ad' key={6} />
+                                        <Picker.Item label="The Guelph Community Guide" value='The Guelph Community Guide' key={7} />
+                                        <Picker.Item label="Other" value='Other' key={8} />
+                                        
+                                    </Picker>
+                                </View>
+                            </View>
+                        </View>
+                    </Card>
+
+                    <Card>
+                        <Text style={styles.header}>Confirm Fees</Text>
+                        <Text style = {styles.subHeading}>The registration process is not finalized until fees have been paid.</Text>
+                        <View style= {styles.line}/>
+
+                        <View style={styles.addPadding}>
+                            <View style={ [styles.setHorizontal, styles.addPadding], {justifyContent:'center', alignItems:'center', paddingVertical:20 }}>
+                                
+                                <Text style={styles.normalText}>Method
+                                    <Text style={styles.normalText, {color:'red'} }>*</Text>
+                                </Text>
+
+                                <View>
+                                    <Picker
+                                        placeholder='Choose Method'
+                                        mode={'dropdown'}
+                                        note={false}
+                                        iosIcon={<Icon name="arrow-down" />}
+                                        style={ styles.commentsPicker}
+                                        selectedValue = {this.state.paymentMethod}
+                                        onValueChange={ (itemValue, itemIndex) => this.setState({paymentMethod:itemValue}) }
+                                    >
+                                        <Picker.Item label={"Choose Method"} value={''} key={0} />
+                                        <Picker.Item label={"I will send an money email transfer to dave@perpetualmotion.org"} value={'I will send an money email transfer to dave@perpetualmotion.org'} key={1} />
+                                        <Picker.Item label={"I will mail a cheque to the Perpetual Motion head office"} value={'I will mail a cheque to the Perpetual Motion head office'} key={2} />
+                                        <Picker.Item label={"I will bring a cash/cheque to the Perpetual Motion head office"} value={'I will bring a cash/cheque to the Perpetual Motion head office'} key={3} />
+                                        <Picker.Item label={"I will bring cash/cheque to registration night"} value={'I will bring cash/cheque to registration night'} key={4} />
+                                        
+                                    </Picker>
+                                </View>
+                            </View>
+                            
+                            <Text style={ [styles.normalText, {fontWeight:'bold'}]}>Make Checks Payable to Perpetual Motion</Text>
+                            <Text style={ [styles.normalText, {fontWeight:'bold'}]}>Send This Confirmation Form & Fees to:</Text>
+                            <Text style={styles.normalText}>78 Kathleen St. Guelph, Ontario; H1H 4Y3</Text>
+                        </View>
+
+                        {/**Where we need to add server calls to get the registration due dates*/}
+                        <Text style={styles.header}>Registration Due By</Text>
+                        <View style= {styles.line}/>
+                        <View style={styles.addPadding}>
+                            <Text style={ [styles.normalText, {fontWeight:'bold'}]}>Spring League</Text>
+
+                            <Text style={styles.normalText}>Ultimate Frisbee
+                                <Text style={{color:'#FF0000'}}>    *Insert date Here*</Text>
                             </Text>
 
-                            <View>
-                                <Picker
-                                    placeholder='Choose Method'
-                                    mode={'dropdown'}
-                                    note={false}
-                                    iosIcon={<Icon name="arrow-down" />}
-                                    style={ styles.commentsPicker}
-                                    selectedValue = {this.state.paymentMethod}
-                                    onValueChange={ (itemValue, itemIndex) => this.setState({paymentMethod:itemValue}) }
-                                >
-                                    <Picker.Item label={"Choose Method"} value={''} key={0} />
-                                    <Picker.Item label={"I will send an money email transfer to dave@perpetualmotion.org"} value={'I will send an money email transfer to dave@perpetualmotion.org'} key={1} />
-                                    <Picker.Item label={"I will mail a cheque to the Perpetual Motion head office"} value={'I will mail a cheque to the Perpetual Motion head office'} key={2} />
-                                    <Picker.Item label={"I will bring a cash/cheque to the Perpetual Motion head office"} value={'I will bring a cash/cheque to the Perpetual Motion head office'} key={3} />
-                                    <Picker.Item label={"I will bring cash/cheque to registration night"} value={'I will bring cash/cheque to registration night'} key={4} />
-                                    
-                                </Picker>
-                            </View>
+                            <Text style={styles.normalText}>Beach Volleyball
+                                <Text style={{color:'#FF0000'}}>    *Insert date Here*</Text>
+                            </Text>
+
+                            <Text style={styles.normalText}>Flag Football
+                                <Text style={{color:'#FF0000'}}>    *Insert date Here*</Text>
+                            </Text>
+
+                            <Text style={styles.normalText}>Soccer
+                                <Text style={{color:'#FF0000'}}>    *Insert date Here*</Text>
+                            </Text>
+
                         </View>
-                        
-                        <Text style={ [styles.normalText, {fontWeight:'bold'}]}>Make Checks Payable to Perpetual Motion</Text>
-                        <Text style={ [styles.normalText, {fontWeight:'bold'}]}>Send This Confirmation Form & Fees to:</Text>
-                        <Text style={styles.normalText}>78 Kathleen St. Guelph, Ontario; H1H 4Y3</Text>
-                    </View>
 
-                    {/**Where we need to add server calls to get the registration due dates*/}
-                    <Text style={styles.header}>Registration Due By</Text>
-                    <View style= {styles.line}/>
-                    <View style={styles.addPadding}>
-                        <Text style={ [styles.normalText, {fontWeight:'bold'}]}>Spring League</Text>
+                        <Text style={styles.header}>Register</Text>
+                        <Text style = {styles.subHeading}>Submit your group registration to the convenor.</Text>
+                        <View style= {styles.line}/>
 
-                        <Text style={styles.normalText}>Ultimate Frisbee
-                            <Text style={{color:'#FF0000'}}>    *Insert date Here*</Text>
-                        </Text>
-
-                        <Text style={styles.normalText}>Beach Volleyball
-                            <Text style={{color:'#FF0000'}}>    *Insert date Here*</Text>
-                        </Text>
-
-                        <Text style={styles.normalText}>Flag Football
-                            <Text style={{color:'#FF0000'}}>    *Insert date Here*</Text>
-                        </Text>
-
-                        <Text style={styles.normalText}>Soccer
-                            <Text style={{color:'#FF0000'}}>    *Insert date Here*</Text>
-                        </Text>
-
-                    </View>
-
-                    <Text style={styles.header}>Register</Text>
-                    <Text style = {styles.subHeading}>Submit your group registration to the convenor.</Text>
-                    <View style= {styles.line}/>
-                    <View style={styles.addPadding, {justifyContent:'space-between', flexDirection:'row'}}>
-                        <Button title={'register (Submit)'} color='red' onPress={() => {
-                            this.handleSubmit(seasons)
-                        }}/>
-                        {/*<Button title={'Print Forum'} color='red' onPress={() => {
-                            
-                        }}/>*/}
-                        
-                    </View>
-                </View>
-            </ScrollView>
+                        <View style={styles.addPadding, {justifyContent:'space-between', flexDirection:'row'}}>
+                            <Button title={'register (Submit)'} color='red' onPress={() => {
+                                this.handleSubmit(seasons)
+                            }}/>
+                        </View>
+                    </Card>
+                </Content>
+            </Container>
         )
     }
 }
@@ -560,14 +571,12 @@ const styles = StyleSheet.create({
 
   setHorizontal: {
       flexDirection:'row',
-      
   },  
 
   textInput: {
       borderBottomWidth:1,
       borderBottomColor:'red',
       width:'75%'
-  
   },
 
   normalText: {
@@ -655,8 +664,6 @@ const mapDispatchToProps = {
 const connectToStore = connect(
     mapStateToProps
 )
-  // and that function returns the connected, wrapper component:
-//const ConnectedComponent = connectToStore(RegisterTeam) //dont think i need this.
 
 export default connect(
   mapStateToProps,

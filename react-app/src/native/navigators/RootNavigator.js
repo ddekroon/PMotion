@@ -21,6 +21,8 @@ import Login from '../screens/Login'
 import PickSport from '../components/SportChooser'
 import Previousleagues from '../screens/PreviousLeagues'
 import RegisterTeam from '../screens/RegisterTeam'
+import Profile from '../screens/Profile'
+import Waivers from '../screens/Waivers'
 
 const Stack = createStackNavigator();
 
@@ -107,6 +109,16 @@ class RootNavigator extends React.Component {
         <Stack.Screen
           name='RegisterNewTeam'
           component={RegisterTeam}
+        />
+        
+        <Stack.Screen
+          name='profile'
+          component={Profile}
+        />
+        
+        <Stack.Screen
+          name='waivers'
+          component={Waivers}
         />
         
       </Stack.Navigator>
