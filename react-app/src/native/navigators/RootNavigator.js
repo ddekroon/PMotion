@@ -23,6 +23,8 @@ import Previousleagues from '../screens/PreviousLeagues'
 import RegisterTeam from '../screens/RegisterTeam'
 import Profile from '../screens/Profile'
 import Waivers from '../screens/Waivers'
+import NewUser from '../screens/NewUser'
+import ForgotPassword from '../screens/ForgotPassword'
 
 const Stack = createStackNavigator();
 
@@ -119,6 +121,17 @@ class RootNavigator extends React.Component {
         <Stack.Screen
           name='waivers'
           component={Waivers}
+        />
+
+        <Stack.Screen
+          name='NewUser'
+          component={NewUser}
+          //navigationOptions={{gesturesEnable:false}}
+        />
+
+        <Stack.Screen
+          name='ForgotPassword'
+          component={ForgotPassword}
         />
         
       </Stack.Navigator>

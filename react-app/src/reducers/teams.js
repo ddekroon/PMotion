@@ -42,7 +42,7 @@ export default function teamsReducer(state = initialState, action) {
 				[variable]:action.team
 			});
 		case 'RESTART':
-			//been using this to delete test pushes
+			//been using this to delete test pushes because they stay in the redux state even if the expo server get reset
 			return Object.assign({}, state, {
 				4695:undefined,
 				3933:undefined,

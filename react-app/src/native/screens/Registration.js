@@ -1,13 +1,13 @@
 import React from 'react'
-import {Text, View, StyleSheet, ScrollView, TouchableOpacity, TouchableHighlight, Image } from 'react-native'
+import {Text, View, StyleSheet, TouchableOpacity, TouchableHighlight, Image } from 'react-native'
 import Header from '../components/common/Header'
 import Previousleagues from './PreviousLeagues'
 import { Container, Content, Card, Button } from 'native-base'
 import PropTypes from 'prop-types' 
 import { connect } from 'react-redux'
 import { saveWaiverToState } from '../../actions/Waiver'
+import ToastHelpers from '../../utils/toasthelpers';
 
-//function Register({ navigation, route}) {
   class Register extends React.Component {
 
   static propTypes = {
@@ -21,7 +21,7 @@ import { saveWaiverToState } from '../../actions/Waiver'
   
   render() {
     const { navigation } = this.props;
-    //const navigation = useNavigation();
+    let starterShown = false
     
     let user = {  //Stub
       id:1234,
@@ -40,6 +40,11 @@ import { saveWaiverToState } from '../../actions/Waiver'
       guardEmail:'',
     }
 
+    if (this.props.route?.params?.showToast && !starterShown) {
+      ToastHelpers.showToast(null, this.props.route.params.toastString);
+      //starterShown = !starterShown
+    }
+
     return (
       <Container>
         <Content>
@@ -55,10 +60,9 @@ import { saveWaiverToState } from '../../actions/Waiver'
               <Button rounded light onPress={() => {
                 //console.log("This.props in register A = " + JSON.stringify(this.props))
                 console.log("A")
-                this.props.addWaiver(Waiver)
-                console.log("After, props.Waiver = " + JSON.stringify(this.props))
+                //console.log("After, props = " + JSON.stringify(this.props))
                 //console.log("This.props in register = " + JSON.stringify(this.props))
-                //navigation.navigate('waivers');
+                navigation.navigate('waivers');
               }}>
                 <Text>  Sign Waivers  </Text>
               </Button>
@@ -135,11 +139,11 @@ import { saveWaiverToState } from '../../actions/Waiver'
               <View style={{paddingBottom:10}}/>   
             </View>
           </Card>
-
+          
           <Card>
             <Previousleagues/>
           </Card>
-
+          
           <Card>
             <Text style={styles.header}>Choose a sport</Text>
             <Text style={styles.subHeading}>Select a sport logo below to start a new registration</Text>

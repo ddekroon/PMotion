@@ -7,13 +7,13 @@ import {Icon, Picker, Container, Content, Card} from 'native-base'
 import { fetchLeague } from '../../actions/leagues' //Gets the leagues from the web.
 import {TextInput, Text, View, Button, Modal, TouchableHighlight, StyleSheet} from 'react-native'
 import { ScrollView } from 'react-native-gesture-handler';
-import { submitTeam } from '../../actions/teams'
 import ToastHelpers from '../../utils/toasthelpers'
 import ValidationHelpers from '../../utils/validationhelpers'
 import TeamPicker from '../components/common/TeamPicker'
 import AddingTeamMembersIndividual from '../components/register/IndividualTeamMemberPlayerAdder'
 import {
     saveTeamToState,
+    submitTeam,
     reset
 } from '../../actions/teams'
 
@@ -184,6 +184,7 @@ class IndividualRegister extends React.Component {
             timezone_type : 3,  //Hardcode as I don't know where this comes from and all the examples its 3, same with the line bellow
             timezone : 'America/Toronto'
         }
+        
         obj.isFinalized = false
         obj.isPaid = 0
         obj.isDeleted = 0
@@ -302,68 +303,7 @@ class IndividualRegister extends React.Component {
                                         )
                                     })}
                                 </Picker>
-
-                                {/**The info part that pops up when pressed */}
-                                <Modal
-                                    animationType="slide"
-                                    transparent={true}
-                                    visible={modalVisible}
-                                >
-                                <View style={styles.centeredView}>
-                                    <View style={styles.modalView}>
-                                        
-                                        <ScrollView>
-                                            <Text>
-                                                <Text style={{fontWeight:'bold'}}>A:</Text>
-                                                <Text>This 7 vs 7 division is recommended for teams and players who would like to play very competitive Ultimate at a high-pace. Players generally have lots of tournament experience and a very strong knowledge of rules and strategies.</Text>
-                                            </Text>
-
-                                            <Text>
-                                                <Text style={{fontWeight:'bold'}}>B7:</Text>
-                                                <Text>This 7 vs 7 division is recommended for teams and players who would like to try playing 7s Ultimate. Players generally have at least a couple years of league experience and are fairly knowledgeable of rules and strategies. </Text>
-                                            </Text>
-
-                                            <Text>
-                                                <Text style={{fontWeight:'bold'}}>B/B1:</Text>
-                                                <Text>This 5 vs 5 division is recommended for teams and players who are of high intermediate skill level. Players generally have a few years of league experience, and a good knowledge of rules and strategies, such as the stack. </Text>
-                                            </Text>
-
-                                            <Text>
-                                                <Text style={{fontWeight:'bold'}}>B2:</Text>
-                                                <Text>This 5 vs 5 division is recommended for teams and players who are of intermediate skill level. Players generally have a couple years of league experience and a decent knowledge of rules and strategies, such as the "stack". </Text>
-                                            </Text>
-
-                                            <Text>
-                                                <Text style={{fontWeight:'bold'}}>C/C1:</Text>
-                                                <Text>This 5 vs 5 division is recommended for teams and players who are of high beginner skill levels. Players generally have at least a year of league experience and a basic knowledge of rules and strategies. </Text>
-                                            </Text>
-
-                                            <Text>
-                                                <Text style={{fontWeight:'bold'}}>C2:</Text>
-                                                <Text>This 5 vs 5 division is recommended for teams and players who are new to the sport of ultimate. Players have less than a year of league experience and have little knowledge of rules and strategies. Players are more focused on learning the game and are less concerned with the skill level.</Text>
-                                            </Text>
-                                        </ScrollView>
-                                        <TouchableHighlight
-                                            style={{ ...styles.openButton, backgroundColor: "red", paddingTop:10 }}
-                                            onPress={() => {
-                                                this.setModalVisible(!modalVisible);
-                                            }}
-                                        >
-                                            <Text style={styles.textStyle}>Close</Text>
-                                        </TouchableHighlight>
-                                    </View>
-                                </View>
-                            </Modal>
-
-                            <TouchableHighlight
-                                style={styles.openButton}
-                                onPress={() => {
-                                this.setModalVisible(true);
-                                }}
-                            >
-                                <Text style={styles.textStyle}>Show League Info</Text>
-                            </TouchableHighlight>
-                        </View>
+                            </View>
                         </View>
                     </Card>
                     <Card>
@@ -399,6 +339,72 @@ class IndividualRegister extends React.Component {
                                     curTeamId={this.state.league[2]}
                                     onTeamUpdated={(val) => this.changedLeague(2, val)}
                                 />
+                            </View>
+
+                            {/**The info part that pops up when pressed */}
+                            <View style={{flexDirection:'center'}}>
+                                <Modal
+                                    animationType="slide"
+                                    transparent={true}
+                                    visible={modalVisible}
+                                >
+                                    <View style={styles.centeredView}>
+                                        <View style={styles.modalView}>
+                                            
+                                            <ScrollView>
+                                                <Text>
+                                                    <Text style={{fontWeight:'bold'}}>A:</Text>
+                                                    <Text>This 7 vs 7 division is recommended for teams and players who would like to play very competitive Ultimate at a high-pace. Players generally have lots of tournament experience and a very strong knowledge of rules and strategies.</Text>
+                                                </Text>
+
+                                                <Text>
+                                                    <Text style={{fontWeight:'bold'}}>B7:</Text>
+                                                    <Text>This 7 vs 7 division is recommended for teams and players who would like to try playing 7s Ultimate. Players generally have at least a couple years of league experience and are fairly knowledgeable of rules and strategies. </Text>
+                                                </Text>
+
+                                                <Text>
+                                                    <Text style={{fontWeight:'bold'}}>B/B1:</Text>
+                                                    <Text>This 5 vs 5 division is recommended for teams and players who are of high intermediate skill level. Players generally have a few years of league experience, and a good knowledge of rules and strategies, such as the stack. </Text>
+                                                </Text>
+
+                                                <Text>
+                                                    <Text style={{fontWeight:'bold'}}>B2:</Text>
+                                                    <Text>This 5 vs 5 division is recommended for teams and players who are of intermediate skill level. Players generally have a couple years of league experience and a decent knowledge of rules and strategies, such as the "stack". </Text>
+                                                </Text>
+
+                                                <Text>
+                                                    <Text style={{fontWeight:'bold'}}>C/C1:</Text>
+                                                    <Text>This 5 vs 5 division is recommended for teams and players who are of high beginner skill levels. Players generally have at least a year of league experience and a basic knowledge of rules and strategies. </Text>
+                                                </Text>
+
+                                                <Text>
+                                                    <Text style={{fontWeight:'bold'}}>C2:</Text>
+                                                    <Text>This 5 vs 5 division is recommended for teams and players who are new to the sport of ultimate. Players have less than a year of league experience and have little knowledge of rules and strategies. Players are more focused on learning the game and are less concerned with the skill level.</Text>
+                                                </Text>
+                                            </ScrollView>
+                                            <TouchableHighlight
+                                                style={{ ...styles.openButton, backgroundColor: "red", paddingTop:10 }}
+                                                onPress={() => {
+                                                    this.setModalVisible(!modalVisible);
+                                                }}
+                                            >
+                                                <Text style={styles.textStyle}>Close</Text>
+                                            </TouchableHighlight>
+                                        </View>
+                                    </View>
+                                </Modal>
+                                
+                                <View style={{flexDirection:'center'}}>
+                                    <TouchableHighlight
+                                        style={styles.openButton}
+                                        onPress={() => {
+                                        this.setModalVisible(true);
+                                        }}
+                                    >
+                                        <Text style={styles.textStyle}>Show League Info</Text>
+                                    </TouchableHighlight>
+                                </View>
+                                
                             </View>
                         </View>
                     </Card>
@@ -666,7 +672,6 @@ const styles = StyleSheet.create({
   
     setHorizontal: {
         flexDirection:'row',
-        
     },  
   
     textInput: {

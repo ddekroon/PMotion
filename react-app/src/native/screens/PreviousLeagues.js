@@ -7,18 +7,24 @@ import {Button, View, Image} from 'react-native'
 import {StyleSheet} from 'react-native'
 import { TextInput, ScrollView, TouchableHighlight } from 'react-native-gesture-handler'
 
-let rowSize = 30
+var rowSize = 30
 var searchedLeague = []
 var oldLeagues = []
+var count = 0;
 
 //The colour part of this is still broken ;/
 export default function Previousleagues({navigation, route}) {
+    if (oldLeagues.length != 0) {
+        oldLeagues = [];
+    }
+    
     const [chosen, setChosen] = useState(10)
     const [pageNum, setPageNum] = useState(1)
     const [beingShown, setBeingShown] = useState(oldLeagues)
     const [checker, setchecker] = useState(0)
     
     //Testers to see if if it works with teams **Can be deleted
+
     addLeague(oldLeagues, 'name1', 'league1', 'season1', 'No', route, navigation)      //1
     addLeague(oldLeagues, 'name2', 'league2', 'season2', 'No', route, navigation)      //2
     addLeague(oldLeagues, 'name3', 'league3', 'season3', 'No', route, navigation)      //3
@@ -33,8 +39,6 @@ export default function Previousleagues({navigation, route}) {
     addLeague(oldLeagues, 'name12', 'league12', 'season12', 'Yes', route, navigation)  //12
     addLeague(oldLeagues, 'name13', 'league13', 'season13', 'Yes', route, navigation)  //13
 
-    if (route?.params?.use) console.log("use = " + route?.params?.use)
-
     return (
         <Container>
             <Content>
@@ -47,7 +51,7 @@ export default function Previousleagues({navigation, route}) {
                         <View style={styles.line}/>
                         <View style={{paddingBottom:15}}/>
 
-                        {/*How many elements you want shown on the page */}
+                        {/*How many elements being shown on the page */}
                         <View style={styles.splitEnds}>
                             <View style={styles.sideBySide}>
                                 <Text>Show</Text>
@@ -126,10 +130,10 @@ export default function Previousleagues({navigation, route}) {
                                     <Text style={styles.first, {fontWeight:'bold'}}>Registered</Text>
                                 </View>
                             </TouchableHighlight>
-                            
                         </View>
 
-                        <View style={{ height:( beingShown.length >0 ? chosen*rowSize: 0), borderWidth:3, overflow:'hidden'}}>
+                        <View style={{ height:( beingShown.length > 0 && chosen < beingShown.length? chosen*rowSize: beingShown.length*rowSize), borderWidth:3, overflow:'hidden'}}>
+                            {/** The expression for height shows either the chosen amount out of the total group, or if the chosen amount is bigger than the group,  just the full group */}
                             
                             {
                                 //display only the elements on the chosen page form the array
@@ -137,39 +141,16 @@ export default function Previousleagues({navigation, route}) {
                                 beingShown.map( (elem) => {
                                     if (beingShown.indexOf(elem) < (pageNum-1)*(chosen) || beingShown.indexOf(elem) >= (pageNum) * (chosen)) {
                                     } else {
-                                        //I cannot manage to get the alternating colours right ;/
                                         count++
-                                        /*let colour
-                                        if (count % 2 == 0) {
-                                            colour = 'white'
-                                        } else {
-                                            colour = '#d3d3d3'
-                                        }*/
-
-                                        //if (route?.params?.use == 'reregister') {
-                                            /*return (
-                                                <TouchableHighlight 
-                                                    key={count} 
-                                                    style={{background:colour}}     
-                                                    onPress={() => {
-                                                        //this is the current bottle neck, the tester teams im using dont have the info i need in the register team class,
-                                                        //So that will have to be fixed once you can actually get the users old teams
-                                                        navigation.navigate('RegisterNewTeam', {/*team:JSON.stringify(elem), sport:[elem.sport?elem.sport:1]})
-                                                }}>
-                                                    {elem}
-                                                </TouchableHighlight >
-                                            )</ScrollView>
-                                        } else {*/
-                                            return (
-                                                <View key={count}j>
-                                                    {elem}
-                                                </View >
-                                            )
-                                        //}
+                                        
+                                        return (
+                                            <View key={count}j>
+                                                {elem}
+                                            </View >
+                                        )
                                     }
                                     count += 1
                                 })
-                                
                             }
 
                         </View>
@@ -203,7 +184,7 @@ export default function Previousleagues({navigation, route}) {
                             </View>
                         </View>
 
-                        {/**Show your page number */}
+                        {/**Show the page number */}
                         <View>
                             <Text style={styles.subheading}>Page {pageNum} of {Math.ceil(beingShown.length/chosen)} entries.</Text>
                         </View>
@@ -376,7 +357,6 @@ export function nextPress(pg, numPages) {
     return returnedVal
 }
 
-
 //      ***The number that is diplayed on each button
 export function getFirst(pg, numPages) {
     if (numPages <= 4) {
@@ -461,13 +441,119 @@ export function getFourth(pg, numPages) {
     return returnedAmount
 }
 
+//*********************Shits a tad fucky ngl */
+
+JSON.decycle = function decycle(object, replacer) {
+    "use strict";
+
+    var objects = new WeakMap();     // object to path mappings
+
+    return (function derez(value, path) {
+
+        var old_path;   // The path of an earlier occurance of value
+        var nu;         // The new object or array
+
+        if (replacer !== undefined) {
+            value = replacer(value);
+        }
+
+        if (
+            typeof value === "object"
+            && value !== null
+            && !(value instanceof Boolean)
+            && !(value instanceof Date)
+            && !(value instanceof Number)
+            && !(value instanceof RegExp)
+            && !(value instanceof String)
+        ) {
+
+            old_path = objects.get(value);
+            if (old_path !== undefined) {
+                return {$ref: old_path};
+            }
+
+            objects.set(value, path);
+
+            if (Array.isArray(value)) {
+                nu = [];
+                value.forEach(function (element, i) {
+                    nu[i] = derez(element, path + "[" + i + "]");
+                });
+            } else {
+
+                nu = {};
+                Object.keys(value).forEach(function (name) {
+                    nu[name] = derez(
+                        value[name],
+                        path + "[" + JSON.stringify(name) + "]"
+                    );
+                });
+            }
+            return nu;
+        }
+        return value;
+    }(object, "$"));
+};
+
+
+
+if (typeof JSON.retrocycle !== "function") {
+    JSON.retrocycle = function retrocycle($) {
+    "use strict";
+
+
+    var px = /^\$(?:\[(?:\d+|"(?:[^\\"\u0000-\u001f]|\\(?:[\\"\/bfnrt]|u[0-9a-zA-Z]{4}))*")\])*$/;
+
+    (function rez(value) {
+
+        if (value && typeof value === "object") {
+            if (Array.isArray(value)) {
+                value.forEach(function (element, i) {
+                    if (typeof element === "object" && element !== null) {
+                        var path = element.$ref;
+                        if (typeof path === "string" && px.test(path)) {
+                            value[i] = eval(path);
+                        } else {
+                            rez(element);
+                        }
+                    }
+                });
+            } else {
+                Object.keys(value).forEach(function (name) {
+                    var item = value[name];
+                    if (typeof item === "object" && item !== null) {
+                        var path = item.$ref;
+                        if (typeof path === "string" && px.test(path)) {
+                            value[name] = eval(path);
+                        } else {
+                            rez(item);
+                        }
+                    }
+                });
+            }
+        }
+    }($));
+    return $;
+};
+}
+
+
+//*********************Shits a tad fucky ngl */
+
+
 //Update the leaguelist the is used when the user searches for a team
 export function updateSearch(text) {
     searchedLeague = []
 
+    //console.log("oldLeagues = " + JSON.stringify(oldLeagues))
+
     oldLeagues.map( (element) => {
         //This line finds the name from the element in the oldLeagues list (of old teams)
         var name = element.props.children[0].props.children
+
+        console.log("text = " + text)
+        console.log("name = " + JSON.decycle(name))
+
         if (name.includes(text)) {
 
             var copy = element
@@ -481,18 +567,27 @@ export function updateSearch(text) {
 //adds all the past teams pulled from the server into JSX elements that can be displayed
 export function addLeague(array, name, league, season, reg, route, navigation) {
     var elem
+    let colour
+
+    if (count % 2 == 0) {
+        colour = '#DCDCDC'
+    } else {
+        colour = 'white'
+    }
+    count++;
 
     if (route?.params?.use == 'reregister') {
-        //console.log("clickable")
         elem = (
-            <View style={{height:rowSize, justifyContent: 'space-between', flexDirection:'row'}} key={array.length} >
+            <View style={{height:rowSize, justifyContent: 'space-between', flexDirection:'row', backgroundColor:colour}} key={array.length} >
                 <TouchableHighlight onPress={() => {
-                    //console.log("nav = " + JSON.stringify(navigation))
-                    console.log("click")
-                    /*navigation.navigate('RegisterNewTeam', {team:JSON.stringify(elem = {
-                        name:name,
-                        league:league,
-                    }), sport:route.params.sport})*/
+                    navigation.navigate('RegisterNewTeam', {
+                        team: {
+                            name:name,
+                            league:league,
+                        },
+                        sport:route.params.sport,
+                        //More vals will get past once I make server requests
+                    })
                 }}>
                     <Text style={{fontSize:20, textAlign:'center', color:'red'}}>{name}</Text>
                 </TouchableHighlight>
@@ -502,10 +597,10 @@ export function addLeague(array, name, league, season, reg, route, navigation) {
             </View>
         )
     } else {
-        //console.log("Not clickable")
+        
         elem = (
-            <View style={{height:rowSize, justifyContent: 'space-between', flexDirection:'row'}} key={array.length} >
-                <Text style={{fontSize:20, textAlign:'center', color:'red'}}>{name}</Text>
+            <View style={{height:rowSize, justifyContent: 'space-between', flexDirection:'row', backgroundColor:colour}} key={array.length} >
+                <Text style={{fontSize:20, textAlign:'center', color:'#383838'}}>{name}</Text>
                 <Text style={{fontSize:20, textAlign:'center', width:'25%', color:'#383838'}}>{league}</Text>
                 <Text style={{fontSize:20, textAlign:'center', width:'25%', color:'#383838'}}>{season}</Text>
                 <Text style={{fontSize:20, textAlign:'center', width:'25%', color:'#383838'}}>{reg}</Text>

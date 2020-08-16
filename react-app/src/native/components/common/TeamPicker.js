@@ -48,9 +48,10 @@ class TeamPicker extends React.Component {
           >
             <Picker.Item key={0} label={label} value={''} />
             {
+              //console.log("curTeam = " + JSON.stringify(teams)),
               teams.filter((curTeam) => curTeam.id != excludeTeamId)
                 .map((curTeam) => {
-                  return <Picker.Item key={curTeam.id} label={curTeam.name} value={curTeam.id} />
+                  return <Picker.Item key={curTeam.id} label={curTeam.name + " - " + getDay(curTeam.scheduleLink)} value={curTeam.id} />
                 })
             }
           </Picker>
@@ -68,6 +69,33 @@ class TeamPicker extends React.Component {
         }
       </Item>
     );
+  }
+}
+
+function getDay(string) {
+  if (string.includes('monday')) {
+    return 'Monday'
+  
+  } else if (string.includes('tuesday')) {
+    return 'Tuesday'
+  
+  } else if (string.includes('wednesday')) {
+    return 'Wednesday'
+  
+  } else if (string.includes('thursday')) {
+    return 'Thursday'
+  
+  } else if (string.includes('friday')) {
+    return 'Friday'
+  
+  } else if (string.includes('saturday')) {
+    return 'Saturday'
+  
+  } else if (string.includes('sunday')) {
+    return 'Sunday'
+  
+  } else {
+    return ""
   }
 }
 

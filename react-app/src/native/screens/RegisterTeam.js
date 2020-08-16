@@ -11,7 +11,7 @@ ex: const user = {
     }
 */
 
-import React, {useState} from 'react'
+import React from 'react'
 import PropTypes from 'prop-types' 
 import { connect } from 'react-redux'
 import {Icon, Picker, Container, Content, Card } from 'native-base'
@@ -19,7 +19,6 @@ import { fetchLeague } from '../../actions/leagues' //Gets the leagues from the 
 import DateTimeHelpers from '../../utils/datetimehelpers'
 import {TextInput, Text, View, Button} from 'react-native'
 import {StyleSheet} from 'react-native'
-import { ScrollView } from 'react-native-gesture-handler';
 import AddingTeamMembers from '../components/register/TeamRegisterNewTeammate'
 import { submitTeam } from '../../actions/teams'
 import ToastHelpers from '../../utils/toasthelpers'
@@ -45,12 +44,13 @@ class RegisterTeam extends React.Component {
     
     constructor(props) {
         super(props)
+
         this.state = {
             comment:'',
             hearMethod:'',
             paymentMethod:'',
-            league:'',
-            teamName:'',
+            league: '',
+            teamName: '',
             count:0,
             jsonPlayers:[]
         }
@@ -73,7 +73,17 @@ class RegisterTeam extends React.Component {
                 sex:''
             }
         }
+
+        //this has to be at the bottom for the state to stay equal to the props
+        if (this.props.route?.params?.team?.league) {
+            this.state = {
+                league:props.route.params.team.league,
+                teamName:props.route.params.team.name
+            }
+        }
     } 
+
+    
 
     //When a new players info get changed, the update gets put into the state here
     update = (newJson) => {
@@ -85,7 +95,6 @@ class RegisterTeam extends React.Component {
 
     //When the user changes their league choice, it gets updated in the state here
     updateLeague = (league) => {
-        console.log("league " + league)
         this.setState({ league: league })
     }
 
@@ -228,14 +237,11 @@ class RegisterTeam extends React.Component {
     render() {
 
         let counter = 0;
-        if (!seasons) console.log("Error loading seasons")
-
+        
         const {
             loading,
             seasons
         } = this.props
-
-        //console.log('the props = ' + JSON.stringify(this.props))
 
         return (
             <Container>
@@ -263,7 +269,6 @@ class RegisterTeam extends React.Component {
                                         alignItems: 'center',
                                         flexDirection:'row',
                                         justifyContent: 'center',
-                                        //Should be centered :/
                                     }}
                                 >
 
@@ -285,12 +290,17 @@ class RegisterTeam extends React.Component {
                                 </Picker>
                             </View>
 
-                             <View style={styles.setHorizontal}>
+                            <View style={styles.setHorizontal}>
                                 {/**Where the user chooses their team name */}
                                 <Text style={styles.normalText}>Team Name
                                     <Text style={styles.normalText, {color:'red'} }>*</Text>
                                 </Text>
-                                <TextInput style={styles.textInput} onChangeText={(val) => this.setState({teamName:val})} value={this.state.teamName}/>
+
+                                <TextInput 
+                                    style={styles.textInput}
+                                    onChangeText={(val) => this.setState({teamName:val})} 
+                                    value={this.state.teamName}
+                                />
                                 
                             </View>
                         </View>

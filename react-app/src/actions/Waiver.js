@@ -44,9 +44,8 @@ export function submitWaiver (obj) {
   })
 }
 
-
 export function saveWaiverToState(Waiver) {
-  console.log("B")  
+  console.log("First")
   return {
     type: 'NEW_WAIVER',
     Waiver

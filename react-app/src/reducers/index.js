@@ -5,6 +5,7 @@ import scoreSubmission from './scoreSubmission';
 import leagues from './leagues';
 import teams from './teams';
 import Waiver from './Waivers';
+import Login from './Login';
 
 const rehydrated = (state = false, action) => {
   switch (action.type) {
@@ -23,5 +24,6 @@ export default {
   scoreSubmission,
   leagues,
   teams,
-  Waiver
+  Waiver,
+  Login,
 };

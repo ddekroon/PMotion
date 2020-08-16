@@ -14,5 +14,13 @@ export default {
 		const validResults = Object.values(Enums.matchResult).filter((resultType) => resultType != Enums.matchResult.Error);
 
 		return validResults.find((resultType) => resultType.val == resultValue) != null;
-	}
+	},
+
+	isValidPhoneNumber: (number => {
+		if (number.length != 10) return false;
+
+		let everyNonNumber = "~!@#'$%^&*()-_+=|\\}]{}[:;\"'?/>.<,zxcvbnmasdfghjklqwertyuiop"
+
+		return number.test(everyNonNumber);
+	})
 }

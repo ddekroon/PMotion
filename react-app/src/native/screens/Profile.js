@@ -116,6 +116,7 @@ class Profile extends React.Component {
                         </View>
 
                         <Button title={'Copy to clipboard'} onPress={this.writeToClipboard}/>
+                        <View style={{paddingBottom:10}}/>
                     </Card>
                     <Card>
                         <Text style={styles.header}>Edit Information</Text>
@@ -174,17 +175,15 @@ class Profile extends React.Component {
                             <Picker
                                 note={false}
                                 placeholder={this.state.sex}
-                                onValueChange={ (sex, index) => {
-                                    console.log("Sex = " + sex)
-                                    //this.updateSex(sex)
+                                onValueChange={ (sex) => {
                                     this.setState({sex:sex})
                                 }}
                                 selectedValue={this.state.sex}
                                 mode="dropdown"
                                 iosIcon={<Icon name="arrow-down" />}
                             >
-                                <Picker.Item label='Male' vale='Male' key={0}/>
-                                <Picker.Item label='Female' vale='Female' key={1}/>
+                                <Picker.Item label='Male' value='Male' key={0}/>
+                                <Picker.Item label='Female' value='Female' key={1}/>
                             </Picker>
                         </View>
 

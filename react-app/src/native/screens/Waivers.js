@@ -18,9 +18,9 @@ class Waivers extends React.Component {
         super(props)
         this.state= {
             checked:false,
-            name:'test',
+            name:'',
             parentName:'',
-            email:'test@gmail.com',
+            email:'',
             parentEmail:''
         }
     }
@@ -88,6 +88,8 @@ class Waivers extends React.Component {
         onFormSubmit(obj).catch(e => {
             ToastHelpers.showToast(Enums.messageTypes.Error, e.message)
         })
+
+        //this.props.addWaiver(Waiver)
         
     }
 
@@ -175,7 +177,6 @@ class Waivers extends React.Component {
     }
 
     render() {
-        console.log("props = " + JSON.stringify(this.props))
 
         return (
             <Container>
@@ -362,8 +363,9 @@ class Waivers extends React.Component {
                                                 />
 
                                                 <Button
-                                                    title={'Print'}
+                                                    title={'Show props'}
                                                     onPress={ ()=> {
+                                                        console.log("props = " + JSON.stringify(this.props))
                                                     }}
                                                 />
                                             </View>
@@ -409,6 +411,7 @@ const styles = StyleSheet.create({
 
 
 const mapStateToProps = state => ({
+    theState: state
   })
   
   const mapDispatchToProps = {

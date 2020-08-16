@@ -73,7 +73,7 @@ export default class AddingTeamMembersIndividual extends React.Component {
                         />
                     </View>
 
-                    <View style={styles.floatingBox, {paddingBottom:5, flexDirection:'row', justifyContent: 'center',}}>
+                    <View style={styles.floatingBox, {paddingBottom:5, flexDirection:'row', justifyContent: 'space-around'}}>
                         <View>
                             <Text style={styles.text}>Sex</Text>
                             <Picker
@@ -92,9 +92,7 @@ export default class AddingTeamMembersIndividual extends React.Component {
                                 <Picker.Item label="Female" value="Female" key={2} />
                             </Picker>
                         </View>
-                    </View>
 
-                    <View style={styles.floatingBox, {paddingBottom:5, flexDirection:'row', justifyContent: 'center',}}>
                         <View>
                             <Text style={styles.text}>Skill</Text>
                             <Picker
