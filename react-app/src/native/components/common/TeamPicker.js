@@ -5,6 +5,7 @@ import {
 } from 'native-base';
 import Loading from './Loading';
 import ValidationHelpers from '../../../utils/validationhelpers'
+import { getDayFromString } from '../../../utils/datetimehelpers';
 
 class TeamPicker extends React.Component {
   static propTypes = {
@@ -50,7 +51,7 @@ class TeamPicker extends React.Component {
             {
               teams.filter((curTeam) => curTeam.id != excludeTeamId)
                 .map((curTeam) => {
-                  return <Picker.Item key={curTeam.id} label={curTeam.name} value={curTeam.id} />
+                  return <Picker.Item key={curTeam.id} label={curTeam.name + " - " + getDayFromString(curTeam.scheduleLink)} value={curTeam.id} />
                 })
             }
           </Picker>

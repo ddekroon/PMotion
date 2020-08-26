@@ -27,7 +27,9 @@ export function resetSubmission () {
  * Submit score to the server
  */
 export function submitScoreSubmission () {
+
   return (dispatch, getState) => new Promise(async (resolve, reject) => {
+    
     // Validation checks
     if (!isScoreSubmissionValid(getState().scoreSubmission, getState().leagues)) {
       return reject({ message: 'Your score submission has errors' })
@@ -36,8 +38,6 @@ export function submitScoreSubmission () {
     dispatch({
       type: 'SCORE_SUBMISSION_SENDING_START'
     })
-
-    console.log('Submit score submission: ' + JSON.stringify(getState().scoreSubmission))
 
     return fetch('https://data.perpetualmotion.org/web-app/api/score-submission', {
       method: 'POST',
@@ -64,7 +64,7 @@ export function submitScoreSubmission () {
           type: 'SCORE_SUBMISSION_SENDING_ERROR'
         })
       })
-  })
+    })
 }
 
 function isScoreSubmissionValid (scoreSubmission, leagues) {

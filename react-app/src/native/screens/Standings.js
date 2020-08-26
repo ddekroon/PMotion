@@ -4,9 +4,7 @@ import { Container, Content, Text, Card, CardItem } from 'native-base'
 import { Table, Row } from 'react-native-table-component'
 import { StyleSheet, ActionSheetIOS } from 'react-native'
 import { connect } from 'react-redux'
-
 import Loading from '../components/common/Loading'
-
 import LeagueHelpers from '../../utils/leaguehelpers'
 import { fetchLeague } from '../../actions/leagues'
 
@@ -18,6 +16,7 @@ class Standings extends React.Component {
   constructor(props) {
     super(props)
     this.state.leagueId = this.props.route?.params?.leagueId ?? -1
+    console.log("the props = " + JSON.stringify(this.props.route))
     props.fetchLeague(this.state.leagueId)
   }
 
@@ -25,7 +24,7 @@ class Standings extends React.Component {
     const { leagueId } = this.state
     const { leagues } = this.props
     const league = leagues[leagueId]
-
+    
     if (league == null || league.isFetching) return <Loading />
 
     let flexArr = []

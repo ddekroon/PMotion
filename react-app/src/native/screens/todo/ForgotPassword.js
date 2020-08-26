@@ -4,10 +4,10 @@ import {
   Container, Content, Text, Form, Item, Label, Input, Button,
 } from 'native-base';
 import { Actions } from 'react-native-router-flux';
-import Loading from '../common/Loading';
-import Messages from '../common/Messages';
-import Header from '../common/Header';
-import Spacer from '../common/Spacer';
+import Loading from '../../components/common/Loading';
+import Messages from '../../components/common/Messages';
+import Header from '../../components/common/Header';
+import Spacer from '../../components/common/Spacer';
 
 class ForgotPassword extends React.Component {
   static propTypes = {

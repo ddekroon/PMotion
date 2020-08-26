@@ -1,3 +1,9 @@
+import ErrorMessages from '../constants/errors'
+import ToastHelpers from '../utils/toasthelpers'
+import Enums from '../constants/enums'
+import NetworkHelpers from '../utils/networkhelpers'
+import ValidationHelpers from '../utils/validationhelpers'
+
 /**
  * Get lookups
  */
@@ -18,6 +24,7 @@ export function fetchTeam (teamId) {
           error => console.log('An error occurred.', error)
         )
         .then(json => {
+          console.log("JSON(src/actions/team.js) = " + JSON.stringify(JSON))
           dispatch({
             type: 'RECEIVE_TEAM',
             data: json,
@@ -41,6 +48,44 @@ export function resetTeamStore () {
   }
 }
 
+//Pushing the created team to the server
+export function submitTeam() {
+  console.log("/actions/teams.submitTeam")
+  return (dispatch, getState) => new Promise(async (resolve, reject) => {
+    dispatch({
+      type: 'SCORE_SUBMISSION_SENDING_START'
+    })
+
+    console.log('Submitting new team')
+
+    return fetch('https://data.perpetualmotion.org/web-app/api/teams/', {
+      method:'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(getState().teamSubmission)
+    })
+      .then(NetworkHelpers.handleErrors) //this throws an arror every time and IDK why
+      .then(
+        response => response.json()
+      )
+      .then(json => {
+        dispatch({
+          type: 'TEAM_SUBMISSION_SENDING_SUCCESS'
+        })
+      })
+      .catch((err) => {
+        console.log(err)
+        ToastHelpers.showToast(Enums.messageTypes.Error, ErrorMessages.errorSendingToServer)
+
+        dispatch({
+          type: 'TEAM_SUBMISSION_SENDING_ERROR'
+        })
+      })
+  })
+}
+ 
 function shouldFetchTeam (state, teamId) {
   /*
   if (!LeagueHelpers.isValidLeagueId(leagueId)) {
@@ -55,5 +100,18 @@ function shouldFetchTeam (state, teamId) {
     return false
   } else {
     return team.didInvalidate
+  }
+}
+
+export function saveTeamToState(team) {
+  return {
+    type: 'SAVE_TEAM',
+    team
+  }
+}
+
+export function reset(){    //temp function I use when testing
+  return {
+    type:'RESTART'
   }
 }

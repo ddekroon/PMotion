@@ -6,13 +6,24 @@ import { createStackNavigator } from '@react-navigation/stack'
 
 import MainNavigator from './MainNavigator'
 import LeagueNavigator from './LeagueNavigator'
+//import Registration from './Registration'
 import Loading from '../components/common/Loading'
 import TeamPage from '../components/leagues/TeamPage'
 import SchedulePage from '../screens/Schedule'
 import Maps from '../screens/Maps'
+import Registration from '../screens/Registration'
 
 import NavigationProps from '../constants/navigation'
 import { getLookups } from '../../actions/lookups'
+import IndividualRegister from '../screens/IndividualRegister'
+import Login from '../screens/Login'
+import PickSport from '../components/SportPicker'
+import Previousleagues from '../screens/PreviousLeagues'
+import RegisterTeam from '../screens/RegisterTeam'
+import Profile from '../screens/Profile'
+import Waivers from '../screens/Waivers'
+import NewUser from '../screens/NewUser'
+import ForgotPassword from '../screens/ForgotPassword'
 
 const Stack = createStackNavigator();
 
@@ -52,6 +63,14 @@ class RootNavigator extends React.Component {
             title: route.params.title ?? 'League'
           })}
           />
+          
+          <Stack.Screen 
+          name="Registration"
+          component={Registration} 
+          options={({ route }) => ({
+            title: route.params.title ?? 'Registration'
+          })}
+        />
 
         <Stack.Screen 
           name="Team"
@@ -67,6 +86,53 @@ class RootNavigator extends React.Component {
           name="Maps"
           component={Maps}
         />
+
+        <Stack.Screen
+          name="Login"
+          component={Login}
+        />
+
+        <Stack.Screen
+          name="IndividualRegister"
+          component={IndividualRegister}
+        />
+
+        <Stack.Screen
+          name ='PickSport'
+          component={PickSport}
+        ></Stack.Screen>
+
+        <Stack.Screen
+          name='Previousleagues'
+          component={Previousleagues}
+        />
+
+        <Stack.Screen
+          name='RegisterNewTeam'
+          component={RegisterTeam}
+        />
+        
+        <Stack.Screen
+          name='profile'
+          component={Profile}
+        />
+        
+        <Stack.Screen
+          name='waivers'
+          component={Waivers}
+        />
+
+        <Stack.Screen
+          name='NewUser'
+          component={NewUser}
+          //navigationOptions={{gesturesEnable:false}}
+        />
+
+        <Stack.Screen
+          name='ForgotPassword'
+          component={ForgotPassword}
+        />
+        
       </Stack.Navigator>
     </NavigationContainer>
     )

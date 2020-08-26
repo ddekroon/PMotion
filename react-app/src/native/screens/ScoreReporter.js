@@ -14,8 +14,7 @@ import {
   Icon,
   Card,
   CardItem,
-  Body,
-  Header
+  Body
 } from 'native-base'
 
 import Loading from '../components/common/Loading'
@@ -33,17 +32,19 @@ import {
   resetMatches,
   resetSubmission
 } from '../../actions/scoreSubmission'
-import { fetchLeague } from '../../actions/leagues'
+import { fetchLeague } from '../../actions/leagues' //Gets the leagues from the web.
+
 
 class ScoreReporter extends React.Component {
-  static propTypes = {
+
+  static propTypes = {  //These are actions
     error: PropTypes.string,
     isLoading: PropTypes.bool.isRequired,
-    getLeague: PropTypes.func.isRequired,
+    getLeague: PropTypes.func.isRequired, //getLeague is a function!
     onFormSubmit: PropTypes.func.isRequired,
     leagues: PropTypes.object.isRequired,
     sports: PropTypes.array.isRequired,
-    seasons: PropTypes.object.isRequired,
+    seasons: PropTypes.object.isRequired, //seasons is a object (JSON string)
     scoreSubmission: PropTypes.object.isRequired,
     updateScoreSubmission: PropTypes.func.isRequired,
     resetMatches: PropTypes.func.isRequired,
@@ -84,11 +85,11 @@ class ScoreReporter extends React.Component {
   }
 
   handleSubmit = () => {
-    const { onFormSubmit } = this.props
+    console.log("props being submitted = "+ JSON.stringify(this.props) + "\n\n");
+    /*const { onFormSubmit } = this.props
     onFormSubmit().catch(e => {
       ToastHelpers.showToast(Enums.messageTypes.Error, e.message)
-      console.log(`Error: ${e.message}`)
-    })
+    })*/
   }
 
   handleChange = (name, val) => {
@@ -175,7 +176,9 @@ class ScoreReporter extends React.Component {
   }
 
   render() {
-    const {
+    console.log("props at render time = "+ JSON.stringify(this.props) + "\n\n")
+
+    const { //Data
       loading,
       error,
       scoreSubmission,
@@ -198,7 +201,7 @@ class ScoreReporter extends React.Component {
       leaguePicker = (
         <Item>
           <Content padder>
-            <Text style={{ fontStyle: italic }}>No leagues to select</Text>
+            <Text style={{ fontStyle: 'italic' }}>No leagues to select</Text>
           </Content>
         </Item>
       )
@@ -206,45 +209,25 @@ class ScoreReporter extends React.Component {
       leaguePicker = (
         <Item picker error={scoreSubmission.leagueId == ''}>
           <Picker
+            placeholder="League"
             note={false}
             mode="dropdown"
             iosIcon={<Icon name="arrow-down" />}
+            
             style={{ flex: 1 }}
             selectedValue={scoreSubmission.leagueId}
-            placeholder="League"
             onValueChange={(val, index) => {
               this.handleChange('leagueId', val)
-            }}
+            }} 
           >
             <Picker.Item key={0} label={'League'} value={''} />
-            {seasons[scoreSubmission.sportId].map(curSeason => {
-              if (curSeason.leagues == null) {
-                return
-              }
 
-              return curSeason.leagues.map(curLeague => {
-                var leagueName =
-                  curLeague.name +
-                  ' - ' +
-                  DateTimeHelpers.getDayString(curLeague.dayNumber)
-                if (isMultipleSeasons) {
-                  leagueName = leagueName + ' - ' + curSeason.name
-                }
-
-                return (
-                  <Picker.Item
-                    key={curLeague.id}
-                    label={leagueName}
-                    value={curLeague.id}
-                  />
-                )
-              })
-            })}
+            {/* always at spot 0 here*/}
+            
           </Picker>
         </Item>
       )
     }
-
     return (
       <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding" enabled>
         <Content padder>
@@ -279,7 +262,7 @@ class ScoreReporter extends React.Component {
                     </Item>
 
                     {leaguePicker}
-
+                    
                     {league != null && (
                       <TeamPicker
                         loading={league.isFetching}

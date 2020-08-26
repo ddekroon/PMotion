@@ -35,6 +35,19 @@ export default function teamsReducer(state = initialState, action) {
 			return Object.assign({}, state, {
 				[action.id]: team(state[action.id], action)
 			})
+		case 'SAVE_TEAM':
+			let variable = '' + action.team.id
+			console.log("action id = " + action.team.id)
+			return Object.assign({}, state, {
+				[variable]:action.team
+			});
+		case 'RESTART':
+			//been using this to delete test pushes because they stay in the redux state even if the expo server get reset
+			return Object.assign({}, state, {
+				4695:undefined,
+				3933:undefined,
+			});
+			
 		default:
 			return state
 	}
