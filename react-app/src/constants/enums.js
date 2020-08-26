@@ -14,5 +14,12 @@ export default {
     Alert: 'alert',
     Error: 'error',
     Success: 'success'
+  },
+
+  sports: {
+    Ultimate:1,
+    Volleyball:2,
+    Football:3,
+    Soccer:4
   }
 };

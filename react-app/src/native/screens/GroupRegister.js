@@ -1,12 +1,9 @@
 import React from 'react'
 import {Text, View, ScrollView, StyleSheet, Modal, TouchableHighlight, Button } from 'react-native'
 import PickTeam from '../components/register/Teams'
-import PickLeagues from '../components/register/ChooseLeague'
+import PickLeagues from '../components/register/LeaguePicker'
 import AddingTeamMembers from '../components/register/TeamMember'
 import Comment from '../components/register/Comment'
-import RegisterTeam from '../components/register/RegisterTeam'
-import Login from './todo/Login'
-import navigation from '../constants/navigation'
 
 //This is the base template im using for team register
 const user = {
@@ -36,7 +33,7 @@ const Football = {
 const Soccer = {
     "name":"Soccer",
     "id":4
-    }
+}
 
 export default class IndividualRegister extends React.Component {
     state = {
@@ -57,6 +54,8 @@ export default class IndividualRegister extends React.Component {
         }
 
         const { modalVisible } = this.state
+
+        console.log("More here than before")
         
         return(
             <ScrollView>
@@ -143,13 +142,6 @@ export default class IndividualRegister extends React.Component {
         )
     }
 }
-
-/*
-export function addPlayer(array){
-    console.log("HERE")
-    array.push(<AddingTeamMembers key={array.length}/>)
-    console.log('players length = ' + array.length)
-}*/
 
 const styles = StyleSheet.create({
     textStyle: {

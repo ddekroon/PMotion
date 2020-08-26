@@ -1,3 +1,12 @@
+/**
+ * 
+ * 
+ *  Don't think this file actually runs
+ * 
+ * 
+ */
+
+
 import React, {useState} from 'react'
 import PropTypes from 'prop-types' 
 import { connect } from 'react-redux'
@@ -12,7 +21,6 @@ class PickLeagues extends React.Component {
   //I make a server call to get all the leagues. In the props (sport=(1-4)) the correct leagues for that sport appear
   static propTypes = {
     seasons: PropTypes.object.isRequired,
-    isLoading: PropTypes.bool.isRequired,
     leagues: PropTypes.object.isRequired,
     getLeague: PropTypes.func.isRequired 
   }
@@ -27,10 +35,8 @@ class PickLeagues extends React.Component {
   render() {
     
     const {
-      loading,
       seasons
     } = this.props
-
 
     if (seasons == null || seasons == undefined) console.log("Error loading seasons");
 
@@ -43,7 +49,6 @@ class PickLeagues extends React.Component {
           iosIcon={<Icon name="arrow-down" />}
           selectedValue = {this.props.league}
           onValueChange={(elem) => {
-            console.log("Elem = " + elem)
             if (elem == 1 || elem == undefined || elem == null) return;
             
             let leagueName
@@ -58,17 +63,11 @@ class PickLeagues extends React.Component {
             })
             this.props.update(this.props.index, leagueName)
           }}
-          style = {{
-            borderWidth: 1,
-            alignItems: 'center',
-            flexDirection:'row',
-            justifyContent: 'center',
-            //Should be centered
-          }}
         >
 
           <Picker.Item key={0} label={'League'} value={''} />
-          { this.props.sport != 'Sport' ? seasons[this.props.sport][0].leagues.map(curLeague => {
+          {/**Leaving this bit in incase I find a bug, If i don't ill delete it*/}
+          {/* this.props.sport != 'Sport' ? seasons[this.props.sport][0].leagues.map(curLeague => {
             var leagueName =
               curLeague.name +
               ' - ' +
@@ -81,18 +80,39 @@ class PickLeagues extends React.Component {
                 value={curLeague.id}
               />
             )
-          }):<Picker.item key={1} label={'*No sport chosen*'} value={1}/>}
-          {/*<Picker.item key={1} label={'*No sport chosen*'} value={1}/>*/}
+          }):<Picker.item key={0} label={'*No sport chosen*'} value={''}/>*/}
+          
+          {this.props.sport != 'Sport' ?
+            seasons[this.props.sport][0].leagues.reduce(curLeague => reducer(curLeague))
+            :<Picker.item key={0} label={'*No sport chosen*'} value={''}/>
+          }
+
         </Picker>
       </View>
     )
   }
 }
 
+function reducer(curLeague) {
+  var leagueName =
+    curLeague.name +
+    ' - ' +
+    DateTimeHelpers.getDayString(curLeague.dayNumber);
+
+  console.log("The sport ID = " + this.props.sport)
+  
+  return (
+    <Picker.Item
+      key={curLeague.id}
+      label={leagueName}
+      value={curLeague.id}
+    />
+  )
+}
+
 const mapStateToProps = state => ({
   seasons: state.lookups.scoreReporterSeasons || [],
   leagues: state.leagues || {},
-  isLoading: state.status.loading || false,
 })
 
 const mapDispatchToProps = { 

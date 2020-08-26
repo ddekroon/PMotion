@@ -105,12 +105,12 @@ function shouldFetchTeam (state, teamId) {
 
 export function saveTeamToState(team) {
   return {
-    type: 'NEW_TEAM',
+    type: 'SAVE_TEAM',
     team
   }
 }
 
-export function reset(){
+export function reset(){    //temp function I use when testing
   return {
     type:'RESTART'
   }

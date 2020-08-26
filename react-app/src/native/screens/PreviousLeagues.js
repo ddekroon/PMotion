@@ -23,8 +23,8 @@ export default function Previousleagues({navigation, route}) {
     const [beingShown, setBeingShown] = useState(oldLeagues)
     const [checker, setchecker] = useState(0)
     
-    //Testers to see if if it works with teams **Can be deleted
-
+    // ******** <Testers to see if if it works with teams> **
+    //console.log('oldLeagues before = ' + JSON.stringify(oldLeagues))
     addLeague(oldLeagues, 'name1', 'league1', 'season1', 'No', route, navigation)      //1
     addLeague(oldLeagues, 'name2', 'league2', 'season2', 'No', route, navigation)      //2
     addLeague(oldLeagues, 'name3', 'league3', 'season3', 'No', route, navigation)      //3
@@ -38,7 +38,8 @@ export default function Previousleagues({navigation, route}) {
     addLeague(oldLeagues, 'name11', 'league11', 'season11', 'Yes', route, navigation)  //11
     addLeague(oldLeagues, 'name12', 'league12', 'season12', 'Yes', route, navigation)  //12
     addLeague(oldLeagues, 'name13', 'league13', 'season13', 'Yes', route, navigation)  //13
-
+    //console.log('oldLeagues after = ' + JSON.stringify(oldLeagues))
+    // ******** </Testers to see if if it works with teams> **
     return (
         <Container>
             <Content>
@@ -83,16 +84,23 @@ export default function Previousleagues({navigation, route}) {
                                     style={styles.search}
                                     onChangeText={text => { 
 
+                                        console.log('A')
                                         updateSearch(text)
+                                        console.log('B')
                                         if (text.length != 0) {
+                                            console.log('C1')
                                             //setShow(true)
                                             setBeingShown(searchedLeague)
                                             setPageNum(1)
+                                            console.log('D1')
                                         } else {
+                                            console.log('C2')
                                             //setShow(false)
                                             setBeingShown(oldLeagues)
                                             setPageNum(1)
+                                            console.log('D2')
                                         }
+                                        console.log('E')
                                     }}
                                 />
                             </View>
@@ -544,15 +552,14 @@ if (typeof JSON.retrocycle !== "function") {
 //Update the leaguelist the is used when the user searches for a team
 export function updateSearch(text) {
     searchedLeague = []
-
-    //console.log("oldLeagues = " + JSON.stringify(oldLeagues))
+    console.log("in update searhc")
 
     oldLeagues.map( (element) => {
         //This line finds the name from the element in the oldLeagues list (of old teams)
+        //console.log("elem = " + JSON.stringify(element))
         var name = element.props.children[0].props.children
 
-        console.log("text = " + text)
-        console.log("name = " + JSON.decycle(name))
+        console.log("name = " + name)
 
         if (name.includes(text)) {
 
@@ -566,8 +573,7 @@ export function updateSearch(text) {
 
 //adds all the past teams pulled from the server into JSX elements that can be displayed
 export function addLeague(array, name, league, season, reg, route, navigation) {
-    var elem
-    let colour
+    var elem, colour;
 
     if (count % 2 == 0) {
         colour = '#DCDCDC'
@@ -597,18 +603,24 @@ export function addLeague(array, name, league, season, reg, route, navigation) {
             </View>
         )
     } else {
-        
         elem = (
-            <View style={{height:rowSize, justifyContent: 'space-between', flexDirection:'row', backgroundColor:colour}} key={array.length} >
+                <View style={{height:rowSize, justifyContent: 'space-between', flexDirection:'row', backgroundColor:colour}} key={array.length} >
                 <Text style={{fontSize:20, textAlign:'center', color:'#383838'}}>{name}</Text>
                 <Text style={{fontSize:20, textAlign:'center', width:'25%', color:'#383838'}}>{league}</Text>
                 <Text style={{fontSize:20, textAlign:'center', width:'25%', color:'#383838'}}>{season}</Text>
                 <Text style={{fontSize:20, textAlign:'center', width:'25%', color:'#383838'}}>{reg}</Text>
             </View>
         )
-    }    
+    }
     
-    elem.key = array.length    
+    elem.key = array?.length?array.length:0
+    elem.teamName = name;
+    elem.league = league;
+
+    console.log("elem.key = " + elem.key)
+    console.log("elem.teamName = " + elem.TeamName)
+    console.log("elem.league = " + elem.league)
+
     array.push(elem);
 }
 

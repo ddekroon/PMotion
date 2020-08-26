@@ -11,6 +11,7 @@ import ToastHelpers from '../../utils/toasthelpers'
 import ValidationHelpers from '../../utils/validationhelpers'
 import TeamPicker from '../components/common/TeamPicker'
 import AddingTeamMembersIndividual from '../components/register/IndividualTeamMemberPlayerAdder'
+import Colors from '../../../native-base-theme/variables/commonColor';
 import {
     saveTeamToState,
     submitTeam,
@@ -262,7 +263,6 @@ class IndividualRegister extends React.Component {
         }*/
 
         const {
-            loading,
             seasons
         } = this.props
         const { modalVisible } = this.state
@@ -311,7 +311,7 @@ class IndividualRegister extends React.Component {
                         <View>
                             <View style={{paddingBottom:5}}>
                                 <Text style={styles.normalText}>Prefered League
-                                    <Text style = {styles.normalText, {color:'red'}}>*</Text>
+                                    <Text style = {styles.normalText, {color:Colors.brandSecondary}}>*</Text>
                                 </Text>   
                                 <TeamPicker
                                     loading={false}
@@ -353,37 +353,37 @@ class IndividualRegister extends React.Component {
                                             
                                             <ScrollView>
                                                 <Text>
-                                                    <Text style={{fontWeight:'bold'}}>A:</Text>
+                                                    <Text style={{fontWeight:'bold', color:Colors.brandSecondary}}>A:</Text>
                                                     <Text>This 7 vs 7 division is recommended for teams and players who would like to play very competitive Ultimate at a high-pace. Players generally have lots of tournament experience and a very strong knowledge of rules and strategies.</Text>
                                                 </Text>
 
                                                 <Text>
-                                                    <Text style={{fontWeight:'bold'}}>B7:</Text>
+                                                    <Text style={{fontWeight:'bold', color:Colors.brandSecondary}}>B7:</Text>
                                                     <Text>This 7 vs 7 division is recommended for teams and players who would like to try playing 7s Ultimate. Players generally have at least a couple years of league experience and are fairly knowledgeable of rules and strategies. </Text>
                                                 </Text>
 
                                                 <Text>
-                                                    <Text style={{fontWeight:'bold'}}>B/B1:</Text>
+                                                    <Text style={{fontWeight:'bold', color:Colors.brandSecondary}}>B/B1:</Text>
                                                     <Text>This 5 vs 5 division is recommended for teams and players who are of high intermediate skill level. Players generally have a few years of league experience, and a good knowledge of rules and strategies, such as the stack. </Text>
                                                 </Text>
 
                                                 <Text>
-                                                    <Text style={{fontWeight:'bold'}}>B2:</Text>
+                                                    <Text style={{fontWeight:'bold', color:Colors.brandSecondary}}>B2:</Text>
                                                     <Text>This 5 vs 5 division is recommended for teams and players who are of intermediate skill level. Players generally have a couple years of league experience and a decent knowledge of rules and strategies, such as the "stack". </Text>
                                                 </Text>
 
                                                 <Text>
-                                                    <Text style={{fontWeight:'bold'}}>C/C1:</Text>
+                                                    <Text style={{fontWeight:'bold', color:Colors.brandSecondary}}>C/C1:</Text>
                                                     <Text>This 5 vs 5 division is recommended for teams and players who are of high beginner skill levels. Players generally have at least a year of league experience and a basic knowledge of rules and strategies. </Text>
                                                 </Text>
 
                                                 <Text>
-                                                    <Text style={{fontWeight:'bold'}}>C2:</Text>
+                                                    <Text style={{fontWeight:'bold', color:Colors.brandSecondary}}>C2:</Text>
                                                     <Text>This 5 vs 5 division is recommended for teams and players who are new to the sport of ultimate. Players have less than a year of league experience and have little knowledge of rules and strategies. Players are more focused on learning the game and are less concerned with the skill level.</Text>
                                                 </Text>
                                             </ScrollView>
                                             <TouchableHighlight
-                                                style={{ ...styles.openButton, backgroundColor: "red", paddingTop:10 }}
+                                                style={{ ...styles.openButton, backgroundColor: Colors.brandSecondary, paddingTop:10 }}
                                                 onPress={() => {
                                                     this.setModalVisible(!modalVisible);
                                                 }}
@@ -408,7 +408,6 @@ class IndividualRegister extends React.Component {
                             </View>
                         </View>
                     </Card>
-
                     <Card>
                         <View>
                             <Text style={styles.header}>Player Information</Text>
@@ -466,7 +465,6 @@ class IndividualRegister extends React.Component {
                             </View>
                         </View>
                     </Card>
-
                     <Card>
                         <View>
                             <Text style={styles.header}>Comments</Text>
@@ -475,7 +473,7 @@ class IndividualRegister extends React.Component {
                             
                             <View style={styles.addPadding}>
                                 {/**The comment section */}
-                                <View style={ [styles.setHorizontal, styles.addPadding, styles.commentView]}>
+                                <View style={ [styles.setHorizontal, styles.addPadding, styles.commentView] }>
                                     <Text style={styles.normalText}>Comments </Text>
                                     <TextInput
                                         style={styles.textInput}
@@ -513,7 +511,6 @@ class IndividualRegister extends React.Component {
                             </View>
                         </View>
                     </Card>
-
                     <Card>
                         <View>
                             <Text style={styles.header}>Confirm Fees</Text>
@@ -522,7 +519,7 @@ class IndividualRegister extends React.Component {
                             <View style={styles.addPadding}>
                                 <View style={ [styles.setHorizontal, styles.addPadding], {justifyContent:'center', alignItems:'center', paddingVertical:20 }}>
                                     <Text style={styles.normalText}>Method
-                                        <Text style={{color:'red'}, styles.normalText}>*</Text>
+                                        <Text style={{color:Colors.brandSecondary}, styles.normalText}>*</Text>
                                     </Text>
 
                                     <View>
@@ -561,31 +558,26 @@ class IndividualRegister extends React.Component {
                                 <Text style={ [styles.normalText, {fontWeight:'bold'}]}>Spring League</Text>
 
                                 <Text style={styles.normalText}>Ultimate Frisbee
-                                    <Text style={{color:'#FF0000'}}>    *Insert date Here*</Text>
+                                    <Text style={{color:Colors.brandSecondary}}>    *Insert date Here*</Text>
                                 </Text>
 
                                 <Text style={styles.normalText}>Beach Volleyball
-                                    <Text style={{color:'#FF0000'}}>    *Insert date Here*</Text>
+                                    <Text style={{color:Colors.brandSecondary}}>    *Insert date Here*</Text>
                                 </Text>
 
                                 <Text style={styles.normalText}>Flag Football
-                                    <Text style={{color:'#FF0000'}}>    *Insert date Here*</Text>
+                                    <Text style={{color:Colors.brandSecondary}}>    *Insert date Here*</Text>
                                 </Text>
 
                                 <Text style={styles.normalText}>Soccer
-                                    <Text style={{color:'#FF0000'}}>    *Insert date Here*</Text>
+                                    <Text style={{color:Colors.brandSecondary}}>    *Insert date Here*</Text>
                                 </Text>
                             </View>
 
                             <View style={styles.addPadding, {justifyContent:'space-between', flexDirection:'row'}}>
-                                <Button title={'register (Submit)'} color='red' onPress={() => {
+                                <Button title={'register (Submit)'} color={Colors.brandSecondary} onPress={() => {
                                     this.handleSubmit()
                                 }}/>
-
-                                {/**This is on the website, not sure if we want that functionality on the app */}
-                                {/*<Button title={'Print Forum'} color='red' onPress={ ()=>{
-                                    this.props.reset()
-                                }}/>*/}
                             </View>
                         </View>
                     </Card>
@@ -622,7 +614,7 @@ const styles = StyleSheet.create({
       elevation: 5
     },
     openButton: {
-      backgroundColor: "red",
+      backgroundColor: Colors.brandSecondary,
       borderRadius: 20,
       padding: 10,
       elevation: 2,
@@ -639,24 +631,19 @@ const styles = StyleSheet.create({
     },
   
     header: {
-      fontSize:20,
+      fontSize:Colors.fontSizeH1,
       textAlign:'center',
       paddingVertical:10,
       fontWeight:'bold',
-    
     },
   
     normalText: {
       fontSize:20,
     },
-    header: {
-        fontWeight:'bold',
-        fontSize:35
-    },
   
     subHeading: {
         color: '#474747',
-        fontSize:12,
+        fontSize:15,
     },
   
     line: {
@@ -676,13 +663,12 @@ const styles = StyleSheet.create({
   
     textInput: {
         borderBottomWidth:1,
-        borderBottomColor:'red',
-        width:'75%'
-    
+        borderBottomColor:Colors.brandSecondary,
+        width:'60%'
     },
   
     normalText: {
-        fontSize:20,
+        fontSize:Colors.fontSizeH2,
     },
   
     addPadding: {
@@ -690,19 +676,19 @@ const styles = StyleSheet.create({
     },
   
     commentView: {
-        height:40,
+        //height:40,
         justifyContent: 'center',
         alignItems: 'center'
     },
   
     botButton: {
-        backgroundColor:'red',
+        backgroundColor:Colors.brandSecondary,
         borderRadius:10,
     },
   
     FillIn: {
         color:'black',
-        borderBottomColor:'red',
+        borderBottomColor:Colors.brandSecondary,
         borderBottomWidth: StyleSheet.hairlineWidth,
         width:200,
         fontSize:20

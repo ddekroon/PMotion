@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import ToastHelpers from '../../utils/toasthelpers'
 import ValidationHelpers from '../../utils/validationhelpers'
-import { saveWaiverToState } from '../../actions/Waiver'
+import { saveWaiverToState } from '../../actions/waiver'
 
 import { Text, View, StyleSheet, Switch, TextInput, Button, ScrollView} from 'react-native'
 import {List, ListItem, Container, Header, Content, Card, CardItem, Body} from 'native-base'

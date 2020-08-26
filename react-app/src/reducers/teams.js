@@ -35,7 +35,7 @@ export default function teamsReducer(state = initialState, action) {
 			return Object.assign({}, state, {
 				[action.id]: team(state[action.id], action)
 			})
-		case 'NEW_TEAM':
+		case 'SAVE_TEAM':
 			let variable = '' + action.team.id
 			console.log("action id = " + action.team.id)
 			return Object.assign({}, state, {
@@ -52,20 +52,3 @@ export default function teamsReducer(state = initialState, action) {
 			return state
 	}
 }
-
-/* Pretty sure we dont need this
-function updateState(state = [], action) {
-	console.log("HERE")
-	switch(action.type) {
-		case 'NEW_TEAM' :
-			return [
-				...state.slice(0,i), //b4 the one we are updating
-				{...state[i], team: newTeam},
-				...state.slice(i + 1),
-
-
-			]
-		default:
-			return state
-	}
-} */

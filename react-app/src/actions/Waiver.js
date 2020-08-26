@@ -9,9 +9,7 @@ import ValidationHelpers from '../utils/validationhelpers'
  * Submit score to the server
  */
 export function submitWaiver (obj) {
-  console.log("actions/Waiver")
   return (dispatch, getState) => new Promise(async (resolve, reject) => {
-    console.log("What will be submitted: " + JSON.stringify(getState()))
 
     dispatch({
       type: 'WAIVER_SENDING_START'
@@ -44,10 +42,9 @@ export function submitWaiver (obj) {
   })
 }
 
-export function saveWaiverToState(Waiver) {
-  console.log("First")
+export function saveWaiverToState(waiver) {
   return {
     type: 'NEW_WAIVER',
-    Waiver
+    waiver
   }
 }

@@ -1,10 +1,13 @@
 import React from "react";
 import { View, Image, StyleSheet, TouchableHighlight, Button, Text} from "react-native";
 import { Container, Content, Card } from 'native-base'
+import Enums from '../../constants/enums'
+import Colors from '../../../native-base-theme/variables/commonColor';
+
 
 export default function PickSport({route, navigation}) {
 
-    let sport
+    let sport;
 
     return (
         <Container>
@@ -17,7 +20,7 @@ export default function PickSport({route, navigation}) {
                         alignItems:'center'
                     }}>
                         <Text style={styles.header}>Choose a 
-                            <Text style={{color:'red'}}> sport</Text>
+                            <Text style={{color:Colors.brandSecondary}}> sport</Text>
                         </Text>
                         <Text style={styles.subHeading}>Forum will appear after a sport is chosen</Text>
                         <View style={styles.line}/>
@@ -25,7 +28,7 @@ export default function PickSport({route, navigation}) {
 
                         <Card>
                             <TouchableHighlight  onPress={() => {
-                                sport = 1
+                                sport = Enums.sports.Ultimate
                                 
                                 if (route?.params?.registerType == 'individualRegister') {
                                     navigation.navigate('IndividualRegister', {sport:sport})
@@ -37,7 +40,7 @@ export default function PickSport({route, navigation}) {
                                     navigation.navigate('RegisterNewTeam', {sport:sport})
                                 
                                 } else {
-                                    console.log("Big move")
+                                    console.log("Error")
                                 }
                             }}>
                                 <Image
@@ -48,7 +51,7 @@ export default function PickSport({route, navigation}) {
                         
                         <Card>
                             <TouchableHighlight  onPress={() => {
-                                sport = 2
+                                sport = Enums.sports.VolleyBall
 
                                 if (route?.params?.registerType == 'individualRegister') {
                                     navigation.navigate('IndividualRegister', {sport:sport})
@@ -71,7 +74,7 @@ export default function PickSport({route, navigation}) {
 
                         <Card>
                             <TouchableHighlight  onPress={() => {
-                                sport = 3
+                                sport = Enums.sports.Football
 
                                 if (route?.params?.registerType == 'individualRegister') {
                                     navigation.navigate('IndividualRegister', {sport:sport})
@@ -93,7 +96,7 @@ export default function PickSport({route, navigation}) {
 
                         <Card>
                             <TouchableHighlight  onPress={() => {
-                                sport = 4
+                                sport = Enums.sports.Soccer
 
                                 if (route?.params?.registerType == 'individualRegister') {
                                     navigation.navigate('IndividualRegister', {sport:sport})
@@ -122,12 +125,12 @@ export default function PickSport({route, navigation}) {
 const styles = StyleSheet.create({ 
     header: {
     fontWeight:'bold',
-    fontSize:35
+    fontSize:Colors.fontSizeH1
     },
 
     subHeading: {
-        color: '#474747',
-        fontSize:12,
+        color: Colors.brandPrimary,
+        fontSize:Colors.fontSizeH3,
     },
 
     line: {

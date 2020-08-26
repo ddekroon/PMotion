@@ -130,9 +130,6 @@ class Comment extends React.Component {
                 <View style= {styles.line}/>
                 <View style={styles.addPadding, {justifyContent:'space-between', flexDirection:'row'}}>
                     <Button title={'Register'} color='red' style={{border:1}} onPre/>
-                    <Button title={'Print form?'} color='red' onPress={() => {
-                        console.log("JERE")
-                    }}/>
                 </View>
             </ScrollView>
         )

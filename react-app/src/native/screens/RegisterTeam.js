@@ -23,6 +23,7 @@ import AddingTeamMembers from '../components/register/TeamRegisterNewTeammate'
 import { submitTeam } from '../../actions/teams'
 import ToastHelpers from '../../utils/toasthelpers'
 import ValidationHelpers from '../../utils/validationhelpers'
+import Colors from '../../../native-base-theme/variables/commonColor';
 import {
     saveTeamToState,
     reset
@@ -255,7 +256,7 @@ class RegisterTeam extends React.Component {
 
                                 {/**Where the user chooses the league they want their team to play in */}
                                 <Text style={styles.normalText}>League
-                                    <Text style={styles.normalText, {color:'red'} }>*</Text>
+                                    <Text style={styles.normalText, {color:Colors.brandSecondary} }>*</Text>
                                 </Text>
                                 <Picker
                                     placeholder="League"
@@ -264,12 +265,6 @@ class RegisterTeam extends React.Component {
                                     iosIcon={<Icon name="arrow-down" />}
                                     selectedValue = {this.state.league}
                                     onValueChange={this.updateLeague}
-                                    style = {{
-                                        borderWidth: 1,
-                                        alignItems: 'center',
-                                        flexDirection:'row',
-                                        justifyContent: 'center',
-                                    }}
                                 >
 
                                     <Picker.Item key={0} label={'League'} value={''} />
@@ -293,7 +288,7 @@ class RegisterTeam extends React.Component {
                             <View style={styles.setHorizontal}>
                                 {/**Where the user chooses their team name */}
                                 <Text style={styles.normalText}>Team Name
-                                    <Text style={styles.normalText, {color:'red'} }>*</Text>
+                                    <Text style={styles.normalText, {color:Colors.brandSecondary} }>*</Text>
                                 </Text>
 
                                 <TextInput 
@@ -524,19 +519,19 @@ class RegisterTeam extends React.Component {
                             <Text style={ [styles.normalText, {fontWeight:'bold'}]}>Spring League</Text>
 
                             <Text style={styles.normalText}>Ultimate Frisbee
-                                <Text style={{color:'#FF0000'}}>    *Insert date Here*</Text>
+                                <Text style={styles.dates}>    *Insert date Here*</Text>
                             </Text>
 
                             <Text style={styles.normalText}>Beach Volleyball
-                                <Text style={{color:'#FF0000'}}>    *Insert date Here*</Text>
+                                <Text style={styles.dates}>    *Insert date Here*</Text>
                             </Text>
 
                             <Text style={styles.normalText}>Flag Football
-                                <Text style={{color:'#FF0000'}}>    *Insert date Here*</Text>
+                                <Text style={styles.dates}>    *Insert date Here*</Text>
                             </Text>
 
                             <Text style={styles.normalText}>Soccer
-                                <Text style={{color:'#FF0000'}}>    *Insert date Here*</Text>
+                                <Text style={styles.dates}>    *Insert date Here*</Text>
                             </Text>
 
                         </View>
@@ -558,101 +553,105 @@ class RegisterTeam extends React.Component {
 }
 
 const styles = StyleSheet.create({
-  header: {
-      fontWeight:'bold',
-      fontSize:35
-  },
+    header: {
+        fontWeight:'bold',
+        fontSize:30
+    },
 
-  subHeading: {
-      color: '#474747',
-      fontSize:12,
-  },
+    subHeading: {
+        color: '#474747',
+        fontSize:12,
+    },
 
-  line: {
-      borderBottomColor:'black',
-      borderBottomWidth:1,
-  },  
+    line: {
+        borderBottomColor:'black',
+        borderBottomWidth:1,
+    },  
 
-  picker: {
-      borderWidth:1,
-      justifyContent: 'flex-start',
-      width:200
-  },
+    picker: {
+        borderWidth:1,
+        justifyContent: 'flex-start',
+        width:200
+    },
 
-  setHorizontal: {
-      flexDirection:'row',
-  },  
+    setHorizontal: {
+        flexDirection:'row',
+    },  
 
-  textInput: {
-      borderBottomWidth:1,
-      borderBottomColor:'red',
-      width:'75%'
-  },
+    textInput: {
+        borderBottomWidth:1,
+        borderBottomColor:Colors.brandSecondary,
+        width:'75%'
+    },
 
-  normalText: {
-      fontSize:20,
-  },
+    normalText: {
+        fontSize:20,
+    },
 
-  addPadding: {
-      paddingBottom:20,
-  },
+    addPadding: {
+        paddingBottom:20,
+    },
 
-  commentView: {
-      height:40,
-      justifyContent: 'center',
-      alignItems: 'center'
-  },
+    commentView: {
+        height:40,
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
 
-  botButton: {
-      backgroundColor:'red',
-      borderRadius:10,
-  },
+    botButton: {
+        backgroundColor:'red',
+        borderRadius:10,
+    },
 
-  FillIn: {
-      color:'black',
-      borderBottomColor:'red',
-      borderBottomWidth: StyleSheet.hairlineWidth,
-      width:200,
-      fontSize:20
-  },
+    FillIn: {
+        color:'black',
+        borderBottomColor:Colors.brandSecondary,
+        borderBottomWidth: StyleSheet.hairlineWidth,
+        width:200,
+        fontSize:20
+    },
 
-  text: {
-      fontSize:20,
-      flexDirection:'column',
-      alignItems:'center',
-  },
+    text: {
+        fontSize:20,
+        flexDirection:'column',
+        alignItems:'center',
+    },
 
-  floatingBox: {
-      flexDirection:'row',
-      height:40,
-      justifyContent: 'center',
-      alignItems: 'center'
-  },
+    floatingBox: {
+        flexDirection:'row',
+        height:40,
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
 
-  picker: {
-      borderWidth:1,
-      justifyContent: 'flex-start',
-      width:100
-  },
-  
-  commentsPicker: {
-      borderWidth:1,
-      justifyContent: 'flex-start',
-      width:300
-  },
+    picker: {
+        borderWidth:1,
+        justifyContent: 'flex-start',
+        width:100
+    },
+    
+    commentsPicker: {
+        borderWidth:1,
+        justifyContent: 'flex-start',
+        width:300
+    },
 
-  main: {
-      backgroundColor:'white',
-      borderRadius:15,
-  },
+    main: {
+        backgroundColor:'white',
+        borderRadius:15,
+    },
 
-  padding: {
-      padding:10
-  },
+    padding: {
+        padding:10
+    },
 
-  stack: {
-      flexDirection:'column'
-  }
+    stack: {
+        flexDirection:'column'
+    },
+
+    dates: {
+        color:Colors.brandSecondary
+    }
 })
 
 const mapStateToProps = state => ({

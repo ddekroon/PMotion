@@ -5,8 +5,9 @@ import Previousleagues from './PreviousLeagues'
 import { Container, Content, Card, Button } from 'native-base'
 import PropTypes from 'prop-types' 
 import { connect } from 'react-redux'
-import { saveWaiverToState } from '../../actions/Waiver'
+import { saveWaiverToState } from '../../actions/waiver'
 import ToastHelpers from '../../utils/toasthelpers';
+import Colors from '../../../native-base-theme/variables/commonColor';
 
   class Register extends React.Component {
 
@@ -22,23 +23,6 @@ import ToastHelpers from '../../utils/toasthelpers';
   render() {
     const { navigation } = this.props;
     let starterShown = false
-    
-    let user = {  //Stub
-      id:1234,
-      FN:'Ian',
-      LN:'McKechnie',
-      email:'imckechn@uoguelph.ca',
-      phone:'1234567890',
-      sex:'Male',
-    }
-
-    let Waiver = { //Waiver base
-      Submitted:false,
-      name:'le Test',
-      email:'',
-      guardName:'',
-      guardEmail:'',
-    }
 
     if (this.props.route?.params?.showToast && !starterShown) {
       ToastHelpers.showToast(null, this.props.route.params.toastString);
@@ -52,16 +36,12 @@ import ToastHelpers from '../../utils/toasthelpers';
             <View style={{flexDirection:'row', justifyContent:'space-around', paddingBottom:10, paddingTop:10}}>
               
               <Button rounded light onPress={() => {
-                navigation.navigate('profile', {user:user});
+                navigation.navigate('Login', {registerType:'Profile'})
               }}>
                 <Text>  My Profile  </Text>
               </Button>
 
               <Button rounded light onPress={() => {
-                //console.log("This.props in register A = " + JSON.stringify(this.props))
-                console.log("A")
-                //console.log("After, props = " + JSON.stringify(this.props))
-                //console.log("This.props in register = " + JSON.stringify(this.props))
                 navigation.navigate('waivers');
               }}>
                 <Text>  Sign Waivers  </Text>
@@ -145,10 +125,9 @@ import ToastHelpers from '../../utils/toasthelpers';
           </Card>
           
           <Card>
-            <Text style={styles.header}>Choose a sport</Text>
-            <Text style={styles.subHeading}>Select a sport logo below to start a new registration</Text>
-            <View style={styles.line}/>
-            <View style={{paddingBottom:10}}/>
+            <Text style={styles.header}>Register a New Team</Text>
+            <Text style={styles.subHeading}>Select a league logo below to start a new registration</Text>
+            <View style={[styles.line, {paddingBottom:40}]}/>
             <View style={{
                 flex: 1,
                 flexDirection: 'column',
@@ -169,17 +148,16 @@ import ToastHelpers from '../../utils/toasthelpers';
                 navigation.navigate('RegisterNewTeam',{sport:2})  //Runs when the user selects it from the registration page
               }}>
                   <Image
-                      source ={ require('../../images/volleyball-small.png')}
+                    source ={ require('../../images/volleyball-small.png')}
                   />
               </TouchableHighlight >
 
               <View style={{paddingTop:10}}/>
               <TouchableHighlight  onPress={() => {
                 navigation.navigate('RegisterNewTeam',{sport:3})  //Runs when the user selects it from the registration page
-              
               }}>
                   <Image
-                      source ={ require('../../images/football-small.png')}
+                    source ={ require('../../images/football-small.png')}
                   />
               </TouchableHighlight >
 
@@ -203,12 +181,11 @@ import ToastHelpers from '../../utils/toasthelpers';
 const styles = StyleSheet.create({ 
   button: {
     width:'100%',
-    //backgroundColor:'#212F3D',
-    backgroundColor:'red',
+    backgroundColor:Colors.brandSecondary,
     borderRadius: 5,
     textAlign:'center',
     fontWeight: 'bold',
-    height: 40,
+    //height: 40,
     flexDirection:'column',
     justifyContent: 'space-between',
     alignItems:'center',
@@ -216,18 +193,18 @@ const styles = StyleSheet.create({
 
   text: {
     color:'white',
-    fontSize:20,
+    fontSize:Colors.fontSizeH2,
     textAlign:'center',
   },
 
   header: {
     fontWeight:'bold',
-    fontSize:35
+    fontSize:Colors.fontSizeH1
   },
 
   subHeading: {
       color: '#474747',
-      fontSize:12,
+      fontSize:Colors.fontSizeH3,
   },
 
   line: {

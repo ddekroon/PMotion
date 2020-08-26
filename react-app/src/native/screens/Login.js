@@ -7,7 +7,7 @@ import {
 } from 'native-base';
 import Header from '../components/common/Header';
 import Spacer from '../components/common/Spacer';
-import { setLoggedIn, getLoginInfo, logOut } from '../../actions/Login';
+import { setLoggedIn, getLoginInfo, logOut } from '../../actions/login';
 import ToastHelpers from '../../utils/toasthelpers'
 import { Image, StyleSheet, TouchableHighlight } from 'react-native';
 import {Dimensions } from "react-native";
@@ -32,12 +32,25 @@ class Login extends React.Component{
     
   render() {
 
+    let user = {  //Stub
+      id:1234,
+      FN:'Ian',
+      LN:'McKechnie',
+      email:'imckechn@uoguelph.ca',
+      phone:'1234567890',
+      sex:'Male',
+    }
+
     let login = this.props.loggedIn.Login
 
     if (login.isLoggedIn == true) {
       console.log("Already logged in")
       if (this.props.route.params.registerType == 'reregister') {
         this.props.navigation.navigate("Previousleagues", {use:'reregister'})
+      
+      } else if (this.props.route.params.registerType == 'Profile') {
+        this.props.navigation.navigate("profile", {user:user})  //User will be from the server
+      
       } else {
         this.props.navigation.navigate("PickSport", {registerType:this.props.route.params.registerType})
       }

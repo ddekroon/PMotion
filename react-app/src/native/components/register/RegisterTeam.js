@@ -2,6 +2,7 @@ import React, { useState} from 'react'
 import {View, Text, Button, Picker, Icon  } from 'native-base'
 import {StyleSheet} from 'react-native'
 import { TextInput } from 'react-native-gesture-handler'
+import Colors from '../../../native-base-theme/variables/commonColor';
 
 export default class Dash extends React.Component {
     constructor(props) {
@@ -119,14 +120,14 @@ export const dropDownSex = (sex) => {
 const styles = StyleSheet.create({
     FillIn: {
         color:'black',
-        borderBottomColor:'red',
+        borderBottomColor:Colors.brandSecondary,
         borderBottomWidth: StyleSheet.hairlineWidth,
         width:200,
         fontSize:20
     },
 
     text: {
-        fontSize:20,
+        fontSize:Colors.fontSizeH3,
         flexDirection:'column',
         alignItems:'center',
     },

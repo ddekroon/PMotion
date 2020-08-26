@@ -2,6 +2,7 @@ import React, { useState} from 'react'
 import {View, Picker, Text, Icon} from 'native-base'
 import { TextInput } from 'react-native-gesture-handler'
 import {StyleSheet} from 'react-native'
+import Colors from '../../../../native-base-theme/variables/commonColor';
 
 export default class AddingTeamMembers extends React.Component {
    
@@ -103,14 +104,14 @@ export default class AddingTeamMembers extends React.Component {
 const styles = StyleSheet.create({
     FillIn: {
         color:'black',
-        borderBottomColor:'red',
+        borderBottomColor:Colors.brandSecondary,
         borderBottomWidth: StyleSheet.hairlineWidth,
         width:200,
-        fontSize:20
+        fontSize:Colors.fontSizeH3
     },
 
     text: {
-        fontSize:20,
+        fontSize:Colors.fontSizeH3,
         flex:1,
         flexDirection:'column',
         alignItems:'center',

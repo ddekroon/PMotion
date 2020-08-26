@@ -8,6 +8,7 @@ import {
     saveTeamToState,
     reset
 } from '../../actions/teams'
+import Colors from '../../../native-base-theme/variables/commonColor';
 
 class Profile extends React.Component {
     static propTypes = {
@@ -36,18 +37,6 @@ class Profile extends React.Component {
         await Clipboard.setString('https://data.perpetualmotion.org/web-app/download-ics/' + this.props.route.params.user.id);
         alert('Copied to Clipboard!');
     }
-
-    /**
-     * let user = {  //Stub
-    id:1234,
-    FN:'Ian',
-    LN:'McKechnie',
-    email:'imckechn@uoguelph.ca',
-    phone:'1234567890',
-    sex:'Male',
-  }
-
-     */
 
     submit() { 
         
@@ -90,7 +79,7 @@ class Profile extends React.Component {
                     <Card>
                         <View>
                             <Text style={styles.header}>Hello
-                                <Text style={styles.header, {color:'red'}}> {this.props.route.params.user.FN} {this.props.route.params.user.LN}</Text>
+                                <Text style={styles.header, {color:Colors.brandSecondary}}> {this.props.route.params.user.FN} {this.props.route.params.user.LN}</Text>
                             </Text>
                             <Text style={{fontSize:25}}>Welcome to your profile</Text>
                         </View>
@@ -101,7 +90,7 @@ class Profile extends React.Component {
                         <Text style={styles.header}>Calendar Integration</Text>
                         <View style={styles.line}/>
                         
-                        <View style={{flexDirection:'row', justifyContent:'space-evenly'}}>
+                        <View style={{flexDirection:'row', justifyContent:'space-evenly', paddingTop:10}}>
                             <View style={styles.leftView}>
                                 
                                 <Text style={styles.subheading, {padding:2}}>
@@ -232,7 +221,7 @@ const styles = StyleSheet.create({
         flexDirection:'row',
         borderWidth:1,
         borderColor:'#8d99ae',
-        backgroundColor:'#90e0ef'
+        backgroundColor:Colors.brandInfo
     },
 
     rightView: {

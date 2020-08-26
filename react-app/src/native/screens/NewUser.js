@@ -240,16 +240,17 @@ export default class NewUser extends React.Component {
                                         onChangeText={elem => this.setState({passwordTwo:elem})}
                                     />
                                 </Item>
-                                
+
                                 <TouchableHighlight
                                     onPress= { () => {
-                                        console.log("Clicked")
-                                        this.createAccount()
+                                        
                                     }}
-                                    style={styles.createAccountButton}
                                 >
-                                    <Text>Create Account</Text>
+                                    <View style={styles.createAccountButton}>
+                                        <Text>Create Account</Text>
+                                    </View>
                                 </TouchableHighlight>
+                                
                             </Form>
                         </View>
                     </Card>
@@ -283,7 +284,10 @@ const styles = StyleSheet.create({
         backgroundColor:'red',
         height:50,
         width:300,
-        alignItems:'center'
+        alignItems:'center',
+        borderRadius:10,
+        flexDirection:'column',
+        justifyContent:'space-between'
     }
 
 })
