@@ -8,14 +8,23 @@
 
 		$waiversController = new Controllers_WaiversController($this->db, $this->logger);
 		
+		$returnObj = array();
+
 		try {
 			$waiversController->submitWaiver($request);
-
-			$response = $response->withStatus(200);
-			$response->getBody()->write("Waiver Submitted");
+			$returnObj["success"] = 1;
+			$returnObj["message"] = "Waiver Submitted";
+			
+			return $response->withStatus(200)
+				->withHeader('Content-Type', 'application/json')
+				->write(json_encode($returnObj));
 		} catch(Exception $ex) {
-			$response = $response->withStatus(400);
-			$response->getBody()->write("Couldn't submit waiver:\n" . $ex->getMessage());
+			$returnObj["success"] = 0;
+			$returnObj["message"] = "Couldn't submit waiver:\n" . $ex->getMessage();
+
+			return $response->withStatus(400)
+				->withHeader('Content-Type', 'application/json')
+				->write(json_encode($returnObj));
 		}
 	});
 
