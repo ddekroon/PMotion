@@ -39,6 +39,10 @@ abstract class Includes_Helper {
 		return !preg_match('/[^a-zA-Z0-9_]/', $string);
 	}
 
+	public static function isValidName($string) {
+		return !preg_match("/[^A-Za-z0-9\'\- @\.]/", $string);
+	}
+
 	public static function formatPhoneNumber($strPhone) {
 		
 		$curPhoneString = preg_replace("[^0-9]",'', $strPhone);
