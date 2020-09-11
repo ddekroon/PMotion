@@ -8,11 +8,12 @@ import {
 import Header from '../components/common/Header';
 import Spacer from '../components/common/Spacer';
 import { setLoggedIn, getLoginInfo, logOut } from '../../actions/login';
+import { setMessageToRead, addMessage } from '../../actions/toastMessage';
 import ToastHelpers from '../../utils/toasthelpers'
 import { Image, StyleSheet, TouchableHighlight } from 'react-native';
-import {Dimensions } from "react-native";
+import Colors from '../../../native-base-theme/variables/commonColor';
 
-const screenWidth = Math.round(Dimensions.get('window').width);
+const screenWidth = Colors.deviceWidth; //needs to reference commonColours, Not remake this var
 
 class Login extends React.Component{
 
@@ -20,6 +21,8 @@ class Login extends React.Component{
     setLoggedIn: PropTypes.func.isRequired,
     getLoginInfo: PropTypes.func.isRequired,
     logOut: PropTypes.func.isRequired,
+    addMessage: PropTypes.func.isRequired,
+    setMessageToRead: PropTypes.func.isRequired,
   }
     
   constructor(props) {
@@ -31,36 +34,19 @@ class Login extends React.Component{
   }
     
   render() {
-
-    let user = {  //Stub
-      id:1234,
-      FN:'Ian',
-      LN:'McKechnie',
-      email:'imckechn@uoguelph.ca',
-      phone:'1234567890',
-      sex:'Male',
-    }
-
-    let login = this.props.loggedIn.Login
-
-    if (login.isLoggedIn == true) {
-      console.log("Already logged in")
-      if (this.props.route.params.registerType == 'reregister') {
-        this.props.navigation.navigate("Previousleagues", {use:'reregister'})
-      
-      } else if (this.props.route.params.registerType == 'Profile') {
-        this.props.navigation.navigate("profile", {user:user})  //User will be from the server
-      
-      } else {
-        this.props.navigation.navigate("PickSport", {registerType:this.props.route.params.registerType})
-      }
-    }
+  
+    //Throws errors here
+    /*console.log("Props = " + JSON.stringify(this.props.loggedIn.toastMessage.toBePrinted))
+    if (this.props.loggedIn.toastMessage.toBePrinted) {
+      ToastHelpers.showToast(this.props.loggedIn.toastMessage.message, null)
+      this.props.setMessageToRead();
+    }*/
 
     return (
       <Container>
         <Content>
           
-            <Card style={{height:'200%'}}>
+            <Card style={{paddingLeft:10}}>
               <Header
                 title="Welcome back"
                 content="Please use your username and password to login."
@@ -99,45 +85,25 @@ class Login extends React.Component{
 
               <View padder>
                 <Button block title={'Login'} onPress={() => {
-                  
-                  let item = filler(this.state.username, this.state.password);
+                    let obj = new Object;
+                    obj.userName = this.state.username
+                    obj.password = this.state.password
+                    //Log in with object here
 
-                  if (item === false) {
-                    ToastHelpers.showToast(null, "Invalid Username Password Combo");
-                    //Propbably put the return from the log in checker when actually putting it in.
-                  
-                  } else {
-                    this.props.setLoggedIn(item)
-                    
-                    if (this.props.route.params.registerType == 'reregister') {
-                      this.props.navigation.navigate("Previousleagues", {use:'reregister'})
-                    } else {
-                      this.props.navigation.navigate("PickSport", {registerType:this.props.route.params.registerType})
-                    }
-                  }
+                    this.props.setLoggedIn(true)  //Put in the users information returned from the server in here to save it to the redux state
                 }}>
                   <Text>Login</Text>
                 </Button>
               </View>
 
-              <View padder>
-                <Button block title={'Temp button'} onPress={() => {
-                  this.props.logOut()
-                }}>
-                  <Text>Logout (Temp button)</Text>
-                </Button>
-              </View>
-
               <View style={{flexDirection:'row', justifyContent:'space-between', paddingTop:10}}>
                   <TouchableHighlight onPress={() => {
-                    console.log("Forgot password")
                     this.props.navigation.navigate("ForgotPassword", null)
                   }}>
                     <Text style={{color:'red'}}>Forgot password</Text>
                   </TouchableHighlight>
 
                   <TouchableHighlight onPress={() => {
-                    console.log("New user")
                     this.props.navigation.navigate("NewUser", null)
                   }}>
                     <Text style={{color:'red'}}>New user? SIGN UP</Text>
@@ -149,6 +115,8 @@ class Login extends React.Component{
     )
   }
 }
+
+
 
 const styles = StyleSheet.create({
   logo: {
@@ -162,32 +130,19 @@ const styles = StyleSheet.create({
     justifyContent:'center'
   }
 })
-
-function filler(user, pass) { //This is a stub function for a backend call
-  let num = (Math.random() * 10) % 2;
-
-  if (num < 1) {
-    return false;
-
-  } else {
-    return elem = {
-      userName: 'ianMckechnie@email.ca',
-      userFirstName:'Ian',
-      userLastName:'Mckechnie',
-      userId:'1234566789',
-      userAge:20,
-    }
-  }
-}
  
 const mapStateToProps = state => ({
   loggedIn: state || [],
+  toBePrinted: state || '',
+  message: state || false,
 })
 
 const mapDispatchToProps = {
   setLoggedIn: setLoggedIn,
   getLoginInfo: getLoginInfo,
-  logOut: logOut
+  logOut: logOut,
+  setMessageToRead: setMessageToRead,
+  addMessage: addMessage,
 }
 
 const connectToStore = connect(

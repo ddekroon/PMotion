@@ -3,5 +3,5 @@ export default {
     last:'',
     email:'',
     phone:'',
-    sex:''
+    gender:''
 }

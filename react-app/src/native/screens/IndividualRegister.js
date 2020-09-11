@@ -133,9 +133,9 @@ class IndividualRegister extends React.Component {
 
             } 
 
-            if (this.state.players[0].sex == undefined || this.state.players[0].sex == '' ) {
+            if (this.state.players[0].gender == undefined || this.state.players[0].gender == '' ) {
                 noError = false;
-                str += ('\n- Your first players sex needs to be filled in')
+                str += ('\n- Your first players gender needs to be filled in')
             
             } 
 
@@ -154,7 +154,7 @@ class IndividualRegister extends React.Component {
         }
     }
 
-    //This submits the forum to the server (Takes everything in the state and save it)
+    //I think this is wrong, I think an individual gets put in a team and not a team that is created around them.
     handleSubmit = () => {
         if (this.checkAnswers()) return;
         
@@ -199,8 +199,8 @@ class IndividualRegister extends React.Component {
         obj.captain = ''
 
         obj.preferedLeague = this.state.league[0]
-        obj.secondaryLeague = this.state.league[1]?this.state.league[1]:''
-        obj.tertiaryLeague = this.state.league[2]?this.state.league[2]:''
+        obj.secondLeague = this.state.league[1]?this.state.league[1]:''
+        objThirdLeague = this.state.league[2]?this.state.league[2]:''
 
         obj.players = this.state.players
         obj.registrationComment = this.state.comment
@@ -225,14 +225,13 @@ class IndividualRegister extends React.Component {
         
         obj.id = id
         
-        //console.log("THE FINAL OBJ = " + JSON.stringify(obj))
         this.props.saveTeamToState(obj)
 
         //  To submit 
-        /*const {onSubmit} = this.props
+        const {onSubmit} = this.props
         onSubmit().catch(e => {
-            console.log("Encountered an error submitting the data")
-        })*/
+            console.log("Encountered error: "  + e)
+        })
     }
 
     //Returns the array of all the leagues for the chosen sport for the league pickers to use
@@ -273,7 +272,7 @@ class IndividualRegister extends React.Component {
         return(
             <Container>
                 <Content>
-                    <Card>
+                    <Card style={{paddingLeft:10}}>
                         <View>
                             <Text style={styles.header}>Registration</Text>
                             <View style={{alignItems:'center', justifyContent:'center'}}>
@@ -306,9 +305,9 @@ class IndividualRegister extends React.Component {
                             </View>
                         </View>
                     </Card>
-                    <Card>
+                    <Card style={{paddingLeft:10}}>
                         {/**Where the user picks they're 3 league choices */}
-                        <View>
+                        <View style={{paddingBottom:10}}>
                             <View style={{paddingBottom:5}}>
                                 <Text style={styles.normalText}>Prefered League
                                     <Text style = {styles.normalText, {color:Colors.brandSecondary}}>*</Text>
@@ -322,7 +321,7 @@ class IndividualRegister extends React.Component {
                             </View>
 
                             <View style={{paddingBottom:5}}>
-                                <Text style={styles.normalText}>Secondary Choice</Text> 
+                                <Text style={styles.normalText}>Second Choice</Text> 
                                 <TeamPicker
                                     loading={false}
                                     teams={this.getLeaguesArr(this.state.chsnSport)}
@@ -332,7 +331,7 @@ class IndividualRegister extends React.Component {
                             </View>
 
                             <View style={{paddingBottom:5}}>
-                                <Text style={styles.normalText}>Tertiary Choice</Text>  
+                                <Text style={styles.normalText}>Third Choice</Text>  
                                 <TeamPicker
                                     loading={false}
                                     teams={this.getLeaguesArr(this.state.chsnSport)}
@@ -408,7 +407,7 @@ class IndividualRegister extends React.Component {
                             </View>
                         </View>
                     </Card>
-                    <Card>
+                    <Card style={{paddingLeft:10}}>
                         <View>
                             <Text style={styles.header}>Player Information</Text>
                             <Text style = {styles.subHeading}>Comments, notes, player needs, etc. (limit 1000 characters).</Text>
@@ -446,7 +445,7 @@ class IndividualRegister extends React.Component {
                                             obj.ln = ''
                                             obj.email = ''
                                             obj.phone = ''
-                                            obj.sex = ''
+                                            obj.gender = ''
                                             obj.skill = ''
 
                                             let arr = this.state.players?this.state.players:[]
@@ -465,7 +464,7 @@ class IndividualRegister extends React.Component {
                             </View>
                         </View>
                     </Card>
-                    <Card>
+                    <Card style={{paddingLeft:10}}>
                         <View>
                             <Text style={styles.header}>Comments</Text>
                             <Text style = {styles.subHeading}>Comments, notes, player needs, etc. (limit 1000 characters).</Text>
@@ -511,7 +510,7 @@ class IndividualRegister extends React.Component {
                             </View>
                         </View>
                     </Card>
-                    <Card>
+                    <Card style={{paddingLeft:10}}>
                         <View>
                             <Text style={styles.header}>Confirm Fees</Text>
                             <Text style = {styles.subHeading}>The registration process is not finalized until fees have been paid.</Text>
@@ -541,14 +540,10 @@ class IndividualRegister extends React.Component {
                                         </Picker>
                                     </View>
                                 </View>
-                                
-                                <Text style={ [styles.normalText, {fontWeight:'bold'}]}>Make Checks Payable to Perpetual Motion</Text>
-                                <Text style={ [styles.normalText, {fontWeight:'bold'}]}>Send This Confirmation Form & Fees to:</Text>
-                                <Text style={styles.normalText}>78 Kathleen St. Guelph, Ontario; H1H 4Y3</Text>
                             </View>
                         </View>
                     </Card>
-                    <Card>
+                    <Card style={{paddingLeft:10}}>
                         <View>
                             <Text style={styles.header}>Registration Due By</Text>
                             <View style= {styles.line}/>
@@ -589,7 +584,6 @@ class IndividualRegister extends React.Component {
 
 const styles = StyleSheet.create({
     textStyle: {
-      fontSize:20,
     },
   
     centeredView: {
@@ -631,19 +625,13 @@ const styles = StyleSheet.create({
     },
   
     header: {
-      fontSize:Colors.fontSizeH1,
       textAlign:'center',
       paddingVertical:10,
       fontWeight:'bold',
     },
   
-    normalText: {
-      fontSize:20,
-    },
-  
     subHeading: {
         color: '#474747',
-        fontSize:15,
     },
   
     line: {
@@ -668,7 +656,6 @@ const styles = StyleSheet.create({
     },
   
     normalText: {
-        fontSize:Colors.fontSizeH2,
     },
   
     addPadding: {
@@ -691,11 +678,9 @@ const styles = StyleSheet.create({
         borderBottomColor:Colors.brandSecondary,
         borderBottomWidth: StyleSheet.hairlineWidth,
         width:200,
-        fontSize:20
     },
   
     text: {
-        fontSize:20,
         flexDirection:'column',
         alignItems:'center',
     },

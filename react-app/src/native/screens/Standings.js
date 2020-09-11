@@ -16,7 +16,6 @@ class Standings extends React.Component {
   constructor(props) {
     super(props)
     this.state.leagueId = this.props.route?.params?.leagueId ?? -1
-    console.log("the props = " + JSON.stringify(this.props.route))
     props.fetchLeague(this.state.leagueId)
   }
 
@@ -39,7 +38,7 @@ class Standings extends React.Component {
 
       league.standings.forEach((team, i) => {
           var points = parseInt(team.ties) + (parseInt(team.wins) * 2);
-          tableInfo.data.push([(i + 1), <Text style={styles.link} onPress={() => this.props.navigation.navigate('Team',{league: league, team: team.id})}>{team.name}</Text>, team.wins, team.losses, team.ties, points, parseFloat(team.spiritAverage).toFixed(2)]);
+          //tableInfo.data.push([(i + 1), <Text style={styles.link} onPress={() => this.props.navigation.navigate('Team',{league: league, team: team.id})}>{team.name}</Text>, team.wins, team.losses, team.ties, points, parseFloat(team.spiritAverage).toFixed(2)]);
       });
     }else{
 
@@ -51,7 +50,7 @@ class Standings extends React.Component {
 
       league.standings.forEach((team, i) => {
           var points = parseInt(team.ties) + (parseInt(team.wins) * 2);
-          tableInfo.data.push([(i+1), <Text style={styles.link} onPress={() => this.props.navigation.navigate('Team',{league: league, team: team.id})}>{team.name}</Text>, team.wins, team.losses, team.ties, points]);
+          //tableInfo.data.push([(i+1), <Text style={styles.link} onPress={() => this.props.navigation.navigate('Team',{league: league, team: team.id})}>{team.name}</Text>, team.wins, team.losses, team.ties, points]);
       });
 
     }

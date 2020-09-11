@@ -14,7 +14,7 @@ export function AddingTeamMembers() {
             LN:"",
             email:"",
             phone:"",
-            chosenSex:"",
+            chosenGender:"",
             chosenSkill:""
         }
     }
@@ -23,14 +23,14 @@ export function AddingTeamMembers() {
    const [LN, setLN] = useState('')
    const [email, setEmail] = useState('')
    const [phone, setPhone] = useState('')
-   const [sex, setSex] = useState('')
+   const [gender, setGender] = useState('')
    const [skill, setSkill] = useState('')
 
     first = FN
     last = LN
     em = email
     ph = phone
-    se = sex
+    se = gender
     sk = skill
 
     return (
@@ -88,16 +88,16 @@ export function AddingTeamMembers() {
 
                 <View style={styles.floatingBox, {paddingBottom:5, flexDirection:'row', justifyContent: 'center',}}>
                     <View>
-                        <Text style={styles.text}>Sex</Text>
+                        <Text style={styles.text}>Gender</Text>
                         <Picker
-                            placeholder='Sex'
+                            placeholder='Gender'
                             mode="dropdown"
                             iosIcon={<Icon name="arrow-down" />}
                             style={ styles.picker}
-                            selectedValue = {sex}
-                            onValueChange={ (sex) => setSex(sex) }
+                            selectedValue = {gender}
+                            onValueChange={ (gender) => setGender(gender) }
                         >
-                            <Picker.Item label="Sex" value='' key={0} />
+                            <Picker.Item label="Gender" value='' key={0} />
                             <Picker.Item label="Male" value="Male" key={1} />
                             <Picker.Item label="Female" value="Female" key={2} />
                         </Picker>
@@ -137,7 +137,7 @@ export function displayTeamMember() {
         'LN':last,
         'email':em,
         'phone':ph,
-        'sex':se,
+        'gender':se,
         'skill':sk,
     }
 

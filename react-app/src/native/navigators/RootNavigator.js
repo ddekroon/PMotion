@@ -6,7 +6,6 @@ import { createStackNavigator } from '@react-navigation/stack'
 
 import MainNavigator from './MainNavigator'
 import LeagueNavigator from './LeagueNavigator'
-//import Registration from './Registration'
 import Loading from '../components/common/Loading'
 import TeamPage from '../components/leagues/TeamPage'
 import SchedulePage from '../screens/Schedule'
@@ -24,6 +23,8 @@ import Profile from '../screens/Profile'
 import Waivers from '../screens/Waivers'
 import NewUser from '../screens/NewUser'
 import ForgotPassword from '../screens/ForgotPassword'
+
+import { HeaderBackButton } from '@react-navigation/stack';
 
 const Stack = createStackNavigator();
 
@@ -54,7 +55,7 @@ class RootNavigator extends React.Component {
           name="Main"
           component={MainNavigator} 
           navigationOptions={NavigationProps.mainTitle}
-          />
+        />
 
         <Stack.Screen 
           name="League"
@@ -62,19 +63,20 @@ class RootNavigator extends React.Component {
           options={({ route }) => ({
             title: route.params.title ?? 'League'
           })}
-          />
-          
-          <Stack.Screen 
-          name="Registration"
-          component={Registration} 
-          options={({ route }) => ({
-            title: route.params.title ?? 'Registration'
-          })}
         />
 
         <Stack.Screen 
           name="Team"
           component={TeamPage}
+        />
+        
+        <Stack.Screen 
+          name="RegistrationScreen"
+          component={Registration}
+          navigationOptions=  {{
+            title: 'Registration',
+            headerLeft: null
+        }}
         />
 
         <Stack.Screen 
@@ -100,7 +102,7 @@ class RootNavigator extends React.Component {
         <Stack.Screen
           name ='PickSport'
           component={PickSport}
-        ></Stack.Screen>
+        />
 
         <Stack.Screen
           name='Previousleagues'

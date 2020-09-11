@@ -23,14 +23,14 @@ export function resetSubmission () {
   }
 }
 
-/**
+/*
  * Submit score to the server
  */
 export function submitScoreSubmission () {
 
   return (dispatch, getState) => new Promise(async (resolve, reject) => {
     
-    // Validation checks
+    //Validation checks
     if (!isScoreSubmissionValid(getState().scoreSubmission, getState().leagues)) {
       return reject({ message: 'Your score submission has errors' })
     }
@@ -47,7 +47,6 @@ export function submitScoreSubmission () {
       },
       body: JSON.stringify(getState().scoreSubmission)
     })
-      .then(NetworkHelpers.handleErrors)
       .then(
         response => response.json()
       )

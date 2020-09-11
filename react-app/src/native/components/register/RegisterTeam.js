@@ -80,8 +80,8 @@ export default class Dash extends React.Component {
                     </View>
                     
                     <View style={styles.floatingBox, {paddingBottom:5, flexDirection:'column', justifyContent: 'center', alignItems:'center'}}>
-                        <Text style={styles.text}>Sex</Text>
-                        { this.props.user ? dropDownSex(this.props.user.sex) : dropDownSex(null) }
+                        <Text style={styles.text}>Gender</Text>
+                        { this.props.user ? dropDownGender(this.props.user.gender) : dropDownGender(null) }
                     </View>
                 </View>
             </View> 
@@ -91,25 +91,25 @@ export default class Dash extends React.Component {
 
 //const [chosen, setChosen] = useState()
 
-//The picker function for chosing the sex of the player
-export const dropDownSex = (sex) => {
+//The picker function for chosing the gender of the player
+export const dropDownGender = (gender) => {
     let chosen = ''
 
-    if (sex) {
-        chosen = sex
+    if (gender) {
+        chosen = gender
     } 
      
     return (
         <View>
             <Picker
-                placeholder='Sex'
+                placeholder='Gender'
                 mode="dropdown"
                 iosIcon={<Icon name="arrow-down" />}
                 style={ styles.picker}
                 selectedValue = {chosen}
-                onValueChange={ (sex) => chosen = sex }
+                onValueChange={ (gender) => chosen = gender }
             >
-                <Picker.Item label='Sex' value='Sex' key={0} />
+                <Picker.Item label='Gender' value='Gender' key={0} />
                 <Picker.Item label="Male" value="Male" key={1} />
                 <Picker.Item label="Female" value="Female" key={2} />
             </Picker>

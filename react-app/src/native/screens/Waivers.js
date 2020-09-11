@@ -3,10 +3,15 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import ToastHelpers from '../../utils/toasthelpers'
 import ValidationHelpers from '../../utils/validationhelpers'
-import { saveWaiverToState } from '../../actions/waiver'
+import { submitWaiver } from '../../actions/waiver'
+import Colors from '../../../native-base-theme/variables/commonColor';
+
 
 import { Text, View, StyleSheet, Switch, TextInput, Button, ScrollView} from 'react-native'
 import {List, ListItem, Container, Header, Content, Card, CardItem, Body} from 'native-base'
+
+import { StackActions } from '@react-navigation/native';
+
 
 class Waivers extends React.Component {
 
@@ -24,12 +29,8 @@ class Waivers extends React.Component {
             parentEmail:''
         }
     }
-    
 
-    submit() {
-
-        console.log("props = " + JSON.stringify(this.props))
-        
+    submit(navigation) {        
         if (!this.state.checked ) {
             ToastHelpers.showToast(null, 'Please accept the terms and conditions before submitting')
             return;
@@ -56,15 +57,15 @@ class Waivers extends React.Component {
                 return;
             } 
 
-            if (this.state.parentName== '') {
-                ToastHelpers.showToast(null, 'Need a parent name')
+            if (this.state.parentName == '') {
+                ToastHelpers.showToast(null, 'Please fill in your parent name')
                 return;
             }
         }
 
         if (this.state.parentName != '') {
             if (this.state.parentEmail == '') {
-                ToastHelpers.showToast(null, 'Need a parent email')
+                ToastHelpers.showToast(null, 'Please fill in your parent email')
                 return;
             }   
         }
@@ -75,6 +76,7 @@ class Waivers extends React.Component {
         obj.email = this.state.email
         obj.guardEmail = this.state.parentEmail
         obj.guardName = this.state.parentName
+        obj.consent = 'on'
 
         let day = new Date().getDay()
         let month = new Date().getMonth()
@@ -82,15 +84,15 @@ class Waivers extends React.Component {
 
         obj.dateString = month + '/' + day + '/' + year
         obj.Submit = 'Submit'
-        //Link : https://data.perpetualmotion.org/waiver.php?sportID=1
+        //Link : https://data.perpetualmotion.org/waiver.php?
 
         const { onFormSubmit } = this.props
         onFormSubmit(obj).catch(e => {
-            ToastHelpers.showToast(Enums.messageTypes.Error, e.message)
+            ToastHelpers.showToast(Enums.messageTypes.Error, e.message);
+            return
         })
 
-        //this.props.addWaiver(Waiver)
-        
+        navigation.goBack();    //Send a success message with this so it prints a success message for the new user
     }
 
     getDay() {
@@ -177,11 +179,12 @@ class Waivers extends React.Component {
     }
 
     render() {
+        const { navigation } = this.props;    
 
         return (
             <Container>
                 <Content>
-                    <Card>
+                    <Card style={{paddingLeft:10}}>
                         <CardItem>
                             <Body>
                                 <ScrollView>
@@ -278,7 +281,10 @@ class Waivers extends React.Component {
 
                                             <View style={{paddingTop:15}}/>
                                             <View style={{flexDirection:'column', justifyContent:'space-between'}} >
-                                                <Text>* Name:</Text>
+                                                <Text>* Name
+                                                    <Text style={{color:Colors.brandSecondary}}>*</Text>
+                                                    :
+                                                </Text>
                                                 <TextInput
                                                     style={{
                                                         borderBottomWidth:1,
@@ -308,7 +314,10 @@ class Waivers extends React.Component {
 
                                             <View style={{paddingTop:15}}/>
                                             <View style={{flexDirection:'column', justifyContent:'space-between'}} >
-                                                <Text>* Email Address:</Text>
+                                                <Text>Email Address
+                                                    <Text style={{color:Colors.brandSecondary}}>*</Text>
+                                                :
+                                                </Text>
                                                 <TextInput
                                                     style={{
                                                         borderBottomWidth:1,
@@ -358,14 +367,7 @@ class Waivers extends React.Component {
                                                 <Button
                                                     title={'Submit'}
                                                     onPress={ ()=> {
-                                                        this.submit();
-                                                    }}
-                                                />
-
-                                                <Button
-                                                    title={'Show props'}
-                                                    onPress={ ()=> {
-                                                        console.log("props = " + JSON.stringify(this.props))
+                                                        this.submit(navigation);
                                                     }}
                                                 />
                                             </View>
@@ -415,7 +417,7 @@ const mapStateToProps = state => ({
   })
   
   const mapDispatchToProps = {
-    onFormSubmit: saveWaiverToState,
+    onFormSubmit: submitWaiver,
   }
   
   export default connect(

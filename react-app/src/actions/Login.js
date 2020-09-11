@@ -1,5 +1,4 @@
 export function setLoggedIn(value) {
-
   return {
     type: 'SET_IS_LOGGEDIN',
     value

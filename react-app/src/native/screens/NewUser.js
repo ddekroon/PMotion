@@ -5,6 +5,7 @@ import Header from '../components/common/Header';
 import { Dimensions } from "react-native";
 import ValidationHelpers from '../../utils/validationhelpers';
 import ToastHelpers from '../../utils/toasthelpers';
+import Colors from '../../../native-base-theme/variables/commonColor';
 
 
 const screenWidth = Math.round(Dimensions.get('window').width);
@@ -18,7 +19,7 @@ export default class NewUser extends React.Component {
             lastName:'',
             email:'',
             phone:'',
-            sex:'',
+            gender:'',
             username:'',
             passwordOne:'',
             passwordTwo:'',
@@ -26,7 +27,7 @@ export default class NewUser extends React.Component {
             lastNameColor:'#696969',
             emailColor:'#696969',
             phoneColor:'#696969',
-            sexColor:'#696969',
+            genderColor:'#696969',
             userColor:'#696969',
             passwordOneColor:'#696969',
             passwordTwoColor:'#696969',
@@ -84,12 +85,12 @@ export default class NewUser extends React.Component {
             this.setState({phoneColor:'#696969'})
         }
 
-        if (this.state.sex == '') {    //sex
-            str += '- Please choose a sex\n'
+        if (this.state.gender == '') {    //gender
+            str += '- Please choose a gender\n'
             submit = false;
-            this.setState({sexColor:'red'})
+            this.setState({genderColor:'red'})
         } else {
-            this.setState({sexColor:'#696969'})
+            this.setState({genderColor:'#696969'})
         }
 
         if (this.state.username.length < 6) {
@@ -117,7 +118,6 @@ export default class NewUser extends React.Component {
 
         if (submit) {
             //this.props.submitNewUser()
-            console.log("Submitting")
         } else {
             ToastHelpers.showToast(null, str);
         }
@@ -129,7 +129,7 @@ export default class NewUser extends React.Component {
         
             <Container>
                 <Content>
-                    <Card>
+                    <Card style={{paddingLeft:10}}>
                         
                         <Header
                             title="Create a Profile"
@@ -190,16 +190,16 @@ export default class NewUser extends React.Component {
 
                                 <Item>
                                     <View style={{flexDirection:'row', alignItems:'space-around'}}>
-                                        <Label style={{color:this.state.sexColor}}>Sex</Label>
+                                        <Label style={{color:this.state.genderColor}}>Gender</Label>
                                         <View style={{backgroundColor:'red', borderRadius:10}}>
                                             <Picker
                                                 note={false}
                                                 mode="dropdown"
                                                 iosIcon={<Icon name="arrow-down" />}
-                                                selectedValue={this.state.sex}
-                                                placeholder= {"Sex"}
+                                                selectedValue={this.state.gender}
+                                                placeholder= {"Gender"}
                                                 onValueChange={(val) => {
-                                                    this.setState({sex:val})
+                                                    this.setState({gender:val})
                                                 }}
                                             >
                                                 <Picker.Item key={0} label={"Male"} value={"Male"}/>
@@ -241,14 +241,14 @@ export default class NewUser extends React.Component {
                                     />
                                 </Item>
 
+                                <View style={{paddingBottom:15}}/>
                                 <TouchableHighlight
                                     onPress= { () => {
-                                        
+                                        createAccount()
                                     }}
+                                    style={styles.button}
                                 >
-                                    <View style={styles.createAccountButton}>
-                                        <Text>Create Account</Text>
-                                    </View>
+                                    <Text style={styles.text}>Create Account</Text>
                                 </TouchableHighlight>
                                 
                             </Form>
@@ -263,12 +263,10 @@ export default class NewUser extends React.Component {
 const styles = StyleSheet.create({
     heading: {
         fontWeight:'bold',
-        fontSize:35
     },
 
     subHeading: {
         color: '#474747',
-        fontSize:12,
     },
   
     line: {
@@ -280,14 +278,18 @@ const styles = StyleSheet.create({
         width: screenWidth - 100,
     },
 
-    createAccountButton: {
-        backgroundColor:'red',
-        height:50,
-        width:300,
-        alignItems:'center',
-        borderRadius:10,
+    button: {
+        width:'80%',
+        backgroundColor:Colors.brandSecondary,
+        borderRadius: 10,
         flexDirection:'column',
-        justifyContent:'space-between'
-    }
+        justifyContent: 'center',
+        alignItems:'center',
+        height:60,
+    },
+    
+    text: {
+        color:'white',
+    },
 
 })

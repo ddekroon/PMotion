@@ -46,8 +46,8 @@ export default class AddingTeamMembersIndividual extends React.Component {
                         <TextInput  //Email
                             placeholder={'Email'}
                             keyboardType={'email-address'}
-                            multiline={false}
                             autoComplete={'email'}
+                            multiline={false}
                             onChangeText={ (email) => {
                                 obj.email = email
                                 this.props.func(JSON.stringify(obj))
@@ -75,19 +75,19 @@ export default class AddingTeamMembersIndividual extends React.Component {
 
                     <View style={styles.floatingBox, {paddingBottom:5, flexDirection:'row', justifyContent: 'space-around'}}>
                         <View>
-                            <Text style={styles.text}>Sex</Text>
+                            <Text style={styles.text}>Gender</Text>
                             <Picker
-                                placeholder='Sex'
+                                placeholder='Gender'
                                 mode="dropdown"
                                 iosIcon={<Icon name="arrow-down" />}
                                 style={ styles.picker}
-                                selectedValue = {obj.sex}
-                                onValueChange={ ((sex) => {
-                                    obj.sex = sex
+                                selectedValue = {obj.gender}
+                                onValueChange={ ((gender) => {
+                                    obj.gender = gender
                                     this.props.func(JSON.stringify(obj))
                                 }) }
                             >
-                                <Picker.Item label="Sex" value='' key={0} />
+                                <Picker.Item label="Gender" value='' key={0} />
                                 <Picker.Item label="Male" value="Male" key={1} />
                                 <Picker.Item label="Female" value="Female" key={2} />
                             </Picker>

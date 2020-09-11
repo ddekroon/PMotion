@@ -76,19 +76,19 @@ export default class AddingTeamMembers extends React.Component {
 
                     <View style={styles.floatingBox, {paddingBottom:5, flexDirection:'row', justifyContent: 'center',}}>
                         <View>
-                            <Text style={styles.text}>Sex</Text>
+                            <Text style={styles.text}>Gender</Text>
                             <Picker
-                                placeholder='Sex'
+                                placeholder='Gender'
                                 mode="dropdown"
                                 iosIcon={<Icon name="arrow-down" />}
                                 style={ styles.picker}
-                                selectedValue = {obj.sex}
-                                onValueChange={ ((sex) => {
-                                    obj.sex = sex
+                                selectedValue = {obj.gender}
+                                onValueChange={ ((gender) => {
+                                    obj.gender = gender
                                     this.props.func(JSON.stringify(obj))
                                 }) }
                             >
-                                <Picker.Item label="Sex" value='' key={0} />
+                                <Picker.Item label="Gender" value='' key={0} />
                                 <Picker.Item label="Male" value="Male" key={1} />
                                 <Picker.Item label="Female" value="Female" key={2} />
                             </Picker>
@@ -111,7 +111,6 @@ const styles = StyleSheet.create({
     },
 
     text: {
-        fontSize:Colors.fontSizeH3,
         flex:1,
         flexDirection:'column',
         alignItems:'center',

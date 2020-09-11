@@ -6,7 +6,6 @@ import LeagueHelpers from '../utils/leaguehelpers'
 export function fetchLeague (leagueId) {
   return (dispatch, getState) => {
     if (shouldFetchLeague(getState(), leagueId)) {
-      console.log('Get league from api and store it in the leagues store')
       dispatch({
         type: 'REQUEST_LEAGUE',
         id: leagueId
@@ -17,7 +16,6 @@ export function fetchLeague (leagueId) {
       )
         .then(
           response => response.json(),
-          error => console.log('An error occurred.', error)
         )
         .then(json => {
           json['leagueSchedule'] = buildLeagueSchedule(

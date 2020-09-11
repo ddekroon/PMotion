@@ -16,26 +16,25 @@ class Profile extends React.Component {
         saveTeamToState: PropTypes.func.isRequired,
     }
 
-    user = this.props.route.params.user
-
     constructor(props) {
         super(props)
         this.state = {
-            Fn:this.user.FN?this.user.FN:'',
-            Ln:this.user.LN?this.user.LN:'',
-            email:this.user.email?this.user.email:'',
-            phone:this.user.phone?this.user.phone:'',
-            sex:this.user.sex?this.user.sex:'',
+            Fn:'',  //Will need to populate this from the redux state once you can get info from the user
+            Ln:'',
+            email:'',
+            phone:'',
+            gender:'',
+            userID:123456   //This is a stub 
         }
     }
 
-    updateSex(newSex) {
-        this.setState({sex:newSex})
+    updateGender(newGender) {
+        this.setState({gender:newGender})
     }
         
     writeToClipboard = async () => {
-        await Clipboard.setString('https://data.perpetualmotion.org/web-app/download-ics/' + this.props.route.params.user.id);
-        alert('Copied to Clipboard!');
+        await Clipboard.setString('https://data.perpetualmotion.org/web-app/download-ics/' + this.state.userID);
+        alert('Copied to Clipboard!\nNow paste this into your calendar app.');
     }
 
     submit() { 
@@ -56,8 +55,8 @@ class Profile extends React.Component {
             this.user.phone = this.state.phone
         }
 
-        if (this.user.sex != this.state.sex) {
-            this.user.sex = this.state.sex
+        if (this.user.gender != this.state.gender) {
+            this.user.gender = this.state.gender
         }
 
         
@@ -76,15 +75,15 @@ class Profile extends React.Component {
         return (
             <Container>
                 <Content>
-                    <Card>
+                    <Card style={{paddingLeft:10}}>
                         <View>
                             <Text style={styles.header}>Hello
-                                <Text style={styles.header, {color:Colors.brandSecondary}}> {this.props.route.params.user.FN} {this.props.route.params.user.LN}</Text>
+                                <Text style={styles.header, {color:Colors.brandSecondary}}> {this.state.Fn} {this.state.Ln}</Text>
                             </Text>
                             <Text style={{fontSize:25}}>Welcome to your profile</Text>
                         </View>
                     </Card>
-                    <Card>
+                    <Card style={{paddingLeft:10}}>
                         <View style={{padding:10}}/>
 
                         <Text style={styles.header}>Calendar Integration</Text>
@@ -100,14 +99,14 @@ class Profile extends React.Component {
                             </View>
 
                             <View style={styles.rightView}>
-                                <Text>https://data.perpetualmotion.org/web-app/download-ics/{this.props.route.params.user.id}</Text>
+                                <Text>https://data.perpetualmotion.org/web-app/download-ics/{this.state.userID}</Text>
                             </View>
                         </View>
 
                         <Button title={'Copy to clipboard'} onPress={this.writeToClipboard}/>
                         <View style={{paddingBottom:10}}/>
                     </Card>
-                    <Card>
+                    <Card style={{paddingLeft:10}}>
                         <Text style={styles.header}>Edit Information</Text>
                         <View style={styles.line}/>
 
@@ -158,16 +157,15 @@ class Profile extends React.Component {
                         </View>
 
                         <View style={styles.inputView}> 
-                            <Text style={styles.plainText}>Sex</Text>
+                            <Text style={styles.plainText}>Gender</Text>
                             
-                            {/* cannot figure this out to save my life :/ */}
                             <Picker
                                 note={false}
-                                placeholder={this.state.sex}
-                                onValueChange={ (sex) => {
-                                    this.setState({sex:sex})
+                                placeholder={this.state.gender?this.state.gender:'Gender'}
+                                onValueChange={ (gender) => {
+                                    this.setState({gender:gender})
                                 }}
-                                selectedValue={this.state.sex}
+                                selectedValue={this.state.gender}
                                 mode="dropdown"
                                 iosIcon={<Icon name="arrow-down" />}
                             >
@@ -197,12 +195,10 @@ class Profile extends React.Component {
 const styles = StyleSheet.create({ 
     header: {
         fontWeight:'bold',
-        fontSize:35
       },
     
     subHeading: {
         color: '#474747',
-        fontSize:12,
     },
     
     line: {
@@ -239,7 +235,6 @@ const styles = StyleSheet.create({
     },
 
     plainText: {
-        fontSize:25,
         paddingRight:10,
     },
 

@@ -7,7 +7,7 @@ ex: const user = {
         LN:'McKechnie',
         email:'imckechn@uoguelph.ca',
         phone:'9056915041',
-        sex:'Male',
+        gender:'Male',
     }
 */
 
@@ -24,6 +24,7 @@ import { submitTeam } from '../../actions/teams'
 import ToastHelpers from '../../utils/toasthelpers'
 import ValidationHelpers from '../../utils/validationhelpers'
 import Colors from '../../../native-base-theme/variables/commonColor';
+import { getTeamMembers } from '../../utils/teamMembersForNewTeamRegistration'
 import {
     saveTeamToState,
     reset
@@ -63,7 +64,7 @@ class RegisterTeam extends React.Component {
                 LN:this.props.userData.LN,
                 email:this.props.userData.email,
                 phone:this.props.userData.phone,
-                sex:this.props.userData.sex
+                gender:this.props.userData.gender
             }
         } else {
             this.state = {
@@ -71,7 +72,7 @@ class RegisterTeam extends React.Component {
                 LN:'',
                 email:'',
                 phone:'',
-                sex:''
+                gender:''
             }
         }
 
@@ -122,7 +123,8 @@ class RegisterTeam extends React.Component {
             noError = false
         }
         
-        for (player in this.state.jsonPlayers) {
+        //Dave said we didnt need non-team captain contact info but I am leaving it in a comment just incase it changes
+        /*for (player in this.state.jsonPlayers) { 
 
             if (this.state.jsonPlayers[player].email) {
                 if ( !ValidationHelpers.isValidEmail(this.state.jsonPlayers[player].email) ) {
@@ -139,7 +141,7 @@ class RegisterTeam extends React.Component {
                     break
                 }
             }
-        }
+        }*/
 
         if (noError) {
             return false
@@ -155,7 +157,9 @@ class RegisterTeam extends React.Component {
         if (this.checkAnswers()) return;
         
         //Creating the object that will be uploaded to redux/the server
-        let obj = new Object
+        let obj = getTeamMembers(this.state.jsonPlayers)    //This initializes the object and populates all the team memeber elements of the object
+        obj.action = 'register'
+        obj.oldTeamID = '/' //Not sure why this is a /, but it was in the team i submitted, this can be corrected obviously.
 
         //Get the league ID
         let league;
@@ -168,10 +172,11 @@ class RegisterTeam extends React.Component {
             }
         })
 
-        obj.name = this.state.teamName
+        obj.teamName = this.state.teamName
         obj.wins = 0
         obj.loses = 0
         obj.ties= 0
+        obj.sportID = this.props.route?.params?.sport?this.props.route.params.sport:1   //Same as bellow where I get the leagues
 
         let t = new Date()
         obj.dateCreate = {
@@ -196,16 +201,18 @@ class RegisterTeam extends React.Component {
         obj.oppSubmittedTies = 0
         obj.league = league
         
-        let captain = new Object
-        captain.fn = this.state.FN
-        captain.ln = this.state.LN
-        captain.email = this.state.email
-        captain.sex = this.state.sex
+        
+        obj.capFirstName = this.state.FN
+        obj.capLastName = this.state.LN
+        obj.capEmail = this.state.email
+        obj.capGender = this.state.gender
+        obj.capPhoneNumber = this.state.phone
 
-        obj.captain = captain
-
-        obj.players = this.state.jsonPlayers
-        obj.registrationComment = this.state.comment
+        obj.teamComments = this.state.comment
+        obj.capHowHeardMethod = this.state.hearMethod
+        obj.capHowHeardcapHowHeardOtherMethodMethod = this.state.hearMethod   //Not sure that this was for, just in the object sent to the server when I made a test team
+        obj.teamPaymentMethod = this.state.paymentMethod
+        obj.submit = 'register'
 
         //Get a random ID for the team
         let unique = false;
@@ -224,15 +231,13 @@ class RegisterTeam extends React.Component {
         }
         obj.id = id
         
-        console.log("Object will be = " + JSON.stringify(obj))
         this.props.saveTeamToState(obj)
-        console.log("props = " + JSON.stringify(this.props))
 
         //  To submit 
-        /*const {onSubmit} = this.props
-        onSubmit().catch(e => {
+        const {onSubmit} = this.props
+        onSubmit(obj).catch(e => {
             console.log("Encountered an error submitting the data")
-        })*/
+        })
     }
 
     render() {
@@ -247,10 +252,7 @@ class RegisterTeam extends React.Component {
         return (
             <Container>
                 <Content>
-                    <Card>
-                        <Text style={styles.header}>Team Register</Text>
-                        <View style={styles.addPadding}/>
-
+                    <Card style={{paddingLeft:10}}>
                         <View style={styles.addPadding}>
                             <View style={styles.setHorizontal}>
 
@@ -287,7 +289,7 @@ class RegisterTeam extends React.Component {
 
                             <View style={styles.setHorizontal}>
                                 {/**Where the user chooses their team name */}
-                                <Text style={styles.normalText}>Team Name
+                                <Text style={styles.normalText, {paddingRight:5}}>Team Name
                                     <Text style={styles.normalText, {color:Colors.brandSecondary} }>*</Text>
                                 </Text>
 
@@ -301,9 +303,9 @@ class RegisterTeam extends React.Component {
                         </View>
                     </Card>
 
-                    <Card>
+                    <Card style={{paddingLeft:10}}>
                         <View style={styles.padding}>
-                            <Text style={{fontSize:20, fontWeight:'bold'}}>Team Captain</Text>
+                            <Text style={{fontWeight:'bold'}}>Team Captain</Text>
                             <View style={styles.floatingBox}>
                                 <Text style={styles.text}>First Name           </Text>
                                 <TextInput  //First name
@@ -356,16 +358,16 @@ class RegisterTeam extends React.Component {
                             </View>
                             
                             <View style={styles.floatingBox, {paddingBottom:5, flexDirection:'column', justifyContent: 'center', alignItems:'center'}}>
-                                <Text style={styles.text}>Sex</Text>
+                                <Text style={styles.text}>Gender</Text>
                                 <Picker
-                                    placeholder='Sex'
+                                    placeholder='Gender'
                                     mode="dropdown"
                                     iosIcon={<Icon name="arrow-down" />}
                                     style={ styles.picker}
-                                    selectedValue = {this.state.sex}
-                                    onValueChange={ (sex) => this.setState({sex:sex}) }
+                                    selectedValue = {this.state.gender}
+                                    onValueChange={ (gender) => this.setState({gender:gender}) }
                                 >
-                                    <Picker.Item label='Sex' value='Sex' key={0} />
+                                    <Picker.Item label='Gender' value='Gender' key={0} />
                                     <Picker.Item label="Male" value="Male" key={1} />
                                     <Picker.Item label="Female" value="Female" key={2} />
                                 </Picker>
@@ -373,7 +375,7 @@ class RegisterTeam extends React.Component {
                         </View> 
                     </Card>
 
-                    <Card>
+                    <Card style={{paddingLeft:10}}>
                         <Text style={styles.header}>Player Information</Text>
                         <Text style = {styles.subHeading}>Comments, notes, player needs, etc. (limit 1000 characters).</Text>
                         <View style= {styles.line}/>
@@ -409,7 +411,7 @@ class RegisterTeam extends React.Component {
                                         obj.firstName = ''
                                         obj.lastName = ''
                                         obj.email = ''
-                                        obj.sex = ''
+                                        obj.gender = ''
                                         obj.phone = ''
                                         obj.key = obj.index
 
@@ -429,7 +431,7 @@ class RegisterTeam extends React.Component {
                         </View>
                     </Card>
 
-                    <Card>
+                    <Card style={{paddingLeft:10}}>
                         <Text style={styles.header}>Comments</Text>
                         <Text style = {styles.subHeading}>Comments, notes, player needs, etc. (limit 1000 characters).</Text>
                         <View style= {styles.line}/>
@@ -460,14 +462,14 @@ class RegisterTeam extends React.Component {
                                         onValueChange={ (method) => { this.setState({hearMethod:method})} }
                                     >
                                         <Picker.Item label="Choose Method" value='' key={0} />
-                                        <Picker.Item label="Google/Internet Search" value='Google/Internet Search' key={1} />
-                                        <Picker.Item label="Facebook Page" value='Facebook Page' key={2} />
-                                        <Picker.Item label="Kijiji Ad" value='Kijiji Ad' key={3} />
-                                        <Picker.Item label="Returning Player" value='Returning Player' key={4} />
-                                        <Picker.Item label="From a Friend" value='From a Friend' key={5} />
-                                        <Picker.Item label="Restaurant Ad" value='Restaurant Ad' key={6} />
+                                        <Picker.Item label="Google/Internet Search" value={1} key={1} />
+                                        <Picker.Item label="Facebook Page" value={2} key={2} />
+                                        <Picker.Item label="Kijiji Ad" value={3} key={3} />
+                                        <Picker.Item label="Returning Player" value={4} key={4} />
+                                        <Picker.Item label="From a Friend" value={5} key={5} />
+                                        <Picker.Item label="Restaurant Ad" value={6} key={6} />
                                         <Picker.Item label="The Guelph Community Guide" value='The Guelph Community Guide' key={7} />
-                                        <Picker.Item label="Other" value='Other' key={8} />
+                                        <Picker.Item label="Other" value={8} key={8} />
                                         
                                     </Picker>
                                 </View>
@@ -475,7 +477,7 @@ class RegisterTeam extends React.Component {
                         </View>
                     </Card>
 
-                    <Card>
+                    <Card style={{paddingLeft:10}}>
                         <Text style={styles.header}>Confirm Fees</Text>
                         <Text style = {styles.subHeading}>The registration process is not finalized until fees have been paid.</Text>
                         <View style= {styles.line}/>
@@ -498,20 +500,18 @@ class RegisterTeam extends React.Component {
                                         onValueChange={ (itemValue, itemIndex) => this.setState({paymentMethod:itemValue}) }
                                     >
                                         <Picker.Item label={"Choose Method"} value={''} key={0} />
-                                        <Picker.Item label={"I will send an money email transfer to dave@perpetualmotion.org"} value={'I will send an money email transfer to dave@perpetualmotion.org'} key={1} />
-                                        <Picker.Item label={"I will mail a cheque to the Perpetual Motion head office"} value={'I will mail a cheque to the Perpetual Motion head office'} key={2} />
-                                        <Picker.Item label={"I will bring a cash/cheque to the Perpetual Motion head office"} value={'I will bring a cash/cheque to the Perpetual Motion head office'} key={3} />
-                                        <Picker.Item label={"I will bring cash/cheque to registration night"} value={'I will bring cash/cheque to registration night'} key={4} />
+                                        <Picker.Item label={"I will send an money email transfer to dave@perpetualmotion.org"} value={1} key={1} />
+                                        <Picker.Item label={"I will mail a cheque to the Perpetual Motion head office"} value={2} key={2} />
+                                        <Picker.Item label={"I will bring a cash/cheque to the Perpetual Motion head office"} value={3} key={3} />
+                                        <Picker.Item label={"I will bring cash/cheque to registration night"} value={4} key={4} />
                                         
                                     </Picker>
                                 </View>
                             </View>
-                            
-                            <Text style={ [styles.normalText, {fontWeight:'bold'}]}>Make Checks Payable to Perpetual Motion</Text>
-                            <Text style={ [styles.normalText, {fontWeight:'bold'}]}>Send This Confirmation Form & Fees to:</Text>
-                            <Text style={styles.normalText}>78 Kathleen St. Guelph, Ontario; H1H 4Y3</Text>
                         </View>
-
+                    </Card>
+                    
+                    <Card style={{paddingLeft:10}}>
                         {/**Where we need to add server calls to get the registration due dates*/}
                         <Text style={styles.header}>Registration Due By</Text>
                         <View style= {styles.line}/>
@@ -555,17 +555,18 @@ class RegisterTeam extends React.Component {
 const styles = StyleSheet.create({
     header: {
         fontWeight:'bold',
-        fontSize:30
+        paddingBottom:5
     },
 
     subHeading: {
         color: '#474747',
-        fontSize:12,
+        paddingBottom:5
     },
 
     line: {
-        borderBottomColor:'black',
-        borderBottomWidth:1,
+        borderTopColor:'black',
+        borderTopWidth:1,
+        paddingBottom:15
     },  
 
     picker: {
@@ -585,7 +586,6 @@ const styles = StyleSheet.create({
     },
 
     normalText: {
-        fontSize:20,
     },
 
     addPadding: {
@@ -608,11 +608,9 @@ const styles = StyleSheet.create({
         borderBottomColor:Colors.brandSecondary,
         borderBottomWidth: StyleSheet.hairlineWidth,
         width:200,
-        fontSize:20
     },
 
     text: {
-        fontSize:20,
         flexDirection:'column',
         alignItems:'center',
     },

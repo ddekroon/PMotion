@@ -96,10 +96,6 @@ class Comment extends React.Component {
                             </Picker>
                         </View>
                     </View>
-                    
-                    <Text style={ [styles.normalText, {fontWeight:'bold'}]}>Make Checks Payable to Perpetual Motion</Text>
-                    <Text style={ [styles.normalText, {fontWeight:'bold'}]}>Send This Confirmation Form & Fees to:</Text>
-                    <Text style={styles.normalText}>78 Kathleen St. Guelph, Ontario; H1H 4Y3</Text>
                 </View>
 
                 <Text style={styles.header}>Registration Due By</Text>

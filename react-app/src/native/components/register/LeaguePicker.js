@@ -99,8 +99,6 @@ function reducer(curLeague) {
     ' - ' +
     DateTimeHelpers.getDayString(curLeague.dayNumber);
 
-  console.log("The sport ID = " + this.props.sport)
-  
   return (
     <Picker.Item
       key={curLeague.id}

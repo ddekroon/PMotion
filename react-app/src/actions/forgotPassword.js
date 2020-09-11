@@ -1,22 +1,18 @@
-//Converting this to submit waivers
 import ErrorMessages from '../constants/errors'
 import ToastHelpers from '../utils/toasthelpers'
 import Enums from '../constants/enums'
-import NetworkHelpers from '../utils/networkhelpers'
-import ValidationHelpers from '../utils/validationhelpers'
 
 /**
  * Submit score to the server
  */
-export function submitWaiver (obj) {
+export function submitForgotPassword (obj) {
 
   return (dispatch, getState) => new Promise(async (resolve, reject) => {
 
     dispatch({
-      type: 'WAIVER_SENDING_START',
+      type: 'FORGOT_PASSWORD_SENDING_START',
     })
-
-    return fetch('https://Data.perpetualmotion.org/web-app/API/waiver', { //Given endpoint from Derek: Data.perpetualmotion.org/web-app/API/waiver
+    return fetch('https://data.perpetualmotion.org/web-app/request-reset-password', {
       method: 'POST',
       headers: {
         Accept: 'application/json',
@@ -26,12 +22,11 @@ export function submitWaiver (obj) {
     })
       //.then(NetworkHelpers.handleErrors)
       .then(
-        (response) => response.json()
+        (response) => response.json()  //This is just a test
       )
       .then(json => {
-        console.log("JSON = " + JSON.stringify(json))   //Returning a weird error message here
         dispatch({
-          type: 'WAIVER_SENDING_SUCCESS',
+          type: 'FORGOT_PASSWORD_SENDING_SUCCESS',
           payload:json
         })
       })
@@ -40,15 +35,8 @@ export function submitWaiver (obj) {
         ToastHelpers.showToast(Enums.messageTypes.Error, ErrorMessages.errorSendingToServer)
 
         dispatch({
-          type: 'WAIVER_SENDING_ERROR'
+          type: 'FORGOT_PASSWORD_SENDING_ERROR'
         })
       })
   })
-}
-
-export function saveWaiverToState(waiver) {
-  return {
-    type: 'NEW_WAIVER',
-    waiver
-  }
 }

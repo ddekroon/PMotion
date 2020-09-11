@@ -3,47 +3,54 @@
 import React, { useState} from 'react'
 import {Text, Picker, Icon, Container, Content, Card} from 'native-base'
 import {Button, View, Image} from 'react-native'
-
+import Colors from '../../../native-base-theme/variables/commonColor'
 import {StyleSheet} from 'react-native'
 import { TextInput, ScrollView, TouchableHighlight } from 'react-native-gesture-handler'
+import * as previousTeamHelpers from '../../utils/previousTeamsHelpers'
+import store from '../../store/teams'
+import HeaderBackButton from '@react-navigation/stack'
 
-var rowSize = 30
-var searchedLeague = []
-var oldLeagues = []
-var count = 0;
+var ROW_SIZE = 30
+var CHECKER = 0
 
 //The colour part of this is still broken ;/
 export default function Previousleagues({navigation, route}) {
+
+    /*HeaderBackButton.onPress(() => {
+        navigation.goHome()
+    })*/
+
+    var oldLeagues = store?.teams?store.teams:[];    //All the teams from the store are now in the oldLeagues var
+    var searchedLeague = [];
+
     if (oldLeagues.length != 0) {
         oldLeagues = [];
     }
     
-    const [chosen, setChosen] = useState(10)
-    const [pageNum, setPageNum] = useState(1)
-    const [beingShown, setBeingShown] = useState(oldLeagues)
-    const [checker, setchecker] = useState(0)
-    
     // ******** <Testers to see if if it works with teams> **
-    //console.log('oldLeagues before = ' + JSON.stringify(oldLeagues))
-    addLeague(oldLeagues, 'name1', 'league1', 'season1', 'No', route, navigation)      //1
-    addLeague(oldLeagues, 'name2', 'league2', 'season2', 'No', route, navigation)      //2
-    addLeague(oldLeagues, 'name3', 'league3', 'season3', 'No', route, navigation)      //3
-    addLeague(oldLeagues, 'name4', 'league4', 'season4', 'Yes', route, navigation)     //4
-    addLeague(oldLeagues, 'name5', 'league5', 'season5', 'No', route, navigation)      //5
-    addLeague(oldLeagues, 'name6', 'league6', 'season6', 'Yes', route, navigation)     //6
-    addLeague(oldLeagues, 'name7', 'league7', 'season7', 'Yes', route, navigation)     //7
-    addLeague(oldLeagues, 'name8', 'league8', 'season8', 'No', route, navigation)      //8
-    addLeague(oldLeagues, 'name9', 'league9', 'season9', 'Yes', route, navigation)     //9
-    addLeague(oldLeagues, 'name10', 'league10', 'season10', 'No', route, navigation)   //10
-    addLeague(oldLeagues, 'name11', 'league11', 'season11', 'Yes', route, navigation)  //11
-    addLeague(oldLeagues, 'name12', 'league12', 'season12', 'Yes', route, navigation)  //12
-    addLeague(oldLeagues, 'name13', 'league13', 'season13', 'Yes', route, navigation)  //13
-    //console.log('oldLeagues after = ' + JSON.stringify(oldLeagues))
+    previousTeamHelpers.addLeague(oldLeagues, 'name1', 'league1', 'season1', 'No', route)      //1
+    previousTeamHelpers.addLeague(oldLeagues, 'name2', 'league2', 'season2', 'No', route)      //2
+    previousTeamHelpers.addLeague(oldLeagues, 'name3', 'league3', 'season3', 'No', route)      //3
+    previousTeamHelpers.addLeague(oldLeagues, 'name4', 'league4', 'season4', 'Yes', route)     //4
+    previousTeamHelpers.addLeague(oldLeagues, 'name5', 'league5', 'season5', 'No', route)      //5
+    previousTeamHelpers.addLeague(oldLeagues, 'name6', 'league6', 'season6', 'Yes', route)     //6
+    previousTeamHelpers.addLeague(oldLeagues, 'name7', 'league7', 'season7', 'Yes', route)     //7
+    previousTeamHelpers.addLeague(oldLeagues, 'name8', 'league8', 'season8', 'No', route)      //8
+    previousTeamHelpers.addLeague(oldLeagues, 'name9', 'league9', 'season9', 'Yes', route)     //9
+    previousTeamHelpers.addLeague(oldLeagues, 'name10', 'league10', 'season10', 'No', route)   //10
+    previousTeamHelpers.addLeague(oldLeagues, 'name11', 'league11', 'season11', 'Yes', route)  //11
+    previousTeamHelpers.addLeague(oldLeagues, 'name12', 'league12', 'season12', 'Yes', route)  //12
+    previousTeamHelpers.addLeague(oldLeagues, 'name13', 'league13', 'season13', 'Yes', route)  //13
     // ******** </Testers to see if if it works with teams> **
+
+    const [chosen, setChosen] = useState(10)
+    const [pageNum, setPageNum] = useState(1)   //Starts at one instead of zero because this is what prints at the bottom of the card that the user will see
+    const [beingShown, setBeingShown] = useState(oldLeagues)
+
     return (
         <Container>
             <Content>
-                <Card>
+                <Card style={{paddingLeft:10}}>
                     <ScrollView>
                         {/**Header */}
                         <Text style={styles.header}>Teams Previously Registered</Text>
@@ -84,23 +91,15 @@ export default function Previousleagues({navigation, route}) {
                                     style={styles.search}
                                     onChangeText={text => { 
 
-                                        console.log('A')
-                                        updateSearch(text)
-                                        console.log('B')
+                                        searchedLeague = previousTeamHelpers.updateSearch(text, oldLeagues)
+                                        setPageNum(1)
+
                                         if (text.length != 0) {
-                                            console.log('C1')
-                                            //setShow(true)
                                             setBeingShown(searchedLeague)
-                                            setPageNum(1)
-                                            console.log('D1')
+                                            
                                         } else {
-                                            console.log('C2')
-                                            //setShow(false)
                                             setBeingShown(oldLeagues)
-                                            setPageNum(1)
-                                            console.log('D2')
                                         }
-                                        console.log('E')
                                     }}
                                 />
                             </View>
@@ -116,17 +115,17 @@ export default function Previousleagues({navigation, route}) {
                             {/*Made the view clickable so you can sort by if they have been registered */}
                             <TouchableHighlight onPress={() => {
                                 //This makes it so the user can keep clicking and getting different organizations each time (yes first, no first, and original order)
-                                if (checker == 0 ) {
-                                    setBeingShown(organizeList(oldLeagues))
-                                    setchecker(1)   // The reason this is here is because  when I use 'if (beingShown == organizeList(oldLeagues))' it always returns false and I don't get it                
+                                if (CHECKER == 0 ) {
+                                    setBeingShown(previousTeamHelpers.organizeList(beingShown))
+                                    CHECKER = 1   // The reason this is here is because  when I use 'if (beingShown == organizeList(oldLeagues))' it always returns false and I don't get it                
 
-                                } else if (checker == 1) {
-                                    setchecker(2)
-                                    setBeingShown(organizeListReverse(oldLeagues))
+                                } else if (CHECKER == 1) {
+                                    CHECKER = 2
+                                    setBeingShown(previousTeamHelpers.organizeListReverse(beingShown))
 
                                 } else {
-                                    setchecker(0)
-                                    setBeingShown(oldLeagues)
+                                    CHECKER = 0
+                                    setBeingShown(previousTeamHelpers.setListToDefault(beingShown, oldLeagues))
                                 }
 
                                 setPageNum(1)
@@ -140,24 +139,45 @@ export default function Previousleagues({navigation, route}) {
                             </TouchableHighlight>
                         </View>
 
-                        <View style={{ height:( beingShown.length > 0 && chosen < beingShown.length? chosen*rowSize: beingShown.length*rowSize), borderWidth:3, overflow:'hidden'}}>
+                        <View style={{ height:( beingShown.length > 0 && chosen < beingShown.length? chosen*ROW_SIZE: beingShown.length*ROW_SIZE), borderWidth:3, overflow:'hidden'}}>
                             {/** The expression for height shows either the chosen amount out of the total group, or if the chosen amount is bigger than the group,  just the full group */}
-                            
                             {
-                                //display only the elements on the chosen page form the array
                                 count = -1,
                                 beingShown.map( (elem) => {
-                                    if (beingShown.indexOf(elem) < (pageNum-1)*(chosen) || beingShown.indexOf(elem) >= (pageNum) * (chosen)) {
-                                    } else {
-                                        count++
-                                        
-                                        return (
-                                            <View key={count}j>
-                                                {elem}
-                                            </View >
-                                        )
+                                    if (beingShown.indexOf(elem) >= (pageNum-1)*(chosen) && beingShown.indexOf(elem) < (pageNum) * (chosen)) {
+                                        count++;
+                                        if (elem.nav) {
+                                            return (
+                                                <View style={{height:ROW_SIZE, justifyContent: 'space-between', flexDirection:'row', backgroundColor:previousTeamHelpers.getAlternatingColours(count)}} key={elem.key} >
+                                                    <TouchableHighlight onPress={() => {
+                                                        navigation.navigate(elem.navigationLocation, {
+                                                            team: {
+                                                                name:elem.teamName,
+                                                                league:elem.league,
+                                                            },
+                                                            sport:elem.sport,
+                                                            //More vals will get past once I make server requests
+                                                        })
+                                                    }}>
+                                                        <Text style={{fontSize:20, textAlign:'center', color:Colors.brandSecondary, paddingLeft:10}}>{elem.teamName}</Text>
+                                                </TouchableHighlight>
+
+                                                    <Text style={{fontSize:20, textAlign:'center', width:'25%', color:Colors.brandPrimary}}>{elem.league}</Text>
+                                                    <Text style={{fontSize:20, textAlign:'center', width:'25%', color:Colors.brandPrimary}}>{elem.season}</Text>
+                                                    <Text style={{fontSize:20, textAlign:'center', width:'25%', color:Colors.brandPrimary}}>{elem.isRegistered}</Text>
+                                                </View>
+                                            )
+                                        } else {
+                                            return (
+                                                <View style={{height:ROW_SIZE, justifyContent: 'space-between', flexDirection:'row', backgroundColor:previousTeamHelpers.getAlternatingColours(count)}} key={elem.key} >
+                                                    <Text style={{fontSize:20, textAlign:'center', color:Colors.brandPrimary, paddingLeft:10}}>{elem.teamName}</Text>
+                                                    <Text style={{fontSize:20, textAlign:'center', width:'25%', color:Colors.brandPrimary}}>{elem.league}</Text>
+                                                    <Text style={{fontSize:20, textAlign:'center', width:'25%', color:Colors.brandPrimary}}>{elem.season}</Text>
+                                                    <Text style={{fontSize:20, textAlign:'center', width:'25%', color:Colors.brandPrimary}}>{elem.isRegistered}</Text>
+                                                </View>
+                                            )
+                                        }
                                     }
-                                    count += 1
                                 })
                             }
 
@@ -173,22 +193,37 @@ export default function Previousleagues({navigation, route}) {
                             }}>
 
                                 {/* the bottoms at the bottom for chosing the page number and go forwards/backwards a page*/}
-                                <Button title={'Previous'} color={ (pageNum == 1? 'grey' : 'red') } onPress={ () => setPageNum(previousPress(pageNum)) }/>
-                                <Button title={ '' + getFirst(pageNum, Math.ceil(beingShown.length/chosen)) } color={ (pageNum == 1? 'grey' : 'red') } onPress={() => setPageNum(firstPress(pageNum, Math.ceil(beingShown.length/chosen))) }/>
+                                <Button title={'Previous'} color={ (pageNum == 1? 'grey' : 'red') } onPress={ () => setPageNum(previousTeamHelpers.previousPress(pageNum)) }/>
+                                <Button title={ '' + previousTeamHelpers.getFirst(pageNum, Math.ceil(beingShown.length/chosen)) } color={ (pageNum == 1? 'grey' : 'red') } onPress={() => setPageNum(previousTeamHelpers.firstPress(pageNum, Math.ceil(beingShown.length/chosen))) }/>
                                 
                                 <View style = { Math.ceil(beingShown.length/chosen) > 1 ? styles.show : styles.hide}>
-                                    <Button title={ '' + getSecond(pageNum, Math.ceil(beingShown.length/chosen)) } color={ (pageNum > 1 && pageNum < Math.ceil(beingShown.length/chosen) - 1) || pageNum == 2 ? 'grey' : 'red' } onPress={() => setPageNum(secondPress(pageNum, Math.ceil(beingShown.length/chosen))) }/>
+
+                                    <Button 
+                                        title={ '' + previousTeamHelpers.getSecond(pageNum, Math.ceil(beingShown.length/chosen)) } 
+                                        color={ (pageNum > 1 && pageNum < Math.ceil(beingShown.length/chosen) - 1) || pageNum == 2 ? 'grey' : 'red' } 
+                                        onPress={() => setPageNum(previousTeamHelpers.secondPress(pageNum, Math.ceil(beingShown.length/chosen))) }
+                                    />
                                 </View>
 
                                 <View style = { Math.ceil(beingShown.length/chosen) > 2 ? styles.show : styles.hide}>
-                                    <Button title={ '' + getThird(pageNum, Math.ceil(beingShown.length/chosen)) } color={ (thirdIsGrey(pageNum, Math.ceil(beingShown.length/chosen)) ? 'grey' : 'red') } onPress={() => setPageNum(thirdPress(pageNum, Math.ceil(beingShown.length/chosen))) }/>
+
+                                    <Button 
+                                        title={ '' + previousTeamHelpers.getThird(pageNum, Math.ceil(beingShown.length/chosen)) } 
+                                        color={ (previousTeamHelpers.thirdIsGrey(pageNum, Math.ceil(beingShown.length/chosen)) ? 'grey' : 'red') } 
+                                        onPress={() => setPageNum(previousTeamHelpers.thirdPress(pageNum, Math.ceil(beingShown.length/chosen))) }
+                                    />
                                 </View>
 
                                 <View style = { Math.ceil(beingShown.length/chosen) > 3 ? styles.show : styles.hide}>
-                                    <Button title={ '' + getFourth(pageNum, Math.ceil(beingShown.length/chosen)) } color={ (pageNum >= Math.ceil(beingShown.length/chosen)? 'grey' : 'red') } onPress={() => setPageNum(fourthPress(pageNum, Math.ceil(beingShown.length/chosen))) }/>
+                                    
+                                    <Button 
+                                        title={ '' + previousTeamHelpers.getFourth(pageNum, Math.ceil(beingShown.length/chosen)) } 
+                                        color={ (pageNum >= Math.ceil(beingShown.length/chosen)? 'grey' : 'red') } 
+                                        onPress={() => setPageNum(previousTeamHelpers.fourthPress(pageNum, Math.ceil(beingShown.length/chosen))) }
+                                    />
                                 </View>
 
-                                <Button title={'Next'} color={ (pageNum >= Math.ceil(beingShown.length/chosen)? 'grey' : 'red') } onPress={() => setPageNum(nextPress(pageNum, Math.ceil(beingShown.length/chosen))) }/>
+                                <Button title={'Next'} color={ (pageNum >= Math.ceil(beingShown.length/chosen)? 'grey' : 'red') } onPress={() => setPageNum(previousTeamHelpers.nextPress(pageNum, Math.ceil(beingShown.length/chosen))) }/>
                             </View>
                         </View>
 
@@ -203,449 +238,25 @@ export default function Previousleagues({navigation, route}) {
     )
 }
 
-//If the user wants to sort by what teams are currently registered this runs.
-export function organizeList(list) {
-    var indexOfNextYes = 0;
-    var arr = []
-
-    list.map(elem => {
-        var name = elem.props.children[3].props.children
-        if (name == "Yes") {
-            arr.splice(indexOfNextYes, 0, elem)
-            indexOfNextYes++;
-        } else {
-            arr.push(elem)
-        }
-    })
-
-    return arr
-}
-
-//Same thing as above but in reverse
-export function organizeListReverse(list) {
-    var indexOfNextYes = 0;
-    var arr = []
-
-    list.map(elem => {
-        var name = elem.props.children[3].props.children
-        if (name == "No") {
-            arr.splice(indexOfNextYes, 0, elem)
-            indexOfNextYes++;
-        } else {
-            arr.push(elem)
-        }
-    })
-
-    return arr
-}
-
-//Function to make the color of the 'third' button black
-export function thirdIsGrey(pg, numPages) {
-
-    if (numPages == 3 || numPages == 4 ) {
-        if (pg == 3) {
-            return true
-        }
-
-    } else if (pg == numPages -1) {
-        return true
-    } 
-    return false;
-}
-
-//      ***What each button does when clicked
-export function previousPress(pg) {
-    var returnedVal
-    if (pg == 1) {
-        returnedVal = pg
-    } else {
-        returnedVal = pg-1
-    }
-
-    return returnedVal
-}
-
-export function firstPress(pg, numPages) {
-    var returnedVal
-    if (pg == 1) {
-        returnedVal = pg
-    
-    } else if (numPages - pg == 0) {
-        returnedVal = pg-3
-    
-    } else if (numPages - pg == 1) {
-        returnedVal = pg-2
-    
-    } else if (numPages - pg == 2) {
-        returnedVal = pg-3
-    
-    } else {
-        returnedVal = pg-1
-    }
-    
-    return returnedVal
-}
-
-export function secondPress(pg, numPages) {
-    var returnedVal
-    if (pg == 1) {
-        if (numPages > pg) {
-            returnedVal = pg + 1
-        }
-    } else if (numPages - pg == 0) {
-        returnedVal = pg - 2
-
-    } else if (numPages - pg == 1) {
-        returnedVal = pg - 1
-
-    } else {
-        returnedVal = pg
-    }
-    
-    return returnedVal
-}
-
-export function thirdPress(pg, numPages) {
-    var returnedVal
-    if (pg == 1) {
-        if (numPages - pg == 0) {
-            returnedVal = pg
-        
-        } else if (numPages - pg == 1) {
-            returnedVal = pg
-
-        } else {
-            returnedVal = pg + 2
-        }
-
-    } else {
-        if (numPages - pg == 2) {
-            returnedVal = pg + 1
-        
-        } else if (numPages - pg == 1) {
-            returnedVal = pg + 1
-        
-        } else {
-            returnedVal = pg 
-        }
-    }
-    
-    return returnedVal
-}
-
-export function fourthPress(pg, numPages) {
-    var returnedVal
-    if (pg == 1) {
-        if (numPages - 2 > pg) {
-            returnedVal = pg + 2
-        }
-
-    } else if (numPages - pg == 1) {
-        returnedVal = pg + 1
-        
-    } else if (numPages - 2 > pg) {
-        returnedVal = pg + 1
-    
-    } else {
-        returnedVal = pg
-    }
-    
-    return returnedVal
-    
-}
-
-export function nextPress(pg, numPages) {
-    var returnedVal
-    if (numPages > pg) {
-        returnedVal = pg + 1;
-    } else {
-        returnedVal = pg
-    }
-    
-    return returnedVal
-}
-
-//      ***The number that is diplayed on each button
-export function getFirst(pg, numPages) {
-    if (numPages <= 4) {
-        return 1
-    }
-    
-    var returnedAmount;
-    if (pg == 1) {
-        returnedAmount = pg
-    } else {
-        if (numPages - pg == 1) { 
-            returnedAmount = pg-2
-    
-        } else if (numPages - pg == 0) {
-            returnedAmount = pg-3
-        } else {
-            returnedAmount = pg-1
-        }
-    }
-
-    return returnedAmount
-}
-export function getSecond(pg, numPages) {
-    var returnedAmount;
-    if (numPages <= 4) {
-        return 2
-    }
-
-    if (pg == 1) {
-        returnedAmount = pg+1
-    } else {
-        if (numPages - pg == 1) { 
-            returnedAmount = pg-1
-    
-        } else if (numPages - pg == 0) {
-            returnedAmount = pg-2
-        } else {
-            returnedAmount = pg
-        }
-    }
-    return returnedAmount
-}
-export function getThird(pg, numPages) {
-
-    if (numPages <= 4) {
-        return 3
-    }
-        
-    var returnedAmount;
-    if (pg == 1) {
-        returnedAmount = pg+2
-    } else {
-        if (numPages - pg == 1) { 
-            returnedAmount = pg
-    
-        } else if (numPages - pg == 0) {
-            returnedAmount = pg-1
-        } else {
-            returnedAmount = pg+1
-        }
-    }
-    return returnedAmount
-}
-export function getFourth(pg, numPages) {
-    var returnedAmount;
-    if (numPages <= 4) {
-        return 4
-    }
-
-    if (pg == 1) {
-        returnedAmount = pg+3
-    } else {
-        if (numPages - pg == 1) { 
-            returnedAmount = pg +1
-    
-        } else if (numPages - pg == 0) {
-            returnedAmount = pg
-        } else {
-            returnedAmount = pg+2
-        } 
-    }
-    return returnedAmount
-}
-
-//*********************Shits a tad fucky ngl */
-
-JSON.decycle = function decycle(object, replacer) {
-    "use strict";
-
-    var objects = new WeakMap();     // object to path mappings
-
-    return (function derez(value, path) {
-
-        var old_path;   // The path of an earlier occurance of value
-        var nu;         // The new object or array
-
-        if (replacer !== undefined) {
-            value = replacer(value);
-        }
-
-        if (
-            typeof value === "object"
-            && value !== null
-            && !(value instanceof Boolean)
-            && !(value instanceof Date)
-            && !(value instanceof Number)
-            && !(value instanceof RegExp)
-            && !(value instanceof String)
-        ) {
-
-            old_path = objects.get(value);
-            if (old_path !== undefined) {
-                return {$ref: old_path};
-            }
-
-            objects.set(value, path);
-
-            if (Array.isArray(value)) {
-                nu = [];
-                value.forEach(function (element, i) {
-                    nu[i] = derez(element, path + "[" + i + "]");
-                });
-            } else {
-
-                nu = {};
-                Object.keys(value).forEach(function (name) {
-                    nu[name] = derez(
-                        value[name],
-                        path + "[" + JSON.stringify(name) + "]"
-                    );
-                });
-            }
-            return nu;
-        }
-        return value;
-    }(object, "$"));
-};
-
-
-
-if (typeof JSON.retrocycle !== "function") {
-    JSON.retrocycle = function retrocycle($) {
-    "use strict";
-
-
-    var px = /^\$(?:\[(?:\d+|"(?:[^\\"\u0000-\u001f]|\\(?:[\\"\/bfnrt]|u[0-9a-zA-Z]{4}))*")\])*$/;
-
-    (function rez(value) {
-
-        if (value && typeof value === "object") {
-            if (Array.isArray(value)) {
-                value.forEach(function (element, i) {
-                    if (typeof element === "object" && element !== null) {
-                        var path = element.$ref;
-                        if (typeof path === "string" && px.test(path)) {
-                            value[i] = eval(path);
-                        } else {
-                            rez(element);
-                        }
-                    }
-                });
-            } else {
-                Object.keys(value).forEach(function (name) {
-                    var item = value[name];
-                    if (typeof item === "object" && item !== null) {
-                        var path = item.$ref;
-                        if (typeof path === "string" && px.test(path)) {
-                            value[name] = eval(path);
-                        } else {
-                            rez(item);
-                        }
-                    }
-                });
-            }
-        }
-    }($));
-    return $;
-};
-}
-
-
-//*********************Shits a tad fucky ngl */
-
-
-//Update the leaguelist the is used when the user searches for a team
-export function updateSearch(text) {
-    searchedLeague = []
-    console.log("in update searhc")
-
-    oldLeagues.map( (element) => {
-        //This line finds the name from the element in the oldLeagues list (of old teams)
-        //console.log("elem = " + JSON.stringify(element))
-        var name = element.props.children[0].props.children
-
-        console.log("name = " + name)
-
-        if (name.includes(text)) {
-
-            var copy = element
-            copy.key = searchedLeague.length
-            searchedLeague.push(copy)
-        }
-    });
-
-}
-
-//adds all the past teams pulled from the server into JSX elements that can be displayed
-export function addLeague(array, name, league, season, reg, route, navigation) {
-    var elem, colour;
-
-    if (count % 2 == 0) {
-        colour = '#DCDCDC'
-    } else {
-        colour = 'white'
-    }
-    count++;
-
-    if (route?.params?.use == 'reregister') {
-        elem = (
-            <View style={{height:rowSize, justifyContent: 'space-between', flexDirection:'row', backgroundColor:colour}} key={array.length} >
-                <TouchableHighlight onPress={() => {
-                    navigation.navigate('RegisterNewTeam', {
-                        team: {
-                            name:name,
-                            league:league,
-                        },
-                        sport:route.params.sport,
-                        //More vals will get past once I make server requests
-                    })
-                }}>
-                    <Text style={{fontSize:20, textAlign:'center', color:'red'}}>{name}</Text>
-                </TouchableHighlight>
-                <Text style={{fontSize:20, textAlign:'center', width:'25%', color:'#383838'}}>{league}</Text>
-                <Text style={{fontSize:20, textAlign:'center', width:'25%', color:'#383838'}}>{season}</Text>
-                <Text style={{fontSize:20, textAlign:'center', width:'25%', color:'#383838'}}>{reg}</Text>
-            </View>
-        )
-    } else {
-        elem = (
-                <View style={{height:rowSize, justifyContent: 'space-between', flexDirection:'row', backgroundColor:colour}} key={array.length} >
-                <Text style={{fontSize:20, textAlign:'center', color:'#383838'}}>{name}</Text>
-                <Text style={{fontSize:20, textAlign:'center', width:'25%', color:'#383838'}}>{league}</Text>
-                <Text style={{fontSize:20, textAlign:'center', width:'25%', color:'#383838'}}>{season}</Text>
-                <Text style={{fontSize:20, textAlign:'center', width:'25%', color:'#383838'}}>{reg}</Text>
-            </View>
-        )
-    }
-    
-    elem.key = array?.length?array.length:0
-    elem.teamName = name;
-    elem.league = league;
-
-    console.log("elem.key = " + elem.key)
-    console.log("elem.teamName = " + elem.TeamName)
-    console.log("elem.league = " + elem.league)
-
-    array.push(elem);
-}
-
 //Styles
 const styles = StyleSheet.create ({
     elem: {
-        height:rowSize,
+        height:ROW_SIZE,
         justifyContent: 'space-between',
         borderWidth:1,
     },
 
     first: {
-        fontSize:20,
         textAlign:'center',
         width:'25%'
     },
 
     header: {
         fontWeight:'bold',
-        fontSize:35
     },
 
     subHeading: {
         color: '#474747',
-        fontSize:12,
     },
 
     line: {

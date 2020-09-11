@@ -85,11 +85,10 @@ class ScoreReporter extends React.Component {
   }
 
   handleSubmit = () => {
-    console.log("props being submitted = "+ JSON.stringify(this.props) + "\n\n");
-    /*const { onFormSubmit } = this.props
+    const { onFormSubmit } = this.props
     onFormSubmit().catch(e => {
       ToastHelpers.showToast(Enums.messageTypes.Error, e.message)
-    })*/
+    })
   }
 
   handleChange = (name, val) => {
@@ -176,7 +175,6 @@ class ScoreReporter extends React.Component {
   }
 
   render() {
-    console.log("props at render time = "+ JSON.stringify(this.props) + "\n\n")
 
     const { //Data
       loading,
@@ -233,7 +231,7 @@ class ScoreReporter extends React.Component {
         <Content padder>
           {!scoreSubmission.submitted && (
             <Form>
-              <Card>
+              <Card style={{paddingLeft:10}}>
                 <CardItem>
                   <Body>
                     <Item picker error={scoreSubmission.sportId == ''}>
@@ -294,7 +292,7 @@ class ScoreReporter extends React.Component {
                   )
                 })}
 
-              <Card>
+              <Card style={{paddingLeft:10}}>
                 <CardItem>
                   <Body>
                     <Item
@@ -348,7 +346,7 @@ class ScoreReporter extends React.Component {
           )}
 
           {scoreSubmission.submitted && (
-            <Card>
+            <Card style={{paddingLeft:10}}>
               <CardItem>
                 <Body>
                   <Text>Your score submission has been received.</Text>

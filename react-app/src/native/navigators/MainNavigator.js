@@ -5,13 +5,16 @@ import { Image, Text } from 'react-native'
 import SportsNavigator from './SportsNavigator'
 import ScoreReporter from '../screens/ScoreReporter'
 import Registration from '../screens/Registration'
+import Login from '../screens/Login'
 
 import NavigationProps from '../constants/navigation'
 import Images from '../../images/index'
+import { connect } from 'react-redux';
+
 
 const Tab = createBottomTabNavigator()
 
-function MainNavigator () {
+function MainNavigator (LoginInfo) {
   return (
     
     <Tab.Navigator {...NavigationProps.bottomTabConfig}>
@@ -29,7 +32,7 @@ function MainNavigator () {
         }} />
 
       <Tab.Screen name="ScoreReporter" component={ScoreReporter}
-        navigationOptions={{
+        navigationOptions={{ 
           title: 'Score Reporter',
           tabBarIcon: ({ focused, horizontal, tintColor }) => (
             <Image
@@ -37,9 +40,13 @@ function MainNavigator () {
               source={focused ? Images.icons.scoresFocused : Images.icons.scores}
             />
           )
-        }} />
+      }}/>
 
-      <Tab.Screen name="Registration" component={Registration}
+      <Tab.Screen name="Registration" component={
+        LoginInfo.LoginInfo.isLoggedIn?
+          Registration
+          :Login
+      }
         navigationOptions={{
           title: 'Registration',
           tabBarIcon: ({ focused, horizontal, tintColor }) => (
@@ -52,9 +59,15 @@ function MainNavigator () {
               }
             />
           )
-        }} />
+      }} />
     </Tab.Navigator>
   )
 }
 
-export default MainNavigator
+
+const mapStateToProps = state => ({
+  LoginInfo: state.Login
+})
+
+export default connect(mapStateToProps)(MainNavigator)
+

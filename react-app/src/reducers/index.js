@@ -6,11 +6,13 @@ import leagues from './leagues';
 import teams from './teams';
 import Waiver from './Waivers';
 import Login from './Login';
+import toastMessage from './toastMessage';
 
 const rehydrated = (state = false, action) => {
   switch (action.type) {
     case 'persist/REHYDRATE':
       return true;
+
     default:
       return state;
   }
@@ -26,4 +28,5 @@ export default {
   teams,
   Waiver,
   Login,
+  toastMessage
 };

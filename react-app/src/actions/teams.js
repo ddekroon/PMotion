@@ -1,8 +1,6 @@
 import ErrorMessages from '../constants/errors'
 import ToastHelpers from '../utils/toasthelpers'
 import Enums from '../constants/enums'
-import NetworkHelpers from '../utils/networkhelpers'
-import ValidationHelpers from '../utils/validationhelpers'
 
 /**
  * Get lookups
@@ -10,7 +8,6 @@ import ValidationHelpers from '../utils/validationhelpers'
 export function fetchTeam (teamId) {
   return (dispatch, getState) => {
     if (shouldFetchTeam(getState(), teamId)) {
-      console.log('Get team from api and store it in the team store')
       dispatch({
         type: 'REQUEST_TEAM',
         id: teamId
@@ -21,10 +18,8 @@ export function fetchTeam (teamId) {
       )
         .then(
           response => response.json(),
-          error => console.log('An error occurred.', error)
         )
         .then(json => {
-          console.log("JSON(src/actions/team.js) = " + JSON.stringify(JSON))
           dispatch({
             type: 'RECEIVE_TEAM',
             data: json,
@@ -49,16 +44,18 @@ export function resetTeamStore () {
 }
 
 //Pushing the created team to the server
-export function submitTeam() {
-  console.log("/actions/teams.submitTeam")
+export function submitTeam(teamObj) {
+  
   return (dispatch, getState) => new Promise(async (resolve, reject) => {
+    /**
+     * Url?: https://data.perpetualmotion.org/web-app/save-team/-1 
+    */
+    
     dispatch({
       type: 'SCORE_SUBMISSION_SENDING_START'
     })
 
-    console.log('Submitting new team')
-
-    return fetch('https://data.perpetualmotion.org/web-app/api/teams/', {
+    return fetch('https://data.perpetualmotion.org/web-app/dashboard/registration/register-team/1', {
       method:'POST',
       headers: {
         Accept: 'application/json',
@@ -66,9 +63,8 @@ export function submitTeam() {
       },
       body: JSON.stringify(getState().teamSubmission)
     })
-      .then(NetworkHelpers.handleErrors) //this throws an arror every time and IDK why
       .then(
-        response => response.json()
+        response => response.json()        
       )
       .then(json => {
         dispatch({

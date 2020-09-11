@@ -7,8 +7,6 @@ import Colors from '../../../native-base-theme/variables/commonColor';
 
 export default function PickSport({route, navigation}) {
 
-    let sport;
-
     return (
         <Container>
             <Content>
@@ -24,102 +22,62 @@ export default function PickSport({route, navigation}) {
                         </Text>
                         <Text style={styles.subHeading}>Forum will appear after a sport is chosen</Text>
                         <View style={styles.line}/>
-                        <View style={{paddingBottom:20}}/>
 
-                        <Card>
-                            <TouchableHighlight  onPress={() => {
-                                sport = Enums.sports.Ultimate
-                                
-                                if (route?.params?.registerType == 'individualRegister') {
-                                    navigation.navigate('IndividualRegister', {sport:sport})
-                                    
-                                } else if (route?.params?.registerType == 'reregister') {
-                                    navigation.navigate('Previousleagues', {sport:sport})
-                                
-                                } else if (route?.params?.registerType == 'newTeam') {
-                                    navigation.navigate('RegisterNewTeam', {sport:sport})
-                                
-                                } else {
-                                    console.log("Error")
-                                }
-                            }}>
-                                <Image
-                                    source ={ require('../../images/ultimate-small.png')}
-                                />
-                            </TouchableHighlight >
-                        </Card>
-                        
-                        <Card>
-                            <TouchableHighlight  onPress={() => {
-                                sport = Enums.sports.VolleyBall
+                        <TouchableHighlight  onPress={() => {
+                            navigate(route, navigation, Enums.sports.Ultimate)
+                        }}
+                            style={{paddingBottom:25}}
+                        >
+                            <Image
+                                source ={ require('../../images/ultimate-small.png')}
+                            />
+                        </TouchableHighlight >
+                    
+                        <TouchableHighlight  onPress={() => {
+                            navigate(route, navigation, Enums.sports.Ultimate)
+                        }}
+                        style={{paddingBottom:25}}
+                    >
+                            <Image
+                                source ={ require('../../images/volleyball-small.png')}
+                            />
+                        </TouchableHighlight >
 
-                                if (route?.params?.registerType == 'individualRegister') {
-                                    navigation.navigate('IndividualRegister', {sport:sport})
-                                
-                                } else if (route?.params?.registerType == 'reregister') {
-                                    navigation.navigate('Previousleagues', {sport:sport})
-                                
-                                } else if (route?.params?.registerType == 'newTeam') {
-                                    navigation.navigate('RegisterNewTeam', {sport:sport})
-                                } else {
-                                    navigation.navigate('RegisterNewTeam')  //Runs when the user selects it from the registration page
-                                }
-                            }}>
-                                <Image
-                                    source ={ require('../../images/volleyball-small.png')}
-                                />
-                            </TouchableHighlight >
 
-                        </Card>
+                        <TouchableHighlight  onPress={() => {
+                            navigate(route, navigation, Enums.sports.Ultimate)                  
+                        }}
+                        style={{paddingBottom:25}}
+                    >
+                            <Image
+                                source ={ require('../../images/football-small.png')}
+                            />
+                        </TouchableHighlight >
 
-                        <Card>
-                            <TouchableHighlight  onPress={() => {
-                                sport = Enums.sports.Football
-
-                                if (route?.params?.registerType == 'individualRegister') {
-                                    navigation.navigate('IndividualRegister', {sport:sport})
-                                
-                                } else if (route?.params?.registerType == 'reregister') {
-                                    navigation.navigate('Previousleagues', {sport:sport})
-                                
-                                } else if (route?.params?.registerType == 'newTeam') {
-                                    navigation.navigate('RegisterNewTeam', {sport:sport})
-                                } else {
-                                    navigation.navigate('RegisterNewTeam')  //Runs when the user selects it from the registration page
-                                }
-                            }}>
-                                <Image
-                                    source ={ require('../../images/football-small.png')}
-                                />
-                            </TouchableHighlight >
-                        </Card>
-
-                        <Card>
-                            <TouchableHighlight  onPress={() => {
-                                sport = Enums.sports.Soccer
-
-                                if (route?.params?.registerType == 'individualRegister') {
-                                    navigation.navigate('IndividualRegister', {sport:sport})
-                                
-                                } else if (route?.params?.registerType == 'reregister') {
-                                    navigation.navigate('Previousleagues', {sport:sport})
-                                
-                                } else if (route?.params?.registerType == 'newTeam') {
-                                    navigation.navigate('RegisterNewTeam', {sport:sport})
-                                } else {
-                                    navigation.navigate('RegisterNewTeam')  //Runs when the user selects it from the registration page
-                                }
-                            }}>
-                                <Image
-                                    source ={ require('../../images/soccer-small.png')}
-                                />
-                            </TouchableHighlight >
-                        </Card>
+                        <TouchableHighlight  onPress={() => {
+                            navigate(route, navigation, Enums.sports.Ultimate)                       
+                        }}
+                        style={{paddingBottom:25}}
+                    >
+                            <Image
+                                source ={ require('../../images/soccer-small.png')}
+                            />
+                        </TouchableHighlight >
                     </View>
                 </Card>
             </Content>
         </Container>
     )
+}
+
+export function navigate(route, navigation, sport) {
+
+    if (route.params.registerType == 'IndividualRegister') {
+        navigation.navigate('IndividualRegister', {sport:sport})
+
+    } else {
+        navigation.navigate('RegisterNewTeam', {sport:sport})
+    }
 }
 
 const styles = StyleSheet.create({ 
@@ -136,5 +94,6 @@ const styles = StyleSheet.create({
     line: {
         borderBottomColor:'black',
         borderBottomWidth:1,
+        paddingBottom:20
     },
 })
