@@ -125,12 +125,13 @@ Registration control panel
 				</button>
 			</h3>
 			<div class="list-group">
+				<?php $counter = 1; ?>
 				<?php foreach($curTeam->getAllPlayers() as $curPlayer) { ?>
 					<?php if($curPlayer->getIsIndividual()) continue; ?>
 
 					<div class="player list-group-item">
 						<div class="content" style="margin:0 30px 0 0;">
-							<?php echo $curPlayer->getIsCaptain() ? "<strong>C</strong>" : "" ?>
+							<?php echo $counter . ". " . ($curPlayer->getIsCaptain() ? "<strong>C</strong>" : "") ?>
 							<a href="#" onclick="quickEditPlayer(<?php echo $curPlayer->getId() ?>); return false;">
 								<?php echo $curPlayer->getFirstName() . ' ' . $curPlayer->getLastName() ?></a>
 							(<?php echo $curPlayer->getGender() ?>)
@@ -142,11 +143,12 @@ Registration control panel
 							
 						</div>
 						<div class="actions">
-							<button class="btn btn-default btn-xs" onClick="deletePlayer(<?php echo $curPlayer->getId() ?>)">
+							<button class="btn btn-default btn-xs" onClick="deletePlayer(this, <?php echo $curPlayer->getId() ?>)">
 								<span class="glyphicon glyphicon-trash"></span>
 							</button>
 						</div>
 					</div>
+					<?php $counter++ ?>
 				<?php } ?>
 			</div>
 		</div>
