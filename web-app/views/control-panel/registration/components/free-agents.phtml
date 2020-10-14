@@ -24,7 +24,7 @@
             <div class="list-group-item player">
                 <div class="handle"></div>
                 <div class="content" style="margin-right:50px;">
-                    <?php echo $curFreeAgent->getPlayer()->getIsCaptain() ? "<strong>C</strong>" : "" ?>
+                    <?php echo ($i + 1) . ". " . ($curFreeAgent->getPlayer()->getIsCaptain() ? "<strong>C</strong>" : "") ?>
                     <a href="#" onclick="quickEditPlayer(<?php echo $curFreeAgent->getPlayerID() ?>); return false;">
                         <?php echo $curFreeAgent->getPlayer()->getFirstName() . ' ' . $curFreeAgent->getPlayer()->getLastName() ?></a>
                     (<?php echo $curFreeAgent->getPlayer()->getGender() ?>)
