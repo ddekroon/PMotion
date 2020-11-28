@@ -1,7 +1,6 @@
 import React from 'react'
-import { Container, Content } from 'native-base'
+import { Container, Content, View, Text } from 'native-base'
 import { connect } from 'react-redux'
-import PropTypes from 'prop-types'
 
 import Loading from '../components/common/Loading'
 import TeamList from '../components/leagues/TeamList'
@@ -33,10 +32,7 @@ class Schedule extends React.Component {
       <Container>
         <Content>
 
-          {
-            addTeamList === true &&(
-            <TeamList league={league} navigation={navigation} />
-          )}
+          {addTeamList === true && (<TeamList league={league} title="Teams" navigation={navigation} />)}
 
           {league.leagueSchedule.map((week, i) => {
             if (Object.keys(week.times).length === 0) {

@@ -1,12 +1,13 @@
 import React from 'react'
-import PropTypes from 'prop-types'
-import { Container, Content, Text, Card, CardItem } from 'native-base'
+import { Container, Content, Card, CardItem, Text} from 'native-base'
 import { Table, Row } from 'react-native-table-component'
-import { StyleSheet, ActionSheetIOS } from 'react-native'
+import { StyleSheet } from 'react-native'
 import { connect } from 'react-redux'
 import Loading from '../components/common/Loading'
 import LeagueHelpers from '../../utils/leaguehelpers'
 import { fetchLeague } from '../../actions/leagues'
+
+import Colors from '../../../native-base-theme/variables/commonColor';
 
 class Standings extends React.Component {
   state = {
@@ -19,6 +20,54 @@ class Standings extends React.Component {
     props.fetchLeague(this.state.leagueId)
   }
 
+  getStandingsInfoFromState = (league) => {
+    let info = {}
+
+    if(LeagueHelpers.checkHideSpirit(league) == false){
+      info = {
+        flexArr: [1, 8, 1, 1, 1, 1, 2],
+        tableInfo: {
+            header: ['', 'Team', 'W', 'L', 'T', 'P', 'Spirit'],
+            data: []
+        }
+      }
+
+      league.standings.forEach((team, i) => {
+          var points = parseInt(team.ties) + (parseInt(team.wins) * 2);
+          info.tableInfo.data.push([
+            (i + 1), 
+            <Text style={styles.link} onPress={() => this.props.navigation.navigate('Team',{league: league, team: team.id})}>{team.name}</Text>, 
+            team.wins, 
+            team.losses, 
+            team.ties, 
+            points, 
+            parseFloat(team.spiritAverage).toFixed(2)
+          ]);
+      });
+    } else {
+      info = {
+        flexArr: [1, 8, 1, 1, 1, 1],
+        tableInfo: {
+            header: ['', 'Team', 'W', 'L', 'T', 'P'],
+            data: []
+        }
+      }
+
+      league.standings.forEach((team, i) => {
+          var points = parseInt(team.ties) + (parseInt(team.wins) * 2);
+          info.tableInfo.data.push([
+            (i+1), 
+            <Text style={styles.link} onPress={() => this.props.navigation.navigate('Team',{league: league, team: team.id})}>{team.name}</Text>, 
+            team.wins, 
+            team.losses, 
+            team.ties, 
+            points]);
+      });
+    }
+
+    return info
+  }
+
   render() {
     const { leagueId } = this.state
     const { leagues } = this.props
@@ -26,54 +75,24 @@ class Standings extends React.Component {
     
     if (league == null || league.isFetching) return <Loading />
 
-    let flexArr = []
-    let tableInfo = {}
-
-    if(LeagueHelpers.checkHideSpirit(league) == false){
-      flexArr = [1, 8, 1, 1, 1, 1, 2];
-      tableInfo = {
-          header: ['', 'Team', 'W', 'L', 'T', 'P', 'Spirit'],
-          data: [],
-      }
-
-      league.standings.forEach((team, i) => {
-          var points = parseInt(team.ties) + (parseInt(team.wins) * 2);
-          //tableInfo.data.push([(i + 1), <Text style={styles.link} onPress={() => this.props.navigation.navigate('Team',{league: league, team: team.id})}>{team.name}</Text>, team.wins, team.losses, team.ties, points, parseFloat(team.spiritAverage).toFixed(2)]);
-      });
-    }else{
-
-      flexArr = [1, 8, 1, 1, 1, 1];
-      tableInfo = {
-          header: ['', 'Team', 'W', 'L', 'T', 'P'],
-          data: [],
-      }
-
-      league.standings.forEach((team, i) => {
-          var points = parseInt(team.ties) + (parseInt(team.wins) * 2);
-          //tableInfo.data.push([(i+1), <Text style={styles.link} onPress={() => this.props.navigation.navigate('Team',{league: league, team: team.id})}>{team.name}</Text>, team.wins, team.losses, team.ties, points]);
-      });
-
-    }
+    let info = this.getStandingsInfoFromState(league)
 
     return (
       <Container>
-        <Content padder>
-          <Card>
-            <CardItem header>
-              <Text>{LeagueHelpers.getFormattedLeagueName(league)}</Text>
-            </CardItem>
+        <Content>
+          <Card style={{minHeight: 200}}>
             <CardItem cardBody style={styles.cardItem}>
               <Table style={styles.table} borderStyle={styles.tableborderstyle}>
                 <Row
-                  flexArr={flexArr}
-                  data={tableInfo.header}
+                  flexArr={info.flexArr}
+                  data={info.tableInfo.header}
                   style={styles.header}
                   textStyle={styles.headerText}
                 />
-                {tableInfo.data.map((rowData, index) => (
+                {info.tableInfo.data.map((rowData, index) => (
                   <Row
                     key={index}
-                    flexArr={flexArr}
+                    flexArr={info.flexArr}
                     data={rowData}
                     style={[
                       styles.row,
@@ -114,6 +133,11 @@ const styles = StyleSheet.create({
   row: { padding: 2 },
   table: { flex: 1, marginBottom: 10 },
   tableborderstyle: { borderWidth: 0, borderColor: 'transparent' },
-  cardItem: { padding: 10 },
-  link: {color: 'red'}
+  cardItem: { 
+    paddingTop: 10,
+    paddingBottom: 10,
+    paddingLeft: 20,
+    paddingRight: 20
+  },
+  link: {color: Colors.brandSecondary}
 })
