@@ -15,27 +15,28 @@ export default {
     },
     headerTintColor: Colors.inverseTextColor,
     headerTitleStyle: {
-      fontWeight: 'bold'
+      fontSize: 14
     },
     backButtonTintColor: Colors.inverseTextColor
   },
   mainTitle: {
-    headerTitle: props => {
+    header: ({ scene, previous, navigation }) => {      
       return (
         <View
           style={{
             flex: 1,
-            backgroundColor: 'transparent',
+            backgroundColor: Colors.brandPrimary,
             flexDirection: 'row',
             alignItems: 'center',
-            justifyContent: 'center'
+            justifyContent: 'center',
+            height:52
           }}
         >
           <Image
             style={{ width: 170, height: 52, margin: 'auto' }}
             source={require('../../images/header-logo.png')}
           />
-          {props.back && (
+          {previous && (
             <View style={{ width: 54 }}>
               <Text />
             </View>
@@ -84,8 +85,9 @@ export default {
     tabBarOptions: {
       activeTintColor: 'white',
       inactiveTintColor: 'gray',
+      activeBackgroundColor: Colors.brandDark,
       style: {
-        backgroundColor: '#303030'
+        backgroundColor: Colors.brandPrimary
       },
       tabStyle: {
         paddingTop: 2,

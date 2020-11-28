@@ -1,4 +1,4 @@
-const images = {
+export default {
   icons: {
     leagues: require('./icons/leagues.png'),
     leaguesFocused: require('./icons/leagues-focused.png'),
@@ -9,5 +9,3 @@ const images = {
   },
   headerLogo: require('./header-logo.png')
 }
-
-export default images

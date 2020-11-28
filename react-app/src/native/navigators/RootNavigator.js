@@ -24,8 +24,6 @@ import Waivers from '../screens/Waivers'
 import NewUser from '../screens/NewUser'
 import ForgotPassword from '../screens/ForgotPassword'
 
-import { HeaderBackButton } from '@react-navigation/stack';
-
 const Stack = createStackNavigator();
 
 class RootNavigator extends React.Component {
@@ -48,13 +46,13 @@ class RootNavigator extends React.Component {
     <NavigationContainer>
       <Stack.Navigator
         initialRouteName="Main"
-        mode="stack"
-        defaultNavigationOptions={NavigationProps.navbarProps}
+        headerMode="float"
+        screenOptions={NavigationProps.navbarProps}
       >
         <Stack.Screen 
           name="Main"
           component={MainNavigator} 
-          navigationOptions={NavigationProps.mainTitle}
+          options={NavigationProps.mainTitle}
         />
 
         <Stack.Screen 

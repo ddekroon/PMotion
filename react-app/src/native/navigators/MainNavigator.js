@@ -1,6 +1,6 @@
 import React from 'react'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
-import { Image, Text } from 'react-native'
+import { Image } from 'react-native'
 
 import SportsNavigator from './SportsNavigator'
 import ScoreReporter from '../screens/ScoreReporter'
@@ -17,49 +17,37 @@ const Tab = createBottomTabNavigator()
 function MainNavigator (LoginInfo) {
   return (
     
-    <Tab.Navigator {...NavigationProps.bottomTabConfig}>
-      <Tab.Screen name="Leagues" component={SportsNavigator}
-        navigationOptions={{
-          title: 'Leagues',
-          tabBarIcon: ({ focused, horizontal, tintColor }) => (
-            <Image
-              style={{ width: 20, height: 20 }}
-              source={
-                focused ? Images.icons.leaguesFocused : Images.icons.leagues
-              }
-            />
-          )
-        }} />
+    <Tab.Navigator {...NavigationProps.bottomTabConfig} screenOptions={({route}) => ({
+      tabBarIcon: ({ focused, color, size }) => {
+        let source, style;
 
-      <Tab.Screen name="ScoreReporter" component={ScoreReporter}
-        navigationOptions={{ 
-          title: 'Score Reporter',
-          tabBarIcon: ({ focused, horizontal, tintColor }) => (
-            <Image
-              style={{ width: 30, height: 22 }}
-              source={focused ? Images.icons.scoresFocused : Images.icons.scores}
-            />
-          )
-      }}/>
+        if (route.name === 'Leagues') {
+          source = focused
+            ? Images.icons.leaguesFocused
+            : Images.icons.leagues;
+          style = { width: 20, height: 20 }
+        } else if (route.name === 'Score Reporter') {
+          source = focused 
+            ? Images.icons.scoresFocused
+            : Images.icons.scores;
+          style = { width: 30, height: 22 }
+        } else {
+          source = focused 
+            ? Images.icons.registrationFocused
+            : Images.icons.registration;
+          style = { width: 20, height: 20 }
+        }
 
-      <Tab.Screen name="Registration" component={
-        LoginInfo.LoginInfo.isLoggedIn?
-          Registration
-          :Login
+        // You can return any component that you like here!
+        return <Image
+          style={style}
+          source={source}
+        />;
       }
-        navigationOptions={{
-          title: 'Registration',
-          tabBarIcon: ({ focused, horizontal, tintColor }) => (
-            <Image
-              style={{ width: 20, height: 20 }}
-              source={
-                focused
-                  ? Images.icons.registrationFocused
-                  : Images.icons.registration
-              }
-            />
-          )
-      }} />
+    })}>
+      <Tab.Screen name="Leagues" component={SportsNavigator} />
+      <Tab.Screen name="Score Reporter" component={ScoreReporter} />
+      <Tab.Screen name="Registration" component={LoginInfo.LoginInfo.isLoggedIn? Registration :Login} />
     </Tab.Navigator>
   )
 }
