@@ -1,0 +1,75 @@
+<?php
+    $sport = $curLeague->getSport();
+?>
+
+<html>
+	<head>
+    	<title><?php echo $curLeague->getName() ?> - Teams - Perpertual Motion</title>
+        <link rel="stylesheet" type="text/css" href="/css/stylesheets/styles.css"/>
+    </head>
+    <body>
+        <?php echo $curLeague->getFormattedName(); ?>
+        <?php echo sizeof($curLeague->getTeams()); ?>
+        <?php foreach($curLeague->getTeams() as $team) { ?>
+            <?php 
+                $teamPlayersPrinted = array();
+                $numPlayers = 15;
+                $teamPlayers = $team->getAllPlayers(); 
+            ?>
+        	<div class="print">
+                <div class="row">
+                    <div class="col-xs-4">
+                        <img src="<?php print $sport->getLogoLink() ?>" width="170" />
+                    </div>
+                    <div class="col-xs-8">
+                        <h1>Team List</h1>
+                        <p>
+                            <?php print $team->getName(); ?><br />
+                            <?php echo $curLeague->getFormattedName() ?>
+                        </p>
+                    </div>
+                </div>
+                <br />      
+                <table class="table table-striped table-bordered">
+                    <thead>
+                        <tr>
+                            <th style="width:40%; text-align:center;">
+                                Players Name
+                            </th><th style="width:60%; text-align:center;">
+                                Phone Number
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    <?php $counter = 1; ?>
+                        <?php for($v = 0; $v < $numPlayers; $v++) { ?>
+                            <?php 
+                                $curPlayer = $v < sizeof($teamPlayers) 
+                                    ? $teamPlayers[$v] : Models_Player::withID(null, null, -1);
+                                
+                                if($curPlayer->getId() > 0 && in_array($curPlayer->getFirstName() . ' ' . $curPlayer->getLastName(), $teamPlayersPrinted)) {
+                                    $numPlayers++;
+                                    continue;
+                                }
+                                
+                                $teamPlayersPrinted[] = $curPlayer->getFirstName() . ' ' . $curPlayer->getLastName();
+                            ?>
+                            <tr>
+                                <td>
+                                    <?php 
+                                        echo $counter . ') ' 
+                                            . ($curPlayer->getIsIndividual() ? "<strong>" : "")
+                                            . $curPlayer->getFirstName() . ' ' . $curPlayer->getLastName()
+                                            . ($curPlayer->getIsIndividual()? "</strong>" : "");
+                                    ?>
+                                </td>
+                                <td><?php echo $curPlayer->getPhoneNumber() ?></td>
+                            </tr>
+                            <?php $counter++ ?>
+                        <?php } ?>
+                    </tbody>
+                </table>
+            </div>
+        <?php } ?>
+    </body>
+</html>

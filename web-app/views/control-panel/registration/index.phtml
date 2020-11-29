@@ -10,17 +10,23 @@ Registration control panel
 <h1>
 	Registration Control Panel
 	<span class="f-small"><?php echo isset($curLeague) && $curLeague->getId() != null ? ' - ' . $curLeague->getFormattedName() : "" ?></span>
-	<?php if($curLeague->getId() > 0) { ?>
-		<div class="float-right">
-			<a class="btn-title-link" target="_blank" title="Print Individual Teams" href="<?php echo $router->pathFor('cp-print-individuals-teams', ['leagueID' => $curLeague->getId()]) ?>">
-				<span class="glyphicon glyphicon-print"></span>
+</h1>
+
+<?php if($curLeague->getId() > 0) { ?>
+	<div class="float-left">
+		<div class="btn-group">
+			<a class="btn" target="_blank" title="Print All Teams" href="<?php echo $router->pathFor('cp-print-league-teams', ['leagueID' => $curLeague->getId()]) ?>">
+				<span class="glyphicon glyphicon-print"></span> All Teams
 			</a>
-			<a class="btn-title-link" target="_blank" title="excel code" href="<?php echo $router->pathFor('cp-league-excel-code', ['leagueID' => $curLeague->getId()]) ?>">
-				<span class="glyphicon glyphicon-th"></span>
+			<a class="btn" target="_blank" title="Print Individual Teams" href="<?php echo $router->pathFor('cp-print-individuals-teams', ['leagueID' => $curLeague->getId()]) ?>">
+				<span class="glyphicon glyphicon-print"></span> Individual Teams
+			</a>
+			<a class="btn" target="_blank" title="excel code" href="<?php echo $router->pathFor('cp-league-excel-code', ['leagueID' => $curLeague->getId()]) ?>">
+				<span class="glyphicon glyphicon-th"></span> Excel Code
 			</a>
 		</div>
-	<?php } ?>
-</h1>
+	</div>
+<?php } ?>
 
 <?php 
 	print $this->fetch('control-panel/league-selector.phtml', [

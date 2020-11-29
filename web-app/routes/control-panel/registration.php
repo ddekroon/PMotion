@@ -17,7 +17,7 @@
 			$seasonsRegistration = $seasonsController->getSeasonsAvailableForRegistration();
 			$seasonsScoreReporter = $seasonsController->getSeasonsAvailableForScoreReporter();
 			
-			$seasons = array_merge($seasonsRegistration, $seasonsScoreReporter);
+			$seasons = array_unique(array_merge($seasonsRegistration, $seasonsScoreReporter));
 
 			return $this->view->render($response, "control-panel/registration/index.phtml", [
 					"request" => $request,
@@ -108,6 +108,21 @@
 				]
 			);
 		})->setName("cp-print-individuals-teams");
+
+		$app->get('/league-print-league-teams/{leagueID}', function (Request $request, Response $response) {
+
+			$leagueID = (int)$request->getAttribute('leagueID');
+			$league = Models_League::withID($this->db, $this->logger, $leagueID);
+
+			return $this->view->render($response, "control-panel/registration/components/league-teams.phtml", [
+					"request" => $request,
+					"router" => $this->router,
+					"db" => $this->db,
+					"logger" => $this->logger,
+					"curLeague" => $league
+				]
+			);
+		})->setName("cp-print-league-teams");
 
 		$app->get('/league-excel-code/{leagueID}', function (Request $request, Response $response) {
 

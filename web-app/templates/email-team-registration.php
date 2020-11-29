@@ -82,7 +82,7 @@
 													<?php if($team->getPlayers() != null && !empty($team->getPlayers())) { ?>
 														<?php $curPlayerNum = 1; ?>
 														<table class="align-center" style="border: none; border-collapse: collapse; color: #494e52; margin: 0; padding: 0; text-align: center; vertical-align: top; width: 100%;">
-															<tr><th></th><th>First Name</th><th>Last Name</th><th>Email</th><th>Gender</th></tr>
+															<tr><th></th><th>First Name</th><th>Last Name</th><th>Email</th><th>Phone</th><th>Gender</th></tr>
 															<?php foreach($team->getPlayers() as $curPlayer) { ?>
 																<?php if($curPlayer->getFirstName() != '' 
 																		|| $curPlayer->getLastName() != ''
@@ -92,6 +92,7 @@
 																		<td style="margin: 0; padding: 7px; vertical-align: top;"><?php echo $curPlayer->getFirstName() ?></td>
 																		<td style="margin: 0; padding: 7px; vertical-align: top;"><?php echo $curPlayer->getLastName() ?></td>
 																		<td style="margin: 0; padding: 7px; vertical-align: top;"><?php echo $curPlayer->getEmail() ?></td>
+																		<td style="margin: 0; padding: 7px; vertical-align: top;"><?php echo Includes_Helper::formatPhoneNumber($curPlayer->getPhoneNumber()) ?></td>
 																		<td style="margin: 0; padding: 7px; vertical-align: top;"><?php echo $curPlayer->getGender() ?></td>
 																	</tr>
 																<?php } ?>

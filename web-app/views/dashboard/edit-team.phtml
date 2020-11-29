@@ -148,6 +148,7 @@
 								<th>First Name</th>
 								<th>Last Name</th>
 								<th>Email</th>
+								<th>Phone</th>
 								<th>Gender</th>
 							</tr>
 						</thead>
@@ -161,11 +162,13 @@
 										$firstName = $user->getFirstName();
 										$lastName = $user->getLastName();
 										$email = $user->getEmail();
+										$phone = ($team->getCaptain()->getId() == null ? $user->getPhone() : $team->getCaptain()->getPhoneNumber());
 										$gender = $user->getGender();
 									} else {
 										$firstName = $curPlayer->getFirstName();
 										$lastName = $curPlayer->getLastName();
 										$email = $curPlayer->getEmail();
+										$phone = $curPlayer->getPhoneNumber();
 										$gender = $curPlayer->getGender();
 									}
 								?>
@@ -183,6 +186,10 @@
 									<td>
 										<label class='sr-only' for='PlayerEmail_<?php echo $i ?>'>Email</label>
 										<input type='text' style="min-width:200px;" class='form-control' id='PlayerEmail_<?php echo $i ?>' name='playerEmail_<?php echo $i ?>' value='<?php echo htmlentities($email, ENT_QUOTES) ?>' />
+									</td>
+									<td>
+										<label class='sr-only' for='PlayerPhone_<?php echo $i ?>'>Phone</label>
+										<input type='text' style="min-width:200px;" class='form-control' id='PlayerPhone_<?php echo $i ?>' name='playerPhone_<?php echo $i ?>' value='<?php echo htmlentities($phone, ENT_QUOTES) ?>' />
 									</td>
 									<td>
 										<label class='sr-only' for='PlayerGender_<?php echo $i ?>'>Email</label>

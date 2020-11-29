@@ -32,5 +32,6 @@ abstract class Includes_DBTableNames {
 	const userHistoryTable = 'user_history_dbtable';
 	const userTable = 'users_dbtable';
 	const venuesTable = 'venues_dbtable';
+	const waiversTable = 'waivers';
 }
 

@@ -39,3 +39,6 @@ ADD INDEX `INDEX_PROPERTY_KEY` (`key` ASC);
 
 ALTER TABLE `data_perpetualmotion`.`emails_dbtable` 
 CHANGE COLUMN `subject` `subject` VARCHAR(200) NOT NULL ;
+
+ALTER TABLE `data_perpetualmotion`.`waivers` 
+CHANGE COLUMN `waiver_id` `waiver_id` INT(11) NOT NULL AUTO_INCREMENT ;

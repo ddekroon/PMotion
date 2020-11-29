@@ -29,7 +29,7 @@
 							<tr>
 								<td style="margin: 0; padding: 7px; vertical-align: top;">
 									Please go to our 
-									<a href="http://data.perpetualmotion.org/waiver.php?sportID=<?php echo $team->getLeague()->getSport()->getId() ?>" style="color: #ed1c24; text-decoration: none;">Online Waiver</a>
+									<a href="https://data.perpetualmotion.org/waiver.php?sportID=<?php echo $team->getLeague()->getSport()->getId() ?>" style="color: #ed1c24; text-decoration: none;">Online Waiver</a>
 									page to sign your waiver.
 								</td>
 							</tr>
