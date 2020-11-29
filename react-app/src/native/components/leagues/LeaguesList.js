@@ -10,11 +10,8 @@ import {
   ListItem,
   Icon,
   Right,
-  Card,
-  CardItem
+  H3
 } from 'native-base'
-
-import Spacer from '../common/Spacer'
 
 import LeagueHelpers from '../../../utils/leaguehelpers'
 
@@ -28,57 +25,60 @@ export default class LeaguesList extends React.Component {
     super(props)
   }
 
-  render() {
-    const { seasons, navigation } = this.props
-
-    const seasonsView = seasons.map(curSeason => {
-      var leagues = curSeason.leagues.map((league, leagueIndex) => (
-        <ListItem
-          key={league.id}
-          onPress={() => {
-            navigation.navigation.push('League', {
-              leagueId: league.id,
-              title: LeagueHelpers.getFormattedLeagueName(league),
-              addTeamList: true,
-            })
-          }}
-        >
-          <View style={{ flex: 1 }}>
-            <Text key={league.id}>
-              {LeagueHelpers.getFormattedLeagueName(league)}
-            </Text>
+  renderSeasons = (seasons) => {
+    return (
+      <View>
+        {seasons.map((x) => (
+           <View key={x.name}>
+            {seasons.length > 1 && (<H3>{x.name} {x.year}</H3>)}
+            {this.renderLeagues(x.leagues)}
           </View>
-          <Right>
-            <Icon name="arrow-forward" />
-          </Right>
-        </ListItem>
-      ))
+        ))}
+      </View>
+    )
+  }
 
-      var seasonTitle = []
+  renderLeagues = (leagues) => {
+    const { navigation } = this.props
 
-      if (seasons.length > 1) {
-        seasonTitle = [
-          <Text>
-            {curSeason.name} {curSeason.year}
-          </Text>,
-          <Spacer />
-        ]
-      }
+    return leagues.length > 0 ? (
+      <List>
+        {leagues.map((league) => (
+          <ListItem
+            key={league.id}
+            onPress={() => {
+              navigation.navigation.push('League', {
+                leagueId: league.id,
+                title: LeagueHelpers.getFormattedLeagueName(league),
+                addTeamList: false,
+              })
+            }}
+          >
+            <View style={{ flex: 1 }}>
+              <Text key={league.id}>
+                {LeagueHelpers.getFormattedLeagueName(league)}
+              </Text>
+            </View>
+            <Right>
+              <Icon name="arrow-forward" />
+            </Right>
+          </ListItem>
+        ))}
+      </List>
+    ) : (
+      <View style={{padding: 20}}>
+        <Text style={{textAlign:'center'}}>No leagues for current season</Text>
+      </View>
+    )
+  }
 
-      return (
-        <Content key={curSeason.name} style={{ flex: 1 }}>
-          {seasonTitle}
-          <List>{leagues}</List>
-        </Content>
-      )
-    })
+  render() {
+    const { seasons } = this.props
 
     return (
       <Container>
-        <Content padder>
-          <Card>
-            <CardItem>{seasonsView}</CardItem>
-          </Card>
+        <Content>
+          {this.renderSeasons(seasons)}
         </Content>
       </Container>
     )

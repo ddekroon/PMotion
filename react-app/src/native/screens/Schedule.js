@@ -5,7 +5,6 @@ import { connect } from 'react-redux'
 import Loading from '../components/common/Loading'
 import TeamList from '../components/leagues/TeamList'
 import ScheduleWeek from '../components/leagues/ScheduleWeek'
-import ByeWeek from '../components/leagues/ByeWeek'
 
 import { fetchLeague } from '../../actions/leagues'
 
@@ -17,7 +16,7 @@ class Schedule extends React.Component {
   constructor(props) {
     super(props)
     this.state.leagueId = this.props.route?.params?.leagueId ?? -1
-    props.fetchLeague(this.state.leagueId)
+    //props.fetchLeague(this.state.leagueId) league will be fetched by standings tab
   }
 
   render() {
@@ -30,24 +29,19 @@ class Schedule extends React.Component {
 
     return (
       <Container>
-        <Content>
+        <Content padder>
 
-          {addTeamList === true && (<TeamList league={league} title="Teams" navigation={navigation} />)}
+          {addTeamList && (<TeamList league={league} title="Teams" navigation={navigation} />)}
 
-          {league.leagueSchedule.map((week, i) => {
-            if (Object.keys(week.times).length === 0) {
-              return <ByeWeek key={week.date.id} scheduleWeek={week} />
-            } else {
-              return (
-                <ScheduleWeek
-                  key={week.date.id}
-                  league={league}
-                  scheduleWeek={week}
-                  navigation={navigation}
-                />
-              )
-            }
-          })}
+          {league.leagueSchedule.map((week, i) => (
+              <ScheduleWeek
+                key={week.date.id}
+                league={league}
+                scheduleWeek={week}
+                navigation={navigation}
+              />
+            ))
+          }
         </Content>
       </Container>
     )

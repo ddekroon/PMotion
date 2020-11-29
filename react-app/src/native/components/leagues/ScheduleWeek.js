@@ -1,13 +1,15 @@
 import React from 'react'
-import { StyleSheet } from 'react-native'
+import { StyleSheet, Image } from 'react-native'
 import PropTypes from 'prop-types'
 
-import { Text, Card, CardItem } from 'native-base'
-import { Table, Row } from 'react-native-table-component'
+import { Text, View, Grid, Col, List, ListItem } from 'native-base'
 import Loading from '../common/Loading'
 
 import LeagueHelpers from '../../../utils/leaguehelpers'
 import { TouchableOpacity } from 'react-native-gesture-handler';
+
+import Colors from '../../../../native-base-theme/variables/commonColor';
+import Images from '../../../images/index'
 
 export default class ScheduleWeek extends React.Component {
   static propTypes = {
@@ -19,111 +21,112 @@ export default class ScheduleWeek extends React.Component {
     super(props)
   }
 
-  render() {
-    const { scheduleWeek, league, navigation } = this.props
+  renderTime = (time) => {
 
-    const flexArr = [6, 5, 2, 5]
-    const weekTable = {
-      header: [
-        <Text style={styles.headerText}>Field</Text>,
-        <Text style={styles.title}>Dark</Text>,
-        '',
-        <Text style={styles.title}>White</Text>
-      ],
-      data: []
-    }
+    return <View key={time} style={styles.timeList}> 
+      <List>
+        {time.matches.map((match, index) => (
+          <ListItem key={index} style={styles.match}>
+            {match.playoff1 === '' && match.playoff2 === ''
+              ? this.renderMatch(time.time, match)
+              : this.renderPlayoffMatch(time.time, match)
+            }
+          </ListItem>
+        ))}
+      </List>
+    </View>
+  }
 
-    Object.keys(scheduleWeek.times).forEach(time => {
-      weekTable.data.push([
-        LeagueHelpers.convertMatchTime(scheduleWeek.times[time].time),
-        '',
-        '',
-        ''
-      ])
-      scheduleWeek.times[time].matches.forEach(match => {
-        let disableClick = false;
-        if(match.venue === 'Practice Area'){
-          disableClick = true;
-        }
+  renderMatch = (time, match) => {
+    const { league, navigation } = this.props
 
-        if (match.playoff1 === '' && match.playoff2 === '') {
-          weekTable.data.push([
-            <TouchableOpacity disabled={disableClick} onPress={() => this.props.navigation.push('Maps', {venue: match.venue})}>
-              <Text style={styles.venue}>
-              {match.venue}
-              </Text>
-            </TouchableOpacity>,
-            <Text style={styles.teamName} onPress={() => navigation.push('Team', {team: match.team1, league: league})}>
-              {LeagueHelpers.getTeamName(league, match.team1)}
-            </Text>,
-            <Text style={styles.center}>vs</Text>,
-            <Text style={styles.teamName} onPress={() => navigation.push('Team', {team: match.team2, league: league})}>
-              {LeagueHelpers.getTeamName(league, match.team2)}
+    let disableClick = match.venue === 'Practice Area';
+
+    return (
+      <Grid>
+        <Col>
+          <View>
+            <Text style={{...styles.teamName, marginBottom: 8 }} onPress={() => navigation.push('Team', {team: match.team1, league: league, title: LeagueHelpers.getTeamName(league, match.team1)})}>
+              <Image style={{ width: 20, height: 20, backgroundColor: 'transparent' }} source={Images.icons.shirtDark} />
+              {" " + LeagueHelpers.getTeamName(league, match.team1)}
             </Text>
-          ])
-        } else {
-          weekTable.data.push([
-            match.venue,
-            <Text style={styles.center}>{match.playoff1}</Text>,
-            <Text style={styles.center}>vs</Text>,
-            <Text style={styles.center}>{match.playoff2}</Text>
-          ])
-        }
-      })
-    })
+          </View>
+          <View>
+            <Text style={styles.teamName} onPress={() => navigation.push('Team', {team: match.team2, league: league, title: LeagueHelpers.getTeamName(league, match.team2) })}>
+              <Image style={{ width: 20, height: 20, backgroundColor: 'transparent' }} source={Images.icons.shirtWhite} />
+              {" " + LeagueHelpers.getTeamName(league, match.team2)}
+            </Text>
+          </View>
+        </Col>
+        <Col>
+          <View>
+            <Text style={{...styles.time, height: 25, marginTop: 3, marginBottom: 8 }}>{LeagueHelpers.convertMatchTime(time)}</Text>
+          </View>
+          <View>
+            <TouchableOpacity disabled={disableClick} onPress={() => this.props.navigation.push('Maps', {venue: match.venue})}>
+              <Text style={styles.venue}>{match.venue}</Text>
+            </TouchableOpacity>
+          </View>
+        </Col>
+      </Grid>
+    )
+  }
+
+  renderPlayoffMatch = (time, match) => {
+    return (
+      <Grid>
+        <Col>
+          <View>
+            <Text style={{marginBottom: 8}}>{match.playoff1}</Text>
+          </View>
+          <View>
+            <Text>{match.playoff2}</Text>
+          </View>
+        </Col>
+        <Col>
+          <View>
+            <Text style={{...styles.time, marginBottom: 8}}>{LeagueHelpers.convertMatchTime(time)}</Text>
+          </View>
+          <View>
+            <Text style={styles.venue}>{match.venue}</Text>
+          </View>
+        </Col>
+      </Grid>
+    )
+  }
+
+  render() {
+    const { scheduleWeek, league } = this.props
 
     if (league == null || league.isFetching) return <Loading />
 
     return (
-      <Card>
-        <CardItem header>
-          <Text>
-            {scheduleWeek.date.description} - Week{' '}
-            {scheduleWeek.date.weekNumber}
-          </Text>
-        </CardItem>
-        <CardItem cardBody style={styles.cardItem}>
-          <Table style={styles.table} borderStyle={styles.tableborderstyle}>
-            <Row
-              flexArr={flexArr}
-              data={weekTable.header}
-              style={styles.header}
-              textStyle={styles.headerText}
-            />
-            {weekTable.data.map((rowData, index) => (
-              <Row
-                key={index}
-                flexArr={flexArr}
-                data={rowData}
-                style={[
-                  styles.row,
-                  index % 2 == 1 && { backgroundColor: '#e6e6e6' }
-                ]}
-                textStyle={[
-                  styles.text,
-                  rowData[2] === '' && { fontWeight: 'bold', fontSize: 20 }
-                ]}
-              />
-            ))}
-          </Table>
-        </CardItem>
-      </Card>
+      <View>
+        <Grid>
+          <Col><Text style={styles.headerText}>Week {scheduleWeek.date.weekNumber}</Text></Col>
+          <Col><Text style={{...styles.headerText, textAlign: 'right'}}>{scheduleWeek.date.description}</Text></Col>
+        </Grid>
+        
+        {
+          Object.keys(scheduleWeek.times).length > 0
+            ? Object.keys(scheduleWeek.times).map(x => this.renderTime(scheduleWeek.times[x]))
+            : (
+              <View style={styles.timeList}><List><ListItem key={0} style={{ marginLeft: 0 }}>
+                <Grid style={{ alignItems: 'center' }}><Col><Text style={{ textAlign: 'right' }}>Bye Week</Text></Col></Grid>
+              </ListItem></List></View>
+            )
+        }
+      </View>
     )
   }
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: 'yellow' },
-  header: { padding: 2, borderBottomWidth: 2, borderBottomColor: 'black' },
   headerText: { fontWeight: 'bold' },
-  text: {},
-  row: { padding: 2 },
-  table: { flex: 1, marginBottom: 10 },
-  tableborderstyle: { borderWidth: 0, borderColor: 'transparent' },
-  cardItem: { padding: 10 },
-  teamName: { textAlign: 'center', color: 'red' },
-  center: {textAlign: 'center'},
-  title: {textAlign:'center', fontWeight: 'bold'},
-  venue: {textDecorationLine: 'underline'}
-
+  timeList: { marginBottom: 20 },
+  match: { paddingTop: 5, paddingBottom: 5, paddingRight: 0, paddingLeft: 0, marginLeft: 0 },
+  teamName: { color: Colors.brandSecondary },
+  title: { textAlign:'center', fontWeight: 'bold' },
+  time: { textAlign: 'right' },
+  venue: { textAlign: 'right', color: Colors.brandSecondary }
 })

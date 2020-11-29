@@ -66,6 +66,9 @@ class RootNavigator extends React.Component {
         <Stack.Screen 
           name="Team"
           component={TeamPage}
+          options={({ route }) => ({
+            title: route.params.title ?? 'Team'
+          })}
         />
         
         <Stack.Screen 
@@ -80,6 +83,9 @@ class RootNavigator extends React.Component {
         <Stack.Screen 
           name="Schedule"
           component={SchedulePage}
+          options={({ route }) => ({
+            title: route.params.title ?? 'Schedule'
+          })}
         />
 
         <Stack.Screen 

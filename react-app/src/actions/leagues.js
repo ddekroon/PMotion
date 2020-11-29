@@ -1,8 +1,5 @@
 import LeagueHelpers from '../utils/leaguehelpers'
 
-/**
- * Get lookups
- */
 export function fetchLeague (leagueId) {
   return (dispatch, getState) => {
     if (shouldFetchLeague(getState(), leagueId)) {

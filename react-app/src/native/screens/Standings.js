@@ -1,5 +1,5 @@
 import React from 'react'
-import { Container, Content, Card, CardItem, Text} from 'native-base'
+import { Container, Content, Text } from 'native-base'
 import { Table, Row } from 'react-native-table-component'
 import { StyleSheet } from 'react-native'
 import { connect } from 'react-redux'
@@ -36,7 +36,7 @@ class Standings extends React.Component {
           var points = parseInt(team.ties) + (parseInt(team.wins) * 2);
           info.tableInfo.data.push([
             (i + 1), 
-            <Text style={styles.link} onPress={() => this.props.navigation.navigate('Team',{league: league, team: team.id})}>{team.name}</Text>, 
+            <Text style={styles.link} onPress={() => this.props.navigation.navigate('Team',{league: league, team: team.id, title: team.name})}>{team.name}</Text>, 
             team.wins, 
             team.losses, 
             team.ties, 
@@ -57,7 +57,7 @@ class Standings extends React.Component {
           var points = parseInt(team.ties) + (parseInt(team.wins) * 2);
           info.tableInfo.data.push([
             (i+1), 
-            <Text style={styles.link} onPress={() => this.props.navigation.navigate('Team',{league: league, team: team.id})}>{team.name}</Text>, 
+            <Text style={styles.link} onPress={() => this.props.navigation.navigate('Team',{league: league, team: team.id, title: team.name })}>{team.name}</Text>, 
             team.wins, 
             team.losses, 
             team.ties, 
@@ -79,31 +79,27 @@ class Standings extends React.Component {
 
     return (
       <Container>
-        <Content>
-          <Card style={{minHeight: 200}}>
-            <CardItem cardBody style={styles.cardItem}>
-              <Table style={styles.table} borderStyle={styles.tableborderstyle}>
-                <Row
-                  flexArr={info.flexArr}
-                  data={info.tableInfo.header}
-                  style={styles.header}
-                  textStyle={styles.headerText}
-                />
-                {info.tableInfo.data.map((rowData, index) => (
-                  <Row
-                    key={index}
-                    flexArr={info.flexArr}
-                    data={rowData}
-                    style={[
-                      styles.row,
-                      index % 2 == 1 && { backgroundColor: '#e6e6e6' }
-                    ]}
-                    textStyle={styles.text}
-                  />
-                ))}
-              </Table>
-            </CardItem>
-          </Card>
+        <Content padder>
+          <Table style={styles.table} borderStyle={styles.tableborderstyle}>
+            <Row
+              flexArr={info.flexArr}
+              data={info.tableInfo.header}
+              style={styles.header}
+              textStyle={styles.headerText}
+            />
+            {info.tableInfo.data.map((rowData, index) => (
+              <Row
+                key={index}
+                flexArr={info.flexArr}
+                data={rowData}
+                style={[
+                  styles.row,
+                  index % 2 == 1 && { backgroundColor: '#e6e6e6' }
+                ]}
+                textStyle={styles.text}
+              />
+            ))}
+          </Table>
         </Content>
       </Container>
     )
@@ -130,7 +126,7 @@ const styles = StyleSheet.create({
   headerText: { fontWeight: 'bold' },
   text: {},
   statText: { textAlign: 'center' },
-  row: { padding: 2 },
+  row: { padding: 8 },
   table: { flex: 1, marginBottom: 10 },
   tableborderstyle: { borderWidth: 0, borderColor: 'transparent' },
   cardItem: { 

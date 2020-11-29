@@ -9,7 +9,7 @@ import reducers from '../reducers';
 const config = {
   key: 'root',
   storage,
-  blacklist: ['status', 'scoreSubmission', 'leagues', 'lookups'],
+  blacklist: ['status', 'scoreSubmission', 'leagues', 'lookups', 'teams'],
 };
 
 const reducer = persistCombineReducers(config, reducers);

@@ -1,13 +1,15 @@
 import React from 'react'
 import PropTypes from 'prop-types';
 import LeagueHelpers from '../../../utils/leaguehelpers';
+import DateTimeHelpers from '../../../utils/datetimehelpers';
+import Enums from '../../../constants/enums';
 
-import { Text, Card, CardItem, Container, Content, Header, Button, Icon} from 'native-base';
+import { Text, Container, Content, Button, Icon } from 'native-base';
 import { Table, Row } from 'react-native-table-component';
-import { StyleSheet, Image } from 'react-native';
+import { StyleSheet, Image, View } from 'react-native';
 import { connect } from 'react-redux';
 import Loading from '../common/Loading';
-import {fetchTeam, resetTeamStore} from '../../../actions/teams';
+import {fetchTeam } from '../../../actions/teams';
 
 /**
  * TODO
@@ -25,149 +27,99 @@ class TeamPage extends React.Component {
         props.fetchTeam(this.state.teamId);
     }
 
-    render() {
+    getMatchResult = (oppTeamId, dateId, submissions) => 
+        //get the game result
+        submissions.filter(x => x.oppTeamId == oppTeamId && x.dateId == dateId).map(x => 
+            Object.keys(Enums.matchResult).find(y => Enums.matchResult[y].val == x.result) ?? ['']
+        )[0] ?? ''
 
-        const { lookups, teams } = this.props;
-        const league = this.props.route?.params?.league ?? -1;
-        const teamId = this.state.teamId;
-        const team = teams[teamId];
-        let teamPicId = '';
-        let teamMatches = [];
-        const flexArr = [6, 6, 4, 5, 5];
-        const weekTable = {
-            header: ['Date', 'Opponent', 'Result', 'Field', 'Time'],
-            data: [],
-        }
+    generateMatchesData = (league, team) => {
+        let { lookups } = this.props
 
-        if(team == null || team.isFetching) return <Loading />
+        let hideSpirit = LeagueHelpers.checkHideSpirit(league)
+        let weekData = [];
+        let teamMatches = league.scheduledMatches.filter((match) => match.teamOneId === team.id || match.teamTwoId === team.id)
 
         //sort score submissions to match scheduled matches
         team.scoreSubmissions.sort((a,b) => a.dateId - b.dateId);
 
-        //get the teams picture name
-        league.teams.forEach((team) => {
-            //check if isPic is null - currently it is always null for some reason
-            if(team.id === teamId){
-                teamPicId = team.picName;
-            }
-        });
-        //build link to team pic
-        let teamPic = 'data.perpetualmotion.org/' + league.picLink + '/' + teamPicId + '.JPG';
+        teamMatches.sort((a,b) => a.dateId - b.dateId).forEach((match) => {
 
-        //get all matches of team and sort by date
-        league.scheduledMatches.forEach((match) => {
-            if(match.teamOneId === teamId || match.teamTwoId === teamId){
-                teamMatches.push(match);
-            }
-        });
-        teamMatches.sort((a,b) => a.dateId - b.dateId);
+            let oppTeamId = match.teamOneId === team.id ? match.teamTwoId : match.teamOneId;
+            let oppStats = league.teams.filter(x => x.id === oppTeamId).map(x => 
+                !hideSpirit
+                    ? x.wins + '-' + x.losses + '-' + x.ties + ' | ' + parseFloat(x.spiritAverage).toFixed(2)
+                    : x.wins + '-' + x.losses + '-' + x.ties
+            )[0] ?? '';
 
-        //build the table 
-        teamMatches.forEach((match) => {
-            let opponent = '';
-            let opponentStats = '';
-            let gameResult = ' ';
-
-            if(match.teamOneId === teamId){
-                opponent = match.teamTwoId;
-            }else{
-                opponent = match.teamOneId;
-            }
-
-            //get the opponents stats
-            league.teams.forEach((team) => {
-                if(team.id === opponent){
-                    if(LeagueHelpers.checkHideSpirit(league) == false){
-                        opponentStats = '(' + team.wins + '-' + team.losses + '-' + team.ties + ')(' + parseFloat(team.spiritAverage).toFixed(2) + ')';
-                    }else{
-                        opponentStats = '(' + team.wins + '-' + team.losses + '-' + team.ties + ')';
-                    }
-                }
-            });
-
-            //get the game result
-            team.scoreSubmissions.forEach((sub) => {
-                if(sub.oppTeamId == opponent && sub.dateId == match.dateId){
-                    if(sub.result == '1'){
-                        gameResult = 'Won';
-                    }else if(sub.result == '2'){
-                        gameResult = 'Lost';
-                    }else if(sub.result == '3'){
-                        gameResult = 'Tie';
-                    }else{
-                        gameResult = 'N/A'
-                    }
-                }
-            });
+            var gameResult = this.getMatchResult(oppTeamId, match.dateId, team.scoreSubmissions)
 
             //fill the table
-            weekTable.data.push([
-                LeagueHelpers.getDate(league, match.dateId).description,
-                <Text style={styles.name} onPress={() => this.props.navigation.push('Team',{league: league, team: opponent})}>{LeagueHelpers.getTeamName(league, opponent)} {opponentStats}</Text>,
-                gameResult,
-                <Text style={styles.name} onPress={() => this.props.navigation.push('Maps', {venue: lookups.venues[match.fieldId].name})}>{lookups.venues[match.fieldId].name}</Text>,
-                LeagueHelpers.convertMatchTime(match.matchTime)
+            weekData.push([
+                <View style={styles.cell}>
+                    <Text>{DateTimeHelpers.getShortDate(LeagueHelpers.getDate(league, match.dateId).description)}</Text>
+                    <Text style={styles.name} onPress={() => this.props.navigation.push('Maps', {venue: lookups.venues[match.fieldId].name})}>
+                        {lookups.venues[match.fieldId].name}
+                    </Text>
+                </View>,
+                <View style={styles.cell}>
+                    <Text>
+                        {match.teamOneId === team.id ? '@ ' : 'vs '}
+                        <Text style={styles.name} onPress={() => this.props.navigation.push('Team',{league: league, team: oppTeamId, title: LeagueHelpers.getTeamName(league, oppTeamId) })}>
+                            {LeagueHelpers.getTeamName(league, oppTeamId)} 
+                        </Text>
+                    </Text>
+                    <Text>{oppStats}</Text>
+                </View>,
+                <View style={styles.cell}>
+                    <Text style={{textAlign:'right'}}>{gameResult.length > 0 ? gameResult : LeagueHelpers.convertMatchTime(match.matchTime)}</Text>
+                </View>
             ]);
         });
 
+        return weekData;
+    }
+
+    render() {
+
+        const { teams } = this.props;
+        const league = this.props.route?.params?.league ?? -1;
+        const team = teams[this.state.teamId];
+
         if (league == null || league.isFetching) return <Loading />
+        if(team == null || team.isFetching) return <Loading />
 
         return (
             <Container>
-                <Content>    
-                    <Card>
-                        <CardItem header>
-                            <Text style={styles.title}>{LeagueHelpers.getTeamName(league, teamId)} - {LeagueHelpers.getFormattedLeagueName(league)} </Text>
-                        </CardItem>
-                        <CardItem cardBody style={styles.cardItem}>
-                            <Table style={styles.table} borderStyle={styles.tableborderstyle}>
+                <Content padder>
+                    <Table style={styles.table} borderStyle={styles.tableborderstyle}>
+                        {
+                            this.generateMatchesData(league, team).map((rowData, index) => (
                                 <Row
-                                    flexArr={flexArr}
-                                    data={weekTable.header}
-                                    style={styles.header}
-                                    textStyle={styles.headerText}
+                                    key={index}
+                                    flexArr={[2, 2, 1]}
+                                    data={rowData}
+                                    style={[styles.row, index % 2 == 1 && { backgroundColor: '#e6e6e6' }]}
+                                    textStyle={[styles.text, rowData[2] === '' && {fontWeight: 'bold', fontSize: 20}]}
                                 />
-                                {
-                                    weekTable.data.map((rowData, index) => (
-                                        <Row
-                                            key={index}
-                                            flexArr={flexArr}
-                                            data={rowData}
-                                            style={[styles.row, index % 2 == 1 && { backgroundColor: '#e6e6e6' }]}
-                                            textStyle={[styles.text, rowData[2] === '' && {fontWeight: 'bold', fontSize: 20}]}
-                                        />
-                                    ))
-                                }
-                            </Table>
-                        </CardItem>
+                            ))
+                        }
+                    </Table>
 
-                    </Card>
+                    <Button light iconRight style={{...styles.playoffButton, alignSelf: 'center' }} onPress={() => this.props.navigation.push('Schedule', {leagueId: league.id, title: LeagueHelpers.getFormattedLeagueName(league) })}>
+                        <Text>For playoffs please see the full schedule</Text>
+                        <Icon style={{ marginRight: 5 }} name="arrow-forward" style={{ color: 'black' }}/>
+                    </Button>
 
-                    <Card>
-                        <CardItem>
-                        <Button light iconRight style={styles.button} onPress={() => this.props.navigation.push('Schedule', {leagueId: league.id, addTeamList: false})}>
-                            <Text style={styles.buttonText}>For playoffs please see the full schedule</Text>
-                            <Icon style={{marginRight:5}} name="arrow-forward" style={{color: 'black'}}/>
-                        </Button>
-                        </CardItem>
-                    </Card>
-  
-                    <Card>
-                        <CardItem header>
-                            <Text style={styles.title}>{LeagueHelpers.getTeamName(league, teamId)}</Text>
-                        </CardItem>   
-                        <CardItem cardBody>
-                            <Image source={require('../../../images/app-icon.png')} style={styles.teamImage}/>
-                        </CardItem>  
-                    </Card> 
+                    {league.picLink != null && team.picName != null && team.isPic && 
+                        <Image source={{uri: 'https://data.perpetualmotion.org/' + league.picLink + '/' + team.picName + '.JPG'}} style={styles.teamImage} />
+                    }
 
                 </Content>
             </Container>
         );
     }
 }
-
-//{uri: teamPic}
 
 const mapStateToProps = state => ({
     lookups: state.lookups || {},
@@ -181,19 +133,15 @@ const mapDispatchToProps = {
 export default connect(mapStateToProps, mapDispatchToProps)(TeamPage);
 
 const styles = StyleSheet.create({
-    container: { flex: 1, backgroundColor: 'yellow' },
-    header: { padding: 2, borderBottomWidth: 2, borderBottomColor: 'black' },
-    headerText: { fontWeight: "bold" },
-    text: {},
+    playoffButton: { marginBottom: 20 },
     row: { padding: 2 },
+    cell: { padding: 2 },
     table: { flex: 1, marginBottom: 10 },
     tableborderstyle: { borderWidth: 0, borderColor: "transparent" },
     cardItem: {padding: 10},
     title: {fontSize: 18},
     name: {color: 'red'},
-    teamImage: {width: null, height: 300, flex: 1, resizeMode: 'cover'},
-    button: {width: 350, height: 40},
-    buttonText: {fontSize: 14}
+    teamImage: {width: null, height: 300, flex: 1, resizeMode: 'cover'}
 }); 
 
 

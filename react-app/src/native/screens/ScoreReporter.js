@@ -63,7 +63,7 @@ class ScoreReporter extends React.Component {
     this.updateMatchHandler = this.updateMatchHandler.bind(this)
   }
 
-  calculateIsLeaguesToSelect = () => {
+  getLeaguesAvailable = () => {
     const { seasons, scoreSubmission } = this.props
 
     if (
@@ -71,17 +71,12 @@ class ScoreReporter extends React.Component {
       Object.keys(seasons).length === 0 ||
       scoreSubmission.sportId == ''
     ) {
-      return false
+      return []
     }
 
-    var numLeagues = 0
-    seasons[scoreSubmission.sportId]
+    return seasons[scoreSubmission.sportId]
       .filter(curSeason => curSeason.leagues != null)
-      .forEach(curSeason => {
-        numLeagues += curSeason.leagues.length
-      })
-
-    return numLeagues > 0
+      .reduce((leagues, curSeason) =>  leagues.concat(curSeason.leagues), [])
   }
 
   handleSubmit = () => {
@@ -181,21 +176,21 @@ class ScoreReporter extends React.Component {
       error,
       scoreSubmission,
       seasons,
-      leagues,
-      resetSubmission
+      resetSubmission,
+      sports
     } = this.props
 
     if (loading) return <Loading />
 
     var leaguePicker
-    var isLeagues = this.calculateIsLeaguesToSelect()
-    var league = leagues[scoreSubmission.leagueId]
+    var leagues = this.getLeaguesAvailable()
+    var league = leagues.find(x => x.id = scoreSubmission.leagueId)
     var isMultipleSeasons =
       scoreSubmission.sportId != ''
         ? seasons[scoreSubmission.sportId].length > 1
         : false
 
-    if (scoreSubmission.sportId != '' && !isLeagues) {
+    if (scoreSubmission.sportId != '' && leagues.length <= 0) {
       leaguePicker = (
         <Item>
           <Content padder>
@@ -203,7 +198,7 @@ class ScoreReporter extends React.Component {
           </Content>
         </Item>
       )
-    } else if (isLeagues) {
+    } else if (leagues.length > 0) {
       leaguePicker = (
         <Item picker error={scoreSubmission.leagueId == ''}>
           <Picker
@@ -219,8 +214,15 @@ class ScoreReporter extends React.Component {
             }} 
           >
             <Picker.Item key={0} label={'League'} value={''} />
-
-            {/* always at spot 0 here*/}
+            {leagues.map(curLeague => {
+              return (
+                <Picker.Item
+                  key={curLeague.id}
+                  label={curLeague.name}
+                  value={curLeague.id}
+                />
+              )
+            })}
             
           </Picker>
         </Item>
@@ -247,7 +249,7 @@ class ScoreReporter extends React.Component {
                         }}
                       >
                         <Picker.Item key={0} label="Sport" value="" />
-                        {this.props.sports.map(curSport => {
+                        {sports.map(curSport => {
                           return (
                             <Picker.Item
                               key={curSport.id}

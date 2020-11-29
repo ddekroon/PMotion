@@ -16,6 +16,21 @@ export default {		//Pass in a number and get the day back
 			default:
 				return 'Sunday';
 		}
+	},
+	getShortDate: (dateString) => {
+		[ 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday' ].forEach((date) => dateString = dateString.replace(date, ''));
+		dateString = dateString.replace('January', 'Jan');
+		dateString = dateString.replace('February', 'Feb');
+		dateString = dateString.replace('March', 'Mar');
+		dateString = dateString.replace('April', 'Apr');
+		dateString = dateString.replace('August', 'Aug');
+		dateString = dateString.replace('September', 'Sept');
+		dateString = dateString.replace('October', 'Oct');
+		dateString = dateString.replace('November', 'Nov');
+		dateString = dateString.replace('December', 'Dec');
+		dateString = dateString.replace(',', '');
+		
+		return dateString.trim();
 	}
 };
 
@@ -46,5 +61,5 @@ export function getDayFromString(string) {
 		} else {
 			return ""
 		}
-	
 }
+

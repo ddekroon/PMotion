@@ -6,8 +6,8 @@ import Enums from '../constants/enums'
  * Get lookups
  */
 export function fetchTeam (teamId) {
-  return (dispatch, getState) => {
-    if (shouldFetchTeam(getState(), teamId)) {
+  return (dispatch, getState) => {    
+    if (teamId > 0 && shouldFetchTeam(getState(), teamId)) {
       dispatch({
         type: 'REQUEST_TEAM',
         id: teamId
@@ -20,6 +20,7 @@ export function fetchTeam (teamId) {
           response => response.json(),
         )
         .then(json => {
+          console.log(json)
           dispatch({
             type: 'RECEIVE_TEAM',
             data: json,
@@ -83,12 +84,6 @@ export function submitTeam(teamObj) {
 }
  
 function shouldFetchTeam (state, teamId) {
-  /*
-  if (!LeagueHelpers.isValidLeagueId(leagueId)) {
-    return false
-  }
-  */
-
   const team = state.teams[teamId]
   if (!team) {
     return true
