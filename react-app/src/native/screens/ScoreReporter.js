@@ -14,7 +14,8 @@ import {
   Icon,
   Card,
   CardItem,
-  Body
+  Body,
+  Header
 } from 'native-base'
 
 import Loading from '../components/common/Loading'
@@ -32,19 +33,17 @@ import {
   resetMatches,
   resetSubmission
 } from '../../actions/scoreSubmission'
-import { fetchLeague } from '../../actions/leagues' //Gets the leagues from the web.
-
+import { fetchLeague } from '../../actions/leagues'
 
 class ScoreReporter extends React.Component {
-
-  static propTypes = {  //These are actions
+  static propTypes = {
     error: PropTypes.string,
     isLoading: PropTypes.bool.isRequired,
-    getLeague: PropTypes.func.isRequired, //getLeague is a function!
+    getLeague: PropTypes.func.isRequired,
     onFormSubmit: PropTypes.func.isRequired,
     leagues: PropTypes.object.isRequired,
     sports: PropTypes.array.isRequired,
-    seasons: PropTypes.object.isRequired, //seasons is a object (JSON string)
+    seasons: PropTypes.object.isRequired,
     scoreSubmission: PropTypes.object.isRequired,
     updateScoreSubmission: PropTypes.func.isRequired,
     resetMatches: PropTypes.func.isRequired,
@@ -63,7 +62,7 @@ class ScoreReporter extends React.Component {
     this.updateMatchHandler = this.updateMatchHandler.bind(this)
   }
 
-  getLeaguesAvailable = () => {
+  calculateIsLeaguesToSelect = () => {
     const { seasons, scoreSubmission } = this.props
 
     if (
@@ -71,18 +70,24 @@ class ScoreReporter extends React.Component {
       Object.keys(seasons).length === 0 ||
       scoreSubmission.sportId == ''
     ) {
-      return []
+      return false
     }
 
-    return seasons[scoreSubmission.sportId]
+    var numLeagues = 0
+    seasons[scoreSubmission.sportId]
       .filter(curSeason => curSeason.leagues != null)
-      .reduce((leagues, curSeason) =>  leagues.concat(curSeason.leagues), [])
+      .forEach(curSeason => {
+        numLeagues += curSeason.leagues.length
+      })
+
+    return numLeagues > 0
   }
 
   handleSubmit = () => {
     const { onFormSubmit } = this.props
     onFormSubmit().catch(e => {
       ToastHelpers.showToast(Enums.messageTypes.Error, e.message)
+      console.log(`Error: ${e.message}`)
     })
   }
 
@@ -170,70 +175,82 @@ class ScoreReporter extends React.Component {
   }
 
   render() {
-
-    const { //Data
+    const {
       loading,
       error,
       scoreSubmission,
       seasons,
-      resetSubmission,
-      sports
+      leagues,
+      resetSubmission
     } = this.props
 
     if (loading) return <Loading />
 
     var leaguePicker
-    var leagues = this.getLeaguesAvailable()
-    var league = leagues.find(x => x.id = scoreSubmission.leagueId)
+    var isLeagues = this.calculateIsLeaguesToSelect()
+    var league = leagues[scoreSubmission.leagueId]
     var isMultipleSeasons =
       scoreSubmission.sportId != ''
         ? seasons[scoreSubmission.sportId].length > 1
         : false
 
-    if (scoreSubmission.sportId != '' && leagues.length <= 0) {
+    if (scoreSubmission.sportId != '' && !isLeagues) {
       leaguePicker = (
         <Item>
           <Content padder>
-            <Text style={{ fontStyle: 'italic' }}>No leagues to select</Text>
+            <Text style={{ fontStyle: italic }}>No leagues to select</Text>
           </Content>
         </Item>
       )
-    } else if (leagues.length > 0) {
+    } else if (isLeagues) {
       leaguePicker = (
         <Item picker error={scoreSubmission.leagueId == ''}>
           <Picker
-            placeholder="League"
             note={false}
             mode="dropdown"
             iosIcon={<Icon name="arrow-down" />}
-            
             style={{ flex: 1 }}
             selectedValue={scoreSubmission.leagueId}
+            placeholder="League"
             onValueChange={(val, index) => {
               this.handleChange('leagueId', val)
-            }} 
+            }}
           >
             <Picker.Item key={0} label={'League'} value={''} />
-            {leagues.map(curLeague => {
-              return (
-                <Picker.Item
-                  key={curLeague.id}
-                  label={curLeague.name}
-                  value={curLeague.id}
-                />
-              )
+            {seasons[scoreSubmission.sportId].map(curSeason => {
+              if (curSeason.leagues == null) {
+                return
+              }
+
+              return curSeason.leagues.map(curLeague => {
+                var leagueName =
+                  curLeague.name +
+                  ' - ' +
+                  DateTimeHelpers.getDayString(curLeague.dayNumber)
+                if (isMultipleSeasons) {
+                  leagueName = leagueName + ' - ' + curSeason.name
+                }
+
+                return (
+                  <Picker.Item
+                    key={curLeague.id}
+                    label={leagueName}
+                    value={curLeague.id}
+                  />
+                )
+              })
             })}
-            
           </Picker>
         </Item>
       )
     }
+
     return (
       <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding" enabled>
         <Content padder>
           {!scoreSubmission.submitted && (
             <Form>
-              <Card style={{paddingLeft:10}}>
+              <Card>
                 <CardItem>
                   <Body>
                     <Item picker error={scoreSubmission.sportId == ''}>
@@ -249,7 +266,7 @@ class ScoreReporter extends React.Component {
                         }}
                       >
                         <Picker.Item key={0} label="Sport" value="" />
-                        {sports.map(curSport => {
+                        {this.props.sports.map(curSport => {
                           return (
                             <Picker.Item
                               key={curSport.id}
@@ -262,7 +279,7 @@ class ScoreReporter extends React.Component {
                     </Item>
 
                     {leaguePicker}
-                    
+
                     {league != null && (
                       <TeamPicker
                         loading={league.isFetching}
@@ -294,7 +311,7 @@ class ScoreReporter extends React.Component {
                   )
                 })}
 
-              <Card style={{paddingLeft:10}}>
+              <Card>
                 <CardItem>
                   <Body>
                     <Item
@@ -348,7 +365,7 @@ class ScoreReporter extends React.Component {
           )}
 
           {scoreSubmission.submitted && (
-            <Card style={{paddingLeft:10}}>
+            <Card>
               <CardItem>
                 <Body>
                   <Text>Your score submission has been received.</Text>

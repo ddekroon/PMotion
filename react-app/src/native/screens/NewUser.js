@@ -1,14 +1,9 @@
 import React from 'react';
-import { View, Text, Image, StyleSheet, TouchableHighlight} from 'react-native';
-import { Container, Card, Content, Input, Picker, Item, Form, Label, Icon, Button } from 'native-base';
-import Header from '../components/common/Header';
-import { Dimensions } from "react-native";
+import { View, Text, StyleSheet } from 'react-native';
+import { Container, Content, Input, Picker, Item, Form, Label, Icon, Button } from 'native-base';
 import ValidationHelpers from '../../utils/validationhelpers';
 import ToastHelpers from '../../utils/toasthelpers';
 import Colors from '../../../native-base-theme/variables/commonColor';
-
-
-const screenWidth = Math.round(Dimensions.get('window').width);
 
 export default class NewUser extends React.Component {
 
@@ -19,7 +14,7 @@ export default class NewUser extends React.Component {
             lastName:'',
             email:'',
             phone:'',
-            gender:'',
+            gender:'Male',
             username:'',
             passwordOne:'',
             passwordTwo:'',
@@ -126,134 +121,101 @@ export default class NewUser extends React.Component {
     render() {
 
         return (
-        
             <Container>
-                <Content>
-                    <Card style={{paddingLeft:10}}>
-                        
-                        <Header
-                            title="Create a Profile"
-                        />
-
-                        <View style={{alignItems:'center'}}>
-                            <Image 
-                                source={require("../../images/Perpetualmotionlogo2.png")}
-                                style={styles.logo}
-                                resizeMode ={'contain'}
+                <Content padder>
+                    <Form>
+                        <Item style={styles.item}>
+                            <Label style={{color:this.state.firstNameColor}}>First Name</Label>
+                            <Input
+                                autoCapitalize="words"
+                                value={this.state.firstName}
+                                onChangeText={elem => this.setState({firstName:elem})}
                             />
-                        </View>
-                        
-                        <View>
-                            <Text style={styles.heading}>Edit Information</Text>
-                            <View style={styles.line}/>
-                        </View>
+                        </Item>
 
-                        <View>
-                            <Form>
-                                <Item>
-                                    <Label style={{color:this.state.firstNameColor}}>First Name</Label>
-                                    <Input
-                                        autoCapitalize="words"
-                                        value={this.state.firstName}
-                                        onChangeText={elem => this.setState({firstName:elem})}
-                                    />
-                                </Item>
+                        <Item style={styles.item}>
+                            <Label style={{color:this.state.lastNameColor}}>Last Name</Label>
+                            <Input
+                                autoCapitalize="words"
+                                value={this.state.lastName}
+                                onChangeText={elem => this.setState({lastName:elem})}
+                            />
+                        </Item>
 
-                                <Item>
-                                    <Label style={{color:this.state.lastNameColor}}>last Name</Label>
-                                    <Input
-                                        autoCapitalize="words"
-                                        value={this.state.lastName}
-                                        onChangeText={elem => this.setState({lastName:elem})}
-                                    />
-                                </Item>
+                        <Item style={styles.item}>
+                            <Label style={{color:this.state.emailColor}}>Email</Label>
+                            <Input
+                                autoCapitalize="none"
+                                value={this.state.email}
+                                onChangeText={elem => this.setState({email:elem})}
+                            />
+                        </Item>
 
-                                <Item>
-                                    <Label style={{color:this.state.emailColor}}>Email</Label>
-                                    <Input
-                                        autoCapitalize="none"
-                                        value={this.state.email}
-                                        onChangeText={elem => this.setState({email:elem})}
-                                    />
-                                </Item>
+                        <Item style={styles.item}>
+                            <Label style={{color:this.state.phoneColor}}>Phone Number</Label>
+                            <Input
+                                autoCapitalize="none"
+                                keyboardType="number-pad"
+                                value={this.state.phone}
+                                onChangeText={elem => this.setState({phone:elem})}
+                            />
+                        </Item>
 
-                                <Item>
-                                    <Label style={{color:this.state.phoneColor}}>Phone Number</Label>
-                                    <Input
-                                        autoCapitalize="none"
-                                        keyboardType="number-pad"
-                                        value={this.state.phone}
-                                        onChangeText={elem => this.setState({phone:elem})}
-                                    />
-                                </Item>
-
-
-                                <Item>
-                                    <View style={{flexDirection:'row', alignItems:'space-around'}}>
-                                        <Label style={{color:this.state.genderColor}}>Gender</Label>
-                                        <View style={{backgroundColor:'red', borderRadius:10}}>
-                                            <Picker
-                                                note={false}
-                                                mode="dropdown"
-                                                iosIcon={<Icon name="arrow-down" />}
-                                                selectedValue={this.state.gender}
-                                                placeholder= {"Gender"}
-                                                onValueChange={(val) => {
-                                                    this.setState({gender:val})
-                                                }}
-                                            >
-                                                <Picker.Item key={0} label={"Male"} value={"Male"}/>
-                                                <Picker.Item key={1} label={"Female"} value={"Female"}/>
-
-                                            </Picker>
-                                        </View>
-                                    </View>
-                                </Item>
-
-                                <Text style={styles.heading}>Login Information</Text>
-                                <Text style={styles.subHeading}>Username and password must be between 6 and 16 characters. Please do not use spaces, quotes, or apostrophes.</Text>
-                                <View style={styles.line}/>
-
-                                <Item>
-                                    <Label style={{color:this.state.userColor}}>Username</Label>
-                                    <Input
-                                        autoCapitalize="none"
-                                        value={this.state.username}
-                                        onChangeText={elem => this.setState({username:elem})}
-                                    />
-                                </Item>
-
-                                <Item>
-                                    <Label style={{color:this.state.passwordOneColor}}>Password</Label>
-                                    <Input
-                                        autoCapitalize="none"
-                                        value={this.state.passwordOne}
-                                        onChangeText={elem => this.setState({passwordOne:elem})}
-                                    />
-                                </Item>
-
-                                <Item>
-                                    <Label style={{color:this.state.passwordTwoColor}}>Confirm Password</Label>
-                                    <Input
-                                        autoCapitalize="none"
-                                        value={this.state.passwordTwo}
-                                        onChangeText={elem => this.setState({passwordTwo:elem})}
-                                    />
-                                </Item>
-
-                                <View style={{paddingBottom:15}}/>
-                                <TouchableHighlight
-                                    onPress= { () => {
-                                        createAccount()
-                                    }}
-                                    style={styles.button}
-                                >
-                                    <Text style={styles.text}>Create Account</Text>
-                                </TouchableHighlight>
+                        <Item style={styles.item} picker>
+                            <Picker
+                                mode="dropdown"
+                                iosIcon={<Icon name="arrow-down" />}
                                 
-                            </Form>
-                        </View>
-                    </Card>
+                                placeholder="Gender"
+                                style={{ width: undefined }}
+                                selectedValue={this.state.gender}
+                                onValueChange={(val) => {
+                                    this.setState({gender:val})
+                                }}
+                            >
+                                <Picker.Item label="Male" value="Male" />
+                                <Picker.Item label="Female" value="Female" />
+                            </Picker>
+                        </Item>
+
+                        <Text style={styles.heading}>Login Information</Text>
+                        <Text style={styles.subHeading}>Username and password must be between 6 and 16 characters. Please do not use spaces, quotes, or apostrophes.</Text>
+                        <View style={styles.line}/>
+
+                        <Item style={styles.item}>
+                            <Label style={{color:this.state.userColor}}>Username</Label>
+                            <Input
+                                autoCapitalize="none"
+                                value={this.state.username}
+                                onChangeText={elem => this.setState({username:elem})}
+                            />
+                        </Item>
+
+                        <Item style={styles.item}>
+                            <Label style={{color:this.state.passwordOneColor}}>Password</Label>
+                            <Input
+                                autoCapitalize="none"
+                                value={this.state.passwordOne}
+                                onChangeText={elem => this.setState({passwordOne:elem})}
+                            />
+                        </Item>
+
+                        <Item style={styles.item}>
+                            <Label style={{color:this.state.passwordTwoColor}}>Confirm Password</Label>
+                            <Input
+                                autoCapitalize="none"
+                                value={this.state.passwordTwo}
+                                onChangeText={elem => this.setState({passwordTwo:elem})}
+                            />
+                        </Item>
+
+                        <View style={{marginBottom:20}}/>
+
+                        <Button block onPress={() => this.createAccount() } title={'Create Account'}>
+                            <Text>Create Account</Text>
+                        </Button>
+                        
+                    </Form>
                 </Content>
             </Container>
         )
@@ -261,35 +223,11 @@ export default class NewUser extends React.Component {
 }
 
 const styles = StyleSheet.create({
-    heading: {
-        fontWeight:'bold',
-    },
-
-    subHeading: {
-        color: '#474747',
-    },
-  
     line: {
         borderBottomColor:'black',
         borderBottomWidth:1,
     }, 
-
-    logo: {
-        width: screenWidth - 100,
-    },
-
-    button: {
-        width:'80%',
-        backgroundColor:Colors.brandSecondary,
-        borderRadius: 10,
-        flexDirection:'column',
-        justifyContent: 'center',
-        alignItems:'center',
-        height:60,
-    },
     
-    text: {
-        color:'white',
-    },
+    item: { marginLeft: 0 }
 
 })

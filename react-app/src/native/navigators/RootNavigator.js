@@ -59,7 +59,7 @@ class RootNavigator extends React.Component {
           name="League"
           component={LeagueNavigator} 
           options={({ route }) => ({
-            title: route.params.title ?? 'League'
+            title: route.params?.title ?? 'League'
           })}
         />
 
@@ -67,7 +67,7 @@ class RootNavigator extends React.Component {
           name="Team"
           component={TeamPage}
           options={({ route }) => ({
-            title: route.params.title ?? 'Team'
+            title: route.params?.title ?? 'Team'
           })}
         />
         
@@ -77,20 +77,26 @@ class RootNavigator extends React.Component {
           navigationOptions=  {{
             title: 'Registration',
             headerLeft: null
-        }}
+          }}
+          options={({ route }) => ({
+            title: route.params?.title ?? 'Registration'
+          })}
         />
 
         <Stack.Screen 
           name="Schedule"
           component={SchedulePage}
           options={({ route }) => ({
-            title: route.params.title ?? 'Schedule'
+            title: route.params?.title ?? 'Schedule'
           })}
         />
 
         <Stack.Screen 
           name="Maps"
           component={Maps}
+          options={({ route }) => ({
+            title: route.params?.title ?? 'Map'
+          })}
         />
 
         <Stack.Screen
@@ -101,42 +107,65 @@ class RootNavigator extends React.Component {
         <Stack.Screen
           name="IndividualRegister"
           component={IndividualRegister}
+          options={({ route }) => ({
+            title: route.params?.title ?? 'Individual Registration'
+          })}
         />
 
         <Stack.Screen
           name ='PickSport'
           component={PickSport}
+          options={({ route }) => ({
+            title: route.params?.title ?? 'Pick a Sport'
+          })}
         />
 
         <Stack.Screen
           name='Previousleagues'
           component={Previousleagues}
+          options={({ route }) => ({
+            title: route.params?.title ?? 'Previous Leagues'
+          })}
         />
 
         <Stack.Screen
           name='RegisterNewTeam'
           component={RegisterTeam}
+          options={({ route }) => ({
+            title: route.params?.title ?? 'Register Team'
+          })}
         />
         
         <Stack.Screen
           name='profile'
           component={Profile}
+          options={({ route }) => ({
+            title: route.params?.title ?? 'Profile'
+          })}
         />
         
         <Stack.Screen
           name='waivers'
           component={Waivers}
+          options={({ route }) => ({
+            title: route.params?.title ?? 'Waiver'
+          })}
         />
 
         <Stack.Screen
           name='NewUser'
           component={NewUser}
-          //navigationOptions={{gesturesEnable:false}}
+          options={({ route }) => ({
+            title: route.params?.title ?? 'Create Profile'
+          })}
         />
 
         <Stack.Screen
           name='ForgotPassword'
           component={ForgotPassword}
+          options={({ route }) => ({
+            title: route.params?.title ?? 'Forgot Password'
+          })}
         />
         
       </Stack.Navigator>

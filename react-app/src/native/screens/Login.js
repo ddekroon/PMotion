@@ -43,92 +43,71 @@ class Login extends React.Component{
     }*/
 
     return (
-      <Container>
-        <Content>
-          
-            <Card style={{paddingLeft:10}}>
-              <Header
-                title="Welcome back"
-                content="Please use your username and password to login."
+      <Container style={styles.container}>
+        <View style={styles.content}>
+          <Form>
+            <Item style={{...styles.item, ...styles.formGroup }}>
+              <Input
+                placeholder='Username'
+                autoCapitalize="none"
+                value={this.state.username}
+                onChangeText={username => this.setState({username:username})}
               />
-              <View style={styles.imageView}>
-                <Image 
-                  source={require('../../images/PerpetualMotionLeaf_square.png')}
-                  style={styles.logo}
-                  resizeMode ={'contain'}
-                />
-                
-              </View>
 
-              <Form>
-                <Item>
-                  <Label>Username</Label>
-                  <Input
-                    autoCapitalize="none"
-                    value={this.state.username}
-                    onChangeText={username => this.setState({username:username})}
-                  />
+            </Item>
 
-                </Item>
+            <Item style={{...styles.item, ...styles.formGroup }}>
+              <Input
+                placeholder='Password'
+                secureTextEntry
+                value={this.state.password}
+                onChangeText={pass => this.setState({password:pass})}
+              />
 
-                <Item>
-                  <Label>Password</Label>
-                  <Input
-                    secureTextEntry
-                    value={this.state.password}
-                    onChangeText={pass => this.setState({password:pass})}
-                  />
+              <Spacer size={20} />
+            </Item>
 
-                  <Spacer size={20} />
-                </Item>
-              </Form>
+            <View style={{flexDirection:'row', justifyContent:'space-between', ...styles.formGroup}}>
+              <TouchableHighlight onPress={() => {
+                this.props.navigation.navigate("ForgotPassword", null)
+              }}>
+                <Text style={{color:'red'}}>Forgot password</Text>
+              </TouchableHighlight>
 
-              <View padder>
-                <Button block title={'Login'} onPress={() => {
-                    let obj = new Object;
-                    obj.userName = this.state.username
-                    obj.password = this.state.password
-                    //Log in with object here
+              <TouchableHighlight onPress={() => {
+                this.props.navigation.navigate("NewUser", null)
+              }}>
+                <Text style={{color:'red'}}>New user</Text>
+              </TouchableHighlight>
+            </View>
+        
+            <Button block title={'Login'} onPress={() => {
+                let obj = new Object;
+                obj.userName = this.state.username
+                obj.password = this.state.password
+                //Log in with object here
 
-                    this.props.setLoggedIn(true)  //Put in the users information returned from the server in here to save it to the redux state
-                }}>
-                  <Text>Login</Text>
-                </Button>
-              </View>
-
-              <View style={{flexDirection:'row', justifyContent:'space-between', paddingTop:10}}>
-                  <TouchableHighlight onPress={() => {
-                    this.props.navigation.navigate("ForgotPassword", null)
-                  }}>
-                    <Text style={{color:'red'}}>Forgot password</Text>
-                  </TouchableHighlight>
-
-                  <TouchableHighlight onPress={() => {
-                    this.props.navigation.navigate("NewUser", null)
-                  }}>
-                    <Text style={{color:'red'}}>New user? SIGN UP</Text>
-                  </TouchableHighlight>
-                </View>
-            </Card>
-        </Content>
-      </Container>            
+                this.props.setLoggedIn(true)  //Put in the users information returned from the server in here to save it to the redux state
+            }}>
+              <Text>Login</Text>
+            </Button>
+          </Form>
+        </View>
+      </Container>
     )
   }
 }
 
-
-
 const styles = StyleSheet.create({
-  logo: {
-    width: screenWidth/2,
-    height: screenWidth/2,  //Since it's s square image
-    
-  },
-
-  imageView: {
-    alignItems:'center',
+  container: {
+    flex:1, 
     justifyContent:'center'
-  }
+  },
+  content: {
+    padding:10
+  },
+  item: { marginLeft: 0 },
+  formGroup: { marginBottom: 10 }
 })
  
 const mapStateToProps = state => ({

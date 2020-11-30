@@ -51,7 +51,7 @@ class TeamPicker extends React.Component {
             {
               teams.filter((curTeam) => curTeam.id != excludeTeamId)
                 .map((curTeam) => {
-                  return <Picker.Item key={curTeam.id} label={curTeam.name + " - " + getDayFromString(curTeam.scheduleLink)} value={curTeam.id} />
+                  return <Picker.Item key={curTeam.id} label={curTeam.name + (curTeam.scheduleLink != null ? " - " + getDayFromString(curTeam.scheduleLink) : '')} value={curTeam.id} />
                 })
             }
           </Picker>
